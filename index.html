@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINTVault - Your OSINT tools, always with you.</title>
+    <title>OSINT Arsenal - Cybersecurity Intelligence Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -31,6 +31,15 @@
             --gradient-secondary: linear-gradient(135deg, #ff6b35, #ff3366);
             --gradient-accent: linear-gradient(135deg, #00ff88, #00d4ff);
             --gradient-bg: linear-gradient(135deg, #0a0e14, #151922);
+
+            /* Default Tab Colors */
+            --tab-color-default: var(--primary);
+            --tab-color-red: #e74c3c;
+            --tab-color-blue: #3498db;
+            --tab-color-green: #2ecc71;
+            --tab-color-yellow: #f1c40f;
+            --tab-color-purple: #9b59b6;
+            --tab-color-orange: #e67e22;
         }
 
         [data-theme="light"] {
@@ -57,6 +66,15 @@
             --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
             --gradient-accent: linear-gradient(135deg, #28a745, #218838);
             --gradient-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
+
+            /* Default Tab Colors (Light Theme) */
+            --tab-color-default: var(--primary);
+            --tab-color-red: #c0392b;
+            --tab-color-blue: #2980b9;
+            --tab-color-green: #27ae60;
+            --tab-color-yellow: #f39c12;
+            --tab-color-purple: #8e44ad;
+            --tab-color-orange: #d35400;
         }
 
         * {
@@ -333,9 +351,7 @@
         }
 
         .sub-nav-tab.active {
-            background: var(--gradient-accent); /* Accent color for active sub-tab */
             color: white;
-            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.2);
         }
 
         .sub-nav-tab:hover:not(.active) {
@@ -1100,6 +1116,68 @@
             border-color: var(--primary);
             background: rgba(0, 212, 255, 0.1);
         }
+
+        /* Style for Icon picker */
+        .icon-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+        }
+
+        .icon-picker-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .icon-picker-item:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .icon-picker-item.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        /* Style for Color picker */
+        .color-picker-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-picker-item {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .color-picker-item.selected {
+            border-color: var(--text-primary); /* Border for selected color */
+            box-shadow: 0 0 0 2px var(--primary); /* Glow for selected color */
+        }
     </style>
 </head>
 <body>
@@ -1109,9 +1187,9 @@
                 <div class="logo-container">
                     <div class="logo">
                         <i class="fas fa-shield-alt"></i>
-                        OSINTVault
+                        OSINT Arsenal
                     </div>
-                    <span class="tagline">Carry your investigations everywhere.</span>
+                    <span class="tagline">Your tools and your links</span>
                 </div>
                 <div class="controls">
                     <div class="search-container">
@@ -1340,6 +1418,10 @@
                                 <i class="fas fa-trash"></i>
                                 Delete Sub-tab
                             </button>
+                            <button class="btn btn-secondary" id="exportSubTabBtn" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                Export Tab
+                            </button>
                         </div>
                     </div>
 
@@ -1508,6 +1590,16 @@
                     <label>Sub-tab Name</label>
                     <input type="text" id="newSubTabName" required>
                 </div>
+                <div class="form-group">
+                    <label>Icon (Font Awesome class, e.g., 'fas fa-globe')</label>
+                    <input type="text" id="newSubTabIcon" placeholder="fas fa-globe">
+                    <div class="icon-picker-grid" id="newSubTabIconPicker"></div>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="hidden" id="newSubTabColor">
+                    <div class="color-picker-grid" id="newSubTabColorPicker"></div>
+                </div>
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelCreateSubTab">Cancel</button>
                     <button type="submit" class="btn btn-primary">Create</button>
@@ -1528,6 +1620,16 @@
                     <label>Sub-tab Name</label>
                     <input type="text" id="editedSubTabName" required>
                 </div>
+                <div class="form-group">
+                    <label>Icon (Font Awesome class, e.g., 'fas fa-globe')</label>
+                    <input type="text" id="editedSubTabIcon" placeholder="fas fa-globe">
+                     <div class="icon-picker-grid" id="editedSubTabIconPicker"></div>
+                </div>
+                 <div class="form-group">
+                    <label>Color</label>
+                    <input type="hidden" id="editedSubTabColor">
+                    <div class="color-picker-grid" id="editedSubTabColorPicker"></div>
+                </div>
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelEditSubTab">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -1544,7 +1646,7 @@
             selectedTools: new Set(),
             currentTab: 'tools', // 'tools', 'analytics', 'threats', 'custom-tabs'
             currentCustomTab: null, // Stores the ID of the currently active custom sub-tab
-            customTabs: [], // Array of { id: '...', name: '...', toolIds: [] }
+            customTabs: [], // Array of { id: '...', name: '...', toolIds: [], icon: '...', color: '...' }
             filters: {
                 category: '',
                 search: '',
@@ -1559,6 +1661,21 @@
                 dataProcessed: 0
             }
         };
+
+        const availableIcons = [
+            'fas fa-globe', 'fas fa-search', 'fas fa-fingerprint', 'fas fa-shield-alt',
+            'fas fa-link', 'fas fa-network-wired', 'fas fa-envelope', 'fas fa-image',
+            'fas fa-map-marker-alt', 'fas fa-book', 'fas fa-coins', 'fas fa-users',
+            'fas fa-camera', 'fas fa-lock', 'fas fa-key', 'fas fa-bug', 'fas fa-cloud',
+            'fas fa-mobile-alt', 'fas fa-server', 'fas fa-database', 'fas fa-code',
+            'fas fa-chart-line', 'fas fa-user-secret', 'fas fa-lightbulb', 'fas fa-laptop-code'
+        ];
+
+        const availableColors = [
+            'var(--tab-color-default)', 'var(--tab-color-red)', 'var(--tab-color-blue)',
+            'var(--tab-color-green)', 'var(--tab-color-yellow)', 'var(--tab-color-purple)',
+            'var(--tab-color-orange)'
+        ];
 
         // Default Tools Database
         const defaultTools = [
@@ -1721,8 +1838,8 @@
                 appState.tools = [...defaultTools];
                  // Initialize default custom tabs if no state is loaded
                 appState.customTabs = [
-                    { id: generateId(), name: 'Crypto', toolIds: [] },
-                    { id: generateId(), name: 'Social Media Analysis', toolIds: [] }
+                    { id: generateId(), name: 'Crypto', toolIds: [], icon: 'fas fa-coins', color: 'var(--tab-color-yellow)' },
+                    { id: generateId(), name: 'Social Media Analysis', toolIds: [], icon: 'fas fa-users', color: 'var(--tab-color-blue)' }
                 ];
                 appState.currentCustomTab = appState.customTabs[0]?.id || null;
             }
@@ -1834,6 +1951,10 @@
                 if (appState.currentCustomTab && filteredTools.length === 0) {
                     emptyCurrentCustomTabState.style.display = 'block';
                 }
+                 // If a custom tab is selected and has tools, show the grid
+                 if (appState.currentCustomTab && filteredTools.length > 0) {
+                    targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+                 }
             } else {
                 targetContainer = toolsContainer;
                 currentEmptyState = emptyState;
@@ -2056,8 +2177,8 @@
             document.getElementById('refreshThreatsBtn').addEventListener('click', loadThreats);
 
             // Custom Sub-tab buttons
-            document.getElementById('createSubTabBtn').addEventListener('click', () => showModal('createSubTabModal'));
-            document.getElementById('createSubTabBtnEmptyState').addEventListener('click', () => showModal('createSubTabModal')); // For empty state button
+            document.getElementById('createSubTabBtn').addEventListener('click', () => showCreateSubTabModal());
+            document.getElementById('createSubTabBtnEmptyState').addEventListener('click', () => showCreateSubTabModal()); // For empty state button
             document.getElementById('cancelCreateSubTab').addEventListener('click', () => hideModal('createSubTabModal'));
             document.getElementById('createSubTabForm').addEventListener('submit', handleCreateSubTab);
 
@@ -2066,6 +2187,7 @@
             document.getElementById('editSubTabForm').addEventListener('submit', handleEditSubTab);
 
             document.getElementById('deleteSubTabBtn').addEventListener('click', handleDeleteSubTab);
+            document.getElementById('exportSubTabBtn').addEventListener('click', exportCustomTab);
 
             // Click listener for custom sub-tabs (delegated)
             document.getElementById('customSubTabs').addEventListener('click', (e) => {
@@ -2085,6 +2207,47 @@
                     }
                 }
             });
+
+            // Icon picker click handler (Create Sub-tab Modal)
+            document.getElementById('newSubTabIconPicker').addEventListener('click', (e) => {
+                const iconItem = e.target.closest('.icon-picker-item');
+                if (iconItem) {
+                    document.querySelectorAll('#newSubTabIconPicker .icon-picker-item').forEach(item => item.classList.remove('selected'));
+                    iconItem.classList.add('selected');
+                    document.getElementById('newSubTabIcon').value = iconItem.dataset.iconClass;
+                }
+            });
+
+            // Icon picker click handler (Edit Sub-tab Modal)
+            document.getElementById('editedSubTabIconPicker').addEventListener('click', (e) => {
+                const iconItem = e.target.closest('.icon-picker-item');
+                if (iconItem) {
+                    document.querySelectorAll('#editedSubTabIconPicker .icon-picker-item').forEach(item => item.classList.remove('selected'));
+                    iconItem.classList.add('selected');
+                    document.getElementById('editedSubTabIcon').value = iconItem.dataset.iconClass;
+                }
+            });
+
+            // Color picker click handler (Create Sub-tab Modal)
+            document.getElementById('newSubTabColorPicker').addEventListener('click', (e) => {
+                const colorItem = e.target.closest('.color-picker-item');
+                if (colorItem) {
+                    document.querySelectorAll('#newSubTabColorPicker .color-picker-item').forEach(item => item.classList.remove('selected'));
+                    colorItem.classList.add('selected');
+                    document.getElementById('newSubTabColor').value = colorItem.dataset.colorValue;
+                }
+            });
+
+            // Color picker click handler (Edit Sub-tab Modal)
+            document.getElementById('editedSubTabColorPicker').addEventListener('click', (e) => {
+                const colorItem = e.target.closest('.color-picker-item');
+                if (colorItem) {
+                    document.querySelectorAll('#editedSubTabColorPicker .color-picker-item').forEach(item => item.classList.remove('selected'));
+                    colorItem.classList.add('selected');
+                    document.getElementById('editedSubTabColor').value = colorItem.dataset.colorValue;
+                }
+            });
+
         }
 
         // Handle tool actions
@@ -2467,9 +2630,7 @@
                 document.getElementById('newCategoryInput').style.display = 'none'; // Hide custom input initially
                 document.getElementById('newCategoryInput').value = ''; // Clear custom input
                 document.getElementById('addToolForm').reset(); // Reset the add form
-            } else if (modalId === 'createSubTabModal') {
-                document.getElementById('newSubTabName').value = ''; // Clear input for new sub-tab
-            }
+            } 
         }
 
         function hideModal(modalId) {
@@ -2510,13 +2671,23 @@
                 favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`,
                 lastUsed: 0,
                 addedDate: new Date(),
-                customTabs: [] // New tools start with no custom tab assignments
+                customTabs: [] 
             };
+
+            // If currently in a custom tab, assign the new tool to it
+            if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+                const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+                if (activeCustomTab) {
+                    newTool.customTabs.push(activeCustomTab.id);
+                    activeCustomTab.toolIds.push(newTool.id);
+                }
+            }
             
             appState.tools.push(newTool);
             updateStats();
             populateCategoryFilter(); // Refresh categories including the new one
             renderTools();
+            renderCustomTabs(); // To update the tool count in sub-tabs
             hideModal('addToolModal');
             showToast('Tool added successfully!');
             
@@ -2831,6 +3002,7 @@
             const customSubTabsContainer = document.getElementById('customSubTabs');
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
+            const exportSubTabBtn = document.getElementById('exportSubTabBtn'); // Get the new button
             const emptyCustomTabState = document.getElementById('emptyCustomTabState');
             const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
             const customTabToolsGrid = document.getElementById('customTabToolsGrid');
@@ -2839,6 +3011,7 @@
             // Hide action buttons initially
             editSubTabBtn.style.display = 'none';
             deleteSubTabBtn.style.display = 'none';
+            exportSubTabBtn.style.display = 'none'; // Hide export button too
 
             customSubTabsContainer.innerHTML = ''; // Clear existing sub-tabs
 
@@ -2851,20 +3024,37 @@
                 emptyCustomTabState.style.display = 'none';
                 editSubTabBtn.style.display = 'inline-flex';
                 deleteSubTabBtn.style.display = 'inline-flex';
-
-                appState.customTabs.forEach(tab => {
-                    const tabButton = document.createElement('button');
-                    tabButton.className = `sub-nav-tab ${appState.currentCustomTab === tab.id ? 'active' : ''}`;
-                    tabButton.dataset.subTabId = tab.id;
-                    const toolCount = tab.toolIds.length;
-                    tabButton.innerHTML = `<i class="fas fa-folder-open"></i> ${tab.name} <span class="tag">${toolCount}</span>`;
-                    customSubTabsContainer.appendChild(tabButton);
-                });
+                exportSubTabBtn.style.display = 'inline-flex'; // Show export button
 
                 // Ensure a custom tab is active if customTabs exist
                 if (!appState.currentCustomTab || !appState.customTabs.some(tab => tab.id === appState.currentCustomTab)) {
                     appState.currentCustomTab = appState.customTabs[0].id;
                 }
+
+                appState.customTabs.forEach(tab => {
+                    const tabButton = document.createElement('button');
+                    tabButton.className = `sub-nav-tab ${appState.currentCustomTab === tab.id ? 'active' : ''}`;
+                    tabButton.dataset.subTabId = tab.id;
+                    tabButton.style.backgroundColor = tab.color || 'transparent'; // Apply background color
+                    tabButton.style.borderColor = tab.color || 'transparent'; // Optionally apply border color
+                    tabButton.style.color = tab.color ? 'white' : 'var(--text-secondary)'; // Ensure text visibility
+                    if (appState.theme === 'light' && tab.color && (tab.color.includes('yellow') || tab.color.includes('green') || tab.color.includes('var(--tab-color-default)'))) {
+                        tabButton.style.color = 'var(--text-primary)'; // Adjust text color for light backgrounds
+                    }
+
+                    const toolCount = appState.tools.filter(tool => tool.customTabs.includes(tab.id)).length;
+                    tabButton.innerHTML = `<i class="${tab.icon || 'fas fa-folder-open'}"></i> ${tab.name} <span class="tag">${toolCount}</span>`;
+                    customSubTabsContainer.appendChild(tabButton);
+
+                    // Re-activate the selected sub-tab to ensure its styling is correct if it's the active one
+                    if (appState.currentCustomTab === tab.id) {
+                         // Apply background for active state only if a color is defined, otherwise use default
+                         tabButton.style.background = tab.color || 'var(--gradient-accent)';
+                         tabButton.style.boxShadow = `0 2px 10px ${tab.color ? tab.color + '40' : 'rgba(0, 255, 136, 0.2)'}`; // Add shadow
+                         tabButton.style.color = tab.color ? 'white' : 'white'; // Ensure text is white for active tabs
+                    }
+                });
+
                 // Re-activate the selected sub-tab to ensure its styling is correct
                 const activeSubTabBtn = document.querySelector(`.sub-nav-tab[data-sub-tab-id="${appState.currentCustomTab}"]`);
                 if (activeSubTabBtn) {
@@ -2876,19 +3066,78 @@
         }
 
         function switchCustomTab(tabId) {
-            document.querySelectorAll('#customSubTabs .sub-nav-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#customSubTabs .sub-nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+                // Reset original styles when not active
+                const tabData = appState.customTabs.find(t => t.id === btn.dataset.subTabId);
+                if (tabData) {
+                    btn.style.backgroundColor = tabData.color || 'transparent';
+                    btn.style.borderColor = tabData.color || 'transparent';
+                    btn.style.color = tabData.color ? 'white' : 'var(--text-secondary)';
+                     if (appState.theme === 'light' && tabData.color && (tabData.color.includes('yellow') || tabData.color.includes('green') || tabData.color.includes('var(--tab-color-default)'))) {
+                        btn.style.color = 'var(--text-primary)';
+                    }
+                    btn.style.boxShadow = 'none';
+                }
+            });
             const newActiveTab = document.querySelector(`#customSubTabs .sub-nav-tab[data-sub-tab-id="${tabId}"]`);
             if (newActiveTab) {
                 newActiveTab.classList.add('active');
+                const tabData = appState.customTabs.find(t => t.id === tabId);
+                if (tabData) {
+                    // Apply active state styles
+                    newActiveTab.style.background = tabData.color || 'var(--gradient-accent)';
+                    newActiveTab.style.boxShadow = `0 2px 10px ${tabData.color ? tabData.color + '40' : 'rgba(0, 255, 136, 0.2)'}`;
+                    newActiveTab.style.color = 'white'; // Active tab text is always white
+                }
             }
             appState.currentCustomTab = tabId;
             renderTools(); // Re-render tools filtered by this specific custom tab
             saveState();
         }
 
+        // Populates the icon picker grid
+        function populateIconPicker(containerId, currentIcon = '') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            availableIcons.forEach(iconClass => {
+                const iconItem = document.createElement('div');
+                iconItem.className = `icon-picker-item ${iconClass === currentIcon ? 'selected' : ''}`;
+                iconItem.dataset.iconClass = iconClass;
+                iconItem.innerHTML = `<i class="${iconClass}"></i>`;
+                container.appendChild(iconItem);
+            });
+        }
+
+        // Populates the color picker grid
+        function populateColorPicker(containerId, currentColor = '') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            availableColors.forEach(colorValue => {
+                const colorItem = document.createElement('div');
+                colorItem.className = `color-picker-item ${colorValue === currentColor ? 'selected' : ''}`;
+                colorItem.dataset.colorValue = colorValue;
+                colorItem.style.backgroundColor = colorValue;
+                container.appendChild(colorItem);
+            });
+        }
+
+        function showCreateSubTabModal() {
+            showModal('createSubTabModal');
+            document.getElementById('newSubTabName').value = '';
+            document.getElementById('newSubTabIcon').value = 'fas fa-folder-open'; // Default icon
+            document.getElementById('newSubTabColor').value = 'var(--tab-color-default)'; // Default color
+            populateIconPicker('newSubTabIconPicker', 'fas fa-folder-open');
+            populateColorPicker('newSubTabColorPicker', 'var(--tab-color-default)');
+        }
+
+
         function handleCreateSubTab(e) {
             e.preventDefault();
             const newSubTabName = document.getElementById('newSubTabName').value.trim();
+            const newSubTabIcon = document.getElementById('newSubTabIcon').value.trim();
+            const newSubTabColor = document.getElementById('newSubTabColor').value.trim();
+
             if (!newSubTabName) {
                 showToast('Sub-tab name cannot be empty.', 'warning');
                 return;
@@ -2903,7 +3152,9 @@
             const newSubTab = {
                 id: generateId(),
                 name: newSubTabName,
-                toolIds: []
+                toolIds: [],
+                icon: newSubTabIcon || 'fas fa-folder-open', // Fallback to default icon
+                color: newSubTabColor || 'var(--tab-color-default)' // Fallback to default color
             };
             appState.customTabs.push(newSubTab);
             appState.currentCustomTab = newSubTab.id; // Make the new tab active
@@ -2922,6 +3173,12 @@
             if (currentSubTab) {
                 document.getElementById('editSubTabId').value = currentSubTab.id;
                 document.getElementById('editedSubTabName').value = currentSubTab.name;
+                document.getElementById('editedSubTabIcon').value = currentSubTab.icon;
+                document.getElementById('editedSubTabColor').value = currentSubTab.color;
+
+                populateIconPicker('editedSubTabIconPicker', currentSubTab.icon);
+                populateColorPicker('editedSubTabColorPicker', currentSubTab.color);
+
                 showModal('editSubTabModal');
             }
         }
@@ -2930,6 +3187,9 @@
             e.preventDefault();
             const subTabId = document.getElementById('editSubTabId').value;
             const editedSubTabName = document.getElementById('editedSubTabName').value.trim();
+            const editedSubTabIcon = document.getElementById('editedSubTabIcon').value.trim();
+            const editedSubTabColor = document.getElementById('editedSubTabColor').value.trim();
+
 
             if (!editedSubTabName) {
                 showToast('Sub-tab name cannot be empty.', 'warning');
@@ -2945,6 +3205,8 @@
             const subTab = appState.customTabs.find(tab => tab.id === subTabId);
             if (subTab) {
                 subTab.name = editedSubTabName;
+                subTab.icon = editedSubTabIcon || 'fas fa-folder-open';
+                subTab.color = editedSubTabColor || 'var(--tab-color-default)';
                 renderCustomTabs();
                 hideModal('editSubTabModal');
                 showToast('Sub-tab updated successfully!');
@@ -2976,6 +3238,57 @@
                 showToast('Sub-tab deleted successfully!', 'error');
                 saveState();
             }
+        }
+
+        function exportCustomTab() {
+            if (!appState.currentCustomTab) {
+                showToast('Please select a custom tab to export.', 'warning');
+                return;
+            }
+
+            const customTabToExport = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+            if (!customTabToExport) {
+                showToast('Error: Selected custom tab not found.', 'error');
+                return;
+            }
+
+            const toolsInTab = appState.tools.filter(tool => customTabToExport.toolIds.includes(tool.id));
+            
+            const exportData = {
+                tabName: customTabToExport.name,
+                tabIcon: customTabToExport.icon,
+                tabColor: customTabToExport.color,
+                tools: toolsInTab.map(tool => ({ // Only export relevant tool data
+                    id: tool.id,
+                    name: tool.name,
+                    url: tool.url,
+                    category: tool.category,
+                    description: tool.description,
+                    tags: tool.tags,
+                    starred: tool.starred,
+                    pinned: tool.pinned,
+                    favicon: tool.favicon,
+                    addedDate: tool.addedDate // Keep original added date for reference
+                })),
+                exportDate: new Date().toISOString(),
+                description: `Export of the "${customTabToExport.name}" custom tab from OSINT Arsenal.`,
+                version: '1.3' // Version for custom tab export
+            };
+
+            const fileName = `osint_arsenal_tab_${customTabToExport.name.toLowerCase().replace(/\s/g, '_')}.json`;
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Custom tab "${customTabToExport.name}" exported successfully!`);
         }
 
 
