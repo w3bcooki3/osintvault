@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Arsenal - Cybersecurity Intelligence Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #0099cc;
+            --secondary: #ff6b35;
+            --accent: #00ff88;
+            --danger: #ff3366;
+            --warning: #ffaa00;
+            --success: #00ff88;
+            --bg-primary: #0a0e14;
+            --bg-secondary: #151922;
+            --bg-tertiary: #1f2937;
+            --bg-card: #1a1f2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2d3748;
+            --border-light: #374151;
+            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.7);
+            --gradient-primary: linear-gradient(135deg, #00d4ff, #0099cc);
+            --gradient-secondary: linear-gradient(135deg, #ff6b35, #ff3366);
+            --gradient-accent: linear-gradient(135deg, #00ff88, #00d4ff);
+            --gradient-bg: linear-gradient(135deg, #0a0e14, #151922);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #cbd5e1;
+            --glow: 0 0 20px rgba(0, 212, 255, 0.2);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --gradient-bg: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            max-width: 100%;
+            padding: 0 20px;
+            margin: 0;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 100%;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .logo i {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 350px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            margin: 0;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--gradient-secondary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+        }
+
+        .btn-success {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+            margin: 20px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 12px 12px 0 0;
+            padding: 5px;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            width: 100%;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .tool-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card.starred {
+            border-color: var(--secondary);
+        }
+
+        .tool-card.pinned {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
+        }
+
+        .tool-card.selected {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-favicon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .tool-url {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .external-link-icon {
+            color: var(--primary);
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn.starred {
+            color: var(--secondary);
+        }
+
+        .action-btn.pinned {
+            color: var(--accent);
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bulk-actions.active {
+            display: flex;
+        }
+
+        .bulk-checkbox {
+            margin-right: 10px;
+        }
+
+        /* Security Scanner */
+        .security-scanner {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .scanner-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .threat-level {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .threat-low {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success);
+        }
+
+        .threat-medium {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .threat-high {
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--danger);
+        }
+
+        /* Analytics Dashboard */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .analytics-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Dark Web Monitor */
+        .dark-web-monitor {
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(255, 107, 53, 0.1));
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .monitor-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 40px 20px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            margin-bottom: 30px;
+        }
+
+        .footer-title {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .tip-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: unset;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal and Form Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1001;
+            animation: slideInRight 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-right: 5px;
+            margin-bottom: 3px;
+        }
+        
+        .threat-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .threat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .threat-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .threat-tags {
+            margin-top: 10px;
+        }
+
+        .scan-progress {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            height: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .scan-progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .scan-result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .scan-result:last-child {
+            border-bottom: none;
+        }
+
+        .scan-result i {
+            width: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    OSINT Arsenal
+                </div>
+                <div class="controls">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search intelligence tools, techniques, indicators...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <button class="btn btn-primary" id="addToolBtn">
+                        <i class="fas fa-plus"></i>
+                        Add Tool
+                    </button>
+                    <button class="btn btn-secondary" id="scanBtn">
+                        <i class="fas fa-radar"></i>
+                        Security Scan
+                    </button>
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn btn-secondary" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <i class="fas fa-tools"></i>
+                <span>Tools:</span>
+                <span class="stat-value" id="totalTools">0</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-folder"></i>
+                <span>Categories:</span>
+                <span class="stat-value" id="totalCategories">0</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>Last Scan:</span>
+                <span class="stat-value" id="lastScan">Never</span>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="sidebar">
+                <!-- Dark Web Monitor -->
+                <div class="dark-web-monitor">
+                    <div class="monitor-status">
+                        <div class="status-indicator"></div>
+                        <span>Dark Web Monitor</span>
+                    </div>
+                    <p style="font-size: 12px; margin-top: 10px; color: var(--text-secondary);">
+                        Monitoring for compromised credentials and data breaches
+                    </p>
+                </div>
+
+                <!-- Security Scanner -->
+                <div class="security-scanner">
+                    <div class="scanner-header">
+                        <i class="fas fa-shield-virus"></i>
+                        <span>Security Status</span>
+                    </div>
+                    <div id="securityStatus">
+                        <div class="threat-level threat-low">All Systems Secure</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-section">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sort By</label>
+                        <select id="sortFilter">
+                            <option value="name">Name (A-Z)</option>
+                            <option value="recent">Recently Added</option>
+                            <option value="popular">Most Used</option>
+                            <option value="threat">Threat Level</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="filter-section">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <button class="btn btn-secondary" id="randomToolBtn" style="width: 100%; margin-bottom: 10px;">
+                        <i class="fas fa-random"></i>
+                        Random Tool
+                    </button>
+                    <button class="btn btn-danger" id="emergencyBtn" style="width: 100%; margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Emergency Mode
+                    </button>
+                    <button class="btn btn-success" id="reportBtn" style="width: 100%;">
+                        <i class="fas fa-file-alt"></i>
+                        Generate Report
+                    </button>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <!-- Navigation Tabs -->
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-tab="tools">
+                        <i class="fas fa-tools"></i>
+                        Tools Arsenal
+                    </button>
+                    <button class="nav-tab" data-tab="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </button>
+                    <button class="nav-tab" data-tab="threats">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Threat Intel
+                    </button>
+                    <button class="nav-tab" data-tab="investigations">
+                        <i class="fas fa-search"></i>
+                        Active Cases
+                    </button>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="bulk-actions" id="bulkActions">
+                    <span>Selected: <span id="selectedCount">0</span> tools</span>
+                    <button class="btn btn-secondary" id="bulkStarBtn">
+                        <i class="fas fa-star"></i>
+                        Star All
+                    </button>
+                    <button class="btn btn-secondary" id="bulkPinBtn">
+                        <i class="fas fa-thumbtack"></i>
+                        Pin All
+                    </button>
+                    <button class="btn btn-danger" id="bulkDeleteBtn">
+                        <i class="fas fa-trash"></i>
+                        Delete All
+                    </button>
+                </div>
+
+                <!-- Tools Tab Content -->
+                <div class="tab-content active" id="toolsTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Intelligence Tools Arsenal</h2>
+                        <div class="controls">
+                            <button class="btn btn-secondary" id="viewToggle">
+                                <i class="fas fa-th"></i>
+                                Grid View
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="tools-grid" id="toolsGrid">
+                        <!-- Tools will be dynamically loaded here -->
+                    </div>
+
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>No Tools Found</h3>
+                        <p>No intelligence tools match your current search criteria.</p>
+                        <button class="btn btn-primary" id="clearFiltersBtn">
+                            <i class="fas fa-times"></i>
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab Content -->
+                <div class="tab-content" id="analyticsTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Usage Analytics</h2>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="toolsUsed">0</div>
+                            <div>Tools Used Today</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="scansCompleted">0</div>
+                            <div>Scans Completed</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="threatsDetected">0</div>
+                            <div>Threats Detected</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="dataProcessed">0GB</div>
+                            <div>Data Processed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threats Tab Content -->
+                <div class="tab-content" id="threatsTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Threat Intelligence Feed</h2>
+                        <button class="btn btn-primary" id="refreshThreatsBtn">
+                            <i class="fas fa-sync"></i>
+                            Refresh Feed
+                        </button>
+                    </div>
+                    
+                    <div id="threatsList">
+                        <!-- Threats will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Investigations Tab Content -->
+                <div class="tab-content" id="investigationsTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Active Investigations</h2>
+                        <button class="btn btn-primary" id="newCaseBtn">
+                            <i class="fas fa-plus"></i>
+                            New Case
+                        </button>
+                    </div>
+                    
+                    <div id="casesList">
+                        <!-- Cases will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Pro Tips
+                    </h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <div class="tip-title">Automate Your Workflow</div>
+                            <div class="tip-description">Use bulk actions to star, pin, or organize multiple tools at once. Create custom categories for specialized investigations.</div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-title">Stay Updated</div>
+                            <div class="tip-description">Enable dark web monitoring to get real-time alerts about compromised data and emerging threats in your domain.</div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-title">Secure Operations</div>
+                            <div class="tip-description">Always use VPN and proper operational security when conducting OSINT investigations. Document everything for legal compliance.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2024 OSINT Arsenal. Built for cybersecurity professionals and researchers.</p>
+                    <p style="margin-top: 10px; font-size: 12px;">
+                        <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+                        Secure • Anonymous • Professional
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="addToolModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-plus-circle"></i>
+                Add New Tool
+            </h3>
+            <form id="addToolForm">
+                <div class="form-group">
+                    <label>Tool Name</label>
+                    <input type="text" id="toolName" required>
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="toolUrl" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="toolCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="search">Search Engines</option>
+                        <option value="social">Social Media</option>
+                        <option value="network">Network Analysis</option>
+                        <option value="email">Email Investigation</option>
+                        <option value="domain">Domain Research</option>
+                        <option value="image">Image Analysis</option>
+                        <option value="geoint">GEOINT</option>
+                        <option value="threat">Threat Intelligence</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="toolDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="toolTags" placeholder="osint, investigation, cybersecurity">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelAddTool">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Tool</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="scanModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-radar"></i>
+                Security Scan Results
+            </h3>
+            <div id="scanProgress" style="display: none;">
+                <div class="scan-progress">
+                    <div class="scan-progress-bar" id="progressBar"></div>
+                </div>
+                <p style="text-align: center; color: var(--text-secondary);" id="scanStatus">Initializing scan...</p>
+            </div>
+            <div id="scanResults" style="display: none;">
+                <!-- Scan results will be populated here -->
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" id="closeScanModal">Close</button>
+                <button type="button" class="btn btn-primary" id="runScanBtn">Run Scan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let appState = {
+            tools: [],
+            selectedTools: new Set(),
+            currentTab: 'tools',
+            filters: {
+                category: '',
+                search: '',
+                sort: 'name'
+            },
+            theme: 'dark',
+            scanProgress: 0,
+            isScanning: false
+        };
+
+        // Default Tools Database
+        const defaultTools = [
+            {
+                id: 'google-search',
+                name: 'Google Advanced Search',
+                url: 'https://www.google.com/advanced_search',
+                category: 'search',
+                description: 'Advanced search operators and techniques for comprehensive information gathering',
+                tags: ['search', 'google', 'operators'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://www.google.com/favicon.ico',
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'shodan',
+                name: 'Shodan',
+                url: 'https://www.shodan.io',
+                category: 'network',
+                description: 'Search engine for Internet-connected devices and systems',
+                tags: ['iot', 'network', 'scanning', 'security'],
+                starred: true,
+                pinned: false,
+                favicon: 'https://www.shodan.io/static/img/favicon.png',
+                threatLevel: 'medium',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'maltego',
+                name: 'Maltego',
+                url: 'https://www.maltego.com',
+                category: 'network',
+                description: 'Link analysis and data mining application for gathering and connecting information',
+                tags: ['analysis', 'visualization', 'mapping'],
+                starred: false,
+                pinned: true,
+                favicon: 'https://www.maltego.com/favicon.ico',
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'have-i-been-pwned',
+                name: 'Have I Been Pwned',
+                url: 'https://haveibeenpwned.com',
+                category: 'email',
+                description: 'Check if email addresses have been compromised in data breaches',
+                tags: ['breach', 'email', 'security', 'compromise'],
+                starred: true,
+                pinned: false,
+                favicon: 'https://haveibeenpwned.com/favicon.ico',
+                threatLevel: 'medium',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'virustotal',
+                name: 'VirusTotal',
+                url: 'https://www.virustotal.com',
+                category: 'threat',
+                description: 'Analyze suspicious files and URLs to detect types of malware',
+                tags: ['malware', 'analysis', 'threat', 'security'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://www.virustotal.com/gui/images/favicon.png',
+                threatLevel: 'high',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'wayback-machine',
+                name: 'Wayback Machine',
+                url: 'https://web.archive.org',
+                category: 'search',
+                description: 'Browse historical snapshots of websites',
+                tags: ['archive', 'history', 'web', 'research'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://web.archive.org/static/images/favicon.ico',
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'whois-lookup',
+                name: 'WHOIS Lookup',
+                url: 'https://whois.net',
+                category: 'domain',
+                description: 'Domain registration and ownership information',
+                tags: ['domain', 'registration', 'ownership'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://whois.net/favicon.ico',
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            },
+            {
+                id: 'tineye',
+                name: 'TinEye',
+                url: 'https://tineye.com',
+                category: 'image',
+                description: 'Reverse image search engine',
+                tags: ['image', 'reverse', 'search', 'verification'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://tineye.com/favicon.ico',
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            }
+        ];
+
+        // Initialize Application
+        function initApp() {
+            loadTools();
+            updateStats();
+            bindEvents();
+            initTheme();
+            renderTools();
+            populateCategoryFilter();
+        }
+
+        // Load tools from memory or use defaults
+        function loadTools() {
+            appState.tools = [...defaultTools];
+        }
+
+        // Update statistics
+        function updateStats() {
+            const categories = new Set(appState.tools.map(tool => tool.category));
+            document.getElementById('totalTools').textContent = appState.tools.length;
+            document.getElementById('totalCategories').textContent = categories.size;
+            document.getElementById('lastScan').textContent = 'Just now';
+        }
+
+        // Populate category filter
+        function populateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categories = new Set(appState.tools.map(tool => tool.category));
+            
+            categoryFilter.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Render tools grid
+        function renderTools() {
+            const toolsGrid = document.getElementById('toolsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            let filteredTools = filterTools();
+            
+            if (filteredTools.length === 0) {
+                toolsGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            toolsGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            toolsGrid.innerHTML = filteredTools.map(tool => createToolCard(tool)).join('');
+        }
+
+        // Filter tools based on current filters
+        function filterTools() {
+            let filtered = [...appState.tools];
+            
+            // Apply search filter
+            if (appState.filters.search) {
+                const searchTerm = appState.filters.search.toLowerCase();
+                filtered = filtered.filter(tool => 
+                    tool.name.toLowerCase().includes(searchTerm) ||
+                    tool.description.toLowerCase().includes(searchTerm) ||
+                    tool.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            // Apply category filter
+            if (appState.filters.category) {
+                filtered = filtered.filter(tool => tool.category === appState.filters.category);
+            }
+            
+            // Apply sorting
+            filtered.sort((a, b) => {
+                switch (appState.filters.sort) {
+                    case 'recent':
+                        return new Date(b.addedDate) - new Date(a.addedDate);
+                    case 'popular':
+                        return (b.lastUsed || 0) - (a.lastUsed || 0);
+                    case 'threat':
+                        const threatOrder = {high: 3, medium: 2, low: 1};
+                        return threatOrder[b.threatLevel] - threatOrder[a.threatLevel];
+                    default:
+                        return a.name.localeCompare(b.name);
+                }
+            });
+            
+            return filtered;
+        }
+
+        // Create tool card HTML
+        function createToolCard(tool) {
+            const isSelected = appState.selectedTools.has(tool.id);
+            return `
+                <div class="tool-card ${tool.starred ? 'starred' : ''} ${tool.pinned ? 'pinned' : ''} ${isSelected ? 'selected' : ''}" 
+                     data-tool-id="${tool.id}">
+                    <div class="tool-header">
+                        <div>
+                            <div class="tool-title">
+                                <input type="checkbox" class="bulk-checkbox" ${isSelected ? 'checked' : ''}>
+                                <img src="${tool.favicon}" alt="" class="tool-favicon" onerror="this.style.display='none'">
+                                ${tool.name}
+                            </div>
+                            <div class="tool-url">
+                                <span>${tool.url}</span>
+                                <i class="fas fa-external-link-alt external-link-icon"></i>
+                            </div>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="action-btn ${tool.starred ? 'starred' : ''}" data-action="star" title="Star Tool">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="action-btn ${tool.pinned ? 'pinned' : ''}" data-action="pin" title="Pin Tool">
+                                <i class="fas fa-thumbtack"></i>
+                            </button>
+                            <button class="action-btn" data-action="visit" title="Visit Tool">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                            <button class="action-btn" data-action="delete" title="Delete Tool">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">
+                        ${tool.description}
+                    </p>
+                    <div class="tool-tags">
+                        ${tool.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        <span class="threat-level threat-${tool.threatLevel}" style="float: right;">
+                            ${tool.threatLevel}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Bind event listeners
+        function bindEvents() {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                appState.filters.search = e.target.value;
+                renderTools();
+            });
+
+            // Filter controls
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                appState.filters.category = e.target.value;
+                renderTools();
+            });
+
+            document.getElementById('sortFilter').addEventListener('change', (e) => {
+                appState.filters.sort = e.target.value;
+                renderTools();
+            });
+
+            // Tab navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
+                });
+            });
+
+            // Tool actions
+            document.getElementById('toolsGrid').addEventListener('click', handleToolAction);
+            document.getElementById('toolsGrid').addEventListener('change', handleBulkSelection);
+
+            // Modal controls
+            document.getElementById('addToolBtn').addEventListener('click', () => showModal('addToolModal'));
+            document.getElementById('scanBtn').addEventListener('click', () => showModal('scanModal'));
+            document.getElementById('cancelAddTool').addEventListener('click', () => hideModal('addToolModal'));
+            document.getElementById('closeScanModal').addEventListener('click', () => hideModal('scanModal'));
+
+            // Form submission
+            document.getElementById('addToolForm').addEventListener('submit', handleAddTool);
+            document.getElementById('runScanBtn').addEventListener('click', runSecurityScan);
+
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Quick actions
+            document.getElementById('randomToolBtn').addEventListener('click', openRandomTool);
+            document.getElementById('emergencyBtn').addEventListener('click', activateEmergencyMode);
+            document.getElementById('reportBtn').addEventListener('click', generateReport);
+
+            // Clear filters
+            document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+
+            // Bulk actions
+            document.getElementById('bulkStarBtn').addEventListener('click', () => bulkAction('star'));
+            document.getElementById('bulkPinBtn').addEventListener('click', () => bulkAction('pin'));
+            document.getElementById('bulkDeleteBtn').addEventListener('click', () => bulkAction('delete'));
+
+            // Export
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+        }
+
+        // Handle tool actions
+        function handleToolAction(e) {
+            if (!e.target.closest('.action-btn')) return;
+            
+            e.preventDefault();
+            const action = e.target.closest('.action-btn').dataset.action;
+            const toolCard = e.target.closest('.tool-card');
+            const toolId = toolCard.dataset.toolId;
+            const tool = appState.tools.find(t => t.id === toolId);
+            
+            switch (action) {
+                case 'star':
+                    tool.starred = !tool.starred;
+                    showToast(tool.starred ? 'Tool starred!' : 'Tool unstarred!');
+                    break;
+                case 'pin':
+                    tool.pinned = !tool.pinned;
+                    showToast(tool.pinned ? 'Tool pinned!' : 'Tool unpinned!');
+                    break;
+                case 'visit':
+                    tool.lastUsed = Date.now();
+                    window.open(tool.url, '_blank');
+                    showToast('Opening tool...');
+                    break;
+                case 'delete':
+                    if (confirm('Are you sure you want to delete this tool?')) {
+                        appState.tools = appState.tools.filter(t => t.id !== toolId);
+                        showToast('Tool deleted!', 'error');
+                        updateStats();
+                    }
+                    break;
+            }
+            
+            renderTools();
+        }
+
+        // Handle bulk selection
+        function handleBulkSelection(e) {
+            if (!e.target.classList.contains('bulk-checkbox')) return;
+            
+            const toolCard = e.target.closest('.tool-card');
+            const toolId = toolCard.dataset.toolId;
+            
+            if (e.target.checked) {
+                appState.selectedTools.add(toolId);
+            } else {
+                appState.selectedTools.delete(toolId);
+            }
+            
+            updateBulkActions();
+            renderTools();
+        }
+
+        // Update bulk actions visibility
+        function updateBulkActions() {
+            const bulkActions = document.getElementById('bulkActions');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            if (appState.selectedTools.size > 0) {
+                bulkActions.classList.add('active');
+                selectedCount.textContent = appState.selectedTools.size;
+            } else {
+                bulkActions.classList.remove('active');
+            }
+        }
+
+        // Bulk actions
+        function bulkAction(action) {
+            const selectedIds = Array.from(appState.selectedTools);
+            
+            selectedIds.forEach(id => {
+                const tool = appState.tools.find(t => t.id === id);
+                if (!tool) return;
+                
+                switch (action) {
+                    case 'star':
+                        tool.starred = true;
+                        break;
+                    case 'pin':
+                        tool.pinned = true;
+                        break;
+                    case 'delete':
+                        appState.tools = appState.tools.filter(t => t.id !== id);
+                        break;
+                }
+            });
+            
+            appState.selectedTools.clear();
+            updateBulkActions();
+            renderTools();
+            updateStats();
+            showToast(`Bulk ${action} completed!`);
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+            
+            appState.currentTab = tabName;
+            
+            // Load tab-specific data
+            if (tabName === 'threats') {
+                loadThreats();
+            } else if (tabName === 'analytics') {
+                loadAnalytics();
+            } else if (tabName === 'investigations') {
+                loadInvestigations();
+            }
+        }
+
+        // Load threat intelligence
+        function loadThreats() {
+            const threatsList = document.getElementById('threatsList');
+            const mockThreats = [
+                {
+                    id: 1,
+                    title: 'New Phishing Campaign Detected',
+                    description: 'Targeting financial institutions with COVID-19 themed lures',
+                    severity: 'high',
+                    tags: ['phishing', 'covid-19', 'financial'],
+                    timestamp: new Date(Date.now() - 3600000)
+                },
+                {
+                    id: 2,
+                    title: 'Malware Sample Analysis',
+                    description: 'New variant of banking trojan discovered in the wild',
+                    severity: 'medium',
+                    tags: ['malware', 'banking', 'trojan'],
+                    timestamp: new Date(Date.now() - 7200000)
+                },
+                {
+                    id: 3,
+                    title: 'Data Breach Alert',
+                    description: 'Credentials leak detected on underground forums',
+                    severity: 'high',
+                    tags: ['breach', 'credentials', 'darkweb'],
+                    timestamp: new Date(Date.now() - 10800000)
+                }
+            ];
+            
+            threatsList.innerHTML = mockThreats.map(threat => `
+                <div class="threat-item">
+                    <div class="threat-header">
+                        <h4>${threat.title}</h4>
+                        <div class="threat-level threat-${threat.severity}">${threat.severity}</div>
+                    </div>
+                    <p>${threat.description}</p>
+                    <div class="threat-tags">
+                        ${threat.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="threat-time">${formatTime(threat.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Load analytics data
+        function loadAnalytics() {
+            document.getElementById('toolsUsed').textContent = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('scansCompleted').textContent = Math.floor(Math.random() * 20) + 5;
+            document.getElementById('threatsDetected').textContent = Math.floor(Math.random() * 10) + 2;
+            document.getElementById('dataProcessed').textContent = (Math.random() * 10 + 1).toFixed(1) + 'GB';
+        }
+
+        // Load investigations
+        function loadInvestigations() {
+            const casesList = document.getElementById('casesList');
+            casesList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No Active Cases</h3>
+                    <p>Create a new investigation case to get started.</p>
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Add new tool
+        function handleAddTool(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const newTool = {
+                id: generateId(),
+                name: document.getElementById('toolName').value,
+                url: document.getElementById('toolUrl').value,
+                category: document.getElementById('toolCategory').value,
+                description: document.getElementById('toolDescription').value,
+                tags: document.getElementById('toolTags').value.split(',').map(tag => tag.trim()),
+                starred: false,
+                pinned: false,
+                favicon: `${new URL(document.getElementById('toolUrl').value).origin}/favicon.ico`,
+                threatLevel: 'low',
+                lastUsed: null,
+                addedDate: new Date()
+            };
+            
+            appState.tools.push(newTool);
+            updateStats();
+            populateCategoryFilter();
+            renderTools();
+            hideModal('addToolModal');
+            showToast('Tool added successfully!');
+            
+            // Reset form
+            e.target.reset();
+        }
+
+        // Run security scan
+       function runSecurityScan() {
+           if (appState.isScanning) return;
+           
+           appState.isScanning = true;
+           appState.scanProgress = 0;
+           
+           const progressBar = document.getElementById('progressBar');
+           const scanStatus = document.getElementById('scanStatus');
+           const scanProgress = document.getElementById('scanProgress');
+           const scanResults = document.getElementById('scanResults');
+           const runScanBtn = document.getElementById('runScanBtn');
+           
+           scanProgress.style.display = 'block';
+           scanResults.style.display = 'none';
+           runScanBtn.disabled = true;
+           
+           const scanSteps = [
+               'Initializing security scan...',
+               'Checking tool availability...',
+               'Analyzing threat levels...',
+               'Scanning for vulnerabilities...',
+               'Generating security report...',
+               'Scan completed!'
+           ];
+           
+           let currentStep = 0;
+           const scanInterval = setInterval(() => {
+               appState.scanProgress += 16.67;
+               progressBar.style.width = appState.scanProgress + '%';
+               scanStatus.textContent = scanSteps[currentStep];
+               
+               currentStep++;
+               
+               if (appState.scanProgress >= 100) {
+                   clearInterval(scanInterval);
+                   appState.isScanning = false;
+                   showScanResults();
+                   runScanBtn.disabled = false;
+               }
+           }, 800);
+       }
+
+       // Show scan results
+       function showScanResults() {
+           const scanProgress = document.getElementById('scanProgress');
+           const scanResults = document.getElementById('scanResults');
+           
+           scanProgress.style.display = 'none';
+           scanResults.style.display = 'block';
+           
+           const mockResults = {
+               toolsScanned: appState.tools.length,
+               vulnerabilities: Math.floor(Math.random() * 3),
+               warnings: Math.floor(Math.random() * 5) + 2,
+               secure: appState.tools.length - Math.floor(Math.random() * 8)
+           };
+           
+           scanResults.innerHTML = `
+               <div class="scan-results-grid">
+                   <div class="scan-result-card success">
+                       <i class="fas fa-shield-alt"></i>
+                       <div class="result-value">${mockResults.secure}</div>
+                       <div class="result-label">Secure Tools</div>
+                   </div>
+                   <div class="scan-result-card warning">
+                       <i class="fas fa-exclamation-triangle"></i>
+                       <div class="result-value">${mockResults.warnings}</div>
+                       <div class="result-label">Warnings</div>
+                   </div>
+                   <div class="scan-result-card danger">
+                       <i class="fas fa-bug"></i>
+                       <div class="result-value">${mockResults.vulnerabilities}</div>
+                       <div class="result-label">Vulnerabilities</div>
+                   </div>
+               </div>
+               <div class="scan-recommendations">
+                   <h4>Security Recommendations:</h4>
+                   <ul>
+                       <li>Enable 2FA for all critical tools</li>
+                       <li>Review tool permissions regularly</li>
+                       <li>Use VPN for sensitive operations</li>
+                       <li>Keep tools updated to latest versions</li>
+                   </ul>
+               </div>
+           `;
+       }
+
+       // Theme functions
+       function initTheme() {
+           const savedTheme = appState.theme;
+           if (savedTheme === 'light') {
+               document.body.classList.add('light-theme');
+           }
+       }
+
+       function toggleTheme() {
+           document.body.classList.toggle('light-theme');
+           appState.theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+           showToast(`Switched to ${appState.theme} theme`);
+       }
+
+       // Utility functions
+       function generateId() {
+           return Date.now().toString(36) + Math.random().toString(36).substr(2);
+       }
+
+       function formatTime(date) {
+           const now = new Date();
+           const diff = now - date;
+           const minutes = Math.floor(diff / 60000);
+           const hours = Math.floor(diff / 3600000);
+           const days = Math.floor(diff / 86400000);
+           
+           if (minutes < 60) return `${minutes}m ago`;
+           if (hours < 24) return `${hours}h ago`;
+           return `${days}d ago`;
+       }
+
+       function showToast(message, type = 'success') {
+           const toast = document.createElement('div');
+           toast.className = `toast toast-${type}`;
+           toast.innerHTML = `
+               <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+               ${message}
+           `;
+           
+           document.body.appendChild(toast);
+           
+           setTimeout(() => {
+               toast.classList.add('show');
+           }, 100);
+           
+           setTimeout(() => {
+               toast.classList.remove('show');
+               setTimeout(() => {
+                   document.body.removeChild(toast);
+               }, 300);
+           }, 3000);
+       }
+
+       function clearFilters() {
+           appState.filters = {
+               category: '',
+               search: '',
+               sort: 'name'
+           };
+           
+           document.getElementById('searchInput').value = '';
+           document.getElementById('categoryFilter').value = '';
+           document.getElementById('sortFilter').value = 'name';
+           
+           renderTools();
+           showToast('Filters cleared!');
+       }
+
+       function openRandomTool() {
+           if (appState.tools.length === 0) return;
+           
+           const randomTool = appState.tools[Math.floor(Math.random() * appState.tools.length)];
+           randomTool.lastUsed = Date.now();
+           window.open(randomTool.url, '_blank');
+           showToast(`Opening ${randomTool.name}...`);
+       }
+
+       function activateEmergencyMode() {
+           const emergencyTools = appState.tools.filter(tool => 
+               tool.category === 'threat' || 
+               tool.threatLevel === 'high' ||
+               tool.tags.includes('security')
+           );
+           
+           if (emergencyTools.length === 0) {
+               showToast('No emergency tools available', 'warning');
+               return;
+           }
+           
+           emergencyTools.forEach(tool => {
+               tool.pinned = true;
+               tool.starred = true;
+           });
+           
+           appState.filters.category = '';
+           appState.filters.search = '';
+           document.getElementById('searchInput').value = '';
+           document.getElementById('categoryFilter').value = '';
+           
+           renderTools();
+           showToast(`Emergency mode activated! ${emergencyTools.length} critical tools ready.`, 'warning');
+       }
+
+       function generateReport() {
+           const report = {
+               timestamp: new Date().toISOString(),
+               totalTools: appState.tools.length,
+               categories: [...new Set(appState.tools.map(t => t.category))],
+               starredTools: appState.tools.filter(t => t.starred).length,
+               pinnedTools: appState.tools.filter(t => t.pinned).length,
+               threatLevels: {
+                   high: appState.tools.filter(t => t.threatLevel === 'high').length,
+                   medium: appState.tools.filter(t => t.threatLevel === 'medium').length,
+                   low: appState.tools.filter(t => t.threatLevel === 'low').length
+               },
+               recentlyUsed: appState.tools.filter(t => t.lastUsed).length
+           };
+           
+           const reportWindow = window.open('', '_blank');
+           reportWindow.document.write(`
+               <html>
+               <head>
+                   <title>OSINT Arsenal Report</title>
+                   <style>
+                       body { font-family: Arial, sans-serif; margin: 40px; }
+                       .header { border-bottom: 2px solid #333; padding-bottom: 20px; }
+                       .stat { margin: 10px 0; }
+                       .category { background: #f5f5f5; padding: 10px; margin: 5px 0; }
+                   </style>
+               </head>
+               <body>
+                   <div class="header">
+                       <h1>OSINT Arsenal Report</h1>
+                       <p>Generated: ${new Date().toLocaleString()}</p>
+                   </div>
+                   <h2>Summary Statistics</h2>
+                   <div class="stat">Total Tools: ${report.totalTools}</div>
+                   <div class="stat">Categories: ${report.categories.length}</div>
+                   <div class="stat">Starred Tools: ${report.starredTools}</div>
+                   <div class="stat">Pinned Tools: ${report.pinnedTools}</div>
+                   <div class="stat">Recently Used: ${report.recentlyUsed}</div>
+                   
+                   <h2>Threat Level Distribution</h2>
+                   <div class="stat">High: ${report.threatLevels.high}</div>
+                   <div class="stat">Medium: ${report.threatLevels.medium}</div>
+                   <div class="stat">Low: ${report.threatLevels.low}</div>
+                   
+                   <h2>Categories</h2>
+                   ${report.categories.map(cat => `<div class="category">${cat}</div>`).join('')}
+               </body>
+               </html>
+           `);
+           
+           showToast('Report generated in new window!');
+       }
+
+       function exportData() {
+           const exportData = {
+               tools: appState.tools,
+               exportDate: new Date().toISOString(),
+               version: '1.0'
+           };
+           
+           const dataStr = JSON.stringify(exportData, null, 2);
+           const dataBlob = new Blob([dataStr], {type: 'application/json'});
+           const url = URL.createObjectURL(dataBlob);
+           
+           const link = document.createElement('a');
+           link.href = url;
+           link.download = 'osint_arsenal_backup.json';
+           document.body.appendChild(link);
+           link.click();
+           document.body.removeChild(link);
+           URL.revokeObjectURL(url);
+           
+           showToast('Data exported successfully!');
+       }
+
+       // Initialize the application when DOM is loaded
+       document.addEventListener('DOMContentLoaded', initApp);
+   </script>
+</body>
+</html>
