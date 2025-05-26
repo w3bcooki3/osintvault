@@ -34,19 +34,29 @@
         }
 
         [data-theme="light"] {
+            --primary: #007bff;
+            --primary-dark: #0056b3;
+            --secondary: #6c757d;
+            --accent: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
             --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #e2e8f0;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
             --bg-card: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border: #e2e8f0;
-            --border-light: #cbd5e1;
-            --glow: 0 0 20px rgba(0, 212, 255, 0.2);
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
-            --gradient-bg: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #adb5bd;
+            --border: #dee2e6;
+            --border-light: #ced4da;
+            --glow: 0 0 10px rgba(0, 123, 255, 0.2);
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 5px 25px rgba(0, 0, 0, 0.15);
+            --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
+            --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
+            --gradient-accent: linear-gradient(135deg, #28a745, #218838);
+            --gradient-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
         }
 
         * {
@@ -62,6 +72,7 @@
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -81,6 +92,7 @@
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .header-content {
@@ -91,6 +103,12 @@
             gap: 20px;
             max-width: 100%;
             padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .logo {
@@ -109,6 +127,12 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
         }
 
         .controls {
@@ -157,6 +181,7 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             margin: 0;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .stat-item {
@@ -252,6 +277,8 @@
             background: var(--bg-secondary);
             border-radius: 12px 12px 0 0;
             padding: 5px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+            flex-wrap: wrap; /* Added for responsiveness of main tabs */
         }
 
         .nav-tab {
@@ -264,6 +291,8 @@
             border-radius: 8px;
             font-weight: 500;
             position: relative;
+            flex-grow: 1; /* Make tabs take equal width */
+            text-align: center;
         }
 
         .nav-tab.active {
@@ -276,6 +305,44 @@
             background: var(--bg-tertiary);
             color: var(--text-primary);
         }
+
+        /* Sub-tabs styling */
+        .sub-nav-tabs {
+            display: flex;
+            gap: 0;
+            margin-top: 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-tertiary); /* Slightly different background for sub-tabs */
+            border-radius: 8px 8px 0 0;
+            padding: 5px;
+            flex-wrap: wrap;
+        }
+
+        .sub-nav-tab {
+            padding: 10px 18px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9em;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .sub-nav-tab.active {
+            background: var(--gradient-accent); /* Accent color for active sub-tab */
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 255, 136, 0.2);
+        }
+
+        .sub-nav-tab:hover:not(.active) {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
 
         /* Dashboard Layout */
         .dashboard {
@@ -296,6 +363,7 @@
             border: 1px solid var(--border);
             position: sticky;
             top: 120px;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .sidebar h3 {
@@ -313,6 +381,7 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             width: 100%;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .content-header {
@@ -350,6 +419,12 @@
             width: 100%;
         }
 
+        .tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .tool-card {
             background: var(--bg-secondary);
             border: 2px solid var(--border);
@@ -358,6 +433,51 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        .tools-list .tool-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px 20px;
+        }
+
+        .tools-list .tool-header {
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tools-list .tool-header > div:first-child {
+            flex-grow: 1;
+        }
+
+        .tools-list .tool-title {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .tools-list .tool-url {
+            font-size: 11px;
+        }
+
+        .tools-list .tool-actions {
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .tools-list .tool-tags {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .tools-list .tool-tags .threat-level {
+            margin-left: auto;
+            float: none; /* Override float */
         }
 
         .tool-card::before {
@@ -485,43 +605,6 @@
             margin-right: 10px;
         }
 
-        /* Security Scanner */
-        .security-scanner {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .scanner-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .threat-level {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .threat-low {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--success);
-        }
-
-        .threat-medium {
-            background: rgba(255, 170, 0, 0.2);
-            color: var(--warning);
-        }
-
         .threat-high {
             background: rgba(255, 51, 102, 0.2);
             color: var(--danger);
@@ -541,6 +624,7 @@
             border-radius: 12px;
             padding: 20px;
             text-align: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .analytics-value {
@@ -554,30 +638,47 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Dark Web Monitor */
-        .dark-web-monitor {
-            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(255, 107, 53, 0.1));
-            border: 1px solid rgba(255, 51, 102, 0.3);
+        .analytics-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
-        .monitor-status {
+        .analytics-section h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .analytics-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .analytics-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            color: var(--danger);
-            font-weight: 600;
+            color: var(--text-secondary);
         }
 
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--danger);
-            animation: pulse 2s infinite;
+        .analytics-list li:last-child {
+            border-bottom: none;
         }
+
+        .analytics-list li span:first-child {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .analytics-list li span:last-child {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
 
         @keyframes pulse {
             0% { opacity: 1; }
@@ -591,6 +692,7 @@
             border-top: 1px solid var(--border);
             padding: 40px 20px 20px;
             margin-top: 50px;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .footer-content {
@@ -624,6 +726,14 @@
             border-radius: 8px;
             padding: 15px;
             border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-dark);
+            background: var(--bg-tertiary);
         }
 
         .tip-title {
@@ -669,23 +779,85 @@
             
             .search-container {
                 min-width: unset;
+                width: 100%;
             }
             
-            .tools-grid {
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tools-grid, .tools-list {
                 grid-template-columns: 1fr;
             }
             
             .nav-tabs {
                 flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-tab {
+                flex-basis: 48%;
+                margin-bottom: 10px;
             }
 
             .stats-bar {
                 flex-wrap: wrap;
                 gap: 15px;
+                justify-content: center;
             }
 
             .tips-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .search-input {
+                padding: 12px 40px 12px 15px;
+                font-size: 13px;
+            }
+
+            .nav-tab {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+            .sub-nav-tab {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .tool-card {
+                padding: 15px;
+            }
+
+            .tools-list .tool-card {
+                padding: 10px 15px;
+            }
+
+            .tool-title {
+                font-size: 16px;
+            }
+
+            .tool-url {
+                font-size: 11px;
+            }
+
+            .tag {
+                font-size: 10px;
             }
         }
 
@@ -700,6 +872,7 @@
             background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             backdrop-filter: blur(10px);
+            overflow-y: auto; /* Allow scrolling for small screens */
         }
 
         .modal.show {
@@ -715,10 +888,11 @@
             padding: 30px;
             width: 90%;
             max-width: 600px;
-            max-height: 80vh;
+            max-height: 90vh; /* Adjust max-height for responsiveness */
             overflow-y: auto;
             border: 1px solid var(--border);
             box-shadow: var(--shadow-lg);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .form-group {
@@ -765,6 +939,14 @@
             z-index: 1001;
             animation: slideInRight 0.3s ease;
             box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .toast.error {
@@ -781,8 +963,8 @@
         }
 
         @keyframes slideInRight {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         /* Loading Animation */
@@ -834,6 +1016,7 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 15px;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
         
         .threat-header {
@@ -841,11 +1024,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-        }
-        
-        .threat-time {
-            font-size: 12px;
-            color: var(--text-muted);
         }
         
         .threat-tags {
@@ -882,15 +1060,58 @@
         .scan-result i {
             width: 20px;
         }
+
+        /* Custom Tabs Tool Assignment */
+        .custom-tab-assignment {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .custom-tab-assignment h4 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .custom-tab-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .custom-tab-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg-tertiary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .custom-tab-checkbox input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .custom-tab-checkbox.checked {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-shield-alt"></i>
-                    OSINT Arsenal
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-shield-alt"></i>
+                        OSINT Arsenal
+                    </div>
+                    <span class="tagline">Your tools and your links</span>
                 </div>
                 <div class="controls">
                     <div class="search-container">
@@ -900,10 +1121,6 @@
                     <button class="btn btn-primary" id="addToolBtn">
                         <i class="fas fa-plus"></i>
                         Add Tool
-                    </button>
-                    <button class="btn btn-secondary" id="scanBtn">
-                        <i class="fas fa-radar"></i>
-                        Security Scan
                     </button>
                     <button class="btn btn-secondary" id="exportBtn">
                         <i class="fas fa-download"></i>
@@ -916,7 +1133,6 @@
             </div>
         </header>
 
-        <!-- Stats Bar -->
         <div class="stats-bar">
             <div class="stat-item">
                 <i class="fas fa-tools"></i>
@@ -929,37 +1145,19 @@
                 <span class="stat-value" id="totalCategories">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-clock"></i>
-                <span>Last Scan:</span>
-                <span class="stat-value" id="lastScan">Never</span>
+                <i class="fas fa-star"></i>
+                <span>Starred:</span>
+                <span class="stat-value" id="starredToolsCount">0</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-thumbtack"></i>
+                <span>Pinned:</span>
+                <span class="stat-value" id="pinnedToolsCount">0</span>
             </div>
         </div>
 
         <div class="dashboard">
             <div class="sidebar">
-                <!-- Dark Web Monitor -->
-                <div class="dark-web-monitor">
-                    <div class="monitor-status">
-                        <div class="status-indicator"></div>
-                        <span>Dark Web Monitor</span>
-                    </div>
-                    <p style="font-size: 12px; margin-top: 10px; color: var(--text-secondary);">
-                        Monitoring for compromised credentials and data breaches
-                    </p>
-                </div>
-
-                <!-- Security Scanner -->
-                <div class="security-scanner">
-                    <div class="scanner-header">
-                        <i class="fas fa-shield-virus"></i>
-                        <span>Security Status</span>
-                    </div>
-                    <div id="securityStatus">
-                        <div class="threat-level threat-low">All Systems Secure</div>
-                    </div>
-                </div>
-
-                <!-- Filters -->
                 <div class="filter-section">
                     <h3><i class="fas fa-filter"></i> Filters</h3>
                     <div class="form-group">
@@ -974,21 +1172,23 @@
                             <option value="name">Name (A-Z)</option>
                             <option value="recent">Recently Added</option>
                             <option value="popular">Most Used</option>
-                            <option value="threat">Threat Level</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
                 <div class="filter-section">
                     <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-                    <button class="btn btn-secondary" id="randomToolBtn" style="width: 100%; margin-bottom: 10px;">
-                        <i class="fas fa-random"></i>
-                        Random Tool
+                    <button class="btn btn-secondary" id="showAllBtn" style="width: 100%; margin-bottom: 10px;">
+                        <i class="fas fa-eye"></i>
+                        Show All
                     </button>
-                    <button class="btn btn-danger" id="emergencyBtn" style="width: 100%; margin-bottom: 10px;">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Emergency Mode
+                    <button class="btn btn-secondary" id="pinAllBtn" style="width: 100%; margin-bottom: 10px;">
+                        <i class="fas fa-thumbtack"></i>
+                        Pinned Tools
+                    </button>
+                    <button class="btn btn-secondary" id="starAllBtn" style="width: 100%; margin-bottom: 10px;">
+                        <i class="fas fa-star"></i>
+                        Starred Tools
                     </button>
                     <button class="btn btn-success" id="reportBtn" style="width: 100%;">
                         <i class="fas fa-file-alt"></i>
@@ -998,7 +1198,6 @@
             </div>
 
             <div class="main-content">
-                <!-- Navigation Tabs -->
                 <div class="nav-tabs">
                     <button class="nav-tab active" data-tab="tools">
                         <i class="fas fa-tools"></i>
@@ -1012,30 +1211,28 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         Threat Intel
                     </button>
-                    <button class="nav-tab" data-tab="investigations">
-                        <i class="fas fa-search"></i>
-                        Active Cases
+                    <button class="nav-tab" data-tab="custom-tabs">
+                        <i class="fas fa-layer-group"></i>
+                        Custom Tabs
                     </button>
                 </div>
 
-                <!-- Bulk Actions -->
                 <div class="bulk-actions" id="bulkActions">
                     <span>Selected: <span id="selectedCount">0</span> tools</span>
                     <button class="btn btn-secondary" id="bulkStarBtn">
                         <i class="fas fa-star"></i>
-                        Star All
+                        Star/Unstar Selected
                     </button>
                     <button class="btn btn-secondary" id="bulkPinBtn">
                         <i class="fas fa-thumbtack"></i>
-                        Pin All
+                        Pin/Unpin Selected
                     </button>
                     <button class="btn btn-danger" id="bulkDeleteBtn">
                         <i class="fas fa-trash"></i>
-                        Delete All
+                        Delete Selected
                     </button>
                 </div>
 
-                <!-- Tools Tab Content -->
                 <div class="tab-content active" id="toolsTab">
                     <div class="content-header">
                         <h2 class="content-title">Intelligence Tools Arsenal</h2>
@@ -1048,8 +1245,7 @@
                     </div>
                     
                     <div class="tools-grid" id="toolsGrid">
-                        <!-- Tools will be dynamically loaded here -->
-                    </div>
+                        </div>
 
                     <div class="empty-state" id="emptyState" style="display: none;">
                         <i class="fas fa-search"></i>
@@ -1062,7 +1258,6 @@
                     </div>
                 </div>
 
-                <!-- Analytics Tab Content -->
                 <div class="tab-content" id="analyticsTab">
                     <div class="content-header">
                         <h2 class="content-title">Usage Analytics</h2>
@@ -1086,9 +1281,36 @@
                             <div>Data Processed</div>
                         </div>
                     </div>
+
+                    <div class="analytics-section">
+                        <h4>Top 5 Most Used Tools</h4>
+                        <ul class="analytics-list" id="mostUsedToolsList">
+                            </ul>
+                        <div class="empty-state" id="noMostUsedTools" style="display:none; padding:20px;">
+                            <p>No usage data available yet.</p>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h4>Tools Never Used</h4>
+                        <ul class="analytics-list" id="neverUsedToolsList">
+                            </ul>
+                        <div class="empty-state" id="noNeverUsedTools" style="display:none; padding:20px;">
+                            <p>All tools have been used at least once!</p>
+                        </div>
+                    </div>
+
+                     <div class="analytics-section">
+                        <h4>Tools Added Per Week</h4>
+                        <ul class="analytics-list" id="toolsAddedPerWeekList">
+                            </ul>
+                        <div class="empty-state" id="noToolsAdded" style="display:none; padding:20px;">
+                            <p>No tools added recently.</p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Threats Tab Content -->
                 <div class="tab-content" id="threatsTab">
                     <div class="content-header">
                         <h2 class="content-title">Threat Intelligence Feed</h2>
@@ -1099,28 +1321,52 @@
                     </div>
                     
                     <div id="threatsList">
-                        <!-- Threats will be dynamically loaded here -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Investigations Tab Content -->
-                <div class="tab-content" id="investigationsTab">
+                <div class="tab-content" id="custom-tabsTab">
                     <div class="content-header">
-                        <h2 class="content-title">Active Investigations</h2>
-                        <button class="btn btn-primary" id="newCaseBtn">
+                        <h2 class="content-title">Custom Tool Categories</h2>
+                        <div class="controls">
+                            <button class="btn btn-primary" id="createSubTabBtn">
+                                <i class="fas fa-plus"></i>
+                                Create Sub-tab
+                            </button>
+                            <button class="btn btn-secondary" id="editSubTabBtn" style="display: none;">
+                                <i class="fas fa-edit"></i>
+                                Edit Sub-tab
+                            </button>
+                            <button class="btn btn-danger" id="deleteSubTabBtn" style="display: none;">
+                                <i class="fas fa-trash"></i>
+                                Delete Sub-tab
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sub-nav-tabs" id="customSubTabs">
+                        </div>
+
+                    <div class="tools-grid" id="customTabToolsGrid" style="margin-top: 20px;">
+                        </div>
+
+                    <div class="empty-state" id="emptyCustomTabState" style="display: none;">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>No Custom Tabs Yet</h3>
+                        <p>Create your first custom sub-tab to organize your tools!</p>
+                        <button class="btn btn-primary" id="createSubTabBtnEmptyState">
                             <i class="fas fa-plus"></i>
-                            New Case
+                            Create Sub-tab
                         </button>
                     </div>
-                    
-                    <div id="casesList">
-                        <!-- Cases will be dynamically loaded here -->
+                    <div class="empty-state" id="emptyCurrentCustomTabState" style="display: none;">
+                        <i class="fas fa-tools"></i>
+                        <h3>No Tools in this Sub-tab</h3>
+                        <p>Add tools to this sub-tab using the "Edit Tool" option on individual tools.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
         <footer class="footer">
             <div class="footer-content">
                 <div class="footer-section">
@@ -1131,15 +1377,27 @@
                     <div class="tips-grid">
                         <div class="tip-card">
                             <div class="tip-title">Automate Your Workflow</div>
-                            <div class="tip-description">Use bulk actions to star, pin, or organize multiple tools at once. Create custom categories for specialized investigations.</div>
+                            <div class="tip-description">Leverage bulk actions to manage multiple tools efficiently. Create custom categories to organize your arsenal for specialized investigations and quicker access.</div>
                         </div>
                         <div class="tip-card">
-                            <div class="tip-title">Stay Updated</div>
-                            <div class="tip-description">Enable dark web monitoring to get real-time alerts about compromised data and emerging threats in your domain.</div>
+                            <div class="tip-title">Stay Updated on Threats</div>
+                            <div class="tip-description">Regularly check the Threat Intelligence Feed for real-time alerts on compromised data, emerging vulnerabilities, and significant cyber threats in your operational domain.</div>
                         </div>
                         <div class="tip-card">
-                            <div class="tip-title">Secure Operations</div>
-                            <div class="tip-description">Always use VPN and proper operational security when conducting OSINT investigations. Document everything for legal compliance.</div>
+                            <div class="tip-title">Prioritize Operational Security</div>
+                            <div class="tip-description">Always ensure your OSINT investigations are conducted with a VPN and proper operational security protocols. Document all findings thoroughly for legal compliance and future reference.</div>
+                        </div>
+                         <div class="tip-card">
+                            <div class="tip-title">Refine Your Search</div>
+                            <div class="tip-description">Utilize advanced search operators in tools like Google and Shodan to narrow down results and pinpoint specific information. This saves time and improves accuracy.</div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-title">Explore Historical Data</div>
+                            <div class="tip-description">The Wayback Machine is invaluable for viewing past versions of websites. It can reveal critical information that has since been removed or changed.</div>
+                        </div>
+                        <div class="tip-card">
+                            <div class="tip-title">Analyze Metadata</div>
+                            <div class="tip-description">Always check for hidden metadata in images and documents. Tools exist that can extract geotags, author information, and timestamps, providing deeper insights.</div>
                         </div>
                     </div>
                 </div>
@@ -1155,7 +1413,6 @@
         </footer>
     </div>
 
-    <!-- Modals -->
     <div class="modal" id="addToolModal">
         <div class="modal-content">
             <h3 style="margin-bottom: 20px; color: var(--primary);">
@@ -1175,16 +1432,8 @@
                     <label>Category</label>
                     <select id="toolCategory" required>
                         <option value="">Select Category</option>
-                        <option value="search">Search Engines</option>
-                        <option value="social">Social Media</option>
-                        <option value="network">Network Analysis</option>
-                        <option value="email">Email Investigation</option>
-                        <option value="domain">Domain Research</option>
-                        <option value="image">Image Analysis</option>
-                        <option value="geoint">GEOINT</option>
-                        <option value="threat">Threat Intelligence</option>
-                        <option value="other">Other</option>
-                    </select>
+                        </select>
+                    <input type="text" id="newCategoryInput" placeholder="Or enter new category" style="margin-top: 10px; display: none;">
                 </div>
                 <div class="form-group">
                     <label>Description</label>
@@ -1202,173 +1451,286 @@
         </div>
     </div>
 
-    <div class="modal" id="scanModal">
+    <div class="modal" id="editToolModal">
         <div class="modal-content">
             <h3 style="margin-bottom: 20px; color: var(--primary);">
-                <i class="fas fa-radar"></i>
-                Security Scan Results
+                <i class="fas fa-edit"></i>
+                Edit Tool
             </h3>
-            <div id="scanProgress" style="display: none;">
-                <div class="scan-progress">
-                    <div class="scan-progress-bar" id="progressBar"></div>
+            <form id="editToolForm">
+                <input type="hidden" id="editToolId">
+                <div class="form-group">
+                    <label>Tool Name</label>
+                    <input type="text" id="editToolName" required>
                 </div>
-                <p style="text-align: center; color: var(--text-secondary);" id="scanStatus">Initializing scan...</p>
-            </div>
-            <div id="scanResults" style="display: none;">
-                <!-- Scan results will be populated here -->
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                <button type="button" class="btn btn-secondary" id="closeScanModal">Close</button>
-                <button type="button" class="btn btn-primary" id="runScanBtn">Run Scan</button>
-            </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="editToolUrl" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="editToolCategory" required>
+                        <option value="">Select Category</option>
+                        </select>
+                    <input type="text" id="editNewCategoryInput" placeholder="Or enter new category" style="margin-top: 10px; display: none;">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editToolDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="editToolTags" placeholder="osint, investigation, cybersecurity">
+                </div>
+
+                <div class="custom-tab-assignment">
+                    <h4>Assign to Custom Tabs:</h4>
+                    <div class="custom-tab-checkboxes" id="assignCustomTabsCheckboxes">
+                        </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelEditTool">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
+
+    <div class="modal" id="createSubTabModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-plus-circle"></i>
+                Create New Sub-tab
+            </h3>
+            <form id="createSubTabForm">
+                <div class="form-group">
+                    <label>Sub-tab Name</label>
+                    <input type="text" id="newSubTabName" required>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelCreateSubTab">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="editSubTabModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-edit"></i>
+                Edit Sub-tab
+            </h3>
+            <form id="editSubTabForm">
+                <input type="hidden" id="editSubTabId">
+                <div class="form-group">
+                    <label>Sub-tab Name</label>
+                    <input type="text" id="editedSubTabName" required>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelEditSubTab">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         // Application State
         let appState = {
             tools: [],
             selectedTools: new Set(),
-            currentTab: 'tools',
+            currentTab: 'tools', // 'tools', 'analytics', 'threats', 'custom-tabs'
+            currentCustomTab: null, // Stores the ID of the currently active custom sub-tab
+            customTabs: [], // Array of { id: '...', name: '...', toolIds: [] }
             filters: {
                 category: '',
                 search: '',
                 sort: 'name'
             },
-            theme: 'dark',
-            scanProgress: 0,
-            isScanning: false
+            theme: localStorage.getItem('theme') || 'dark', // Load theme from localStorage
+            viewMode: localStorage.getItem('viewMode') || 'grid', // 'grid' or 'list'
+            usageStats: {
+                toolsUsedToday: 0,
+                scansCompleted: 0,
+                threatsDetected: 0,
+                dataProcessed: 0
+            }
         };
 
         // Default Tools Database
         const defaultTools = [
             {
-                id: 'google-search',
+                id: 'google-advanced-search',
                 name: 'Google Advanced Search',
                 url: 'https://www.google.com/advanced_search',
-                category: 'search',
+                category: 'search engines',
                 description: 'Advanced search operators and techniques for comprehensive information gathering',
                 tags: ['search', 'google', 'operators'],
                 starred: false,
                 pinned: false,
                 favicon: 'https://www.google.com/favicon.ico',
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-01-15T10:00:00Z'),
+                customTabs: [] // Initialize customTabs array
             },
             {
                 id: 'shodan',
                 name: 'Shodan',
                 url: 'https://www.shodan.io',
-                category: 'network',
+                category: 'network analysis',
                 description: 'Search engine for Internet-connected devices and systems',
                 tags: ['iot', 'network', 'scanning', 'security'],
                 starred: true,
                 pinned: false,
                 favicon: 'https://www.shodan.io/static/img/favicon.png',
-                threatLevel: 'medium',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-02-20T11:30:00Z'),
+                customTabs: []
             },
             {
                 id: 'maltego',
                 name: 'Maltego',
                 url: 'https://www.maltego.com',
-                category: 'network',
+                category: 'network analysis',
                 description: 'Link analysis and data mining application for gathering and connecting information',
                 tags: ['analysis', 'visualization', 'mapping'],
                 starred: false,
                 pinned: true,
                 favicon: 'https://www.maltego.com/favicon.ico',
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-03-01T14:00:00Z'),
+                customTabs: []
             },
             {
                 id: 'have-i-been-pwned',
                 name: 'Have I Been Pwned',
                 url: 'https://haveibeenpwned.com',
-                category: 'email',
+                category: 'email investigation',
                 description: 'Check if email addresses have been compromised in data breaches',
                 tags: ['breach', 'email', 'security', 'compromise'],
                 starred: true,
                 pinned: false,
                 favicon: 'https://haveibeenpwned.com/favicon.ico',
-                threatLevel: 'medium',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-04-10T09:00:00Z'),
+                customTabs: []
             },
             {
                 id: 'virustotal',
                 name: 'VirusTotal',
                 url: 'https://www.virustotal.com',
-                category: 'threat',
+                category: 'threat intelligence',
                 description: 'Analyze suspicious files and URLs to detect types of malware',
                 tags: ['malware', 'analysis', 'threat', 'security'],
                 starred: false,
                 pinned: false,
                 favicon: 'https://www.virustotal.com/gui/images/favicon.png',
-                threatLevel: 'high',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-05-05T16:00:00Z'),
+                customTabs: []
             },
             {
                 id: 'wayback-machine',
                 name: 'Wayback Machine',
                 url: 'https://web.archive.org',
-                category: 'search',
+                category: 'archive',
                 description: 'Browse historical snapshots of websites',
                 tags: ['archive', 'history', 'web', 'research'],
                 starred: false,
                 pinned: false,
                 favicon: 'https://web.archive.org/static/images/favicon.ico',
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-06-01T08:00:00Z'),
+                customTabs: []
             },
             {
                 id: 'whois-lookup',
                 name: 'WHOIS Lookup',
                 url: 'https://whois.net',
-                category: 'domain',
+                category: 'domain research',
                 description: 'Domain registration and ownership information',
                 tags: ['domain', 'registration', 'ownership'],
                 starred: false,
                 pinned: false,
                 favicon: 'https://whois.net/favicon.ico',
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-07-12T13:00:00Z'),
+                customTabs: []
             },
             {
                 id: 'tineye',
                 name: 'TinEye',
                 url: 'https://tineye.com',
-                category: 'image',
+                category: 'image analysis',
                 description: 'Reverse image search engine',
                 tags: ['image', 'reverse', 'search', 'verification'],
                 starred: false,
                 pinned: false,
                 favicon: 'https://tineye.com/favicon.ico',
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                lastUsed: 0,
+                addedDate: new Date('2023-08-20T10:00:00Z'),
+                customTabs: []
             }
         ];
 
         // Initialize Application
         function initApp() {
-            loadTools();
+            loadState();
             updateStats();
             bindEvents();
             initTheme();
-            renderTools();
-            populateCategoryFilter();
+            // Ensure currentTab is valid, otherwise default to 'tools'
+            const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs'];
+            if (!validTabs.includes(appState.currentTab)) {
+                appState.currentTab = 'tools';
+            }
+            switchTab(appState.currentTab); // Ensure the correct tab is active on load
+            populateCategoryFilter(); // Call after loadState
+            renderTools(); // Render tools based on initial filters/state
+            updateAnalytics(); // Initial update for analytics display
         }
 
-        // Load tools from memory or use defaults
-        function loadTools() {
-            appState.tools = [...defaultTools];
+        // Load application state from localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('osintArsenalState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                appState.tools = (parsedState.tools || []).map(tool => ({ // Ensure tools is an array
+                    ...tool,
+                    addedDate: new Date(tool.addedDate), // Convert string back to Date object
+                    lastUsed: tool.lastUsed || 0, // Ensure lastUsed is a number, default to 0
+                    customTabs: tool.customTabs || [] // Ensure customTabs array exists
+                }));
+                appState.selectedTools = new Set(Array.isArray(parsedState.selectedTools) ? parsedState.selectedTools : []); // Ensure it's an array
+                appState.filters = parsedState.filters || {category: '', search: '', sort: 'name'};
+                appState.theme = parsedState.theme || 'dark';
+                appState.viewMode = parsedState.viewMode || 'grid';
+                appState.usageStats = parsedState.usageStats || {
+                    toolsUsedToday: 0,
+                    scansCompleted: 0,
+                    threatsDetected: 0,
+                    dataProcessed: 0
+                };
+                appState.customTabs = parsedState.customTabs || [];
+                appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+
+            } else {
+                appState.tools = [...defaultTools];
+                 // Initialize default custom tabs if no state is loaded
+                appState.customTabs = [
+                    { id: generateId(), name: 'Crypto', toolIds: [] },
+                    { id: generateId(), name: 'Social Media Analysis', toolIds: [] }
+                ];
+                appState.currentCustomTab = appState.customTabs[0]?.id || null;
+            }
+        }
+
+        // Save application state to localStorage
+        function saveState() {
+            localStorage.setItem('osintArsenalState', JSON.stringify(appState));
         }
 
         // Update statistics
@@ -1376,40 +1738,127 @@
             const categories = new Set(appState.tools.map(tool => tool.category));
             document.getElementById('totalTools').textContent = appState.tools.length;
             document.getElementById('totalCategories').textContent = categories.size;
-            document.getElementById('lastScan').textContent = 'Just now';
+            document.getElementById('starredToolsCount').textContent = appState.tools.filter(tool => tool.starred).length;
+            document.getElementById('pinnedToolsCount').textContent = appState.tools.filter(tool => tool.pinned).length;
         }
 
-        // Populate category filter
+        // Populate category filter and Add Tool modal
         function populateCategoryFilter() {
             const categoryFilter = document.getElementById('categoryFilter');
-            const categories = new Set(appState.tools.map(tool => tool.category));
+            const toolCategorySelect = document.getElementById('toolCategory');
+            const editToolCategorySelect = document.getElementById('editToolCategory');
             
+            const existingCategories = new Set(appState.tools.map(tool => tool.category.toLowerCase()));
+            
+            // Add static options
+            const defaultCategories = [
+                'Search Engines', 'Social Media', 'Network Analysis', 'Email Investigation', 
+                'Domain Research', 'Image Analysis', 'GEOINT', 'Threat Intelligence', 'Archive', 'Other'
+            ];
+
+            const allCategories = new Set([...defaultCategories.map(cat => cat.toLowerCase()), ...Array.from(existingCategories)]);
+            
+            // Clear existing options
             categoryFilter.innerHTML = '<option value="">All Categories</option>';
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-                categoryFilter.appendChild(option);
+            toolCategorySelect.innerHTML = '<option value="">Select Category</option>';
+            editToolCategorySelect.innerHTML = '<option value="">Select Category</option>';
+
+
+            // Sort categories alphabetically for dropdowns
+            const sortedCategories = Array.from(allCategories).sort((a, b) => a.localeCompare(b));
+
+            sortedCategories.forEach(category => {
+                // Filter dropdown
+                const filterOption = document.createElement('option');
+                filterOption.value = category;
+                filterOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                categoryFilter.appendChild(filterOption);
+
+                // Add Tool dropdown
+                const toolOption = document.createElement('option');
+                toolOption.value = category;
+                toolOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                toolCategorySelect.appendChild(toolOption);
+
+                // Edit Tool dropdown
+                const editToolOption = document.createElement('option');
+                editToolOption.value = category;
+                editToolOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                editToolCategorySelect.appendChild(editToolOption);
             });
+
+            // Add "Custom" option to tool category select
+            const customOptionAdd = document.createElement('option');
+            customOptionAdd.value = 'custom';
+            customOptionAdd.textContent = 'Custom Category';
+            toolCategorySelect.appendChild(customOptionAdd);
+
+            const customOptionEdit = document.createElement('option');
+            customOptionEdit.value = 'custom';
+            customOptionEdit.textContent = 'Custom Category';
+            editToolCategorySelect.appendChild(customOptionEdit);
+
+
+            // Set selected values for filters
+            categoryFilter.value = appState.filters.category;
+            document.getElementById('sortFilter').value = appState.filters.sort;
         }
 
-        // Render tools grid
+        // Render tools grid or list
         function renderTools() {
-            const toolsGrid = document.getElementById('toolsGrid');
+            const toolsContainer = document.getElementById('toolsGrid'); 
+            const customTabToolsContainer = document.getElementById('customTabToolsGrid');
             const emptyState = document.getElementById('emptyState');
-            
+            const emptyCustomTabState = document.getElementById('emptyCustomTabState');
+            const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
+
+            // Hide all empty states and containers initially
+            toolsContainer.style.display = 'none';
+            customTabToolsContainer.style.display = 'none';
+            emptyState.style.display = 'none';
+            emptyCustomTabState.style.display = 'none';
+            emptyCurrentCustomTabState.style.display = 'none';
+
             let filteredTools = filterTools();
+            let targetContainer = null;
+            let currentEmptyState = null;
+
+            if (appState.currentTab === 'custom-tabs') {
+                targetContainer = customTabToolsContainer;
+                // If there are no custom tabs created yet
+                if (appState.customTabs.length === 0) {
+                    emptyCustomTabState.style.display = 'block';
+                    return;
+                }
+                // If a custom tab is selected but has no tools
+                if (appState.currentCustomTab && filteredTools.length === 0) {
+                    emptyCurrentCustomTabState.style.display = 'block';
+                }
+            } else {
+                targetContainer = toolsContainer;
+                currentEmptyState = emptyState;
+            }
             
-            if (filteredTools.length === 0) {
-                toolsGrid.style.display = 'none';
-                emptyState.style.display = 'block';
+            // Set the appropriate class based on viewMode
+            if (appState.viewMode === 'grid') {
+                targetContainer.classList.remove('tools-list');
+                targetContainer.classList.add('tools-grid');
+                document.getElementById('viewToggle').innerHTML = '<i class="fas fa-list"></i> List View';
+            } else {
+                targetContainer.classList.remove('tools-grid');
+                targetContainer.classList.add('tools-list');
+                document.getElementById('viewToggle').innerHTML = '<i class="fas fa-th"></i> Grid View';
+            }
+
+            if (filteredTools.length === 0 && currentEmptyState) {
+                currentEmptyState.style.display = 'block';
+                targetContainer.style.display = 'none'; // Hide container if no tools
                 return;
             }
             
-            toolsGrid.style.display = 'grid';
-            emptyState.style.display = 'none';
-            
-            toolsGrid.innerHTML = filteredTools.map(tool => createToolCard(tool)).join('');
+            targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+            targetContainer.innerHTML = filteredTools.map(tool => createToolCard(tool)).join('');
+            saveState(); // Save state after rendering tools
         }
 
         // Filter tools based on current filters
@@ -1422,13 +1871,30 @@
                 filtered = filtered.filter(tool => 
                     tool.name.toLowerCase().includes(searchTerm) ||
                     tool.description.toLowerCase().includes(searchTerm) ||
-                    tool.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                    tool.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+                    tool.category.toLowerCase().includes(searchTerm)
                 );
             }
             
             // Apply category filter
             if (appState.filters.category) {
-                filtered = filtered.filter(tool => tool.category === appState.filters.category);
+                if (appState.filters.category === 'pinned') {
+                    filtered = filtered.filter(tool => tool.pinned);
+                } else if (appState.filters.category === 'starred') {
+                    filtered = filtered.filter(tool => tool.starred);
+                } else {
+                    filtered = filtered.filter(tool => tool.category === appState.filters.category);
+                }
+            }
+
+            // Apply custom tab filter if active
+            if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+                const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+                if (activeCustomTab) {
+                    filtered = filtered.filter(tool => activeCustomTab.toolIds.includes(tool.id));
+                } else {
+                    filtered = []; // No matching custom tab found, return empty
+                }
             }
             
             // Apply sorting
@@ -1436,12 +1902,9 @@
                 switch (appState.filters.sort) {
                     case 'recent':
                         return new Date(b.addedDate) - new Date(a.addedDate);
-                    case 'popular':
-                        return (b.lastUsed || 0) - (a.lastUsed || 0);
-                    case 'threat':
-                        const threatOrder = {high: 3, medium: 2, low: 1};
-                        return threatOrder[b.threatLevel] - threatOrder[a.threatLevel];
-                    default:
+                    case 'popular': // Sort by lastUsed (most recent first)
+                        return b.lastUsed - a.lastUsed;
+                    default: // 'name'
                         return a.name.localeCompare(b.name);
                 }
             });
@@ -1459,7 +1922,7 @@
                         <div>
                             <div class="tool-title">
                                 <input type="checkbox" class="bulk-checkbox" ${isSelected ? 'checked' : ''}>
-                                <img src="${tool.favicon}" alt="" class="tool-favicon" onerror="this.style.display='none'">
+                                <img src="${tool.favicon}" alt="" class="tool-favicon" onerror="this.src='https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}'">
                                 ${tool.name}
                             </div>
                             <div class="tool-url">
@@ -1468,6 +1931,9 @@
                             </div>
                         </div>
                         <div class="tool-actions">
+                            <button class="action-btn" data-action="edit" title="Edit Tool">
+                                <i class="fas fa-edit"></i>
+                            </button>
                             <button class="action-btn ${tool.starred ? 'starred' : ''}" data-action="star" title="Star Tool">
                                 <i class="fas fa-star"></i>
                             </button>
@@ -1487,9 +1953,6 @@
                     </p>
                     <div class="tool-tags">
                         ${tool.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        <span class="threat-level threat-${tool.threatLevel}" style="float: right;">
-                            ${tool.threatLevel}
-                        </span>
                     </div>
                 </div>
             `;
@@ -1523,27 +1986,59 @@
 
             // Tool actions
             document.getElementById('toolsGrid').addEventListener('click', handleToolAction);
+            document.getElementById('customTabToolsGrid').addEventListener('click', handleToolAction); // For custom tabs too
             document.getElementById('toolsGrid').addEventListener('change', handleBulkSelection);
+            document.getElementById('customTabToolsGrid').addEventListener('change', handleBulkSelection); // For custom tabs too
 
-            // Modal controls
+
+            // Modal controls (Add Tool)
             document.getElementById('addToolBtn').addEventListener('click', () => showModal('addToolModal'));
-            document.getElementById('scanBtn').addEventListener('click', () => showModal('scanModal'));
             document.getElementById('cancelAddTool').addEventListener('click', () => hideModal('addToolModal'));
-            document.getElementById('closeScanModal').addEventListener('click', () => hideModal('scanModal'));
 
-            // Form submission
+            // Custom category input (Add Tool)
+            document.getElementById('toolCategory').addEventListener('change', (e) => {
+                const newCategoryInput = document.getElementById('newCategoryInput');
+                if (e.target.value === 'custom') {
+                    newCategoryInput.style.display = 'block';
+                    newCategoryInput.setAttribute('required', 'required');
+                } else {
+                    newCategoryInput.style.display = 'none';
+                    newCategoryInput.removeAttribute('required');
+                    newCategoryInput.value = ''; // Clear input if not custom
+                }
+            });
+
+            // Form submission (Add Tool)
             document.getElementById('addToolForm').addEventListener('submit', handleAddTool);
-            document.getElementById('runScanBtn').addEventListener('click', runSecurityScan);
+
+            // Modal controls (Edit Tool)
+            document.getElementById('cancelEditTool').addEventListener('click', () => hideModal('editToolModal'));
+            // Custom category input (Edit Tool)
+            document.getElementById('editToolCategory').addEventListener('change', (e) => {
+                const editNewCategoryInput = document.getElementById('editNewCategoryInput');
+                if (e.target.value === 'custom') {
+                    editNewCategoryInput.style.display = 'block';
+                    editNewCategoryInput.setAttribute('required', 'required');
+                } else {
+                    editNewCategoryInput.style.display = 'none';
+                    editNewCategoryInput.removeAttribute('required');
+                    editNewCategoryInput.value = ''; // Clear input if not custom
+                }
+            });
+            // Form submission (Edit Tool)
+            document.getElementById('editToolForm').addEventListener('submit', handleEditTool);
+
 
             // Theme toggle
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-            // Quick actions
-            document.getElementById('randomToolBtn').addEventListener('click', openRandomTool);
-            document.getElementById('emergencyBtn').addEventListener('click', activateEmergencyMode);
+            // Quick actions (UPDATED)
+            document.getElementById('pinAllBtn').addEventListener('click', togglePinFilter);
+            document.getElementById('starAllBtn').addEventListener('click', toggleStarFilter);
+            document.getElementById('showAllBtn').addEventListener('click', clearFilters);
             document.getElementById('reportBtn').addEventListener('click', generateReport);
 
-            // Clear filters
+            // Clear filters (from empty state button)
             document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
 
             // Bulk actions
@@ -1553,19 +2048,62 @@
 
             // Export
             document.getElementById('exportBtn').addEventListener('click', exportData);
+
+            // View toggle (Grid/List)
+            document.getElementById('viewToggle').addEventListener('click', toggleViewMode);
+
+            // Refresh Threats button
+            document.getElementById('refreshThreatsBtn').addEventListener('click', loadThreats);
+
+            // Custom Sub-tab buttons
+            document.getElementById('createSubTabBtn').addEventListener('click', () => showModal('createSubTabModal'));
+            document.getElementById('createSubTabBtnEmptyState').addEventListener('click', () => showModal('createSubTabModal')); // For empty state button
+            document.getElementById('cancelCreateSubTab').addEventListener('click', () => hideModal('createSubTabModal'));
+            document.getElementById('createSubTabForm').addEventListener('submit', handleCreateSubTab);
+
+            document.getElementById('editSubTabBtn').addEventListener('click', () => openEditSubTabModal());
+            document.getElementById('cancelEditSubTab').addEventListener('click', () => hideModal('editSubTabModal'));
+            document.getElementById('editSubTabForm').addEventListener('submit', handleEditSubTab);
+
+            document.getElementById('deleteSubTabBtn').addEventListener('click', handleDeleteSubTab);
+
+            // Click listener for custom sub-tabs (delegated)
+            document.getElementById('customSubTabs').addEventListener('click', (e) => {
+                const tabBtn = e.target.closest('.sub-nav-tab');
+                if (tabBtn && tabBtn.dataset.subTabId) {
+                    switchCustomTab(tabBtn.dataset.subTabId);
+                }
+            });
+
+            // Event listener for custom tab checkboxes in Edit Tool Modal
+            document.getElementById('assignCustomTabsCheckboxes').addEventListener('change', (e) => {
+                if (e.target.classList.contains('custom-tab-assign-checkbox')) {
+                    const checkbox = e.target;
+                    const label = checkbox.closest('.custom-tab-checkbox');
+                    if (label) {
+                        label.classList.toggle('checked', checkbox.checked);
+                    }
+                }
+            });
         }
 
         // Handle tool actions
         function handleToolAction(e) {
-            if (!e.target.closest('.action-btn')) return;
+            const targetBtn = e.target.closest('.action-btn');
+            if (!targetBtn) return;
             
             e.preventDefault();
-            const action = e.target.closest('.action-btn').dataset.action;
+            const action = targetBtn.dataset.action;
             const toolCard = e.target.closest('.tool-card');
             const toolId = toolCard.dataset.toolId;
             const tool = appState.tools.find(t => t.id === toolId);
             
+            if (!tool) return;
+
             switch (action) {
+                case 'edit':
+                    openEditToolModal(tool);
+                    break;
                 case 'star':
                     tool.starred = !tool.starred;
                     showToast(tool.starred ? 'Tool starred!' : 'Tool unstarred!');
@@ -1575,23 +2113,35 @@
                     showToast(tool.pinned ? 'Tool pinned!' : 'Tool unpinned!');
                     break;
                 case 'visit':
-                    tool.lastUsed = Date.now();
+                    tool.lastUsed = Date.now(); // Update lastUsed timestamp
+                    appState.usageStats.toolsUsedToday++; // Increment usage stat
+                    updateAnalytics(); // Update analytics display
                     window.open(tool.url, '_blank');
                     showToast('Opening tool...');
                     break;
                 case 'delete':
                     if (confirm('Are you sure you want to delete this tool?')) {
+                        // Remove tool from any custom tabs it belongs to
+                        appState.customTabs.forEach(tab => {
+                            tab.toolIds = tab.toolIds.filter(id => id !== toolId);
+                        });
+
                         appState.tools = appState.tools.filter(t => t.id !== toolId);
+                        appState.selectedTools.delete(toolId); // Remove from selected if deleted
                         showToast('Tool deleted!', 'error');
                         updateStats();
+                        populateCategoryFilter(); // Recalculate categories
+                        renderCustomTabs(); // Re-render custom tabs to update counts/content
                     }
                     break;
             }
             
             renderTools();
+            updateStats(); // Also update stats bar after individual tool action
+            saveState(); // Save state after any action
         }
 
-        // Handle bulk selection
+        // Handle bulk selection checkbox
         function handleBulkSelection(e) {
             if (!e.target.classList.contains('bulk-checkbox')) return;
             
@@ -1605,10 +2155,10 @@
             }
             
             updateBulkActions();
-            renderTools();
+            toolCard.classList.toggle('selected', e.target.checked); // Visually mark selected
         }
 
-        // Update bulk actions visibility
+        // Update bulk actions visibility and count
         function updateBulkActions() {
             const bulkActions = document.getElementById('bulkActions');
             const selectedCount = document.getElementById('selectedCount');
@@ -1621,22 +2171,44 @@
             }
         }
 
-        // Bulk actions
+        // Bulk actions (star, pin, delete selected)
         function bulkAction(action) {
             const selectedIds = Array.from(appState.selectedTools);
             
+            if (selectedIds.length === 0) {
+                showToast(`No tools selected for ${action} action.`, 'warning');
+                return;
+            }
+
+            if (action === 'delete' && !confirm('Are you sure you want to delete all selected tools?')) {
+                return;
+            }
+            
+            // Determine if all selected are already starred/pinned for toggling
+            let allStarred = true;
+            let allPinned = true;
+            if (action === 'star' || action === 'pin') {
+                const selectedToolsArray = appState.tools.filter(t => selectedIds.includes(t.id));
+                allStarred = selectedToolsArray.every(t => t.starred);
+                allPinned = selectedToolsArray.every(t => t.pinned);
+            }
+
             selectedIds.forEach(id => {
                 const tool = appState.tools.find(t => t.id === id);
                 if (!tool) return;
                 
                 switch (action) {
                     case 'star':
-                        tool.starred = true;
+                        tool.starred = !allStarred; // Toggle based on current state of all
                         break;
                     case 'pin':
-                        tool.pinned = true;
+                        tool.pinned = !allPinned; // Toggle based on current state of all
                         break;
                     case 'delete':
+                        // Remove tool from any custom tabs it belongs to before deleting
+                        appState.customTabs.forEach(tab => {
+                            tab.toolIds = tab.toolIds.filter(toolIdInTab => toolIdInTab !== id);
+                        });
                         appState.tools = appState.tools.filter(t => t.id !== id);
                         break;
                 }
@@ -1646,8 +2218,39 @@
             updateBulkActions();
             renderTools();
             updateStats();
+            populateCategoryFilter();
+            renderCustomTabs(); // Update custom tabs if tools were deleted
             showToast(`Bulk ${action} completed!`);
+            saveState();
         }
+
+        // Quick actions (UPDATED)
+        function togglePinFilter() {
+            if (appState.filters.category === 'pinned') { // If already filtering by pinned, clear it
+                appState.filters.category = '';
+            } else {
+                appState.filters.category = 'pinned'; // Set filter to show only pinned
+            }
+            appState.filters.search = ''; // Clear search when applying this filter
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = appState.filters.category;
+            renderTools();
+            showToast(appState.filters.category === 'pinned' ? 'Showing only pinned tools!' : 'Cleared pinned tools filter!');
+        }
+
+        function toggleStarFilter() {
+            if (appState.filters.category === 'starred') { // If already filtering by starred, clear it
+                appState.filters.category = '';
+            } else {
+                appState.filters.category = 'starred'; // Set filter to show only starred
+            }
+            appState.filters.search = ''; // Clear search when applying this filter
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = appState.filters.category;
+            renderTools();
+            showToast(appState.filters.category === 'starred' ? 'Showing only starred tools!' : 'Cleared starred tools filter!');
+        }
+
 
         // Switch tabs
         function switchTab(tabName) {
@@ -1655,24 +2258,43 @@
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            const targetTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (targetTabBtn) {
+                targetTabBtn.classList.add('active');
+            }
             
             // Update tab content
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            document.getElementById(`${tabName}Tab`).classList.add('active');
-            
+            const targetTabContent = document.getElementById(`${tabName}Tab`);
+            if (targetTabContent) {
+                 targetTabContent.classList.add('active');
+            }
+           
             appState.currentTab = tabName;
-            
-            // Load tab-specific data
+            appState.filters.category = ''; // Clear category filter when switching main tabs
+            document.getElementById('categoryFilter').value = '';
+            appState.filters.search = ''; // Clear search when switching main tabs
+            document.getElementById('searchInput').value = '';
+
+            // Handle specific tab initializations
             if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'analytics') {
-                loadAnalytics();
-            } else if (tabName === 'investigations') {
-                loadInvestigations();
+                updateAnalytics();
+            } else if (tabName === 'custom-tabs') {
+                renderCustomTabs(); // Render sub-tabs when custom tab is active
+                // If there are custom tabs, activate the first one by default if none is selected
+                if (appState.customTabs.length > 0 && !appState.currentCustomTab) {
+                    appState.currentCustomTab = appState.customTabs[0].id;
+                }
+                switchCustomTab(appState.currentCustomTab); // Render tools for the active custom tab
+            } else { // 'tools' tab
+                appState.currentCustomTab = null; // Clear custom tab selection
             }
+            renderTools(); // Re-render tools based on new tab context
+            saveState();
         }
 
         // Load threat intelligence
@@ -1682,28 +2304,47 @@
                 {
                     id: 1,
                     title: 'New Phishing Campaign Detected',
-                    description: 'Targeting financial institutions with COVID-19 themed lures',
+                    description: 'Targeting financial institutions with COVID-19 themed lures. Be cautious of emails resembling official health advisories.',
                     severity: 'high',
-                    tags: ['phishing', 'covid-19', 'financial'],
+                    tags: ['phishing', 'covid-19', 'financial', 'email'],
                     timestamp: new Date(Date.now() - 3600000)
                 },
                 {
                     id: 2,
-                    title: 'Malware Sample Analysis',
-                    description: 'New variant of banking trojan discovered in the wild',
+                    title: 'Malware Sample Analysis: Xylos Variant',
+                    description: 'New variant of banking trojan "Xylos" discovered in the wild. It employs obfuscation techniques and targets online banking portals. Update your antivirus signatures immediately.',
                     severity: 'medium',
-                    tags: ['malware', 'banking', 'trojan'],
+                    tags: ['malware', 'banking', 'trojan', 'xylos', 'analysis'],
                     timestamp: new Date(Date.now() - 7200000)
                 },
                 {
                     id: 3,
-                    title: 'Data Breach Alert',
-                    description: 'Credentials leak detected on underground forums',
+                    title: 'Data Breach Alert: Gaming Platform',
+                    description: 'Credentials leak detected on underground forums originating from a popular gaming platform. Users are advised to change passwords and enable multi-factor authentication.',
                     severity: 'high',
-                    tags: ['breach', 'credentials', 'darkweb'],
+                    tags: ['breach', 'credentials', 'darkweb', 'gaming'],
                     timestamp: new Date(Date.now() - 10800000)
+                },
+                {
+                    id: 4,
+                    title: 'Ransomware Attack on Healthcare Provider',
+                    description: 'A critical ransomware attack impacted a regional healthcare provider, compromising patient data. Incident response teams are engaged, and data recovery efforts are underway. Backups are crucial!',
+                    severity: 'high',
+                    tags: ['ransomware', 'healthcare', 'data-loss', 'cyberattack'],
+                    timestamp: new Date(Date.now() - 86400000 * 2) // 2 days ago
+                },
+                {
+                    id: 5,
+                    title: 'Zero-Day Exploit in Popular Web Server',
+                    description: 'A zero-day vulnerability has been identified in a widely used web server software. Patches are not yet available. Organizations are advised to implement temporary mitigation strategies and monitor their logs closely.',
+                    severity: 'medium',
+                    tags: ['zero-day', 'vulnerability', 'web-server', 'exploit'],
+                    timestamp: new Date(Date.now() - 86400000 * 5) // 5 days ago
                 }
             ];
+
+            // Sort threats by timestamp (most recent first)
+            mockThreats.sort((a, b) => b.timestamp - a.timestamp);
             
             threatsList.innerHTML = mockThreats.map(threat => `
                 <div class="threat-item">
@@ -1718,31 +2359,117 @@
                     <div class="threat-time">${formatTime(threat.timestamp)}</div>
                 </div>
             `).join('');
+            
         }
 
-        // Load analytics data
-        function loadAnalytics() {
-            document.getElementById('toolsUsed').textContent = Math.floor(Math.random() * 50) + 10;
-            document.getElementById('scansCompleted').textContent = Math.floor(Math.random() * 20) + 5;
-            document.getElementById('threatsDetected').textContent = Math.floor(Math.random() * 10) + 2;
-            document.getElementById('dataProcessed').textContent = (Math.random() * 10 + 1).toFixed(1) + 'GB';
+        // Update analytics data (display)
+        function updateAnalytics() {
+            document.getElementById('toolsUsed').textContent = appState.usageStats.toolsUsedToday;
+            document.getElementById('scansCompleted').textContent = appState.usageStats.scansCompleted;
+            document.getElementById('threatsDetected').textContent = appState.usageStats.threatsDetected; // This can be dynamically updated based on actual threat monitoring
+            document.getElementById('dataProcessed').textContent = appState.usageStats.dataProcessed.toFixed(1) + 'GB'; // This can be dynamically updated
+            
+            renderMostUsedTools();
+            renderNeverUsedTools();
+            renderToolsAddedPerWeek();
+
+            saveState();
         }
 
-        // Load investigations
-        function loadInvestigations() {
-            const casesList = document.getElementById('casesList');
-            casesList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No Active Cases</h3>
-                    <p>Create a new investigation case to get started.</p>
-                </div>
-            `;
+        function renderMostUsedTools() {
+            const mostUsedToolsList = document.getElementById('mostUsedToolsList');
+            const noMostUsedTools = document.getElementById('noMostUsedTools');
+            const usedTools = appState.tools.filter(tool => tool.lastUsed > 0)
+                                            .sort((a, b) => b.lastUsed - a.lastUsed)
+                                            .slice(0, 5); // Get top 5
+
+            if (usedTools.length === 0) {
+                mostUsedToolsList.innerHTML = '';
+                noMostUsedTools.style.display = 'block';
+            } else {
+                noMostUsedTools.style.display = 'none';
+                mostUsedToolsList.innerHTML = usedTools.map(tool => `
+                    <li>
+                        <span>${tool.name}</span>
+                        <span>Last Used: ${new Date(tool.lastUsed).toLocaleString()}</span>
+                    </li>
+                `).join('');
+            }
         }
+
+        function renderNeverUsedTools() {
+            const neverUsedToolsList = document.getElementById('neverUsedToolsList');
+            const noNeverUsedTools = document.getElementById('noNeverUsedTools');
+            const neverUsed = appState.tools.filter(tool => tool.lastUsed === 0);
+
+            if (neverUsed.length === 0) {
+                neverUsedToolsList.innerHTML = '';
+                noNeverUsedTools.style.display = 'block';
+            } else {
+                noNeverUsedTools.style.display = 'none';
+                neverUsedToolsList.innerHTML = neverUsed.map(tool => `
+                    <li>
+                        <span>${tool.name}</span>
+                        <span>Added: ${new Date(tool.addedDate).toLocaleDateString()}</span>
+                    </li>
+                `).join('');
+            }
+        }
+
+        function renderToolsAddedPerWeek() {
+            const toolsAddedPerWeekList = document.getElementById('toolsAddedPerWeekList');
+            const noToolsAdded = document.getElementById('noToolsAdded');
+            
+            const weeklyData = {}; // { 'YYYY-WW': count }
+            
+            appState.tools.forEach(tool => {
+                const date = new Date(tool.addedDate);
+                const year = date.getFullYear();
+                const week = getWeekNumber(date); // Custom function to get week number
+                const weekKey = `${year}-${String(week).padStart(2, '0')}`;
+                
+                weeklyData[weekKey] = (weeklyData[weekKey] || 0) + 1;
+            });
+
+            const sortedWeeks = Object.keys(weeklyData).sort().reverse(); // Sort descending for most recent weeks
+
+            if (sortedWeeks.length === 0) {
+                toolsAddedPerWeekList.innerHTML = '';
+                noToolsAdded.style.display = 'block';
+            } else {
+                noToolsAdded.style.display = 'none';
+                toolsAddedPerWeekList.innerHTML = sortedWeeks.map(weekKey => `
+                    <li>
+                        <span>Week ${weekKey.split('-')[1]}, ${weekKey.split('-')[0]}</span>
+                        <span>${weeklyData[weekKey]} tools added</span>
+                    </li>
+                `).join('');
+            }
+        }
+
+        // Helper function to get week number (ISO week date standard)
+        function getWeekNumber(d) {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+            const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            return weekNo;
+        }
+
 
         // Modal functions
         function showModal(modalId) {
             document.getElementById(modalId).classList.add('show');
+            // Logic specific to addToolModal
+            if (modalId === 'addToolModal') {
+                populateCategoryFilter(); // Re-populate to include any new categories
+                document.getElementById('toolCategory').value = ''; // Reset select to default
+                document.getElementById('newCategoryInput').style.display = 'none'; // Hide custom input initially
+                document.getElementById('newCategoryInput').value = ''; // Clear custom input
+                document.getElementById('addToolForm').reset(); // Reset the add form
+            } else if (modalId === 'createSubTabModal') {
+                document.getElementById('newSubTabName').value = ''; // Clear input for new sub-tab
+            }
         }
 
         function hideModal(modalId) {
@@ -1753,133 +2480,190 @@
         function handleAddTool(e) {
             e.preventDefault();
             
-            const formData = new FormData(e.target);
+            const toolName = document.getElementById('toolName').value;
+            const toolUrl = document.getElementById('toolUrl').value;
+            let toolCategory = document.getElementById('toolCategory').value;
+            const newCategoryInput = document.getElementById('newCategoryInput').value.trim();
+            const toolDescription = document.getElementById('toolDescription').value;
+            const toolTags = document.getElementById('toolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+
+            // Use custom category if entered, otherwise use selected category
+            if (toolCategory === 'custom' && newCategoryInput) {
+                toolCategory = newCategoryInput.toLowerCase();
+            } else if (toolCategory === 'custom' && !newCategoryInput) {
+                showToast('Please enter a custom category name.', 'error');
+                return;
+            } else if (!toolCategory) {
+                 showToast('Please select or enter a category.', 'error');
+                return;
+            }
+            
             const newTool = {
                 id: generateId(),
-                name: document.getElementById('toolName').value,
-                url: document.getElementById('toolUrl').value,
-                category: document.getElementById('toolCategory').value,
-                description: document.getElementById('toolDescription').value,
-                tags: document.getElementById('toolTags').value.split(',').map(tag => tag.trim()),
+                name: toolName,
+                url: toolUrl,
+                category: toolCategory,
+                description: toolDescription,
+                tags: toolTags,
                 starred: false,
                 pinned: false,
-                favicon: `${new URL(document.getElementById('toolUrl').value).origin}/favicon.ico`,
-                threatLevel: 'low',
-                lastUsed: null,
-                addedDate: new Date()
+                favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`,
+                lastUsed: 0,
+                addedDate: new Date(),
+                customTabs: [] // New tools start with no custom tab assignments
             };
             
             appState.tools.push(newTool);
             updateStats();
-            populateCategoryFilter();
+            populateCategoryFilter(); // Refresh categories including the new one
             renderTools();
             hideModal('addToolModal');
             showToast('Tool added successfully!');
             
-            // Reset form
+            // Reset form and custom category input
             e.target.reset();
+            document.getElementById('newCategoryInput').style.display = 'none';
+            document.getElementById('newCategoryInput').value = '';
+            saveState();
         }
 
-        // Run security scan
-       function runSecurityScan() {
-           if (appState.isScanning) return;
-           
-           appState.isScanning = true;
-           appState.scanProgress = 0;
-           
-           const progressBar = document.getElementById('progressBar');
-           const scanStatus = document.getElementById('scanStatus');
-           const scanProgress = document.getElementById('scanProgress');
-           const scanResults = document.getElementById('scanResults');
-           const runScanBtn = document.getElementById('runScanBtn');
-           
-           scanProgress.style.display = 'block';
-           scanResults.style.display = 'none';
-           runScanBtn.disabled = true;
-           
-           const scanSteps = [
-               'Initializing security scan...',
-               'Checking tool availability...',
-               'Analyzing threat levels...',
-               'Scanning for vulnerabilities...',
-               'Generating security report...',
-               'Scan completed!'
-           ];
-           
-           let currentStep = 0;
-           const scanInterval = setInterval(() => {
-               appState.scanProgress += 16.67;
-               progressBar.style.width = appState.scanProgress + '%';
-               scanStatus.textContent = scanSteps[currentStep];
-               
-               currentStep++;
-               
-               if (appState.scanProgress >= 100) {
-                   clearInterval(scanInterval);
-                   appState.isScanning = false;
-                   showScanResults();
-                   runScanBtn.disabled = false;
-               }
-           }, 800);
+       // Open Edit Tool Modal and populate fields
+       function openEditToolModal(tool) {
+            document.getElementById('editToolId').value = tool.id;
+            document.getElementById('editToolName').value = tool.name;
+            document.getElementById('editToolUrl').value = tool.url;
+            document.getElementById('editToolDescription').value = tool.description;
+            document.getElementById('editToolTags').value = tool.tags.join(', ');
+
+            // Populate category dropdown
+            populateCategoryFilter(); // Ensure dropdown has all categories
+            const editToolCategorySelect = document.getElementById('editToolCategory');
+            editToolCategorySelect.value = tool.category;
+            
+            // Handle custom category selection for editing
+            const editNewCategoryInput = document.getElementById('editNewCategoryInput');
+            if (editToolCategorySelect.value !== tool.category && !editToolCategorySelect.querySelector(`option[value="${tool.category}"]`)) {
+                // If the tool's category is not in the default list, assume it's a custom one not yet in the select
+                editToolCategorySelect.value = 'custom';
+                editNewCategoryInput.style.display = 'block';
+                editNewCategoryInput.value = tool.category;
+                editNewCategoryInput.setAttribute('required', 'required');
+            } else {
+                editNewCategoryInput.style.display = 'none';
+                editNewCategoryInput.value = '';
+                editNewCategoryInput.removeAttribute('required');
+            }
+
+            // Populate custom tab checkboxes
+            const assignCustomTabsCheckboxes = document.getElementById('assignCustomTabsCheckboxes');
+            assignCustomTabsCheckboxes.innerHTML = appState.customTabs.map(customTab => {
+                const isChecked = tool.customTabs.includes(customTab.id);
+                return `
+                    <label class="custom-tab-checkbox ${isChecked ? 'checked' : ''}">
+                        <input type="checkbox" class="custom-tab-assign-checkbox" value="${customTab.id}" ${isChecked ? 'checked' : ''}>
+                        ${customTab.name}
+                    </label>
+                `;
+            }).join('');
+
+
+            showModal('editToolModal');
        }
 
-       // Show scan results
-       function showScanResults() {
-           const scanProgress = document.getElementById('scanProgress');
-           const scanResults = document.getElementById('scanResults');
-           
-           scanProgress.style.display = 'none';
-           scanResults.style.display = 'block';
-           
-           const mockResults = {
-               toolsScanned: appState.tools.length,
-               vulnerabilities: Math.floor(Math.random() * 3),
-               warnings: Math.floor(Math.random() * 5) + 2,
-               secure: appState.tools.length - Math.floor(Math.random() * 8)
-           };
-           
-           scanResults.innerHTML = `
-               <div class="scan-results-grid">
-                   <div class="scan-result-card success">
-                       <i class="fas fa-shield-alt"></i>
-                       <div class="result-value">${mockResults.secure}</div>
-                       <div class="result-label">Secure Tools</div>
-                   </div>
-                   <div class="scan-result-card warning">
-                       <i class="fas fa-exclamation-triangle"></i>
-                       <div class="result-value">${mockResults.warnings}</div>
-                       <div class="result-label">Warnings</div>
-                   </div>
-                   <div class="scan-result-card danger">
-                       <i class="fas fa-bug"></i>
-                       <div class="result-value">${mockResults.vulnerabilities}</div>
-                       <div class="result-label">Vulnerabilities</div>
-                   </div>
-               </div>
-               <div class="scan-recommendations">
-                   <h4>Security Recommendations:</h4>
-                   <ul>
-                       <li>Enable 2FA for all critical tools</li>
-                       <li>Review tool permissions regularly</li>
-                       <li>Use VPN for sensitive operations</li>
-                       <li>Keep tools updated to latest versions</li>
-                   </ul>
-               </div>
-           `;
+       // Handle saving edited tool
+       function handleEditTool(e) {
+            e.preventDefault();
+
+            const toolId = document.getElementById('editToolId').value;
+            const toolName = document.getElementById('editToolName').value;
+            const toolUrl = document.getElementById('editToolUrl').value;
+            let toolCategory = document.getElementById('editToolCategory').value;
+            const newCategoryInput = document.getElementById('editNewCategoryInput').value.trim();
+            const toolDescription = document.getElementById('editToolDescription').value;
+            const toolTags = document.getElementById('editToolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+
+            // Get selected custom tabs
+            const selectedCustomTabIds = Array.from(document.querySelectorAll('#assignCustomTabsCheckboxes .custom-tab-assign-checkbox:checked'))
+                                             .map(checkbox => checkbox.value);
+
+            // Use custom category if entered, otherwise use selected category
+            if (toolCategory === 'custom' && newCategoryInput) {
+                toolCategory = newCategoryInput.toLowerCase();
+            } else if (toolCategory === 'custom' && !newCategoryInput) {
+                showToast('Please enter a custom category name for editing.', 'error');
+                return;
+            } else if (!toolCategory) {
+                 showToast('Please select or enter a category for editing.', 'error');
+                return;
+            }
+
+            const toolIndex = appState.tools.findIndex(t => t.id === toolId);
+            if (toolIndex > -1) {
+                const oldTool = appState.tools[toolIndex];
+                appState.tools[toolIndex] = {
+                    ...oldTool,
+                    name: toolName,
+                    url: toolUrl,
+                    category: toolCategory,
+                    description: toolDescription,
+                    tags: toolTags,
+                    favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`, // Update favicon in case URL changed
+                    customTabs: selectedCustomTabIds // Update custom tab assignments
+                };
+
+                // Update toolIds array in customTabs objects
+                appState.customTabs.forEach(customTab => {
+                    const isToolInTab = customTab.toolIds.includes(toolId);
+                    const shouldToolBeInTab = selectedCustomTabIds.includes(customTab.id);
+
+                    if (!isToolInTab && shouldToolBeInTab) {
+                        customTab.toolIds.push(toolId); // Add tool to this custom tab
+                    } else if (isToolInTab && !shouldToolBeInTab) {
+                        customTab.toolIds = customTab.toolIds.filter(id => id !== toolId); // Remove tool from this custom tab
+                    }
+                });
+
+                updateStats();
+                populateCategoryFilter(); // Refresh categories in case category changed
+                renderTools();
+                renderCustomTabs(); // Re-render custom tabs to update counts/content
+                hideModal('editToolModal');
+                showToast('Tool updated successfully!');
+                saveState();
+            } else {
+                showToast('Error: Tool not found for editing.', 'error');
+            }
        }
+
 
        // Theme functions
        function initTheme() {
-           const savedTheme = appState.theme;
-           if (savedTheme === 'light') {
-               document.body.classList.add('light-theme');
+           document.documentElement.setAttribute('data-theme', appState.theme);
+           // Update theme toggle icon
+           const themeToggleBtn = document.getElementById('themeToggle');
+           if (appState.theme === 'dark') {
+               themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+               themeToggleBtn.title = 'Switch to Light Theme';
+           } else {
+               themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+               themeToggleBtn.title = 'Switch to Dark Theme';
            }
        }
 
        function toggleTheme() {
-           document.body.classList.toggle('light-theme');
-           appState.theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+           appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
+           localStorage.setItem('theme', appState.theme); // Save theme preference
+           initTheme(); // Apply theme and update button
            showToast(`Switched to ${appState.theme} theme`);
+       }
+
+       // View Mode Toggle (Grid/List)
+       function toggleViewMode() {
+           appState.viewMode = appState.viewMode === 'grid' ? 'list' : 'grid';
+           localStorage.setItem('viewMode', appState.viewMode); // Save view mode preference
+           renderTools();
+           saveState();
+           showToast(`Switched to ${appState.viewMode} view`);
        }
 
        // Utility functions
@@ -1889,35 +2673,43 @@
 
        function formatTime(date) {
            const now = new Date();
-           const diff = now - date;
-           const minutes = Math.floor(diff / 60000);
-           const hours = Math.floor(diff / 3600000);
-           const days = Math.floor(diff / 86400000);
+           const diff = now - date; // difference in milliseconds
            
+           const seconds = Math.floor(diff / 1000);
+           const minutes = Math.floor(seconds / 60);
+           const hours = Math.floor(minutes / 60);
+           const days = Math.floor(hours / 24);
+           const months = Math.floor(days / 30);
+           const years = Math.floor(days / 365);
+
+           if (seconds < 60) return `${seconds}s ago`;
            if (minutes < 60) return `${minutes}m ago`;
            if (hours < 24) return `${hours}h ago`;
-           return `${days}d ago`;
+           if (days < 30) return `${days}d ago`;
+           if (months < 12) return `${months}mo ago`;
+           return `${years}y ago`;
        }
 
        function showToast(message, type = 'success') {
            const toast = document.createElement('div');
            toast.className = `toast toast-${type}`;
            toast.innerHTML = `
-               <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+               <i class="fas fa-${type === 'success' ? 'check-circle' : (type === 'error' ? 'times-circle' : 'exclamation-circle')}"></i>
                ${message}
            `;
            
            document.body.appendChild(toast);
            
-           setTimeout(() => {
-               toast.classList.add('show');
-           }, 100);
+           // Force reflow to ensure animation plays
+           void toast.offsetWidth; 
+
+           toast.classList.add('show');
            
            setTimeout(() => {
                toast.classList.remove('show');
                setTimeout(() => {
                    document.body.removeChild(toast);
-               }, 300);
+               }, 300); // Wait for fade out animation
            }, 3000);
        }
 
@@ -1936,41 +2728,6 @@
            showToast('Filters cleared!');
        }
 
-       function openRandomTool() {
-           if (appState.tools.length === 0) return;
-           
-           const randomTool = appState.tools[Math.floor(Math.random() * appState.tools.length)];
-           randomTool.lastUsed = Date.now();
-           window.open(randomTool.url, '_blank');
-           showToast(`Opening ${randomTool.name}...`);
-       }
-
-       function activateEmergencyMode() {
-           const emergencyTools = appState.tools.filter(tool => 
-               tool.category === 'threat' || 
-               tool.threatLevel === 'high' ||
-               tool.tags.includes('security')
-           );
-           
-           if (emergencyTools.length === 0) {
-               showToast('No emergency tools available', 'warning');
-               return;
-           }
-           
-           emergencyTools.forEach(tool => {
-               tool.pinned = true;
-               tool.starred = true;
-           });
-           
-           appState.filters.category = '';
-           appState.filters.search = '';
-           document.getElementById('searchInput').value = '';
-           document.getElementById('categoryFilter').value = '';
-           
-           renderTools();
-           showToast(`Emergency mode activated! ${emergencyTools.length} critical tools ready.`, 'warning');
-       }
-
        function generateReport() {
            const report = {
                timestamp: new Date().toISOString(),
@@ -1978,12 +2735,11 @@
                categories: [...new Set(appState.tools.map(t => t.category))],
                starredTools: appState.tools.filter(t => t.starred).length,
                pinnedTools: appState.tools.filter(t => t.pinned).length,
-               threatLevels: {
-                   high: appState.tools.filter(t => t.threatLevel === 'high').length,
-                   medium: appState.tools.filter(t => t.threatLevel === 'medium').length,
-                   low: appState.tools.filter(t => t.threatLevel === 'low').length
-               },
-               recentlyUsed: appState.tools.filter(t => t.lastUsed).length
+               usageStatistics: appState.usageStats,
+               recentlyUsedTools: appState.tools.filter(t => t.lastUsed > 0)
+                                                .sort((a,b) => b.lastUsed - a.lastUsed)
+                                                .slice(0, 10) // Top 10 recently used
+                                                .map(t => ({ name: t.name, lastUsed: new Date(t.lastUsed).toLocaleString() }))
            };
            
            const reportWindow = window.open('', '_blank');
@@ -1992,31 +2748,52 @@
                <head>
                    <title>OSINT Arsenal Report</title>
                    <style>
-                       body { font-family: Arial, sans-serif; margin: 40px; }
-                       .header { border-bottom: 2px solid #333; padding-bottom: 20px; }
-                       .stat { margin: 10px 0; }
-                       .category { background: #f5f5f5; padding: 10px; margin: 5px 0; }
+                       body { font-family: 'Inter', sans-serif; margin: 40px; background-color: #f8f9fa; color: #343a40; }
+                       .header { border-bottom: 2px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; }
+                       h1 { color: #007bff; }
+                       h2 { color: #495057; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 5px; }
+                       .stat { margin: 10px 0; font-size: 1.1em; }
+                       .stat strong { color: #007bff; }
+                       .category-list, .tool-list { list-style-type: none; padding: 0; }
+                       .category-list li, .tool-list li { background-color: #e9ecef; padding: 10px; margin-bottom: 8px; border-radius: 5px; }
+                       .threat-level-dist { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
+                       .threat-box { padding: 10px 15px; border-radius: 5px; color: white; font-weight: bold; }
+                       .threat-high { background-color: #dc3545; }
+                       .threat-medium { background-color: #ffc107; }
+                       .threat-low { background-color: #28a745; }
+                       .footer { margin-top: 50px; text-align: center; font-size: 0.9em; color: #6c757d; }
                    </style>
                </head>
                <body>
                    <div class="header">
-                       <h1>OSINT Arsenal Report</h1>
-                       <p>Generated: ${new Date().toLocaleString()}</p>
+                       <h1>OSINT Arsenal Activity Report</h1>
+                       <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
                    </div>
+                   
                    <h2>Summary Statistics</h2>
-                   <div class="stat">Total Tools: ${report.totalTools}</div>
-                   <div class="stat">Categories: ${report.categories.length}</div>
-                   <div class="stat">Starred Tools: ${report.starredTools}</div>
-                   <div class="stat">Pinned Tools: ${report.pinnedTools}</div>
-                   <div class="stat">Recently Used: ${report.recentlyUsed}</div>
+                   <div class="stat"><strong>Total Tools:</strong> ${report.totalTools}</div>
+                   <div class="stat"><strong>Unique Categories:</strong> ${report.categories.length}</div>
+                   <div class="stat"><strong>Starred Tools:</strong> ${report.starredTools}</div>
+                   <div class="stat"><strong>Pinned Tools:</strong> ${report.pinnedTools}</div>
                    
-                   <h2>Threat Level Distribution</h2>
-                   <div class="stat">High: ${report.threatLevels.high}</div>
-                   <div class="stat">Medium: ${report.threatLevels.medium}</div>
-                   <div class="stat">Low: ${report.threatLevels.low}</div>
+                   <h2>Usage Overview</h2>
+                   <div class="stat"><strong>Tools Used Today:</strong> ${report.usageStatistics.toolsUsedToday}</div>
                    
-                   <h2>Categories</h2>
-                   ${report.categories.map(cat => `<div class="category">${cat}</div>`).join('')}
+                   <h2>Recently Used Tools</h2>
+                   ${report.recentlyUsedTools.length > 0 ? `
+                   <ul class="tool-list">
+                       ${report.recentlyUsedTools.map(tool => `<li>${tool.name} (Last Used: ${tool.lastUsed})</li>`).join('')}
+                   </ul>` : `<p>No tools have been used recently.</p>`}
+
+                   <h2>Categories Overview</h2>
+                   <ul class="category-list">
+                       ${report.categories.map(cat => `<li>${cat.charAt(0).toUpperCase() + cat.slice(1)}</li>`).join('')}
+                   </ul>
+
+                   <div class="footer">
+                       <p>This report provides a snapshot of your OSINT Arsenal activity.</p>
+                       <p>For more detailed insights, refer to the platform dashboard.</p>
+                   </div>
                </body>
                </html>
            `);
@@ -2024,11 +2801,14 @@
            showToast('Report generated in new window!');
        }
 
+
        function exportData() {
            const exportData = {
                tools: appState.tools,
+               usageStats: appState.usageStats,
+               customTabs: appState.customTabs, // Include custom tabs in export
                exportDate: new Date().toISOString(),
-               version: '1.0'
+               version: '1.2' // Increased version due to added customTabs
            };
            
            const dataStr = JSON.stringify(exportData, null, 2);
@@ -2045,6 +2825,159 @@
            
            showToast('Data exported successfully!');
        }
+
+        /* Custom Tab Functions */
+        function renderCustomTabs() {
+            const customSubTabsContainer = document.getElementById('customSubTabs');
+            const editSubTabBtn = document.getElementById('editSubTabBtn');
+            const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
+            const emptyCustomTabState = document.getElementById('emptyCustomTabState');
+            const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
+            const customTabToolsGrid = document.getElementById('customTabToolsGrid');
+
+
+            // Hide action buttons initially
+            editSubTabBtn.style.display = 'none';
+            deleteSubTabBtn.style.display = 'none';
+
+            customSubTabsContainer.innerHTML = ''; // Clear existing sub-tabs
+
+            if (appState.customTabs.length === 0) {
+                emptyCustomTabState.style.display = 'block';
+                customTabToolsGrid.style.display = 'none';
+                emptyCurrentCustomTabState.style.display = 'none'; // Hide if no custom tabs at all
+                appState.currentCustomTab = null; // No active custom tab
+            } else {
+                emptyCustomTabState.style.display = 'none';
+                editSubTabBtn.style.display = 'inline-flex';
+                deleteSubTabBtn.style.display = 'inline-flex';
+
+                appState.customTabs.forEach(tab => {
+                    const tabButton = document.createElement('button');
+                    tabButton.className = `sub-nav-tab ${appState.currentCustomTab === tab.id ? 'active' : ''}`;
+                    tabButton.dataset.subTabId = tab.id;
+                    const toolCount = tab.toolIds.length;
+                    tabButton.innerHTML = `<i class="fas fa-folder-open"></i> ${tab.name} <span class="tag">${toolCount}</span>`;
+                    customSubTabsContainer.appendChild(tabButton);
+                });
+
+                // Ensure a custom tab is active if customTabs exist
+                if (!appState.currentCustomTab || !appState.customTabs.some(tab => tab.id === appState.currentCustomTab)) {
+                    appState.currentCustomTab = appState.customTabs[0].id;
+                }
+                // Re-activate the selected sub-tab to ensure its styling is correct
+                const activeSubTabBtn = document.querySelector(`.sub-nav-tab[data-sub-tab-id="${appState.currentCustomTab}"]`);
+                if (activeSubTabBtn) {
+                    activeSubTabBtn.classList.add('active');
+                }
+            }
+            renderTools(); // Render tools specific to the active custom sub-tab (or none if no sub-tabs)
+            saveState();
+        }
+
+        function switchCustomTab(tabId) {
+            document.querySelectorAll('#customSubTabs .sub-nav-tab').forEach(btn => btn.classList.remove('active'));
+            const newActiveTab = document.querySelector(`#customSubTabs .sub-nav-tab[data-sub-tab-id="${tabId}"]`);
+            if (newActiveTab) {
+                newActiveTab.classList.add('active');
+            }
+            appState.currentCustomTab = tabId;
+            renderTools(); // Re-render tools filtered by this specific custom tab
+            saveState();
+        }
+
+        function handleCreateSubTab(e) {
+            e.preventDefault();
+            const newSubTabName = document.getElementById('newSubTabName').value.trim();
+            if (!newSubTabName) {
+                showToast('Sub-tab name cannot be empty.', 'warning');
+                return;
+            }
+
+            // Check for duplicate name (case-insensitive)
+            if (appState.customTabs.some(tab => tab.name.toLowerCase() === newSubTabName.toLowerCase())) {
+                showToast('A sub-tab with this name already exists.', 'warning');
+                return;
+            }
+
+            const newSubTab = {
+                id: generateId(),
+                name: newSubTabName,
+                toolIds: []
+            };
+            appState.customTabs.push(newSubTab);
+            appState.currentCustomTab = newSubTab.id; // Make the new tab active
+            renderCustomTabs();
+            hideModal('createSubTabModal');
+            showToast('Custom sub-tab created!');
+            saveState();
+        }
+
+        function openEditSubTabModal() {
+            if (!appState.currentCustomTab) {
+                showToast('Please select a sub-tab to edit.', 'warning');
+                return;
+            }
+            const currentSubTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+            if (currentSubTab) {
+                document.getElementById('editSubTabId').value = currentSubTab.id;
+                document.getElementById('editedSubTabName').value = currentSubTab.name;
+                showModal('editSubTabModal');
+            }
+        }
+
+        function handleEditSubTab(e) {
+            e.preventDefault();
+            const subTabId = document.getElementById('editSubTabId').value;
+            const editedSubTabName = document.getElementById('editedSubTabName').value.trim();
+
+            if (!editedSubTabName) {
+                showToast('Sub-tab name cannot be empty.', 'warning');
+                return;
+            }
+
+            // Check for duplicate name, excluding the current tab itself
+            if (appState.customTabs.some(tab => tab.name.toLowerCase() === editedSubTabName.toLowerCase() && tab.id !== subTabId)) {
+                showToast('A sub-tab with this name already exists.', 'warning');
+                return;
+            }
+
+            const subTab = appState.customTabs.find(tab => tab.id === subTabId);
+            if (subTab) {
+                subTab.name = editedSubTabName;
+                renderCustomTabs();
+                hideModal('editSubTabModal');
+                showToast('Sub-tab updated successfully!');
+                saveState();
+            } else {
+                showToast('Error: Sub-tab not found.', 'error');
+            }
+        }
+
+        function handleDeleteSubTab() {
+            if (!appState.currentCustomTab) {
+                showToast('No sub-tab selected for deletion.', 'warning');
+                return;
+            }
+            if (confirm(`Are you sure you want to delete the sub-tab "${appState.customTabs.find(t => t.id === appState.currentCustomTab)?.name}"? This will NOT delete the tools themselves.`)) {
+                
+                // Remove the customTabId from all tools that belong to it
+                const deletedTabId = appState.currentCustomTab;
+                appState.tools.forEach(tool => {
+                    tool.customTabs = tool.customTabs.filter(tabId => tabId !== deletedTabId);
+                });
+
+                appState.customTabs = appState.customTabs.filter(tab => tab.id !== appState.currentCustomTab);
+                
+                // Set current custom tab to the first one available or null
+                appState.currentCustomTab = appState.customTabs.length > 0 ? appState.customTabs[0].id : null;
+                
+                renderCustomTabs();
+                showToast('Sub-tab deleted successfully!', 'error');
+                saveState();
+            }
+        }
+
 
        // Initialize the application when DOM is loaded
        document.addEventListener('DOMContentLoaded', initApp);
