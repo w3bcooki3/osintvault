@@ -114,7 +114,7 @@
 
         .container {
             width: 100vw;
-            max-width: 1800px; /* Set a max-width for better readability on large screens */
+            max-width: 1440px; /* Set a max-width for better readability on large screens */
             padding: 0 40px; /* More generous padding on larger screens */
             margin: 0 auto; /* Center the container */
         }
@@ -455,6 +455,31 @@
             font-weight: 600;
         }
 
+        /* Random Discovery Section */
+        .random-display {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+        .random-display .random-text {
+            min-height: 40px; /* Prevent layout shift */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.3;
+        }
+        .random-display .btn-sm {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        .random-display a {
+            font-weight: 600;
+        }
+
         /* Main Content */
         .main-content {
             background: var(--bg-card);
@@ -598,6 +623,13 @@
             border-color: var(--warning);
             background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
         }
+        /* Style for shared highlight */
+        .tool-card.shared-highlight {
+            border-color: var(--primary); /* Highlight with primary color */
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.08), transparent);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+
 
         .tool-header {
             display: flex;
@@ -1058,6 +1090,9 @@
         .toast.warning {
             background: var(--warning);
         }
+        .toast.info { /* For read-only banner */
+            background: var(--primary-dark);
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -1324,6 +1359,10 @@
                         <i class="fas fa-download"></i>
                         Export
                     </button>
+                    <button class="btn btn-secondary" id="generateShareLinkBtn" style="display: none;">
+                        <i class="fas fa-share-alt"></i>
+                        Share Tab
+                    </button>
                     <button class="btn btn-secondary" id="themeToggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -1393,6 +1432,16 @@
                         Generate Report
                     </button>
                 </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-random"></i> Discovery</h3>
+                    <div class="random-display" id="randomDiscovery">
+                        <p class="random-text">Loading...</p>
+                        <button class="btn btn-secondary btn-sm" id="newRandomBtn" style="width: 100%; margin-top: 10px;">
+                            <i class="fas fa-sync-alt"></i> New Discovery
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="main-content">
@@ -1401,6 +1450,10 @@
                         <i class="fas fa-database"></i>
                         Intelligence Vault
                     </button>
+                    <button class="nav-tab" data-tab="custom-tabs">
+                        <i class="fas fa-layer-group"></i>
+                        Custom Tabs
+                    </button>
                     <button class="nav-tab" data-tab="analytics">
                         <i class="fas fa-chart-bar"></i>
                         Analytics
@@ -1408,10 +1461,6 @@
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
                         Threat Intel
-                    </button>
-                    <button class="nav-tab" data-tab="custom-tabs">
-                        <i class="fas fa-layer-group"></i>
-                        Custom Tabs
                     </button>
                 </div>
 
@@ -1588,6 +1637,10 @@
                             <button class="btn btn-secondary" id="exportSubTabBtn" style="display: none;">
                                 <i class="fas fa-download"></i>
                                 Export Tab
+                            </button>
+                            <button class="btn btn-secondary" id="generateShareLinkBtn" style="display: none;">
+                                <i class="fas fa-share-alt"></i>
+                                Share Tab
                             </button>
                         </div>
                     </div>
@@ -2233,7 +2286,22 @@
             viewMode: localStorage.getItem('viewMode') || 'grid', // 'grid' or 'list'
             usageStats: {
                 toolsUsedToday: 0
-            }
+            },
+            // New: for random tips/tools
+            osintTips: [
+                "Always use a VPN for anonymity during investigations.",
+                "Verify your sources: Cross-reference information from multiple independent channels.",
+                "Analyze metadata: Hidden data in images and documents can reveal crucial clues.",
+                "Utilize archived web pages with tools like the Wayback Machine.",
+                "Be mindful of your digital footprint; everything you do online leaves a trace.",
+                "Learn advanced search operators for targeted information retrieval.",
+                "Understand your target's OPSEC (Operational Security) to anticipate their moves.",
+                "Never compromise your own security for an investigation. Think OPSEC first."
+            ],
+            // New: for shareable tabs
+            readOnlyMode: false,
+            sharedTabId: null,
+            sharedEntryIds: []
         };
 
         const availableIcons = [
@@ -2380,6 +2448,7 @@
         // Initialize Application
         function initApp() {
             loadState();
+            parseShareableLink(); // New: Parse URL for shared links first
             updateStats();
             bindEvents();
             initTheme();
@@ -2395,9 +2464,12 @@
                 switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
             }
 
+            showRandomDiscovery(); // New: Show a random tip/tool on load
             populateCategoryFilter(); // Call after loadState
             renderIntelligenceEntries(); // Ensure entries are rendered based on initial filters/state
             updateAnalytics(); // Initial update for analytics display
+
+            applyReadOnlyMode(); // Apply read-only mode after initial rendering
         }
 
         // Load application state from localStorage
@@ -2464,7 +2536,7 @@
             // Include new types in allEntries
             const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
             const categories = new Set(appState.tools.map(tool => tool.category)); // Only tools have categories for now
-            document.getElementById('totalTools').textContent = appState.tools.length;
+            document.getElementById('totalTools').textContent = allEntries.length; // Count all entries, not just tools
             document.getElementById('totalCategories').textContent = categories.size;
             document.getElementById('starredToolsCount').textContent = allEntries.filter(entry => entry.starred).length;
             document.getElementById('pinnedToolsCount').textContent = allEntries.filter(entry => entry.pinned).length;
@@ -2602,6 +2674,17 @@
             }
             
             targetContainer.innerHTML = filteredEntries.map(entry => createEntryCard(entry)).join('');
+            
+            // New: Apply shared-highlight if in read-only mode and relevant entries are found
+            if (appState.readOnlyMode && appState.currentTab === 'custom-tabs' && appState.currentCustomTab === appState.sharedTabId) {
+                appState.sharedEntryIds.forEach(id => {
+                    const entryCard = document.querySelector(`.tool-card[data-entry-id="${id}"]`);
+                    if (entryCard) {
+                        entryCard.classList.add('shared-highlight');
+                    }
+                });
+            }
+
             saveState(); // Save state after rendering entries
         }
 
@@ -2658,7 +2741,7 @@
                     const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
                     if (activeCustomTab) {
                         const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-                        entriesToSearch = allEntriesCombined.filter(entry => activeCustomTab.toolIds.includes(entry.id));
+                        entriesToSearch = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(activeCustomTab.id));
                     } else {
                         entriesToSearch = [];
                     }
@@ -2991,6 +3074,9 @@
 
             document.getElementById('deleteSubTabBtn').addEventListener('click', handleDeleteSubTab);
             document.getElementById('exportSubTabBtn').addEventListener('click', exportCustomTab);
+            document.getElementById('newRandomBtn').addEventListener('click', showRandomDiscovery); // New: Random Tool/Tip button
+            document.getElementById('generateShareLinkBtn').addEventListener('click', generateShareLinkForTab); // New: Share Tab button
+
 
             // Click listener for custom sub-tabs (delegated)
             document.getElementById('customSubTabs').addEventListener('click', (e) => {
@@ -3055,6 +3141,11 @@
 
         // Handle generic entry actions
         function handleEntryAction(e) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot perform actions in read-only shared view.", "warning");
+                return;
+            }
+
             const targetBtn = e.target.closest('.action-btn');
             if (!targetBtn) return;
             
@@ -3137,6 +3228,12 @@
 
         // Handle bulk selection checkbox
         function handleBulkSelection(e) {
+            if (appState.readOnlyMode) { // New: Prevent bulk selection in read-only mode
+                e.target.checked = !e.target.checked; // Revert checkbox state
+                showToast("Cannot select entries in read-only shared view.", "warning");
+                return;
+            }
+
             if (!e.target.classList.contains('bulk-checkbox')) return;
             
             const entryCard = e.target.closest('.tool-card');
@@ -3157,6 +3254,11 @@
             const bulkActions = document.getElementById('bulkActions');
             const selectedCount = document.getElementById('selectedCount');
             
+            if (appState.readOnlyMode) { // New: Always hide bulk actions in read-only
+                bulkActions.classList.remove('active');
+                return;
+            }
+
             if (appState.selectedEntries.size > 0) {
                 bulkActions.classList.add('active');
                 selectedCount.textContent = appState.selectedEntries.size;
@@ -3167,6 +3269,11 @@
 
         // Bulk actions (star, pin, delete selected)
         function bulkAction(action) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot perform bulk actions in read-only shared view.", "warning");
+                return;
+            }
+
             const selectedIds = Array.from(appState.selectedEntries);
             
             if (selectedIds.length === 0) {
@@ -3226,6 +3333,11 @@
 
         // Quick actions (UPDATED)
         function togglePinFilter() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot apply filters in read-only shared view.", "warning");
+                return;
+            }
+
             if (appState.filters.category === 'pinned') { // If already filtering by pinned, clear it
                 appState.filters.category = '';
             } else {
@@ -3239,6 +3351,11 @@
         }
 
         function toggleStarFilter() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot apply filters in read-only shared view.", "warning");
+                return;
+            }
+
             if (appState.filters.category === 'starred') { // If already filtering by starred, clear it
                 appState.filters.category = '';
             } else {
@@ -3486,6 +3603,11 @@
 
         // Modal functions
         function showModal(modalId) {
+            if (appState.readOnlyMode) { // New: Prevent opening modals in read-only mode
+                showToast("Cannot modify entries in read-only shared view.", "warning");
+                return;
+            }
+
             document.getElementById(modalId).classList.add('show');
             // Logic specific to addEntryModal
             if (modalId === 'addEntryModal') {
@@ -3584,6 +3706,11 @@
 
         // Add new entry
         function handleAddEntry(e) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot add entries in read-only shared view.", "warning");
+                return;
+            }
+
             e.preventDefault();
             
             const entryType = document.getElementById('entryTypeSelect').value;
@@ -3728,6 +3855,11 @@
 
        // Open Edit Entry Modal and populate fields
        function openEditEntryModal(entry) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot edit entries in read-only shared view.", "warning");
+                return;
+            }
+
             document.getElementById('editEntryId').value = entry.id;
             document.getElementById('editEntryType').value = entry.type;
 
@@ -3886,6 +4018,11 @@
 
        // Handle saving edited entry
        function handleEditEntry(e) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot save changes in read-only shared view.", "warning");
+                return;
+            }
+
             e.preventDefault();
 
             const entryId = document.getElementById('editEntryId').value;
@@ -4098,7 +4235,7 @@
            const toast = document.createElement('div');
            toast.className = `toast toast-${type}`;
            toast.innerHTML = `
-               <i class="fas fa-${type === 'success' ? 'check-circle' : (type === 'error' ? 'times-circle' : 'exclamation-circle')}"></i>
+               <i class="fas fa-${type === 'success' ? 'check-circle' : (type === 'error' ? 'times-circle' : (type === 'info' ? 'info-circle' : 'exclamation-circle'))}"></i>
                ${message}
            `;
            
@@ -4118,6 +4255,11 @@
        }
 
        function clearFilters() {
+           if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+               showToast("Cannot clear filters in read-only shared view.", "warning");
+               return;
+           }
+
            appState.filters = {
                category: '',
                search: '',
@@ -4135,6 +4277,11 @@
        }
 
        function generateReport() {
+           if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+               showToast("Cannot generate reports in read-only shared view.", "warning");
+               return;
+           }
+
            const report = {
                timestamp: new Date().toISOString(),
                totalTools: appState.tools.length,
@@ -4228,6 +4375,11 @@
 
 
        function exportData() {
+           if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+               showToast("Cannot export data in read-only shared view.", "warning");
+               return;
+           }
+
            const exportData = {
                tools: appState.tools,
                emails: appState.emails,
@@ -4266,6 +4418,7 @@
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
             const exportSubTabBtn = document.getElementById('exportSubTabBtn'); // Get the new button
+            const generateShareLinkBtn = document.getElementById('generateShareLinkBtn'); // New: Get share button
             const emptyCustomTabState = document.getElementById('emptyCustomTabState');
             const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
             const customTabToolsGrid = document.getElementById('customTabToolsGrid');
@@ -4275,6 +4428,7 @@
             editSubTabBtn.style.display = 'none';
             deleteSubTabBtn.style.display = 'none';
             exportSubTabBtn.style.display = 'none'; // Hide export button too
+            generateShareLinkBtn.style.display = 'none'; // New: Hide share button
 
             customSubTabsContainer.innerHTML = ''; // Clear existing sub-tabs
 
@@ -4285,9 +4439,13 @@
                 appState.currentCustomTab = null; // No active custom tab
             } else {
                 emptyCustomTabState.style.display = 'none';
-                editSubTabBtn.style.display = 'inline-flex';
-                deleteSubTabBtn.style.display = 'inline-flex';
-                exportSubTabBtn.style.display = 'inline-flex'; // Show export button
+                // Only show these buttons if not in read-only mode
+                if (!appState.readOnlyMode) {
+                    editSubTabBtn.style.display = 'inline-flex';
+                    deleteSubTabBtn.style.display = 'inline-flex';
+                    exportSubTabBtn.style.display = 'inline-flex';
+                    generateShareLinkBtn.style.display = 'inline-flex'; // New: Show share button
+                }
 
                 // Ensure a custom tab is active if customTabs exist
                 if (!appState.currentCustomTab || !appState.customTabs.some(tab => tab.id === appState.currentCustomTab)) {
@@ -4390,6 +4548,11 @@
         }
 
         function showCreateSubTabModal() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot create custom tabs in read-only shared view.", "warning");
+                return;
+            }
+
             showModal('createSubTabModal');
             document.getElementById('newSubTabName').value = '';
             document.getElementById('newSubTabIcon').value = 'fas fa-folder-open'; // Default icon
@@ -4400,6 +4563,11 @@
 
 
         function handleCreateSubTab(e) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot create custom tabs in read-only shared view.", "warning");
+                return;
+            }
+
             e.preventDefault();
             const newSubTabName = document.getElementById('newSubTabName').value.trim();
             const newSubTabIcon = document.getElementById('newSubTabIcon').value.trim();
@@ -4432,6 +4600,11 @@
         }
 
         function openEditSubTabModal() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot edit custom tabs in read-only shared view.", "warning");
+                return;
+            }
+
             if (!appState.currentCustomTab) {
                 showToast('Please select a sub-tab to edit.', 'warning');
                 return;
@@ -4451,6 +4624,11 @@
         }
 
         function handleEditSubTab(e) {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot save custom tab changes in read-only shared view.", "warning");
+                return;
+            }
+
             e.preventDefault();
             const subTabId = document.getElementById('editSubTabId').value;
             const editedSubTabName = document.getElementById('editedSubTabName').value.trim();
@@ -4484,6 +4662,11 @@
         }
 
         function handleDeleteSubTab() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot delete custom tabs in read-only shared view.", "warning");
+                return;
+            }
+
             if (!appState.currentCustomTab) {
                 showToast('No sub-tab selected for deletion.', 'warning');
                 return;
@@ -4511,6 +4694,11 @@
         }
 
         function exportCustomTab() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot export custom tabs in read-only shared view.", "warning");
+                return;
+            }
+
             if (!appState.currentCustomTab) {
                 showToast('Please select a custom tab to export.', 'warning');
                 return;
@@ -4523,7 +4711,7 @@
             }
 
             const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-            const entriesInTab = allEntries.filter(entry => customTabToExport.toolIds.includes(entry.id)); // toolIds now holds any entry type ID
+            const entriesInTab = allEntries.filter(entry => (entry.customTabs || []).includes(customTabToExport.id)); // toolIds now holds any entry type ID
             
             const exportData = {
                 tabName: customTabToExport.name,
@@ -4619,6 +4807,174 @@
             URL.revokeObjectURL(url);
             
             showToast(`Custom tab "${customTabToExport.name}" exported successfully!`);
+        }
+
+        // New: Function to display a random tool or OSINT tip
+        function showRandomDiscovery() {
+            const randomDiscoveryElement = document.getElementById('randomDiscovery');
+            if (!randomDiscoveryElement) return;
+
+            const randomChoice = Math.random(); // 0 to 1
+            let content = '';
+
+            // Give a higher chance to tools if available, otherwise prioritize tips
+            if (appState.tools.length > 0 && (randomChoice < 0.7 || appState.osintTips.length === 0)) {
+                // Show a random tool
+                const randomIndex = Math.floor(Math.random() * appState.tools.length);
+                const tool = appState.tools[randomIndex];
+                content = `
+                    <strong>Featured Tool:</strong> <a href="${tool.url}" target="_blank" style="color: var(--primary); text-decoration: none;">${tool.name} <i class="fas fa-external-link-alt" style="font-size: 0.7em;"></i></a>
+                    <br>${tool.description.substring(0, 70)}${tool.description.length > 70 ? '...' : ''}
+                `;
+            } else if (appState.osintTips.length > 0) {
+                // Show a random tip
+                const randomIndex = Math.floor(Math.random() * appState.osintTips.length);
+                const tip = appState.osintTips[randomIndex];
+                content = `<p><strong>OSINT Tip:</strong> ${tip}</p>`;
+            } else {
+                content = `<p>Discover new tools and tips here!</p>`;
+            }
+
+            randomDiscoveryElement.querySelector('.random-text').innerHTML = content;
+        }
+
+        // New: Function to parse URL for shareable tabs
+        function parseShareableLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedTabId = urlParams.get('tab');
+            const sharedEntryIds = urlParams.get('entries');
+
+            if (sharedTabId && sharedEntryIds) {
+                appState.readOnlyMode = true;
+                appState.sharedTabId = sharedTabId;
+                appState.sharedEntryIds = sharedEntryIds.split(',');
+
+                // Switch to the custom-tabs view and then to the specific shared tab
+                // This will be handled by initApp calling switchTab and then switchCustomTab
+                appState.currentTab = 'custom-tabs';
+                appState.currentCustomTab = sharedTabId;
+
+                showToast('Viewing shared intelligence vault (Read-Only).', 'info');
+                // The applyReadOnlyMode will be called after initial rendering by initApp
+            } else {
+                appState.readOnlyMode = false;
+            }
+            // Remove URL parameters to clean up the address bar for regular use
+            history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // New: Function to apply or remove read-only mode UI restrictions
+        function applyReadOnlyMode() {
+            const addEntryBtn = document.getElementById('addEntryBtn');
+            const editButtons = document.querySelectorAll('.action-btn[data-action="edit"]');
+            const deleteButtons = document.querySelectorAll('.action-btn[data-action="delete"]');
+            const bulkActionsDiv = document.getElementById('bulkActions');
+            const createSubTabBtn = document.getElementById('createSubTabBtn');
+            const editSubTabBtn = document.getElementById('editSubTabBtn');
+            const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
+            const exportSubTabBtn = document.getElementById('exportSubTabBtn');
+            const generateShareLinkBtn = document.getElementById('generateShareLinkBtn');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const searchInput = document.getElementById('searchInput');
+            const searchScopeSelect = document.getElementById('searchScopeSelect');
+            const showAllBtn = document.getElementById('showAllBtn');
+            const pinAllBtn = document.getElementById('pinAllBtn');
+            const starAllBtn = document.getElementById('starAllBtn');
+            const reportBtn = document.getElementById('reportBtn');
+
+            if (appState.readOnlyMode) {
+                // Hide or disable buttons/controls
+                if (addEntryBtn) addEntryBtn.style.display = 'none';
+                editButtons.forEach(btn => btn.style.display = 'none');
+                deleteButtons.forEach(btn => btn.style.display = 'none');
+                if (bulkActionsDiv) bulkActionsDiv.style.display = 'none';
+                if (createSubTabBtn) createSubTabBtn.style.display = 'none';
+                if (editSubTabBtn) editSubTabBtn.style.display = 'none';
+                if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'none';
+                if (exportSubTabBtn) exportSubTabBtn.style.display = 'none';
+                if (generateShareLinkBtn) generateShareLinkBtn.style.display = 'none';
+                if (categoryFilter) categoryFilter.setAttribute('disabled', 'disabled');
+                if (sortFilter) sortFilter.setAttribute('disabled', 'disabled');
+                // Keep search bar enabled for filtering within the shared view, but disable scope if you want
+                // if (searchInput) searchInput.setAttribute('disabled', 'disabled');
+                if (searchScopeSelect) searchScopeSelect.setAttribute('disabled', 'disabled');
+                if (showAllBtn) showAllBtn.style.display = 'none';
+                if (pinAllBtn) pinAllBtn.style.display = 'none';
+                if (starAllBtn) starAllBtn.style.display = 'none';
+                if (reportBtn) reportBtn.style.display = 'none';
+
+                // Also disable form submissions and inputs in modals
+                document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
+                    if (el.tagName === 'BUTTON') el.style.display = 'none'; // Hide submit buttons
+                    else el.setAttribute('disabled', 'disabled'); // Disable inputs
+                });
+
+            } else {
+                // Re-enable everything for normal use
+                if (addEntryBtn) addEntryBtn.style.display = 'inline-flex';
+                editButtons.forEach(btn => btn.style.display = 'inline-flex');
+                deleteButtons.forEach(btn => btn.style.display = 'inline-flex');
+                // updateBulkActions() will handle visibility based on selection for bulk actions
+                if (createSubTabBtn) createSubTabBtn.style.display = 'inline-flex';
+                // These will be re-enabled by renderCustomTabs() based on currentCustomTab presence
+                // if (editSubTabBtn) editSubTabBtn.style.display = 'inline-flex';
+                // if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'inline-flex';
+                // if (exportSubTabBtn) exportSubTabBtn.style.display = 'inline-flex';
+                // if (generateShareLinkBtn) generateShareLinkBtn.style.display = 'inline-flex';
+                
+                if (categoryFilter) categoryFilter.removeAttribute('disabled');
+                if (sortFilter) sortFilter.removeAttribute('disabled');
+                // if (searchInput) searchInput.removeAttribute('disabled');
+                if (searchScopeSelect) searchScopeSelect.removeAttribute('disabled');
+                if (showAllBtn) showAllBtn.style.display = 'block';
+                if (pinAllBtn) pinAllBtn.style.display = 'block';
+                if (starAllBtn) starAllBtn.style.display = 'block';
+                if (reportBtn) reportBtn.style.display = 'block';
+
+                document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
+                    if (el.tagName === 'BUTTON') el.style.removeProperty('display');
+                    else el.removeAttribute('disabled');
+                });
+                updateBulkActions(); // Ensure bulk actions bar visibility is correct
+                renderCustomTabs(); // This will re-evaluate display of edit/delete/share buttons based on current state
+            }
+        }
+
+        // New: Function to generate share link for the current custom tab
+        function generateShareLinkForTab() {
+            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                showToast("Cannot generate share links in read-only shared view.", "warning");
+                return;
+            }
+
+            if (!appState.currentCustomTab) {
+                showToast('Please select a custom tab to generate a share link.', 'warning');
+                return;
+            }
+
+            const customTabToShare = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+            if (!customTabToShare) {
+                showToast('Error: Selected custom tab not found.', 'error');
+                return;
+            }
+
+            const currentEntriesInTab = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials]
+                                        .filter(entry => (entry.customTabs || []).includes(customTabToShare.id));
+            const entryIds = currentEntriesInTab.map(entry => entry.id).join(',');
+
+            // IMPORTANT: Replace 'https://yourdomain.com/osintvault.html' with the actual URL where your file is hosted.
+            // If running locally, it will be 'file:///path/to/osintvault.html' or 'http://localhost/osintvault.html'
+            const currentBaseUrl = window.location.origin + window.location.pathname;
+            const shareLink = `${currentBaseUrl}?tab=${customTabToShare.id}&entries=${entryIds}`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareLink).then(() => {
+                showToast('Share link copied to clipboard!', 'success');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                showToast('Failed to copy link. Please copy manually: ' + shareLink, 'error');
+            });
         }
 
 
