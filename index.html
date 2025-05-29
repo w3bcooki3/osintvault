@@ -1093,6 +1093,9 @@
         .toast.info { /* For read-only banner */
             background: var(--primary-dark);
         }
+        .toast-warning{
+            background: var(--danger);
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -1359,9 +1362,9 @@
                         <i class="fas fa-download"></i>
                         Export
                     </button>
-                    <button class="btn btn-secondary" id="generateShareLinkBtn" style="display: none;">
+                    <button class="btn btn-secondary" id="shareOptionsBtn">
                         <i class="fas fa-share-alt"></i>
-                        Share Tab
+                        Share
                     </button>
                     <button class="btn btn-secondary" id="themeToggle">
                         <i class="fas fa-moon"></i>
@@ -1450,10 +1453,6 @@
                         <i class="fas fa-database"></i>
                         Intelligence Vault
                     </button>
-                    <button class="nav-tab" data-tab="custom-tabs">
-                        <i class="fas fa-layer-group"></i>
-                        Custom Tabs
-                    </button>
                     <button class="nav-tab" data-tab="analytics">
                         <i class="fas fa-chart-bar"></i>
                         Analytics
@@ -1461,6 +1460,10 @@
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
                         Threat Intel
+                    </button>
+                    <button class="nav-tab" data-tab="custom-tabs">
+                        <i class="fas fa-layer-group"></i>
+                        Custom Tabs
                     </button>
                 </div>
 
@@ -1638,11 +1641,7 @@
                                 <i class="fas fa-download"></i>
                                 Export Tab
                             </button>
-                            <button class="btn btn-secondary" id="generateShareLinkBtn" style="display: none;">
-                                <i class="fas fa-share-alt"></i>
-                                Share Tab
-                            </button>
-                        </div>
+                            </div>
                     </div>
 
                     <div class="sub-nav-tabs" id="customSubTabs">
@@ -2258,6 +2257,36 @@
         </div>
     </div>
 
+    <div class="modal" id="shareOptionsModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-share-alt"></i> Share Intelligence
+            </h3>
+            <form id="shareForm">
+                <div class="form-group">
+                    <label>What would you like to share?</label>
+                    <select id="shareScopeSelect">
+                        <option value="currentTab">Current Tab (Read-Only View)</option>
+                        <option value="allVault">All Intelligence Vault (Read-Only View)</option>
+                        <option value="allData">All Data (Read-Only View)</option>
+                        <option value="specificCustomTab" style="display:none;">Specific Custom Tab...</option>
+                        </select>
+                </div>
+
+                <div id="specificCustomTabSelector" class="form-group" style="display:none;">
+                    <label>Select a Custom Tab to share:</label>
+                    <select id="selectCustomTabForSharing">
+                        </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelShareOptions">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Generate Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
       // Application State
@@ -2676,13 +2705,25 @@
             targetContainer.innerHTML = filteredEntries.map(entry => createEntryCard(entry)).join('');
             
             // New: Apply shared-highlight if in read-only mode and relevant entries are found
-            if (appState.readOnlyMode && appState.currentTab === 'custom-tabs' && appState.currentCustomTab === appState.sharedTabId) {
-                appState.sharedEntryIds.forEach(id => {
-                    const entryCard = document.querySelector(`.tool-card[data-entry-id="${id}"]`);
-                    if (entryCard) {
-                        entryCard.classList.add('shared-highlight');
-                    }
-                });
+            if (appState.readOnlyMode && appState.sharedEntryIds.length > 0) {
+                // Determine if the current view corresponds to the shared scope
+                let shouldHighlight = false;
+                if (appState.sharedTabId === 'allData' || appState.sharedTabId === 'allVault') {
+                    shouldHighlight = true; // Always highlight all if allData/allVault shared
+                } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab === appState.sharedTabId) {
+                    shouldHighlight = true; // Highlight if shared custom tab
+                } else if (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultSubTab === appState.sharedTabId) {
+                    shouldHighlight = true; // Highlight if shared intel vault sub-tab
+                }
+
+                if (shouldHighlight) {
+                    appState.sharedEntryIds.forEach(id => {
+                        const entryCard = document.querySelector(`.tool-card[data-entry-id="${id}"]`);
+                        if (entryCard) {
+                            entryCard.classList.add('shared-highlight');
+                        }
+                    });
+                }
             }
 
             saveState(); // Save state after rendering entries
@@ -3075,7 +3116,12 @@
             document.getElementById('deleteSubTabBtn').addEventListener('click', handleDeleteSubTab);
             document.getElementById('exportSubTabBtn').addEventListener('click', exportCustomTab);
             document.getElementById('newRandomBtn').addEventListener('click', showRandomDiscovery); // New: Random Tool/Tip button
-            document.getElementById('generateShareLinkBtn').addEventListener('click', generateShareLinkForTab); // New: Share Tab button
+            
+            // New: Share options button and modal events
+            document.getElementById('shareOptionsBtn').addEventListener('click', showShareOptionsModal);
+            document.getElementById('cancelShareOptions').addEventListener('click', () => hideModal('shareOptionsModal'));
+            document.getElementById('shareScopeSelect').addEventListener('change', handleShareScopeChange);
+            document.getElementById('shareForm').addEventListener('submit', handleShareFormSubmit);
 
 
             // Click listener for custom sub-tabs (delegated)
@@ -4418,7 +4464,7 @@
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
             const exportSubTabBtn = document.getElementById('exportSubTabBtn'); // Get the new button
-            const generateShareLinkBtn = document.getElementById('generateShareLinkBtn'); // New: Get share button
+            // const generateShareLinkBtn = document.getElementById('generateShareLinkBtn'); // Moved to header, controlled by applyReadOnlyMode
             const emptyCustomTabState = document.getElementById('emptyCustomTabState');
             const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
             const customTabToolsGrid = document.getElementById('customTabToolsGrid');
@@ -4428,7 +4474,7 @@
             editSubTabBtn.style.display = 'none';
             deleteSubTabBtn.style.display = 'none';
             exportSubTabBtn.style.display = 'none'; // Hide export button too
-            generateShareLinkBtn.style.display = 'none'; // New: Hide share button
+            // generateShareLinkBtn.style.display = 'none'; // Moved to header, controlled globally
 
             customSubTabsContainer.innerHTML = ''; // Clear existing sub-tabs
 
@@ -4444,7 +4490,7 @@
                     editSubTabBtn.style.display = 'inline-flex';
                     deleteSubTabBtn.style.display = 'inline-flex';
                     exportSubTabBtn.style.display = 'inline-flex';
-                    generateShareLinkBtn.style.display = 'inline-flex'; // New: Show share button
+                    // generateShareLinkBtn.style.display = 'inline-flex'; // New: Show share button (global)
                 }
 
                 // Ensure a custom tab is active if customTabs exist
@@ -4473,11 +4519,18 @@
 
                     // Re-activate the selected sub-tab to ensure its styling is correct if it's the active one
                     if (appState.currentCustomTab === tab.id) {
-                         // Apply background for active state only if a color is defined, otherwise use default
-                         tabButton.style.background = tab.color || 'var(--gradient-accent)';
-                         tabButton.style.boxShadow = `0 2px 10px ${tab.color ? tab.color + '40' : 'rgba(0, 255, 136, 0.2)'}`; // Add shadow
-                         tabButton.style.color = tab.color ? 'white' : 'white'; // Ensure text is white for active tabs
+                        // Apply background for active state only if a color is defined, otherwise use default
+                        tabButton.style.background = tab.color || 'var(--gradient-accent)';
+                        
+                        // Add shadow
+                        tabButton.style.boxShadow = tab.color
+                            ? `0 2px 10px ${tab.color}40`
+                            : '0 2px 10px rgba(0, 255, 136, 0.2)';
+
+                        // Ensure text is white for active tabs
+                        tabButton.style.color = 'white';
                     }
+
                 });
 
                 // Re-activate the selected sub-tab to ensure its styling is correct
@@ -4512,9 +4565,14 @@
                 if (tabData) {
                     // Apply active state styles
                     newActiveTab.style.background = tabData.color || 'var(--gradient-accent)';
-                    newActiveTab.style.boxShadow = `0 2px 10px ${tabData.color ? tabData.color + '40' : 'rgba(0, 255, 136, 0.2)'}`;
+                    newActiveTab.style.boxShadow = tabData.color
+                        ? `0 2px 10px ${tabData.color}40`
+                        : '0 2px 10px rgba(0, 255, 136, 0.2)';
                     newActiveTab.style.color = 'white'; // Active tab text is always white
                 }
+            } else {
+                console.warn(`Tab with ID ${tabId} not found.`);
+
             }
             appState.currentCustomTab = tabId;
             renderIntelligenceEntries(); // Re-render entries filtered by this specific custom tab
@@ -4841,18 +4899,42 @@
         // New: Function to parse URL for shareable tabs
         function parseShareableLink() {
             const urlParams = new URLSearchParams(window.location.search);
-            const sharedTabId = urlParams.get('tab');
+            const sharedTabIdentifier = urlParams.get('tab'); // Can be custom tab ID or 'allVault', 'allData', 'tools', 'emails', etc.
             const sharedEntryIds = urlParams.get('entries');
 
-            if (sharedTabId && sharedEntryIds) {
+            if (sharedTabIdentifier && sharedEntryIds) {
                 appState.readOnlyMode = true;
-                appState.sharedTabId = sharedTabId;
+                appState.sharedTabId = sharedTabIdentifier; // Store the identifier
                 appState.sharedEntryIds = sharedEntryIds.split(',');
 
-                // Switch to the custom-tabs view and then to the specific shared tab
-                // This will be handled by initApp calling switchTab and then switchCustomTab
-                appState.currentTab = 'custom-tabs';
-                appState.currentCustomTab = sharedTabId;
+                // Determine which tab to switch to based on the identifier
+                if (sharedTabIdentifier === 'allVault' || sharedTabIdentifier === 'allData') {
+                    appState.currentTab = 'intelligence-vault'; // Go to main vault view
+                    appState.currentIntelligenceVaultSubTab = 'tools'; // Default to tools if all vault/data
+                } else if (appState.customTabs.find(tab => tab.id === sharedTabIdentifier)) {
+                    appState.currentTab = 'custom-tabs';
+                    appState.currentCustomTab = sharedTabIdentifier;
+                } else if (['tools', 'emails', 'phones', 'crypto', 'locations', 'links', 'media', 'passwords', 'keywords', 'socials'].includes(sharedTabIdentifier)) {
+                     appState.currentTab = 'intelligence-vault';
+                     appState.currentIntelligenceVaultSubTab = sharedTabIdentifier;
+                } else {
+                    showToast('Shared content not found or invalid link.', 'error');
+                    appState.readOnlyMode = false; // Reset if invalid
+                    history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // Switch to the determined tab. The `renderIntelligenceEntries` called by switchTab
+                // will handle highlighting entries.
+                switchTab(appState.currentTab);
+                // If it's a custom tab, ensure it's selected
+                if (appState.currentTab === 'custom-tabs') {
+                    switchCustomTab(appState.currentCustomTab);
+                }
+                // If it's an intelligence vault sub-tab, ensure it's selected
+                if (appState.currentTab === 'intelligence-vault') {
+                    switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
+                }
 
                 showToast('Viewing shared intelligence vault (Read-Only).', 'info');
                 // The applyReadOnlyMode will be called after initial rendering by initApp
@@ -4873,7 +4955,7 @@
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
             const exportSubTabBtn = document.getElementById('exportSubTabBtn');
-            const generateShareLinkBtn = document.getElementById('generateShareLinkBtn');
+            const shareOptionsBtn = document.getElementById('shareOptionsBtn'); // Reference to the new global share button
             const categoryFilter = document.getElementById('categoryFilter');
             const sortFilter = document.getElementById('sortFilter');
             const searchInput = document.getElementById('searchInput');
@@ -4882,6 +4964,7 @@
             const pinAllBtn = document.getElementById('pinAllBtn');
             const starAllBtn = document.getElementById('starAllBtn');
             const reportBtn = document.getElementById('reportBtn');
+            const newRandomBtn = document.getElementById('newRandomBtn'); // New: Random tool button
 
             if (appState.readOnlyMode) {
                 // Hide or disable buttons/controls
@@ -4893,16 +4976,16 @@
                 if (editSubTabBtn) editSubTabBtn.style.display = 'none';
                 if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'none';
                 if (exportSubTabBtn) exportSubTabBtn.style.display = 'none';
-                if (generateShareLinkBtn) generateShareLinkBtn.style.display = 'none';
+                if (shareOptionsBtn) shareOptionsBtn.style.display = 'none'; // Hide the new global share button
                 if (categoryFilter) categoryFilter.setAttribute('disabled', 'disabled');
                 if (sortFilter) sortFilter.setAttribute('disabled', 'disabled');
-                // Keep search bar enabled for filtering within the shared view, but disable scope if you want
-                // if (searchInput) searchInput.setAttribute('disabled', 'disabled');
+                if (searchInput) searchInput.setAttribute('disabled', 'disabled'); // Disable search too in read-only
                 if (searchScopeSelect) searchScopeSelect.setAttribute('disabled', 'disabled');
                 if (showAllBtn) showAllBtn.style.display = 'none';
                 if (pinAllBtn) pinAllBtn.style.display = 'none';
                 if (starAllBtn) starAllBtn.style.display = 'none';
                 if (reportBtn) reportBtn.style.display = 'none';
+                if (newRandomBtn) newRandomBtn.style.display = 'none'; // Hide random tool button
 
                 // Also disable form submissions and inputs in modals
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
@@ -4918,19 +5001,18 @@
                 // updateBulkActions() will handle visibility based on selection for bulk actions
                 if (createSubTabBtn) createSubTabBtn.style.display = 'inline-flex';
                 // These will be re-enabled by renderCustomTabs() based on currentCustomTab presence
-                // if (editSubTabBtn) editSubTabBtn.style.display = 'inline-flex';
-                // if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'inline-flex';
-                // if (exportSubTabBtn) exportSubTabBtn.style.display = 'inline-flex';
-                // if (generateShareLinkBtn) generateShareLinkBtn.style.display = 'inline-flex';
+                if (exportSubTabBtn) exportSubTabBtn.style.display = 'inline-flex';
+                if (shareOptionsBtn) shareOptionsBtn.style.display = 'inline-flex'; // Show the new global share button
                 
                 if (categoryFilter) categoryFilter.removeAttribute('disabled');
                 if (sortFilter) sortFilter.removeAttribute('disabled');
-                // if (searchInput) searchInput.removeAttribute('disabled');
+                if (searchInput) searchInput.removeAttribute('disabled');
                 if (searchScopeSelect) searchScopeSelect.removeAttribute('disabled');
                 if (showAllBtn) showAllBtn.style.display = 'block';
                 if (pinAllBtn) pinAllBtn.style.display = 'block';
                 if (starAllBtn) starAllBtn.style.display = 'block';
                 if (reportBtn) reportBtn.style.display = 'block';
+                if (newRandomBtn) newRandomBtn.style.display = 'block'; // Show random tool button
 
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
                     if (el.tagName === 'BUTTON') el.style.removeProperty('display');
@@ -4941,32 +5023,139 @@
             }
         }
 
-        // New: Function to generate share link for the current custom tab
-        function generateShareLinkForTab() {
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+        // New: Function to open the selective share options modal
+        function showShareOptionsModal() {
+            if (appState.readOnlyMode) {
                 showToast("Cannot generate share links in read-only shared view.", "warning");
                 return;
             }
 
-            if (!appState.currentCustomTab) {
-                showToast('Please select a custom tab to generate a share link.', 'warning');
-                return;
+            const shareScopeSelect = document.getElementById('shareScopeSelect');
+            const specificCustomTabSelector = document.getElementById('specificCustomTabSelector');
+            const selectCustomTabForSharing = document.getElementById('selectCustomTabForSharing');
+
+            // Reset default selections and hide specific custom tab selector
+            shareScopeSelect.value = 'currentTab';
+            specificCustomTabSelector.style.display = 'none';
+            selectCustomTabForSharing.innerHTML = ''; // Clear previous custom tab options
+
+            // Populate the 'specificCustomTab' option and dropdown if custom tabs exist
+            const specificCustomTabOption = shareScopeSelect.querySelector('option[value="specificCustomTab"]');
+
+            if (appState.customTabs.length > 0) {
+                specificCustomTabOption.style.display = 'block'; // Show the option
+                appState.customTabs.forEach(tab => {
+                    const option = document.createElement('option');
+                    option.value = tab.id;
+                    option.textContent = tab.name;
+                    selectCustomTabForSharing.appendChild(option);
+                });
+            } else {
+                specificCustomTabOption.style.display = 'none'; // Hide if no custom tabs
             }
 
-            const customTabToShare = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
-            if (!customTabToShare) {
-                showToast('Error: Selected custom tab not found.', 'error');
-                return;
+            // Attempt to set default selection based on current active tab
+            if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+                shareScopeSelect.value = 'specificCustomTab';
+                specificCustomTabSelector.style.display = 'block';
+                selectCustomTabForSharing.value = appState.currentCustomTab;
+            } else if (appState.currentTab === 'intelligence-vault') {
+                // If in intelligence vault, default to sharing the current sub-tab
+                // The 'currentTab' option in the select actually corresponds to current intelligence vault sub-tab for this case.
+                shareScopeSelect.value = 'currentTab'; // This maps to intelligence vault sub-tabs
+            } else {
+                // For Analytics or Threat Intel tabs, default to sharing All Data
+                shareScopeSelect.value = 'allData';
             }
+            
+            showModal('shareOptionsModal');
+        }
 
-            const currentEntriesInTab = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials]
-                                        .filter(entry => (entry.customTabs || []).includes(customTabToShare.id));
-            const entryIds = currentEntriesInTab.map(entry => entry.id).join(',');
+        // New: Handle change in share scope selection
+        function handleShareScopeChange(e) {
+            const specificCustomTabSelector = document.getElementById('specificCustomTabSelector');
+            if (e.target.value === 'specificCustomTab') {
+                specificCustomTabSelector.style.display = 'block';
+            } else {
+                specificCustomTabSelector.style.display = 'none';
+            }
+        }
 
-            // IMPORTANT: Replace 'https://yourdomain.com/osintvault.html' with the actual URL where your file is hosted.
-            // If running locally, it will be 'file:///path/to/osintvault.html' or 'http://localhost/osintvault.html'
+        // New: Handle submission of the share options form
+        function handleShareFormSubmit(e) {
+            e.preventDefault();
+            hideModal('shareOptionsModal');
+
+            const shareScope = document.getElementById('shareScopeSelect').value;
+            let shareLink = '';
             const currentBaseUrl = window.location.origin + window.location.pathname;
-            const shareLink = `${currentBaseUrl}?tab=${customTabToShare.id}&entries=${entryIds}`;
+
+            let sharedTabIdentifier = ''; // Will be the 'tab' URL parameter
+            let entryIdsToShare = [];
+
+            // Helper to collect all entries
+            const getAllEntriesCombined = () => [...appState.tools, ...appState.emails, ...appState.phones,
+                                                ...appState.crypto, ...appState.locations, ...appState.links,
+                                                ...appState.media, ...appState.passwords, ...appState.keywords,
+                                                ...appState.socials];
+
+            switch (shareScope) {
+                case 'currentTab':
+                    // This maps to sharing the current active Intelligence Vault sub-tab.
+                    // If the user is on Analytics or Threat Intel, it defaults to 'allData' during modal open.
+                    sharedTabIdentifier = appState.currentIntelligenceVaultSubTab;
+                    let currentEntries = [];
+                    switch(sharedTabIdentifier) {
+                        case 'tools': currentEntries = appState.tools; break;
+                        case 'emails': currentEntries = appState.emails; break;
+                        case 'phones': currentEntries = appState.phones; break;
+                        case 'crypto': currentEntries = appState.crypto; break;
+                        case 'locations': currentEntries = appState.locations; break;
+                        case 'links': currentEntries = appState.links; break;
+                        case 'media': currentEntries = appState.media; break;
+                        case 'passwords': currentEntries = appState.passwords; break;
+                        case 'keywords': currentEntries = appState.keywords; break;
+                        case 'socials': currentEntries = appState.socials; break;
+                        default:
+                            showToast('Cannot share "Current Tab" from Analytics/Threats. Select "All Data".', 'warning');
+                            return;
+                    }
+                    entryIdsToShare = currentEntries.map(entry => entry.id);
+                    shareLink = `${currentBaseUrl}?tab=${sharedTabIdentifier}&entries=${entryIdsToShare.join(',')}`;
+                    break;
+
+                case 'allVault':
+                    // Share all entries from the Intelligence Vault (all sub-tabs combined)
+                    sharedTabIdentifier = 'allVault'; // A special identifier for the shared view
+                    entryIdsToShare = getAllEntriesCombined().map(entry => entry.id);
+                    shareLink = `${currentBaseUrl}?tab=${sharedTabIdentifier}&entries=${entryIdsToShare.join(',')}`;
+                    break;
+
+                case 'allData':
+                    // Share all available data, including Analytics and Threats (though only entries will be highlighted)
+                    sharedTabIdentifier = 'allData'; // A special identifier for the shared view
+                    entryIdsToShare = getAllEntriesCombined().map(entry => entry.id);
+                    shareLink = `${currentBaseUrl}?tab=${sharedTabIdentifier}&entries=${entryIdsToShare.join(',')}`;
+                    break;
+
+                case 'specificCustomTab':
+                    const customTabId = document.getElementById('selectCustomTabForSharing').value;
+                    const customTab = appState.customTabs.find(tab => tab.id === customTabId);
+                    if (customTab) {
+                        sharedTabIdentifier = customTab.id; // The custom tab's actual ID
+                        entryIdsToShare = customTab.toolIds; // Custom tabs already store all assigned entry IDs
+                        shareLink = `${currentBaseUrl}?tab=${sharedTabIdentifier}&entries=${entryIdsToShare.join(',')}`;
+                    } else {
+                        showToast('Error: Selected custom tab not found for sharing.', 'error');
+                        return;
+                    }
+                    break;
+            }
+
+            if (entryIdsToShare.length === 0) {
+                showToast('No entries found to share for the selected scope.', 'warning');
+                return;
+            }
 
             // Copy to clipboard
             navigator.clipboard.writeText(shareLink).then(() => {
