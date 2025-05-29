@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,32 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSINTVault - Your OSINT tools, always with you</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Refined Color Palette & Variables */
         :root {
-            --primary: #00d4ff;
-            --primary-dark: #0099cc;
-            --secondary: #ff6b35;
-            --accent: #00ff88;
-            --danger: #ff3366;
+            --primary: #007bff; /* Slightly less vibrant blue, more authoritative */
+            --primary-dark: #0056b3;
+            --secondary: #ff6b35; /* Strong accent for highlights */
+            --accent: #28a745; /* Positive action/success */
+            --danger: #dc3545;
             --warning: #ffaa00;
-            --success: #00ff88;
-            --bg-primary: #0a0e14;
-            --bg-secondary: #151922;
-            --bg-tertiary: #1f2937;
-            --bg-card: #1a1f2e;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: #2d3748;
-            --border-light: #374151;
-            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.7);
-            --gradient-primary: linear-gradient(135deg, #00d4ff, #0099cc);
-            --gradient-secondary: linear-gradient(135deg, #ff6b35, #ff3366);
-            --gradient-accent: linear-gradient(135deg, #00ff88, #00d4ff);
-            --gradient-bg: linear-gradient(135deg, #0a0e14, #151922);
+            --success: #28a745;
+
+            /* Darker, more professional greyscale for dark theme */
+            --bg-primary: #0C1017; /* Deeper primary background */
+            --bg-secondary: #171E28; /* Slightly lighter card/section background */
+            --bg-tertiary: #212B3B; /* Input/hover background */
+            --bg-card: #1E2736;     /* Card background */
+
+            --text-primary: #E0E6F0; /* Brighter text for contrast */
+            --text-secondary: #9BAEC8; /* Muted text */
+            --text-muted: #6A7F9D;    /* Even more muted text */
+
+            --border: #3D4C61;      /* Stronger but still subtle border */
+            --border-light: #526680; /* Lighter border for dividers */
+
+            /* Softer, multi-layered shadow */
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3), 0 16px 60px rgba(0, 0, 0, 0.2);
+
+            --glow: 0 0 15px rgba(0, 123, 255, 0.4); /* Adjusted glow for new primary */
+            --primary-shadow-color: rgba(0, 123, 255, 0.3); /* For primary button shadow */
+            --primary-shadow-color-hover: rgba(0, 123, 255, 0.4);
+
+            /* Very subtle gradient, mainly for active states or branding */
+            --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
+            --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
+            --gradient-accent: linear-gradient(135deg, #28a745, #1e8738);
+            /* Softened background gradient */
+            --gradient-bg: linear-gradient(135deg, #0C1017, #171E28);
 
             /* Default Tab Colors */
             --tab-color-default: var(--primary);
@@ -51,22 +63,28 @@
             --danger: #dc3545;
             --warning: #ffc107;
             --success: #28a745;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #e9ecef;
-            --bg-card: #ffffff;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --text-muted: #adb5bd;
-            --border: #dee2e6;
-            --border-light: #ced4da;
+
+            /* Lighter, professional greyscale for light theme */
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F7F9FC; /* Slightly off-white for sections */
+            --bg-tertiary: #E8EEF5; /* Light grey for inputs/hovers */
+            --bg-card: #FFFFFF;    /* White card background */
+
+            --text-primary: #2C3E50; /* Darker text for readability */
+            --text-secondary: #607D8B; /* Muted grey text */
+            --text-muted: #95A5A6;    /* Even more muted */
+
+            --border: #CFD8DC; /* Light grey border */
+            --border-light: #ECEFF1; /* Very light border */
+
             --glow: 0 0 10px rgba(0, 123, 255, 0.2);
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 5px 25px rgba(0, 0, 0, 0.15);
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08);
+
             --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
             --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
             --gradient-accent: linear-gradient(135deg, #28a745, #218838);
-            --gradient-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            --gradient-bg: linear-gradient(135deg, #F7F9FC, #E8EEF5);
 
             /* Default Tab Colors (Light Theme) */
             --tab-color-default: var(--primary);
@@ -86,7 +104,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gradient-bg);
+            background: var(--gradient-bg); /* Use the softened gradient */
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
@@ -96,9 +114,9 @@
 
         .container {
             width: 100vw;
-            max-width: 100%;
-            padding: 0 20px;
-            margin: 0;
+            max-width: 1800px; /* Set a max-width for better readability on large screens */
+            padding: 0 40px; /* More generous padding on larger screens */
+            margin: 0 auto; /* Center the container */
         }
 
         /* Header Styles */
@@ -110,7 +128,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow); /* Use the new softer shadow */
             transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -134,10 +152,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 24px;
+            font-size: 28px; /* Slightly larger logo text */
             font-weight: 700;
             color: var(--primary);
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Outfit', sans-serif; /* New font for logo */
+            letter-spacing: -0.5px; /* Tighter letter spacing */
+            cursor: default; /* Indicate not clickable */
         }
 
         .logo i {
@@ -146,11 +166,16 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+            transition: transform 0.2s ease-out, filter 0.2s ease-out; /* Smooth transition */
+        }
+        .logo:hover i {
+            transform: scale(1.05); /* Subtle scale on hover */
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.7));
         }
 
         .tagline {
-            font-size: 12px;
-            color: var(--text-secondary);
+            font-size: 0.8rem; /* Slightly smaller, more refined tagline */
+            color: var(--text-muted);
             margin-top: 5px;
         }
 
@@ -164,23 +189,27 @@
         .search-container {
             position: relative;
             min-width: 350px;
+            display: flex;
+            align-items: center;
         }
 
         .search-input {
             width: 100%;
             padding: 15px 50px 15px 20px;
-            border: 2px solid var(--border);
+            border: 1px solid var(--border-light); /* Thinner, lighter border */
             border-radius: 12px;
             font-size: 14px;
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary); /* Lighter background for inputs */
             color: var(--text-primary);
             transition: all 0.3s ease;
+            flex-grow: 1;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Inner shadow for depth */
         }
 
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: var(--glow);
+            box-shadow: var(--glow), inset 0 1px 3px rgba(0,0,0,0.15);
         }
 
         .search-icon {
@@ -190,6 +219,25 @@
             transform: translateY(-50%);
             color: var(--text-secondary);
         }
+        
+        /* New: Search Scope Select */
+        #searchScopeSelect {
+            margin-left: 10px;
+            padding: 10px 12px; /* Adjusted padding */
+            border-radius: 8px;
+            background: var(--bg-tertiary); /* Lighter background */
+            color: var(--text-primary);
+            border: 1px solid var(--border-light); /* Lighter border */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+        }
+        #searchScopeSelect:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow), inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
 
         /* Stats Bar */
         .stats-bar {
@@ -199,8 +247,10 @@
             padding: 15px 20px;
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
+            border-radius: 0 0 12px 12px; /* Rounded bottom corners for continuity */
             margin: 0;
             transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: var(--shadow); /* Add shadow to stats bar */
         }
 
         .stat-item {
@@ -225,9 +275,9 @@
         .btn {
             padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px; /* Slightly more rounded */
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600; /* Bolder text */
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -236,6 +286,7 @@
             text-decoration: none;
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.2px;
         }
 
         .btn::before {
@@ -256,23 +307,25 @@
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 4px 15px var(--primary-shadow-color);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 8px 25px var(--primary-shadow-color-hover);
         }
 
         .btn-secondary {
             background: var(--bg-tertiary);
             color: var(--text-primary);
             border: 1px solid var(--border);
+            box-shadow: var(--shadow); /* Add shadow to secondary buttons */
         }
 
         .btn-secondary:hover {
             background: var(--border);
             transform: translateY(-1px);
+            box-shadow: var(--shadow-lg); /* Increased shadow on hover */
         }
 
         .btn-danger {
@@ -280,11 +333,19 @@
             color: white;
             box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
         }
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.4);
+        }
 
         .btn-success {
             background: var(--gradient-accent);
             color: white;
             box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
         }
 
         /* Navigation Tabs */
@@ -292,32 +353,33 @@
             display: flex;
             gap: 0;
             margin: 20px 0;
-            border-bottom: 1px solid var(--border);
+            /* Replaced border-bottom with a more integrated look */
             background: var(--bg-secondary);
-            border-radius: 12px 12px 0 0;
-            padding: 5px;
+            border-radius: 12px; /* Rounded container for tabs */
+            padding: 8px; /* More padding around tabs */
             transition: background 0.3s ease, border-color 0.3s ease;
-            flex-wrap: wrap; /* Added for responsiveness of main tabs */
+            flex-wrap: wrap;
+            box-shadow: var(--shadow); /* Add shadow to tab container */
         }
 
         .nav-tab {
-            padding: 15px 25px;
+            padding: 14px 22px; /* Adjusted padding for a cleaner look */
             background: none;
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: 10px; /* Match button border-radius */
+            font-weight: 600;
             position: relative;
-            flex-grow: 1; /* Make tabs take equal width */
+            flex-grow: 1;
             text-align: center;
         }
 
         .nav-tab.active {
-            background: var(--gradient-primary);
+            background: var(--gradient-primary); /* Keep gradient for active */
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+            box-shadow: var(--shadow);
         }
 
         .nav-tab:hover:not(.active) {
@@ -330,15 +392,16 @@
             display: flex;
             gap: 0;
             margin-top: 20px;
-            border-bottom: 1px solid var(--border);
+            border: 1px solid var(--border-light); /* Lighter border */
             background: var(--bg-tertiary); /* Slightly different background for sub-tabs */
-            border-radius: 8px 8px 0 0;
-            padding: 5px;
+            border-radius: 8px; /* Slightly smaller radius than main tabs */
+            padding: 4px; /* Less padding */
             flex-wrap: wrap;
+            box-shadow: var(--shadow); /* Add shadow to sub-tab container */
         }
 
         .sub-nav-tab {
-            padding: 10px 18px;
+            padding: 10px 15px; /* Adjusted padding */
             background: none;
             border: none;
             color: var(--text-secondary);
@@ -346,13 +409,15 @@
             transition: all 0.3s ease;
             border-radius: 6px;
             font-weight: 500;
-            font-size: 0.9em;
+            font-size: 0.85em; /* Slightly smaller font for sub-tabs */
             flex-grow: 1;
             text-align: center;
         }
 
         .sub-nav-tab.active {
             color: white;
+            background-color: var(--tab-color-default); /* Use default tab color */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for active sub-tab */
         }
 
         .sub-nav-tab:hover:not(.active) {
@@ -411,7 +476,7 @@
         }
 
         .content-title {
-            font-size: 24px;
+            font-size: 28px; /* Slightly larger content title */
             font-weight: 700;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
@@ -444,12 +509,13 @@
 
         .tool-card {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
+            border: 1px solid var(--border); /* Thinner border */
             border-radius: 12px;
             padding: 25px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease; /* Faster transition */
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow); /* Apply new softer shadow */
         }
 
         .tools-list .tool-card {
@@ -503,15 +569,15 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px; /* Thicker accent line */
             background: var(--gradient-primary);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-7px); /* More pronounced lift */
+            box-shadow: var(--shadow-lg); /* Larger shadow on hover */
             border-color: var(--primary);
         }
 
@@ -541,8 +607,8 @@
         }
 
         .tool-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 1.15rem; /* Slightly larger title */
+            font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 8px;
             display: flex;
@@ -557,7 +623,7 @@
         }
 
         .tool-url {
-            font-size: 12px;
+            font-size: 0.8rem; /* Slightly smaller URL */
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
             word-break: break-all;
@@ -582,16 +648,16 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 8px;
+            padding: 6px; /* Smaller padding for action buttons */
             border-radius: 6px;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 0.9rem; /* Slightly smaller icon size */
         }
 
         .action-btn:hover {
             background: var(--bg-tertiary);
-            color: var(--text-primary);
-            transform: scale(1.1);
+            color: var(--primary); /* Hover color for actions */
+            transform: scale(1.15); /* Slightly more prominent icon scaling */
         }
 
         .action-btn.starred {
@@ -612,6 +678,7 @@
             margin-bottom: 20px;
             align-items: center;
             gap: 15px;
+            box-shadow: var(--shadow); /* Add shadow to bulk actions */
         }
 
         .bulk-actions.active {
@@ -639,13 +706,14 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px; /* More padding */
             text-align: center;
             transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: var(--shadow); /* Add shadow */
         }
 
         .analytics-value {
-            font-size: 32px;
+            font-size: 3rem; /* Larger font size */
             font-weight: 700;
             margin-bottom: 10px;
             background: var(--gradient-primary);
@@ -653,6 +721,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -1px; /* Tighter spacing for numbers */
         }
 
         .analytics-section {
@@ -661,6 +730,7 @@
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
+            box-shadow: var(--shadow); /* Add shadow */
         }
 
         .analytics-section h4 {
@@ -710,6 +780,7 @@
             padding: 40px 20px 20px;
             margin-top: 50px;
             transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); /* Shadow pushing up */
         }
 
         .footer-content {
@@ -723,12 +794,13 @@
 
         .footer-title {
             color: var(--primary);
-            font-size: 18px;
+            font-size: 1.3rem; /* Slightly larger footer titles */
             font-weight: 600;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: 'Outfit', sans-serif; /* Consistent heading font */
         }
 
         .tips-grid {
@@ -740,15 +812,16 @@
         .tip-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px; /* Slightly softer corners */
             padding: 15px;
-            border-left: 4px solid var(--primary);
+            border-left: 5px solid var(--primary); /* Thicker accent bar */
             transition: all 0.3s ease;
+            box-shadow: var(--shadow); /* Add shadow to tip cards */
         }
 
         .tip-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
+            transform: translateY(-8px); /* More lift on hover */
+            box-shadow: var(--shadow-lg); /* Increased shadow on hover */
             border-color: var(--primary-dark);
             background: var(--bg-tertiary);
         }
@@ -786,7 +859,7 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 10px;
+                padding: 0 15px; /* Adjusted padding for smaller screens */
             }
             
             .header-content {
@@ -797,8 +870,19 @@
             .search-container {
                 min-width: unset;
                 width: 100%;
+                flex-direction: column; /* Stack search input and select */
+                align-items: stretch;
             }
-            
+            .search-input {
+                margin-bottom: 10px;
+            }
+            #searchScopeSelect {
+                margin-left: 0; /* Reset margin for stacking */
+            }
+            .search-icon {
+                right: 20px; /* Keep position relative to input */
+            }
+
             .controls {
                 width: 100%;
                 justify-content: center;
@@ -835,7 +919,7 @@
 
         @media (max-width: 480px) {
             .logo {
-                font-size: 20px;
+                font-size: 24px; /* Adjust logo size */
             }
 
             .btn {
@@ -889,7 +973,7 @@
             background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             backdrop-filter: blur(10px);
-            overflow-y: auto; /* Allow scrolling for small screens */
+            overflow-y: auto;
         }
 
         .modal.show {
@@ -901,13 +985,13 @@
 
         .modal-content {
             background: var(--bg-card);
-            border-radius: 12px;
-            padding: 30px;
+            border-radius: 16px; /* More rounded modal corners */
+            padding: 40px; /* More generous padding */
             width: 90%;
             max-width: 600px;
-            max-height: 90vh; /* Adjust max-height for responsiveness */
+            max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             box-shadow: var(--shadow-lg);
             transition: background 0.3s ease, border-color 0.3s ease;
         }
@@ -918,8 +1002,8 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 10px; /* More space below label */
+            font-weight: 600; /* Bolder labels */
             color: var(--text-primary);
         }
 
@@ -927,13 +1011,14 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg-secondary);
+            padding: 14px; /* Larger input fields */
+            border: 1px solid var(--border);
+            border-radius: 10px; /* Match button rounding */
+            background: var(--bg-tertiary); /* Lighter background for inputs */
             color: var(--text-primary);
             font-size: 14px;
             transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); /* Subtle inner shadow */
         }
 
         .form-group input:focus,
@@ -941,7 +1026,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: var(--glow);
+            box-shadow: var(--glow), inset 0 1px 4px rgba(0,0,0,0.1);
         }
 
         /* Toast Notifications */
@@ -1002,14 +1087,19 @@
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px; /* More vertical padding */
             color: var(--text-secondary);
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px dashed var(--border-light); /* Dashed border for a softer look */
+            margin-top: 20px;
+            box-shadow: var(--shadow); /* Add shadow */
         }
 
         .empty-state i {
-            font-size: 64px;
+            font-size: 72px; /* Larger icon */
             margin-bottom: 20px;
-            opacity: 0.3;
+            opacity: 0.2; /* Lighter opacity */
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1020,20 +1110,22 @@
             display: inline-block;
             background: var(--bg-tertiary);
             color: var(--text-secondary);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            margin-right: 5px;
-            margin-bottom: 3px;
+            padding: 4px 10px; /* More padding for tags */
+            border-radius: 16px; /* More rounded */
+            font-size: 0.75rem; /* Slightly smaller font */
+            margin-right: 6px;
+            margin-bottom: 4px;
+            font-weight: 500;
         }
         
         .threat-item {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
             transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: var(--shadow); /* Add shadow */
         }
         
         .threat-header {
@@ -1045,6 +1137,27 @@
         
         .threat-tags {
             margin-top: 10px;
+        }
+
+        .threat-level {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .threat-high {
+            background: var(--danger);
+            color: white;
+        }
+        .threat-medium {
+            background: var(--warning);
+            color: black;
+        }
+        .threat-low {
+            background: var(--success);
+            color: white;
         }
 
         .scan-progress {
@@ -1102,10 +1215,10 @@
             gap: 5px;
             background: var(--bg-tertiary);
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 8px; /* Slightly softer */
             font-size: 0.9em;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border-light); /* More prominent default border */
             transition: all 0.2s ease;
         }
 
@@ -1115,7 +1228,8 @@
 
         .custom-tab-checkbox.checked {
             border-color: var(--primary);
-            background: rgba(0, 212, 255, 0.1);
+            background: rgba(0, 123, 255, 0.15); /* Match new primary color */
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
         }
 
         /* Style for Icon picker */
@@ -1138,9 +1252,9 @@
             justify-content: center;
             align-items: center;
             font-size: 20px;
-            border-radius: 4px;
+            border-radius: 6px; /* Slightly softer */
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 1px solid var(--border-light); /* Visible border */
             transition: all 0.2s ease;
             color: var(--text-secondary);
         }
@@ -1152,7 +1266,7 @@
         }
 
         .icon-picker-item.selected {
-            background: var(--primary);
+            background: var(--primary); /* Use primary color */
             color: white;
             border-color: var(--primary);
             box-shadow: var(--glow);
@@ -1177,7 +1291,7 @@
 
         .color-picker-item.selected {
             border-color: var(--text-primary); /* Border for selected color */
-            box-shadow: 0 0 0 2px var(--primary); /* Glow for selected color */
+            box-shadow: 0 0 0 3px var(--primary-dark); /* Thicker, slightly darker glow */
         }
     </style>
 </head>
@@ -1196,6 +1310,11 @@
                     <div class="search-container">
                         <input type="text" class="search-input" id="searchInput" placeholder="Search intelligence tools, techniques, indicators...">
                         <i class="fas fa-search search-icon"></i>
+                        <select id="searchScopeSelect">
+                            <option value="currentTab">Current Tab</option>
+                            <option value="allVault">All Intelligence Vault</option>
+                            <option value="allData">All Data</option>
+                        </select>
                     </div>
                     <button class="btn btn-primary" id="addEntryBtn">
                         <i class="fas fa-plus-circle"></i>
@@ -1263,11 +1382,11 @@
                     </button>
                     <button class="btn btn-secondary" id="pinAllBtn" style="width: 100%; margin-bottom: 10px;">
                         <i class="fas fa-thumbtack"></i>
-                        Pinned Tools
+                        Pinned Entries
                     </button>
                     <button class="btn btn-secondary" id="starAllBtn" style="width: 100%; margin-bottom: 10px;">
                         <i class="fas fa-star"></i>
-                        Starred Tools
+                        Starred Entries
                     </button>
                     <button class="btn btn-success" id="reportBtn" style="width: 100%;">
                         <i class="fas fa-file-alt"></i>
@@ -1278,9 +1397,9 @@
 
             <div class="main-content">
                 <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="tools">
-                        <i class="fas fa-tools"></i>
-                        Tools Arsenal
+                    <button class="nav-tab active" data-tab="intelligence-vault">
+                        <i class="fas fa-database"></i>
+                        Intelligence Vault
                     </button>
                     <button class="nav-tab" data-tab="analytics">
                         <i class="fas fa-chart-bar"></i>
@@ -1289,10 +1408,6 @@
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
                         Threat Intel
-                    </button>
-                  	<button class="nav-tab" data-tab="intelligence-vault">
-                        <i class="fas fa-database"></i>
-                        Intelligence Vault
                     </button>
                     <button class="nav-tab" data-tab="custom-tabs">
                         <i class="fas fa-layer-group"></i>
@@ -1316,7 +1431,7 @@
                     </button>
                 </div>
 
-                <div class="tab-content active" id="toolsTab">
+                <div class="tab-content" id="toolsTab">
                     <div class="content-header">
                         <h2 class="content-title">Intelligence Tools Arsenal</h2>
                         <div class="controls">
@@ -1350,18 +1465,6 @@
                         <div class="analytics-card">
                             <div class="analytics-value" id="toolsUsed">0</div>
                             <div>Tools Used Today</div>
-                        </div>
-                        <div class="analytics-card">
-                            <div class="analytics-value" id="scansCompleted">0</div>
-                            <div>Scans Completed</div>
-                        </div>
-                        <div class="analytics-card">
-                            <div class="analytics-value" id="threatsDetected">0</div>
-                            <div>Threats Detected</div>
-                        </div>
-                        <div class="analytics-card">
-                            <div class="analytics-value" id="dataProcessed">0GB</div>
-                            <div>Data Processed</div>
                         </div>
                     </div>
 
@@ -1407,7 +1510,7 @@
                         </div>
                 </div>
 
-                <div class="tab-content" id="intelligence-vaultTab">
+                <div class="tab-content active" id="intelligence-vaultTab">
                     <div class="content-header">
                         <h2 class="content-title">Intelligence Vault</h2>
                         <div class="controls">
@@ -1439,6 +1542,15 @@
                         </button>
                         <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="media">
                             <i class="fas fa-camera"></i> Media
+                        </button>
+                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="passwords">
+                            <i class="fas fa-key"></i> Passwords
+                        </button>
+                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="keywords">
+                            <i class="fas fa-font"></i> Keywords
+                        </button>
+                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="socials">
+                            <i class="fas fa-users"></i> Socials
                         </button>
                     </div>
                 
@@ -1564,6 +1676,9 @@
                         <option value="location">Location</option>
                         <option value="link">Social / Internet Link</option>
                         <option value="media">Image / Video</option>
+                        <option value="password">Password</option>
+                        <option value="keyword">Keyword</option>
+                        <option value="social">Social Media Profile</option>
                     </select>
                 </div>
                 
@@ -1723,6 +1838,68 @@
                         <input type="hidden" id="mediaBase64Data"> <small style="color: var(--text-muted);">For local storage only. File will be base64 encoded.</small>
                     </div>
                 </div>
+
+                <div id="addPasswordFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Associated Service/Website</label>
+                        <input type="text" id="passwordService" placeholder="e.g., Facebook, Gmail, Database">
+                    </div>
+                    <div class="form-group">
+                        <label>Username/Email</label>
+                        <input type="text" id="passwordUsername">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="passwordValue">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="passwordNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Strength/Status</label>
+                        <input type="text" id="passwordStrength" placeholder="e.g., Weak, Strong, Leaked, Reset">
+                    </div>
+                </div>
+
+                <div id="addKeywordFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Keyword/Phrase</label>
+                        <input type="text" id="keywordValue">
+                    </div>
+                    <div class="form-group">
+                        <label>Context/Category</label>
+                        <input type="text" id="keywordContext" placeholder="e.g., Project Name, Person of Interest, Common Alias">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="keywordNotes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div id="addSocialFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Platform</label>
+                        <input type="text" id="socialPlatform" placeholder="e.g., Twitter, Instagram, TikTok">
+                    </div>
+                    <div class="form-group">
+                        <label>Profile URL</label>
+                        <input type="url" id="socialUrl">
+                    </div>
+                    <div class="form-group">
+                        <label>Username/Handle</label>
+                        <input type="text" id="socialUsername">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="socialNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Followers/Following Count</label>
+                        <input type="text" id="socialFollowCounts" placeholder="e.g., 12k followers, 500 following">
+                    </div>
+                </div>
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelAddEntry">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Entry</button>
@@ -1735,7 +1912,7 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-edit"></i> Edit Entry</h3>
             <form id="editEntryForm">
-                <input type="hidden" id="editEntryType">
+                <input type="hidden" id="editEntryId"> <input type="hidden" id="editEntryType">
                 <div id="editToolFields" class="entry-fields">
                     <div class="form-group">
                         <label>Tool Name</label>
@@ -1893,6 +2070,74 @@
                     </div>
                 </div>
 
+                <div id="editPasswordFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Associated Service/Website</label>
+                        <input type="text" id="editPasswordService" placeholder="e.g., Facebook, Gmail, Database">
+                    </div>
+                    <div class="form-group">
+                        <label>Username/Email</label>
+                        <input type="text" id="editPasswordUsername">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="editPasswordValue">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="editPasswordNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Strength/Status</label>
+                        <input type="text" id="editPasswordStrength" placeholder="e.g., Weak, Strong, Leaked, Reset">
+                    </div>
+                </div>
+
+                <div id="editKeywordFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Keyword/Phrase</label>
+                        <input type="text" id="editKeywordValue">
+                    </div>
+                    <div class="form-group">
+                        <label>Context/Category</label>
+                        <input type="text" id="editKeywordContext" placeholder="e.g., Project Name, Person of Interest, Common Alias">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="editKeywordNotes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div id="editSocialFields" class="entry-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Platform</label>
+                        <input type="text" id="editSocialPlatform" placeholder="e.g., Twitter, Instagram, TikTok">
+                    </div>
+                    <div class="form-group">
+                        <label>Profile URL</label>
+                        <input type="url" id="editSocialUrl">
+                    </div>
+                    <div class="form-group">
+                        <label>Username/Handle</label>
+                        <input type="text" id="editSocialUsername">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="editSocialNotes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Followers/Following Count</label>
+                        <input type="text" id="editSocialFollowCounts" placeholder="e.g., 12k followers, 500 following">
+                    </div>
+                </div>
+
+
+                <div class="custom-tab-assignment" id="assignCustomTabs">
+                    <h4>Assign to Custom Tabs</h4>
+                    <div class="custom-tab-checkboxes" id="assignCustomTabsCheckboxes">
+                        </div>
+                </div>
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelEditEntry">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -1971,22 +2216,23 @@
             locations: [],
             links: [],
             media: [], // Stores objects for images/videos
+            passwords: [], // New
+            keywords: [], // New
+            socials: [], // New
             selectedEntries: new Set(), // Now stores IDs of any selected entry type
-            currentTab: 'tools', // 'tools', 'analytics', 'threats', 'intelligence-vault'
+            currentTab: 'intelligence-vault', // Default to intelligence-vault for initial rendering check
             currentIntelligenceVaultSubTab: 'tools', // Default sub-tab for intelligence vault
             customTabs: [], // Array of { id: '...', name: '...', toolIds: [], icon: '...', color: '...' }
             filters: {
                 category: '',
                 search: '',
-                sort: 'name'
+                sort: 'name',
+                searchScope: 'currentTab' // New: 'currentTab', 'allVault', 'allData'
             },
             theme: localStorage.getItem('theme') || 'dark', // Load theme from localStorage
             viewMode: localStorage.getItem('viewMode') || 'grid', // 'grid' or 'list'
             usageStats: {
-                toolsUsedToday: 0,
-                scansCompleted: 0,
-                threatsDetected: 0,
-                dataProcessed: 0
+                toolsUsedToday: 0
             }
         };
 
@@ -1997,7 +2243,8 @@
             'fas fa-camera', 'fas fa-lock', 'fas fa-key', 'fas fa-bug', 'fas fa-cloud',
             'fas fa-mobile-alt', 'fas fa-server', 'fas fa-database', 'fas fa-code',
             'fas fa-chart-line', 'fas fa-user-secret', 'fas fa-lightbulb', 'fas fa-laptop-code',
-            'fas fa-phone', 'fas fa-money-bill-wave', 'fas fa-video', 'fas fa-paste', 'fas fa-location-arrow'
+            'fas fa-phone', 'fas fa-money-bill-wave', 'fas fa-video', 'fas fa-paste', 'fas fa-location-arrow',
+            'fas fa-font' // For keywords
         ];
 
         const availableColors = [
@@ -2139,11 +2386,17 @@
             // Ensure currentTab is valid, otherwise default to 'tools'
             const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs', 'intelligence-vault'];
             if (!validTabs.includes(appState.currentTab)) {
-                appState.currentTab = 'tools';
+                appState.currentTab = 'intelligence-vault'; // Changed default to intelligence-vault as per user preference
             }
-            switchTab(appState.currentTab); // Ensure the correct tab is active on load
+            switchTab(appState.currentTab); // This should correctly activate and render the tab
+            
+            // Explicitly call sub-tab rendering if starting in intelligence-vault
+            if (appState.currentTab === 'intelligence-vault') {
+                switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
+            }
+
             populateCategoryFilter(); // Call after loadState
-            renderIntelligenceEntries(); // Render entries based on initial filters/state
+            renderIntelligenceEntries(); // Ensure entries are rendered based on initial filters/state
             updateAnalytics(); // Initial update for analytics display
         }
 
@@ -2165,16 +2418,16 @@
                 appState.locations = parsedState.locations || [];
                 appState.links = parsedState.links || [];
                 appState.media = parsedState.media || [];
+                appState.passwords = parsedState.passwords || []; // New
+                appState.keywords = parsedState.keywords || []; // New
+                appState.socials = parsedState.socials || []; // New
 
                 appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []); // Ensure it's an array
-                appState.filters = parsedState.filters || {category: '', search: '', sort: 'name'};
+                appState.filters = parsedState.filters || {category: '', search: '', sort: 'name', searchScope: 'currentTab'}; // Updated default filter
                 appState.theme = parsedState.theme || 'dark';
                 appState.viewMode = parsedState.viewMode || 'grid';
                 appState.usageStats = parsedState.usageStats || {
-                    toolsUsedToday: 0,
-                    scansCompleted: 0,
-                    threatsDetected: 0,
-                    dataProcessed: 0
+                    toolsUsedToday: 0
                 };
                 appState.customTabs = parsedState.customTabs || [];
                 appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
@@ -2188,6 +2441,16 @@
                     { id: generateId(), name: 'Social Media Analysis', toolIds: [], icon: 'fas fa-users', color: 'var(--tab-color-blue)' }
                 ];
                 appState.currentCustomTab = appState.customTabs[0]?.id || null;
+                // Initialize empty arrays for new types if starting fresh
+                appState.emails = [];
+                appState.phones = [];
+                appState.crypto = [];
+                appState.locations = [];
+                appState.links = [];
+                appState.media = [];
+                appState.passwords = [];
+                appState.keywords = [];
+                appState.socials = [];
             }
         }
 
@@ -2198,7 +2461,8 @@
 
         // Update statistics
         function updateStats() {
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
+            // Include new types in allEntries
+            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
             const categories = new Set(appState.tools.map(tool => tool.category)); // Only tools have categories for now
             document.getElementById('totalTools').textContent = appState.tools.length;
             document.getElementById('totalCategories').textContent = categories.size;
@@ -2315,8 +2579,8 @@
                     return;
                 }
                  targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
-            } else { // 'tools' tab
-                targetContainer = toolsContainer;
+            } else { // 'tools' tab (which is no longer a main tab, but still handled for backward compatibility or if structure changes)
+                targetContainer = toolsContainer; // This branch might not be hit with current tab structure
                 currentEmptyState = emptyState;
                 if (filteredEntries.length === 0) {
                     currentEmptyState.style.display = 'block';
@@ -2343,36 +2607,66 @@
 
         // Filter entries based on current filters and active tab
         function filterEntries() {
-            let filtered = [];
+            let entriesToSearch = [];
 
-            // Determine which array to filter based on the current active tab/subtab
-            if (appState.currentTab === 'tools') {
-                filtered = [...appState.tools];
-            } else if (appState.currentTab === 'intelligence-vault') {
-                switch (appState.currentIntelligenceVaultSubTab) {
-                    case 'tools': filtered = [...appState.tools]; break;
-                    case 'emails': filtered = [...appState.emails]; break;
-                    case 'phones': filtered = [...appState.phones]; break;
-                    case 'crypto': filtered = [...appState.crypto]; break;
-                    case 'locations': filtered = [...appState.locations]; break;
-                    case 'links': filtered = [...appState.links]; break;
-                    case 'media': filtered = [...appState.media]; break;
-                    default: filtered = []; break;
+            // Determine the base set of entries based on searchScope and currentTab
+            if (appState.filters.searchScope === 'allData') {
+                entriesToSearch = [
+                    ...appState.tools,
+                    ...appState.emails,
+                    ...appState.phones,
+                    ...appState.crypto,
+                    ...appState.locations,
+                    ...appState.links,
+                    ...appState.media,
+                    ...appState.passwords, // New
+                    ...appState.keywords,  // New
+                    ...appState.socials    // New
+                ];
+            } else if (appState.filters.searchScope === 'allVault') {
+                 // Combine all entries from the Intelligence Vault (excluding Custom Tabs)
+                 entriesToSearch = [
+                    ...appState.tools,
+                    ...appState.emails,
+                    ...appState.phones,
+                    ...appState.crypto,
+                    ...appState.locations,
+                    ...appState.links,
+                    ...appState.media,
+                    ...appState.passwords, // New
+                    ...appState.keywords,  // New
+                    ...appState.socials    // New
+                ];
+            } else { // 'currentTab' is default and also for 'custom-tabs' specifics
+                if (appState.currentTab === 'tools') { // This case might not be reached if 'intelligence-vault' is default
+                    entriesToSearch = [...appState.tools];
+                } else if (appState.currentTab === 'intelligence-vault') {
+                    switch (appState.currentIntelligenceVaultSubTab) {
+                        case 'tools': entriesToSearch = [...appState.tools]; break;
+                        case 'emails': entriesToSearch = [...appState.emails]; break;
+                        case 'phones': entriesToSearch = [...appState.phones]; break;
+                        case 'crypto': entriesToSearch = [...appState.crypto]; break;
+                        case 'locations': entriesToSearch = [...appState.locations]; break;
+                        case 'links': entriesToSearch = [...appState.links]; break;
+                        case 'media': entriesToSearch = [...appState.media]; break;
+                        case 'passwords': entriesToSearch = [...appState.passwords]; break; // New
+                        case 'keywords': entriesToSearch = [...appState.keywords]; break; // New
+                        case 'socials': entriesToSearch = [...appState.socials]; break; // New
+                        default: entriesToSearch = []; break;
+                    }
+                } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+                    const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+                    if (activeCustomTab) {
+                        const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+                        entriesToSearch = allEntriesCombined.filter(entry => activeCustomTab.toolIds.includes(entry.id));
+                    } else {
+                        entriesToSearch = [];
+                    }
                 }
-            } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
-                const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
-                if (activeCustomTab) {
-                    // Custom tabs can hold any type of entry, so filter from combined entries
-                    const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
-                    filtered = allEntries.filter(entry => activeCustomTab.toolIds.includes(entry.id)); // Renamed toolIds to entryIds in logic
-                } else {
-                    filtered = [];
-                }
-            } else {
-                // Default to tools if no specific tab is active
-                filtered = [...appState.tools];
             }
             
+            let filtered = [...entriesToSearch]; // Start filtering from this base set
+
             // Apply search filter
             if (appState.filters.search) {
                 const searchTerm = appState.filters.search.toLowerCase();
@@ -2381,7 +2675,10 @@
                         entry.name, 
                         entry.description, 
                         entry.category, // For tools
-                        entry.email, entry.number, entry.address, entry.txid, entry.locationName, entry.url, entry.title // For other entry types
+                        entry.email, entry.number, entry.address, entry.txid, entry.locationName, entry.url, entry.title, // For other entry types
+                        entry.service, entry.username, entry.password, entry.strength, // For passwords
+                        entry.value, entry.context, // For keywords
+                        entry.platform, entry.socialUsername, entry.followCounts // For socials
                     ].map(field => String(field || '').toLowerCase()); // Ensure all fields are strings or empty strings
 
                     if (entry.tags) {
@@ -2392,22 +2689,20 @@
                 });
             }
             
-            // Apply category filter (only applicable to 'tools' currently)
-            if (appState.currentTab === 'tools' || (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultSubTab === 'tools')) {
-                if (appState.filters.category) {
-                    if (appState.filters.category === 'pinned') {
-                        filtered = filtered.filter(entry => entry.pinned);
-                    } else if (appState.filters.category === 'starred') {
-                        filtered = filtered.filter(entry => entry.starred);
-                    } else {
-                        filtered = filtered.filter(entry => entry.category === appState.filters.category);
-                    }
-                }
+            // Apply universal "category" filters for pinned/starred
+            if (appState.filters.category === 'pinned') {
+                filtered = filtered.filter(entry => entry.pinned);
+            } else if (appState.filters.category === 'starred') {
+                filtered = filtered.filter(entry => entry.starred);
             } else if (appState.filters.category) {
-                // If a category filter is applied while not on a 'tools' tab, clear it.
-                // Or implement category filtering for other types if they gain categories.
-                appState.filters.category = '';
-                document.getElementById('categoryFilter').value = '';
+                // This 'else if' block handles actual categories, only apply if the current view is for tools
+                if (appState.currentTab === 'tools' || (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultSubTab === 'tools')) {
+                    filtered = filtered.filter(entry => entry.category === appState.filters.category);
+                } else {
+                    // If a category filter is applied while not on a 'tools' tab, clear it visually.
+                    document.getElementById('categoryFilter').value = '';
+                    appState.filters.category = ''; // Ensure state is reset too
+                }
             }
 
             // Apply sorting
@@ -2418,8 +2713,8 @@
                     case 'popular': // Sort by lastUsed (most recent first)
                         return (b.lastUsed || 0) - (a.lastUsed || 0);
                     default: // 'name' (or primary identifier)
-                        const nameA = a.name || a.email || a.number || a.address || a.locationName || a.url || a.title || '';
-                        const nameB = b.name || b.email || b.number || b.address || b.locationName || b.url || b.title || '';
+                        const nameA = a.name || a.email || a.number || a.address || a.locationName || a.url || a.title || a.service || a.value || a.username || '';
+                        const nameB = b.name || b.email || b.number || b.address || b.locationName || b.url || b.title || b.service || b.value || b.username || '';
                         return nameA.localeCompare(nameB);
                 }
             });
@@ -2449,7 +2744,7 @@
                     break;
                 case 'phone':
                     title = entry.number;
-                    subtitle = `Type: ${entry.type}`;
+                    subtitle = `Type: ${entry.phoneType}`; // Changed to phoneType as per schema
                     description = entry.notes;
                     icon = 'fas fa-phone';
                     extraContent = entry.location ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-map-marker-alt"></i> ${entry.location}</p>` : '';
@@ -2473,14 +2768,41 @@
                     subtitle = entry.platform || 'General Link';
                     description = entry.notes;
                     icon = 'fas fa-link';
-                    faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
+                    try { // Safely get favicon for links
+                        faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
+                    } catch (e) {
+                        faviconHtml = '';
+                    }
                     break;
                 case 'media':
                     title = entry.title;
-                    subtitle = entry.type === 'image' ? 'Image' : 'Video';
+                    subtitle = entry.mediaType === 'image' ? 'Image' : 'Video';
                     description = entry.notes;
-                    icon = entry.type === 'image' ? 'fas fa-image' : 'fas fa-video';
-                    extraContent = entry.base64Data ? `<img src="${entry.base64Data}" alt="Media thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : '';
+                    icon = entry.mediaType === 'image' ? 'fas fa-image' : 'fas fa-video';
+                    extraContent = entry.base64Data ? (entry.mediaType === 'image' ? `<img src="${entry.base64Data}" alt="Media thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : `<video controls style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;"><source src="${entry.base64Data}" type="video/mp4"></video>`) : '';
+                    break;
+                case 'password': // New
+                    title = entry.service;
+                    subtitle = `Username: ${entry.username || 'N/A'}`;
+                    description = `Password: ${entry.password} | Strength: ${entry.strength || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
+                    icon = 'fas fa-key';
+                    break;
+                case 'keyword': // New
+                    title = entry.value;
+                    subtitle = `Context: ${entry.context || 'General'}`;
+                    description = entry.notes;
+                    icon = 'fas fa-font';
+                    break;
+                case 'social': // New
+                    title = entry.username;
+                    subtitle = `Platform: ${entry.platform}`;
+                    description = `URL: ${entry.url}\nFollowers/Following: ${entry.followCounts || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
+                    icon = 'fas fa-users';
+                    try { // Safely get favicon for socials if URL exists
+                        faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
+                    } catch (e) {
+                        faviconHtml = '';
+                    }
                     break;
                 default:
                     title = entry.name || 'Unknown Entry';
@@ -2542,6 +2864,13 @@
                 renderIntelligenceEntries();
             });
 
+            // Search Scope Select
+            document.getElementById('searchScopeSelect').addEventListener('change', (e) => {
+                appState.filters.searchScope = e.target.value;
+                renderIntelligenceEntries(); // Re-render with new scope
+            });
+
+
             // Filter controls
             document.getElementById('categoryFilter').addEventListener('change', (e) => {
                 appState.filters.category = e.target.value;
@@ -2570,9 +2899,12 @@
             });
 
             // Tool actions (now generic for all entries)
+            // Event delegation on the main content container to handle clicks on dynamically loaded tool cards
             document.getElementById('toolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('customTabToolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('intelligenceVaultEntries').addEventListener('click', handleEntryAction);
+            
+            // Event delegation for bulk selection checkboxes
             document.getElementById('toolsGrid').addEventListener('change', handleBulkSelection);
             document.getElementById('customTabToolsGrid').addEventListener('change', handleBulkSelection);
             document.getElementById('intelligenceVaultEntries').addEventListener('change', handleBulkSelection);
@@ -2641,6 +2973,8 @@
 
             // View toggle (Grid/List)
             document.getElementById('viewToggle').addEventListener('click', toggleViewMode);
+            // Intelligence Vault View Toggle
+            document.getElementById('vaultViewToggle').addEventListener('click', toggleViewMode); // Both can use the same toggle
 
             // Refresh Threats button
             document.getElementById('refreshThreatsBtn').addEventListener('click', loadThreats);
@@ -2741,6 +3075,9 @@
                 case 'location': entryArray = appState.locations; break;
                 case 'link': entryArray = appState.links; break;
                 case 'media': entryArray = appState.media; break;
+                case 'password': entryArray = appState.passwords; break; // New
+                case 'keyword': entryArray = appState.keywords; break; // New
+                case 'social': entryArray = appState.socials; break; // New
             }
 
             if (entryArray) {
@@ -2845,7 +3182,7 @@
             let allStarred = true;
             let allPinned = true;
             
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
+            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
             const selectedEntriesArray = allEntries.filter(entry => selectedIds.includes(entry.id));
 
             if (action === 'star' || action === 'pin') {
@@ -2870,7 +3207,7 @@
                             tab.toolIds = tab.toolIds.filter(entryIdInTab => entryIdInTab !== id);
                         });
                         // Remove from respective appState array
-                        ['tools', 'emails', 'phones', 'crypto', 'locations', 'links', 'media'].forEach(key => {
+                        ['tools', 'emails', 'phones', 'crypto', 'locations', 'links', 'media', 'passwords', 'keywords', 'socials'].forEach(key => {
                             appState[key] = appState[key].filter(e => e.id !== id);
                         });
                         break;
@@ -3045,10 +3382,6 @@
         // Update analytics data (display)
         function updateAnalytics() {
             document.getElementById('toolsUsed').textContent = appState.usageStats.toolsUsedToday;
-            document.getElementById('scansCompleted').textContent = appState.usageStats.scansCompleted;
-            document.getElementById('threatsDetected').textContent = appState.usageStats.threatsDetected; // This can be dynamically updated based on actual threat monitoring
-            document.getElementById('dataProcessed').textContent = appState.usageStats.dataProcessed.toFixed(1) + 'GB'; // This can be dynamically updated
-            
             renderMostUsedTools();
             renderNeverUsedTools();
             renderToolsAddedPerWeek();
@@ -3061,7 +3394,7 @@
             const noMostUsedTools = document.getElementById('noMostUsedTools');
             
             // Combine all entry types that have lastUsed property and filter
-            const allUsedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media]
+            const allUsedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials]
                                     .filter(entry => entry.lastUsed > 0);
 
             const usedTools = allUsedEntries.sort((a, b) => b.lastUsed - a.lastUsed)
@@ -3073,7 +3406,7 @@
             } else {
                 noMostUsedTools.style.display = 'none';
                 mostUsedToolsList.innerHTML = usedTools.map(entry => {
-                    const name = entry.name || entry.email || entry.number || entry.address || entry.locationName || entry.url || entry.title || 'N/A';
+                    const name = entry.name || entry.email || entry.number || entry.address || entry.locationName || entry.url || entry.title || entry.service || entry.value || entry.username || 'N/A';
                     return `
                         <li>
                             <span>${name} (${entry.type})</span>
@@ -3088,8 +3421,8 @@
             const neverUsedToolsList = document.getElementById('neverUsedToolsList');
             const noNeverUsedTools = document.getElementById('noNeverUsedTools');
             
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
-            const neverUsed = allEntries.filter(entry => (entry.type === 'tool' && entry.lastUsed === 0) || (entry.type !== 'tool' && !entry.lastUsed)); // Tools use 0, others might not have it set
+            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+            const neverUsed = allEntries.filter(entry => (entry.type === 'tool' && entry.lastUsed === 0) || (entry.lastUsed === undefined || entry.lastUsed === 0)); // Checks for 0 or undefined lastUsed
 
             if (neverUsed.length === 0) {
                 neverUsedToolsList.innerHTML = '';
@@ -3097,7 +3430,7 @@
             } else {
                 noNeverUsedTools.style.display = 'none';
                 neverUsedToolsList.innerHTML = neverUsed.map(entry => {
-                    const name = entry.name || entry.email || entry.number || entry.address || entry.locationName || entry.url || entry.title || 'N/A';
+                    const name = entry.name || entry.email || entry.number || entry.address || entry.locationName || entry.url || entry.title || entry.service || entry.value || entry.username || 'N/A';
                     const addedDate = entry.addedDate ? new Date(entry.addedDate).toLocaleDateString() : 'N/A';
                     return `
                         <li>
@@ -3183,6 +3516,9 @@
             document.getElementById('addLocationFields').style.display = 'none';
             document.getElementById('addLinkFields').style.display = 'none';
             document.getElementById('addMediaFields').style.display = 'none';
+            document.getElementById('addPasswordFields').style.display = 'none'; // New
+            document.getElementById('addKeywordFields').style.display = 'none';  // New
+            document.getElementById('addSocialFields').style.display = 'none';   // New
             
             // Reset required attributes for all inputs to manage them dynamically
             document.querySelectorAll('#addEntryForm input, #addEntryForm select, #addEntryForm textarea').forEach(input => {
@@ -3228,6 +3564,21 @@
                     // Add change listener for media file input for base64 encoding
                     document.getElementById('mediaFile').addEventListener('change', handleMediaFileSelect);
                     break;
+                case 'password': // New
+                    document.getElementById('addPasswordFields').style.display = 'block';
+                    document.getElementById('passwordService').setAttribute('required', 'required');
+                    document.getElementById('passwordValue').setAttribute('required', 'required');
+                    break;
+                case 'keyword': // New
+                    document.getElementById('addKeywordFields').style.display = 'block';
+                    document.getElementById('keywordValue').setAttribute('required', 'required');
+                    break;
+                case 'social': // New
+                    document.getElementById('addSocialFields').style.display = 'block';
+                    document.getElementById('socialPlatform').setAttribute('required', 'required');
+                    document.getElementById('socialUrl').setAttribute('required', 'required');
+                    document.getElementById('socialUsername').setAttribute('required', 'required');
+                    break;
             }
         }
 
@@ -3241,7 +3592,8 @@
                 type: entryType,
                 starred: false,
                 pinned: false,
-                addedDate: new Date()
+                addedDate: new Date(),
+                lastUsed: 0 // Initialize lastUsed for all new types
             };
 
             switch (entryType) {
@@ -3261,7 +3613,6 @@
                     newEntry.description = document.getElementById('toolDescription').value;
                     newEntry.tags = document.getElementById('toolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
                     newEntry.favicon = `https://www.google.com/s2/favicons?domain=${new URL(newEntry.url).hostname}`;
-                    newEntry.lastUsed = 0;
                     appState.tools.push(newEntry);
                     break;
                 case 'email':
@@ -3309,6 +3660,28 @@
                     // The handleMediaFileSelect function will populate a hidden input with the base64 data.
                     newEntry.base64Data = document.getElementById('mediaBase64Data').value;
                     appState.media.push(newEntry);
+                    break;
+                case 'password': // New
+                    newEntry.service = document.getElementById('passwordService').value;
+                    newEntry.username = document.getElementById('passwordUsername').value;
+                    newEntry.password = document.getElementById('passwordValue').value;
+                    newEntry.notes = document.getElementById('passwordNotes').value;
+                    newEntry.strength = document.getElementById('passwordStrength').value;
+                    appState.passwords.push(newEntry);
+                    break;
+                case 'keyword': // New
+                    newEntry.value = document.getElementById('keywordValue').value;
+                    newEntry.context = document.getElementById('keywordContext').value;
+                    newEntry.notes = document.getElementById('keywordNotes').value;
+                    appState.keywords.push(newEntry);
+                    break;
+                case 'social': // New
+                    newEntry.platform = document.getElementById('socialPlatform').value;
+                    newEntry.url = document.getElementById('socialUrl').value;
+                    newEntry.username = document.getElementById('socialUsername').value;
+                    newEntry.notes = document.getElementById('socialNotes').value;
+                    newEntry.followCounts = document.getElementById('socialFollowCounts').value;
+                    appState.socials.push(newEntry);
                     break;
                 default:
                     showToast('Invalid entry type selected.', 'error');
@@ -3366,6 +3739,10 @@
             document.getElementById('editLocationFields').style.display = 'none';
             document.getElementById('editLinkFields').style.display = 'none';
             document.getElementById('editMediaFields').style.display = 'none';
+            document.getElementById('editPasswordFields').style.display = 'none'; // New
+            document.getElementById('editKeywordFields').style.display = 'none';  // New
+            document.getElementById('editSocialFields').style.display = 'none';   // New
+
 
             // Reset required attributes for all inputs to manage them dynamically
             document.querySelectorAll('#editEntryForm input, #editEntryForm select, #editEntryForm textarea').forEach(input => {
@@ -3455,9 +3832,39 @@
                     // For media, the file input itself won't have a value for existing base64.
                     // If they upload a new file, it will overwrite the old base64 data.
                     document.getElementById('editMediaBase64Data').value = entry.base64Data || '';
+                    // Remove existing listener to prevent duplicates and add a new one
+                    document.getElementById('editMediaFile').removeEventListener('change', handleEditMediaFileSelect);
                     document.getElementById('editMediaFile').addEventListener('change', handleEditMediaFileSelect);
                     document.getElementById('editMediaTitle').setAttribute('required', 'required');
                     document.getElementById('editMediaType').setAttribute('required', 'required');
+                    break;
+                case 'password': // New
+                    document.getElementById('editPasswordFields').style.display = 'block';
+                    document.getElementById('editPasswordService').value = entry.service;
+                    document.getElementById('editPasswordUsername').value = entry.username;
+                    document.getElementById('editPasswordValue').value = entry.password;
+                    document.getElementById('editPasswordNotes').value = entry.notes;
+                    document.getElementById('editPasswordStrength').value = entry.strength;
+                    document.getElementById('editPasswordService').setAttribute('required', 'required');
+                    document.getElementById('editPasswordValue').setAttribute('required', 'required');
+                    break;
+                case 'keyword': // New
+                    document.getElementById('editKeywordFields').style.display = 'block';
+                    document.getElementById('editKeywordValue').value = entry.value;
+                    document.getElementById('editKeywordContext').value = entry.context;
+                    document.getElementById('editKeywordNotes').value = entry.notes;
+                    document.getElementById('editKeywordValue').setAttribute('required', 'required');
+                    break;
+                case 'social': // New
+                    document.getElementById('editSocialFields').style.display = 'block';
+                    document.getElementById('editSocialPlatform').value = entry.platform;
+                    document.getElementById('editSocialUrl').value = entry.url;
+                    document.getElementById('editSocialUsername').value = entry.username;
+                    document.getElementById('editSocialNotes').value = entry.notes;
+                    document.getElementById('editSocialFollowCounts').value = entry.followCounts;
+                    document.getElementById('editSocialPlatform').setAttribute('required', 'required');
+                    document.getElementById('editSocialUrl').setAttribute('required', 'required');
+                    document.getElementById('editSocialUsername').setAttribute('required', 'required');
                     break;
             }
 
@@ -3493,6 +3900,9 @@
                 case 'location': entryArray = appState.locations; break;
                 case 'link': entryArray = appState.links; break;
                 case 'media': entryArray = appState.media; break;
+                case 'password': entryArray = appState.passwords; break; // New
+                case 'keyword': entryArray = appState.keywords; break; // New
+                case 'social': entryArray = appState.socials; break; // New
             }
 
             const entryIndex = entryArray ? entryArray.findIndex(t => t.id === entryId) : -1;
@@ -3563,6 +3973,25 @@
                     if (newBase64Data) {
                          updatedEntry.base64Data = newBase64Data;
                     }
+                    break;
+                case 'password': // New
+                    updatedEntry.service = document.getElementById('editPasswordService').value;
+                    updatedEntry.username = document.getElementById('editPasswordUsername').value;
+                    updatedEntry.password = document.getElementById('editPasswordValue').value;
+                    updatedEntry.notes = document.getElementById('editPasswordNotes').value;
+                    updatedEntry.strength = document.getElementById('editPasswordStrength').value;
+                    break;
+                case 'keyword': // New
+                    updatedEntry.value = document.getElementById('editKeywordValue').value;
+                    updatedEntry.context = document.getElementById('editKeywordContext').value;
+                    updatedEntry.notes = document.getElementById('editKeywordNotes').value;
+                    break;
+                case 'social': // New
+                    updatedEntry.platform = document.getElementById('editSocialPlatform').value;
+                    updatedEntry.url = document.getElementById('editSocialUrl').value;
+                    updatedEntry.username = document.getElementById('editSocialUsername').value;
+                    updatedEntry.notes = document.getElementById('editSocialNotes').value;
+                    updatedEntry.followCounts = document.getElementById('editSocialFollowCounts').value;
                     break;
             }
 
@@ -3692,12 +4121,14 @@
            appState.filters = {
                category: '',
                search: '',
-               sort: 'name'
+               sort: 'name',
+               searchScope: 'currentTab' // Reset search scope too
            };
            
            document.getElementById('searchInput').value = '';
            document.getElementById('categoryFilter').value = '';
            document.getElementById('sortFilter').value = 'name';
+           document.getElementById('searchScopeSelect').value = 'currentTab'; // Reset search scope select
            
            renderIntelligenceEntries();
            showToast('Filters cleared!');
@@ -3713,15 +4144,18 @@
                totalLocations: appState.locations.length,
                totalLinks: appState.links.length,
                totalMedia: appState.media.length,
+               totalPasswords: appState.passwords.length, // New
+               totalKeywords: appState.keywords.length,   // New
+               totalSocials: appState.socials.length,     // New
                categories: [...new Set(appState.tools.map(t => t.category))], // Only tools have categories for now
-               starredEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media].filter(t => t.starred).length,
-               pinnedEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media].filter(t => t.pinned).length,
+               starredEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials].filter(t => t.starred).length,
+               pinnedEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials].filter(t => t.pinned).length,
                usageStatistics: appState.usageStats,
-               recentlyUsedEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media]
+               recentlyUsedEntries: [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials]
                                                 .filter(t => t.lastUsed > 0)
                                                 .sort((a,b) => b.lastUsed - a.lastUsed)
                                                 .slice(0, 10) // Top 10 recently used
-                                                .map(t => ({ name: t.name || t.email || t.number || t.address || t.locationName || t.url || t.title, type: t.type, lastUsed: new Date(t.lastUsed || 0).toLocaleString() }))
+                                                .map(t => ({ name: t.name || t.email || t.number || t.address || t.locationName || t.url || t.title || t.service || t.value || t.username, type: t.type, lastUsed: new Date(t.lastUsed || 0).toLocaleString() }))
            };
            
            const reportWindow = window.open('', '_blank');
@@ -3760,6 +4194,9 @@
                    <div class="stat"><strong>Total Location Entries:</strong> ${report.totalLocations}</div>
                    <div class="stat"><strong>Total Link Entries:</strong> ${report.totalLinks}</div>
                    <div class="stat"><strong>Total Media Entries:</strong> ${report.totalMedia}</div>
+                   <div class="stat"><strong>Total Password Entries:</strong> ${report.totalPasswords}</div>
+                   <div class="stat"><strong>Total Keyword Entries:</strong> ${report.totalKeywords}</div>
+                   <div class="stat"><strong>Total Social Media Profile Entries:</strong> ${report.totalSocials}</div>
                    <div class="stat"><strong>Unique Categories (Tools):</strong> ${report.categories.length}</div>
                    <div class="stat"><strong>Starred Entries:</strong> ${report.starredEntries}</div>
                    <div class="stat"><strong>Pinned Entries:</strong> ${report.pinnedEntries}</div>
@@ -3799,10 +4236,13 @@
                locations: appState.locations,
                links: appState.links,
                media: appState.media,
+               passwords: appState.passwords, // New
+               keywords: appState.keywords,   // New
+               socials: appState.socials,     // New
                usageStats: appState.usageStats,
                customTabs: appState.customTabs, // Include custom tabs in export
                exportDate: new Date().toISOString(),
-               version: '1.4' // Increased version due to added entry types
+               version: '1.5' // Increased version due to added entry types
            };
            
            const dataStr = JSON.stringify(exportData, null, 2);
@@ -3866,7 +4306,7 @@
                     }
 
                     // Count all types of entries assigned to this custom tab
-                    const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
+                    const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
                     const entryCount = allEntries.filter(entry => (entry.customTabs || []).includes(tab.id)).length;
 
 
@@ -4052,7 +4492,7 @@
                 
                 // Remove the customTabId from all entries that belong to it
                 const deletedTabId = appState.currentCustomTab;
-                const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
+                const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
                 allEntries.forEach(entry => {
                     if (entry.customTabs) { // Check if customTabs array exists on the entry
                         entry.customTabs = entry.customTabs.filter(tabId => tabId !== deletedTabId);
@@ -4082,7 +4522,7 @@
                 return;
             }
 
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media];
+            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
             const entriesInTab = allEntries.filter(entry => customTabToExport.toolIds.includes(entry.id)); // toolIds now holds any entry type ID
             
             const exportData = {
@@ -4138,12 +4578,31 @@
                             exportedEntry.mediaType = entry.mediaType;
                             exportedEntry.base64Data = entry.base64Data; // Include base64 for media
                             break;
+                        case 'password': // New
+                            exportedEntry.service = entry.service;
+                            exportedEntry.username = entry.username;
+                            exportedEntry.password = entry.password;
+                            exportedEntry.notes = entry.notes;
+                            exportedEntry.strength = entry.strength;
+                            break;
+                        case 'keyword': // New
+                            exportedEntry.value = entry.value;
+                            exportedEntry.context = entry.context;
+                            exportedEntry.notes = entry.notes;
+                            break;
+                        case 'social': // New
+                            exportedEntry.platform = entry.platform;
+                            exportedEntry.url = entry.url;
+                            exportedEntry.username = entry.username;
+                            exportedEntry.notes = entry.notes;
+                            exportedEntry.followCounts = entry.followCounts;
+                            break;
                     }
                     return exportedEntry;
                 }),
                 exportDate: new Date().toISOString(),
                 description: `Export of the "${customTabToExport.name}" custom tab from OSINT Arsenal.`,
-                version: '1.4' // Version for custom tab export, reflecting new entry types
+                version: '1.5' // Version for custom tab export, reflecting new entry types
             };
 
             const fileName = `osint_arsenal_tab_${customTabToExport.name.toLowerCase().replace(/\s/g, '_')}.json`;
