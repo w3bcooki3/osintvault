@@ -38,4 +38,4 @@
 - 100% client-side using **Browser Local Storage** (no backend)
 
 ### 🌐 Live Demo
-🔗 Try OSINTvault Online
+🔗 Try OSINTvault Online -> https://w3bcooki3.github.io/osintvault/
