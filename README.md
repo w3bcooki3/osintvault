@@ -2,8 +2,6 @@
 
 **OSINTvault** is a powerful, browser-based web app built with HTML, CSS, and JavaScript, designed specifically for cybersecurity investigators, analysts, researchers, and anyone interested in open-source intelligence (OSINT). No backend. No signup. 100% local storage.
 
-![screenshot](screenshot.png) <!-- You can replace or add actual screenshots -->
-
 ---
 
 ## 🚀 Features
