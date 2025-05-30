@@ -113,8 +113,8 @@
         }
 
         .container {
-            width: 100vw;
-            max-width: 1440px; /* Set a max-width for better readability on large screens */
+            width: 80%;
+            max-width: 1800px;
             padding: 0 40px; /* More generous padding on larger screens */
             margin: 0 auto; /* Center the container */
         }
@@ -455,7 +455,7 @@
             font-weight: 600;
         }
 
-        /* Random Discovery Section */
+        /* Refined Random Discovery Section */
         .random-display {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-light);
@@ -464,20 +464,26 @@
             text-align: center;
             font-size: 0.9em;
             color: var(--text-secondary);
+            /* Ensure content is centered and prevent height collapse */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes button to bottom if space */
+            min-height: 120px; /* Give it a minimum height */
         }
         .random-display .random-text {
-            min-height: 40px; /* Prevent layout shift */
+            min-height: 60px; /* Allocate more height for text, prevent jump */
             display: flex;
-            align-items: center;
+            align-items: center; /* Vertically center text */
             justify-content: center;
-            line-height: 1.3;
+            line-height: 1.4;
+            flex-grow: 1; /* Allow text to take available space */
         }
         .random-display .btn-sm {
             padding: 8px 12px;
             font-size: 12px;
-        }
-        .random-display a {
-            font-weight: 600;
+            width: auto; /* Allow button to size naturally, or set to 100% if preferred */
+            margin: 10px auto 0; /* Center the button */
+            display: block; /* Make it a block element to center with margin: auto */
         }
 
         /* Main Content */
@@ -1093,7 +1099,8 @@
         .toast.info { /* For read-only banner */
             background: var(--primary-dark);
         }
-        .toast-warning{
+
+        .toast-warning {
             background: var(--danger);
         }
 
@@ -1440,7 +1447,7 @@
                     <h3><i class="fas fa-random"></i> Discovery</h3>
                     <div class="random-display" id="randomDiscovery">
                         <p class="random-text">Loading...</p>
-                        <button class="btn btn-secondary btn-sm" id="newRandomBtn" style="width: 100%; margin-top: 10px;">
+                        <button class="btn btn-secondary btn-sm" id="newRandomBtn">
                             <i class="fas fa-sync-alt"></i> New Discovery
                         </button>
                     </div>
@@ -1487,9 +1494,9 @@
                     <div class="content-header">
                         <h2 class="content-title">Intelligence Tools Arsenal</h2>
                         <div class="controls">
-                            <button class="btn btn-secondary" id="viewToggle">
-                                <i class="fas fa-th"></i>
-                                Grid View
+                            <button class="btn btn-secondary" id="viewToggle" title="Switch to List View">
+                                <i class="fas fa-list"></i>
+                                List View
                             </button>
                         </div>
                     </div>
@@ -1566,9 +1573,9 @@
                     <div class="content-header">
                         <h2 class="content-title">Intelligence Vault</h2>
                         <div class="controls">
-                            <button class="btn btn-secondary" id="vaultViewToggle">
-                                <i class="fas fa-th"></i>
-                                Grid View
+                            <button class="btn btn-secondary" id="vaultViewToggle" title="Switch to List View">
+                                <i class="fas fa-list"></i>
+                                List View
                             </button>
                         </div>
                     </div>
@@ -2477,7 +2484,7 @@
         // Initialize Application
         function initApp() {
             loadState();
-            parseShareableLink(); // New: Parse URL for shared links first
+            parseShareableLink(); // Call this BEFORE anything else that might modify the UI based on non-read-only state
             updateStats();
             bindEvents();
             initTheme();
@@ -2499,6 +2506,21 @@
             updateAnalytics(); // Initial update for analytics display
 
             applyReadOnlyMode(); // Apply read-only mode after initial rendering
+
+            // Set initial text for viewToggle buttons
+            const viewToggleButton = document.getElementById('viewToggle');
+            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
+            if (appState.viewMode === 'grid') {
+                viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                viewToggleButton.title = 'Switch to List View';
+                vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                vaultViewToggleButton.title = 'Switch to List View';
+            } else {
+                viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                viewToggleButton.title = 'Switch to Grid View';
+                vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                vaultViewToggleButton.title = 'Switch to Grid View';
+            }
         }
 
         // Load application state from localStorage
@@ -4251,6 +4273,22 @@
            renderIntelligenceEntries();
            saveState();
            showToast(`Switched to ${appState.viewMode} view`);
+
+           // Update the button text and icon based on the new viewMode
+           const viewToggleButton = document.getElementById('viewToggle');
+           const vaultViewToggleButton = document.getElementById('vaultViewToggle');
+
+           if (appState.viewMode === 'grid') {
+               viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+               viewToggleButton.title = 'Switch to List View';
+               vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+               vaultViewToggleButton.title = 'Switch to List View';
+           } else {
+               viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+               viewToggleButton.title = 'Switch to Grid View';
+               vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+               vaultViewToggleButton.title = 'Switch to Grid View';
+           }
        }
 
        // Utility functions
@@ -4519,17 +4557,11 @@
 
                     // Re-activate the selected sub-tab to ensure its styling is correct if it's the active one
                     if (appState.currentCustomTab === tab.id) {
-                        // Apply background for active state only if a color is defined, otherwise use default
-                        tabButton.style.background = tab.color || 'var(--gradient-accent)';
-                        
-                        // Add shadow
-                        tabButton.style.boxShadow = tab.color
-                            ? `0 2px 10px ${tab.color}40`
-                            : '0 2px 10px rgba(0, 255, 136, 0.2)';
-
-                        // Ensure text is white for active tabs
-                        tabButton.style.color = 'white';
-                    }
+    // Apply background for active state only if a color is defined, otherwise use default
+    tabButton.style.background = tab.color || 'var(--gradient-accent)';
+    tabButton.style.boxShadow = `0 2px 10px ${tab.color ? tab.color + '40' : 'rgba(0, 255, 136, 0.2)'}`; // Add shadow
+    tabButton.style.color = 'white'; // Ensure text is white for active tabs
+}
 
                 });
 
@@ -4560,20 +4592,16 @@
             });
             const newActiveTab = document.querySelector(`#customSubTabs .sub-nav-tab[data-sub-tab-id="${tabId}"]`);
             if (newActiveTab) {
-                newActiveTab.classList.add('active');
-                const tabData = appState.customTabs.find(t => t.id === tabId);
-                if (tabData) {
-                    // Apply active state styles
-                    newActiveTab.style.background = tabData.color || 'var(--gradient-accent)';
-                    newActiveTab.style.boxShadow = tabData.color
-                        ? `0 2px 10px ${tabData.color}40`
-                        : '0 2px 10px rgba(0, 255, 136, 0.2)';
-                    newActiveTab.style.color = 'white'; // Active tab text is always white
-                }
-            } else {
-                console.warn(`Tab with ID ${tabId} not found.`);
+    newActiveTab.classList.add('active');
+    const tabData = appState.customTabs.find(t => t.id === tabId);
+    if (tabData) {
+        // Apply active state styles
+        newActiveTab.style.background = tabData.color || 'var(--gradient-accent)';
+        newActiveTab.style.boxShadow = `0 2px 10px ${tabData.color ? tabData.color + '40' : 'rgba(0, 255, 136, 0.2)'}`;
+        newActiveTab.style.color = 'white'; // Active tab text is always white
+    }
+}
 
-            }
             appState.currentCustomTab = tabId;
             renderIntelligenceEntries(); // Re-render entries filtered by this specific custom tab
             saveState();
@@ -4899,50 +4927,44 @@
         // New: Function to parse URL for shareable tabs
         function parseShareableLink() {
             const urlParams = new URLSearchParams(window.location.search);
-            const sharedTabIdentifier = urlParams.get('tab'); // Can be custom tab ID or 'allVault', 'allData', 'tools', 'emails', etc.
+            const sharedTabIdentifier = urlParams.get('tab');
             const sharedEntryIds = urlParams.get('entries');
 
             if (sharedTabIdentifier && sharedEntryIds) {
                 appState.readOnlyMode = true;
-                appState.sharedTabId = sharedTabIdentifier; // Store the identifier
+                appState.sharedTabId = sharedTabIdentifier;
                 appState.sharedEntryIds = sharedEntryIds.split(',');
 
                 // Determine which tab to switch to based on the identifier
                 if (sharedTabIdentifier === 'allVault' || sharedTabIdentifier === 'allData') {
-                    appState.currentTab = 'intelligence-vault'; // Go to main vault view
-                    appState.currentIntelligenceVaultSubTab = 'tools'; // Default to tools if all vault/data
+                    appState.currentTab = 'intelligence-vault';
+                    appState.currentIntelligenceVaultSubTab = 'tools';
                 } else if (appState.customTabs.find(tab => tab.id === sharedTabIdentifier)) {
                     appState.currentTab = 'custom-tabs';
                     appState.currentCustomTab = sharedTabIdentifier;
                 } else if (['tools', 'emails', 'phones', 'crypto', 'locations', 'links', 'media', 'passwords', 'keywords', 'socials'].includes(sharedTabIdentifier)) {
-                     appState.currentTab = 'intelligence-vault';
-                     appState.currentIntelligenceVaultSubTab = sharedTabIdentifier;
+                    appState.currentTab = 'intelligence-vault';
+                    appState.currentIntelligenceVaultSubTab = sharedTabIdentifier;
                 } else {
                     showToast('Shared content not found or invalid link.', 'error');
                     appState.readOnlyMode = false; // Reset if invalid
-                    history.replaceState({}, document.title, window.location.pathname);
+                    // DO NOT clear history here if it's an invalid link,
+                    // the user might want to see the malformed URL.
                     return;
                 }
 
-                // Switch to the determined tab. The `renderIntelligenceEntries` called by switchTab
-                // will handle highlighting entries.
-                switchTab(appState.currentTab);
-                // If it's a custom tab, ensure it's selected
-                if (appState.currentTab === 'custom-tabs') {
-                    switchCustomTab(appState.currentCustomTab);
-                }
-                // If it's an intelligence vault sub-tab, ensure it's selected
-                if (appState.currentTab === 'intelligence-vault') {
-                    switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
-                }
-
                 showToast('Viewing shared intelligence vault (Read-Only).', 'info');
-                // The applyReadOnlyMode will be called after initial rendering by initApp
+                // IMPORTANT CHANGE: Do NOT clear the URL parameters here.
+                // history.replaceState({}, document.title, window.location.pathname); // REMOVE OR COMMENT THIS LINE
             } else {
                 appState.readOnlyMode = false;
+                // When not in read-only mode, it's safe to clear any old share parameters
+                // if they happen to be lingering without a valid 'tab' and 'entries'
+                const currentUrl = new URL(window.location.href);
+                if (currentUrl.searchParams.has('tab') || currentUrl.searchParams.has('entries')) {
+                    history.replaceState({}, document.title, window.location.pathname);
+                }
             }
-            // Remove URL parameters to clean up the address bar for regular use
-            history.replaceState({}, document.title, window.location.pathname);
         }
 
         // New: Function to apply or remove read-only mode UI restrictions
