@@ -6,6 +6,7 @@
     <title>OSINTVault - Your OSINT tools, always with you</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="./Gemini_Generated_Image_g99tsmg99tsmg99t.png" type="image/x-icon">
     <style>
         /* Refined Color Palette & Variables */
         :root {
@@ -460,31 +461,109 @@
         .random-display {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 12px; /* Increased border-radius for softer look */
+            padding: 20px; /* More padding */
             text-align: center;
             font-size: 0.9em;
             color: var(--text-secondary);
-            /* Ensure content is centered and prevent height collapse */
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pushes button to bottom if space */
-            min-height: 120px; /* Give it a minimum height */
+            justify-content: space-between;
+            min-height: 180px; /* Increased min-height for better visual balance */
+            box-shadow: var(--shadow); /* Add a subtle shadow */
         }
-        .random-display .random-text {
-            min-height: 60px; /* Allocate more height for text, prevent jump */
+
+        .random-display .random-content-wrapper {
+            flex-grow: 1; /* Allows content to take available space */
             display: flex;
-            align-items: center; /* Vertically center text */
-            justify-content: center;
-            line-height: 1.4;
-            flex-grow: 1; /* Allow text to take available space */
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            margin-bottom: 15px; /* Space between content and button */
         }
+
+        /* Refined Random Discovery Section - Header specific styling */
+        .random-display .random-display-header {
+            display: flex;
+            align-items: center; /* Vertically align items */
+            justify-content: center; /* Center the entire header horizontally */
+            gap: 12px; /* Increased gap between icon and text */
+            margin-bottom: 20px; /* More space below the header */
+            color: var(--text-primary); /* Use primary text color for better contrast */
+            font-weight: 600; /* Keep it bold */
+            padding-bottom: 10px; /* Add some padding at the bottom */
+            border-bottom: 1px solid var(--border-light); /* Subtle separator line */
+            width: 100%; /* Ensure it spans the width */
+        }
+
+        .random-display .random-display-header .header-icon {
+            font-size: 1.8em; /* Slightly larger icon */
+            color: var(--primary); /* Keep primary color for the icon */
+            /* Add a subtle text-shadow for a soft glow effect */
+            text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .random-display .random-display-header .header-text {
+            font-size: 1.2em; /* Slightly larger font for the heading text */
+            margin: 0; /* Remove default h3 margin */
+            font-family: 'Outfit', sans-serif; /* Use the logo font for a premium feel */
+            letter-spacing: -0.5px; /* Tighter spacing */
+            background: var(--gradient-primary); /* Apply gradient for a premium look */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+
+        .random-display .random-item-placeholder {
+            min-height: 80px; /* Ensure content area has a minimum height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%; /* Take full width of wrapper */
+        }
+
+        .random-display .random-item-placeholder p {
+            margin-bottom: 8px; /* Space between paragraphs */
+            line-height: 1.4;
+        }
+
+        .random-display .random-item-placeholder strong {
+            color: var(--text-primary); /* Make strong text more prominent */
+        }
+
+        .random-display .random-tool-link {
+            font-size: 1.05em; /* Slightly larger link text for tools */
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the tool link */
+            gap: 8px; /* Space between favicon/icon and text */
+        }
+
+        .random-display .random-tool-link:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+
+        .random-display .tool-favicon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+        }
+
         .random-display .btn-sm {
-            padding: 8px 12px;
-            font-size: 12px;
-            width: auto; /* Allow button to size naturally, or set to 100% if preferred */
-            margin: 10px auto 0; /* Center the button */
-            display: block; /* Make it a block element to center with margin: auto */
+            padding: 10px 18px; /* Slightly larger button for better clickability */
+            font-size: 13px;
+            width: auto;
+            margin: 0 auto; /* Center the button */
+            display: inline-flex; /* Use inline-flex for centering with margin auto on button */
+            align-items: center;
+            gap: 8px;
         }
 
         /* Main Content */
@@ -502,6 +581,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-top: 15px;
             margin-bottom: 25px;
             flex-wrap: wrap;
             gap: 15px;
@@ -1126,7 +1206,15 @@
             background: var(--danger);
         }
 
-        @keyframes fadeIn {
+        .toast-info { /* For read-only banner */
+            background: var(--tab-color-yellow);
+        }
+
+        .toast-error {
+            background: var(--warning);
+        }
+
+        @keyframes fadeIn { 
             from { opacity: 0; }
             to { opacity: 1; }
         }
@@ -1360,6 +1448,101 @@
             border-color: var(--text-primary); /* Border for selected color */
             box-shadow: 0 0 0 3px var(--primary-dark); /* Thicker, slightly darker glow */
         }
+
+        /* New: Intelligence Insights Grid */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px; /* Increased gap for better spacing */
+        }
+
+        .insight-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px; /* Consistent rounded corners */
+            padding: 25px; /* More generous padding */
+            display: flex;
+            align-items: flex-start;
+            gap: 20px; /* Space between icon and content */
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px; /* Thicker accent bar */
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+            background: var(--bg-tertiary);
+        }
+
+        .insight-card:hover::before {
+            opacity: 1;
+        }
+
+        .insight-icon {
+            font-size: 38px; /* Larger, more impactful icon */
+            color: var(--primary);
+            line-height: 1; /* Align better with text */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.4));
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover .insight-icon {
+            transform: scale(1.1); /* Subtle grow on hover */
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.6));
+        }
+
+        .insight-content {
+            flex-grow: 1;
+        }
+
+        .insight-title {
+            font-weight: 700; /* Bolder title */
+            color: var(--text-primary);
+            font-size: 1.15rem; /* Slightly larger title */
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .insight-description {
+            font-size: 0.95rem; /* Slightly larger description text */
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Ensure responsiveness for the new grid */
+        @media (max-width: 768px) {
+            .insights-grid {
+                grid-template-columns: 1fr; /* Stack on smaller screens */
+            }
+            .insight-card {
+                flex-direction: column; /* Stack icon and text */
+                align-items: center;
+                text-align: center;
+            }
+            .insight-icon {
+                margin-bottom: 15px; /* Add space below icon when stacked */
+            }
+        }
     </style>
 </head>
 <body>
@@ -1465,10 +1648,18 @@
                     </button>
                 </div>
 
-                <div class="filter-section">
+                <div class="filter-section" style="margin-top: 25px;">
                     <h3><i class="fas fa-random"></i> Discovery</h3>
                     <div class="random-display" id="randomDiscovery">
-                        <p class="random-text">Loading...</p>
+                        <div class="random-content-wrapper">
+                            <div class="random-display-header">
+                                <span class="header-icon"><i class="fas fa-magic"></i></span>
+                                <h3 class="header-text">Daily OSINT Discovery</h3>
+                            </div>
+                            <div class="random-item-placeholder" id="randomItemDisplay">
+                                <div class="loading"></div> Loading discovery...
+                            </div>
+                        </div>
                         <button class="btn btn-secondary btn-sm" id="newRandomBtn">
                             <i class="fas fa-sync-alt"></i> New Discovery
                         </button>
@@ -1701,39 +1892,69 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3 class="footer-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Pro Tips
+                        <i class="fas fa-brain"></i>
+                        Intelligence Insights
                     </h3>
-                    <div class="tips-grid">
-                        <div class="tip-card">
-                            <div class="tip-title">Automate Your Workflow</div>
-                            <div class="tip-description">Leverage bulk actions to manage multiple tools efficiently. Create custom categories to organize your arsenal for specialized investigations and quicker access.</div>
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Strategic Pathfinding</div>
+                                <div class="insight-description">Master advanced search queries and open-source intelligence tools to navigate complex data landscapes and uncover critical connections.</div>
+                            </div>
                         </div>
-                        <div class="tip-card">
-                            <div class="tip-title">Stay Updated on Threats</div>
-                            <div class="tip-description">Regularly check the Threat Intelligence Feed for real-time alerts on compromised data, emerging vulnerabilities, and significant cyber threats in your operational domain.</div>
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Fortify Your OpSec</div>
+                                <div class="insight-description">Maintain rigorous operational security by always using secure connections (VPNs) and compartmentalizing your investigative activities.</div>
+                            </div>
                         </div>
-                        <div class="tip-card">
-                            <div class="tip-title">Prioritize Operational Security</div>
-                            <div class="tip-description">Always ensure your OSINT investigations are conducted with a VPN and proper operational security protocols. Document all findings thoroughly for legal compliance and future reference.</div>
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Actionable Analytics</div>
+                                <div class="insight-description">Leverage usage statistics to understand your most effective tools and refine your investigative methodologies for optimal efficiency.</div>
+                            </div>
                         </div>
-                         <div class="tip-card">
-                            <div class="tip-title">Refine Your Search</div>
-                            <div class="tip-description">Utilize advanced search operators in tools like Google and Shodan to narrow down results and pinpoint specific information. This saves time and improves accuracy.</div>
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Temporal Data Mining</div>
+                                <div class="insight-description">Explore historical web archives and social media snapshots to trace digital footprints and identify evolving narratives over time.</div>
+                            </div>
                         </div>
-                        <div class="tip-card">
-                            <div class="tip-title">Explore Historical Data</div>
-                            <div class="tip-description">The Wayback Machine is invaluable for viewing past versions of websites. It can reveal critical information that has since been removed or changed.</div>
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Comprehensive Reporting</div>
+                                <div class="insight-description">Generate detailed reports of your findings, ensuring all collected intelligence is well-documented and ready for analysis or dissemination.</div>
+                            </div>
                         </div>
-                        <div class="tip-card">
-                            <div class="tip-title">Analyze Metadata</div>
-                            <div class="tip-description">Always check for hidden metadata in images and documents. Tools exist that can extract geotags, author information, and timestamps, providing deeper insights.</div>
+                        <div class="insight-card">
+                            <div class="insight-icon">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <div class="insight-content">
+                                <div class="insight-title">Collaborative Sharing</div>
+                                <div class="insight-description">Securely share specific intelligence data or entire vault sections with your team members for collaborative investigations.</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="footer-bottom">
-                    <p>&copy; 2024 OSINT Arsenal. Built for cybersecurity professionals and researchers.</p>
+                    <p>&copy; 2025 OSINTVault. Built for cybersecurity professionals and researchers.</p>
                     <p style="margin-top: 10px; font-size: 12px;">
                         <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
                         Secure • Anonymous • Professional
@@ -4917,33 +5138,64 @@
             showToast(`Custom tab "${customTabToExport.name}" exported successfully!`);
         }
 
-        // New: Function to display a random tool or OSINT tip
+        // New: Function to display a random tool or OSINT tip professionally
         function showRandomDiscovery() {
             const randomDiscoveryElement = document.getElementById('randomDiscovery');
             if (!randomDiscoveryElement) return;
 
-            const randomChoice = Math.random(); // 0 to 1
+            const randomItemDisplay = document.getElementById('randomItemDisplay');
+            randomItemDisplay.innerHTML = '<div class="loading"></div> Loading discovery...'; // Show loading state
+
+            // Give a slightly higher chance to tools if available
+            const hasTools = appState.tools.length > 0;
+            const hasTips = appState.osintTips.length > 0;
+
             let content = '';
+            let chosenType = '';
 
-            // Give a higher chance to tools if available, otherwise prioritize tips
-            if (appState.tools.length > 0 && (randomChoice < 0.7 || appState.osintTips.length === 0)) {
-                // Show a random tool
-                const randomIndex = Math.floor(Math.random() * appState.tools.length);
-                const tool = appState.tools[randomIndex];
-                content = `
-                    <strong>Featured Tool:</strong> <a href="${tool.url}" target="_blank" style="color: var(--primary); text-decoration: none;">${tool.name} <i class="fas fa-external-link-alt" style="font-size: 0.7em;"></i></a>
-                    <br>${tool.description.substring(0, 70)}${tool.description.length > 70 ? '...' : ''}
-                `;
-            } else if (appState.osintTips.length > 0) {
-                // Show a random tip
-                const randomIndex = Math.floor(Math.random() * appState.osintTips.length);
-                const tip = appState.osintTips[randomIndex];
-                content = `<p><strong>OSINT Tip:</strong> ${tip}</p>`;
-            } else {
-                content = `<p>Discover new tools and tips here!</p>`;
-            }
+            // Simulate a network request delay for a smoother loading animation
+            setTimeout(() => {
+                if (hasTools && (!hasTips || Math.random() < 0.7)) { // 70% chance for tool if both exist
+                    chosenType = 'tool';
+                    const randomIndex = Math.floor(Math.random() * appState.tools.length);
+                    const tool = appState.tools[randomIndex];
 
-            randomDiscoveryElement.querySelector('.random-text').innerHTML = content;
+                    let faviconHtml = '';
+                    if (tool.favicon) {
+                        faviconHtml = `<img src="${tool.favicon}" alt="" class="tool-favicon" onerror="this.onerror=null;this.src='https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}'">`;
+                    } else {
+                        faviconHtml = `<i class="fas fa-link"></i>`; // Fallback icon if no favicon
+                    }
+
+                    content = `
+                        <p><strong>Featured Tool:</strong></p>
+                        <p>
+                            <a href="${tool.url}" target="_blank" class="random-tool-link">
+                                ${faviconHtml}
+                                ${tool.name}
+                            </a>
+                        </p>
+                        <p style="font-size: 0.85em; color: var(--text-secondary;">${tool.description.substring(0, 120)}${tool.description.length > 120 ? '...' : ''}</p>
+                    `;
+                } else if (hasTips) {
+                    chosenType = 'tip';
+                    const randomIndex = Math.floor(Math.random() * appState.osintTips.length);
+                    const tip = appState.osintTips[randomIndex];
+                    content = `
+                        <p><strong>OSINT Tip:</strong></p>
+                        <p style="font-size: 0.9em;">${tip}</p>
+                    `;
+                } else {
+                    content = `<p>No tools or tips available yet. Add some to get started!</p>`;
+                }
+
+                randomItemDisplay.innerHTML = content;
+                // Adjust button text based on what was shown
+                const newRandomBtn = document.getElementById('newRandomBtn');
+                if (newRandomBtn) {
+                    newRandomBtn.innerHTML = `<i class="fas fa-sync-alt"></i> New ${chosenType === 'tool' ? 'Tool' : (chosenType === 'tip' ? 'Tip' : 'Discovery')}`;
+                }
+            }, 500); // 500ms delay to show loading animation
         }
 
         // New: Function to parse URL for shareable tabs
