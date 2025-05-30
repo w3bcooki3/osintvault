@@ -6,7 +6,7 @@
     <title>OSINTVault - Your OSINT tools, always with you</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="./Gemini_Generated_Image_g99tsmg99tsmg99t.png" type="image/x-icon">
+    <link rel="icon" href="./favicon.png" type="image/x-icon">
     <style>
         /* Refined Color Palette & Variables */
         :root {
@@ -893,73 +893,11 @@
         }
 
         /* Footer */
-        .footer {
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            padding: 40px 40px 20px; /* Add horizontal padding to footer */
-            margin-top: 50px;
-            transition: background 0.3s ease, border-color 0.3s ease;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); /* Shadow pushing up */
-        }
-
-        .footer-content {
-            max-width: 1800px; /* Match main content width */
-            margin: 0 auto;
-        }
-
-        .footer-section {
-            margin-bottom: 30px;
-        }
-
-        .footer-title {
-            color: var(--primary);
-            font-size: 1.3rem; /* Slightly larger footer titles */
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Outfit', sans-serif; /* Consistent heading font */
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .tip-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px; /* Slightly softer corners */
-            padding: 15px;
-            border-left: 5px solid var(--primary); /* Thicker accent bar */
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow); /* Add shadow to tip cards */
-        }
-
-        .tip-card:hover {
-            transform: translateY(-8px); /* More lift on hover */
-            box-shadow: var(--shadow-lg); /* Increased shadow on hover */
-            border-color: var(--primary-dark);
-            background: var(--bg-tertiary);
-        }
-
-        .tip-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .tip-description {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
         .footer-bottom {
             text-align: center;
             padding-top: 20px;
+            padding-bottom: 20px;
+            background: var(--bg-secondary);
             border-top: 1px solid var(--border);
             color: var(--text-muted);
             font-size: 14px;
@@ -1449,100 +1387,254 @@
             box-shadow: 0 0 0 3px var(--primary-dark); /* Thicker, slightly darker glow */
         }
 
-        /* New: Intelligence Insights Grid */
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px; /* Increased gap for better spacing */
-        }
-
-        .insight-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px; /* Consistent rounded corners */
-            padding: 25px; /* More generous padding */
-            display: flex;
-            align-items: flex-start;
-            gap: 20px; /* Space between icon and content */
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+        /*calude_investigation  wall*/
+        .investigation-wall {
+            min-height: 100vh;
+            width: 100vw;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .insight-card::before {
-            content: '';
+/*background Image
+        .investigation-wall {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            width: 100vw;
+            background: var(--gradient-bg); 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .investigation-wall::before {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
+            height: 100%;
             width: 100%;
-            height: 5px; /* Thicker accent bar */
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            background: url('./wall.png') center center / cover no-repeat;
+            filter: blur(15px);
+            z-index: -1;
+            transform: scale(1.1); 
+        }
+*/
+
+        .wall-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 50px 50px, 75px 75px;
+            animation: subtleShift 20s ease-in-out infinite;
         }
 
-        .insight-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
-            background: var(--bg-tertiary);
+        @keyframes subtleShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-2px, -2px); }
         }
 
-        .insight-card:hover::before {
-            opacity: 1;
+        .evidence-grid {
+            position: relative;
+            max-width: 1600px;
+            width: 100%;
+            padding: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            z-index: 2;
         }
 
-        .insight-icon {
-            font-size: 38px; /* Larger, more impactful icon */
-            color: var(--primary);
-            line-height: 1; /* Align better with text */
-            flex-shrink: 0; /* Prevent icon from shrinking */
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.4));
+        .evidence-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            position: relative;
+            transform: rotate(-1.5deg);
             transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
         }
 
-        .insight-card:hover .insight-icon {
-            transform: scale(1.1); /* Subtle grow on hover */
-            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.6));
+        .evidence-card:nth-child(even) {
+            transform: rotate(1.5deg);
         }
 
-        .insight-content {
-            flex-grow: 1;
+        .evidence-card:hover {
+            transform: rotate(0deg) scale(1.02);
+            background: var(--bg-tertiary);
+            box-shadow: var(--shadow-lg), var(--glow);
+            border-color: var(--border-light);
         }
 
-        .insight-title {
-            font-weight: 700; /* Bolder title */
+        .evidence-card::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--secondary);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+
+        .evidence-card::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 12px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+        }
+
+        .card-header-wall {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-icon-wall {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.75rem;
+            fill: currentColor;
+        }
+
+        .card-content-wall {
             color: var(--text-primary);
-            font-size: 1.15rem; /* Slightly larger title */
-            margin-bottom: 8px;
-            letter-spacing: -0.2px;
+            line-height: 1.7;
+            font-size: 1rem;
         }
 
-        .insight-description {
-            font-size: 0.95rem; /* Slightly larger description text */
-            color: var(--text-secondary);
-            line-height: 1.6;
+        .highlight-wall {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
-        /* Ensure responsiveness for the new grid */
+        .connecting-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .line {
+            position: absolute;
+            background: var(--gradient-primary);
+            height: 2px;
+            transform-origin: left center;
+            animation: lineGlow 3s ease-in-out infinite alternate;
+            opacity: 0.6;
+        }
+
+        @keyframes lineGlow {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.8; }
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .section-title-wall {
+            position: absolute;
+            top: 3rem;
+            color: var(--primary);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            z-index: 4;
+            text-shadow: var(--glow);
+            border-bottom: 2px solid var(--tab-color-blue);
+        }
+
         @media (max-width: 768px) {
-            .insights-grid {
-                grid-template-columns: 1fr; /* Stack on smaller screens */
+            .evidence-grid {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+                gap: 2rem;
             }
-            .insight-card {
-                flex-direction: column; /* Stack icon and text */
-                align-items: center;
-                text-align: center;
+            
+            .evidence-card {
+                padding: 2rem;
             }
-            .insight-icon {
-                margin-bottom: 15px; /* Add space below icon when stacked */
+            
+            .section-title-wall {
+                top: 2rem;
+                left: 2rem;
+                font-size: 2rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .evidence-grid {
+                padding: 1.5rem;
+                gap: 1.5rem;
+            }
+            
+            .evidence-card {
+                padding: 1.5rem;
+            }
+            
+            .section-title-wall {
+                top: 1.5rem;
+                left: 1.5rem;
+                font-size: 1.5rem;
+            }
+        }
+
+        /*-------- End of Investigation Wall Styles --------*/
+
     </style>
 </head>
 <body>
@@ -1673,6 +1765,10 @@
                         <i class="fas fa-database"></i>
                         Intelligence Vault
                     </button>
+                    <button class="nav-tab" data-tab="custom-tabs">
+                        <i class="fas fa-layer-group"></i>
+                        Custom Tabs
+                    </button>
                     <button class="nav-tab" data-tab="analytics">
                         <i class="fas fa-chart-bar"></i>
                         Analytics
@@ -1680,10 +1776,6 @@
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
                         Threat Intel
-                    </button>
-                    <button class="nav-tab" data-tab="custom-tabs">
-                        <i class="fas fa-layer-group"></i>
-                        Custom Tabs
                     </button>
                 </div>
 
@@ -1888,79 +1980,96 @@
             </div>
         </div>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3 class="footer-title">
-                        <i class="fas fa-brain"></i>
-                        Intelligence Insights
-                    </h3>
-                    <div class="insights-grid">
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-route"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Strategic Pathfinding</div>
-                                <div class="insight-description">Master advanced search queries and open-source intelligence tools to navigate complex data landscapes and uncover critical connections.</div>
-                            </div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Fortify Your OpSec</div>
-                                <div class="insight-description">Maintain rigorous operational security by always using secure connections (VPNs) and compartmentalizing your investigative activities.</div>
-                            </div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Actionable Analytics</div>
-                                <div class="insight-description">Leverage usage statistics to understand your most effective tools and refine your investigative methodologies for optimal efficiency.</div>
-                            </div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-history"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Temporal Data Mining</div>
-                                <div class="insight-description">Explore historical web archives and social media snapshots to trace digital footprints and identify evolving narratives over time.</div>
-                            </div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-file-invoice"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Comprehensive Reporting</div>
-                                <div class="insight-description">Generate detailed reports of your findings, ensuring all collected intelligence is well-documented and ready for analysis or dissemination.</div>
-                            </div>
-                        </div>
-                        <div class="insight-card">
-                            <div class="insight-icon">
-                                <i class="fas fa-share-alt"></i>
-                            </div>
-                            <div class="insight-content">
-                                <div class="insight-title">Collaborative Sharing</div>
-                                <div class="insight-description">Securely share specific intelligence data or entire vault sections with your team members for collaborative investigations.</div>
-                            </div>
-                        </div>
+        <!------Claude Investigation Wall Start -->
+        <section class="investigation-wall">
+            <div class="wall-texture"></div>
+            <div class="floating-particles" id="particles"></div>
+            <h2 class="section-title-wall"><i class="fas fa-clipboard-list"></i>Investigation Wall: OSINT Tips & Tricks</h2>
+            
+            <div class="connecting-lines" id="connecting-lines"></div>
+            
+            <div class="evidence-grid">
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 13 15.5l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        Search Techniques
+                    </div>
+                    <div class="card-content-wall">
+                        Use <span class="highlight-wall">Google Dorks</span> for advanced searches. Try operators like site:, filetype:, and intitle: to narrow results. Remember: <span class="highlight-wall">"" for exact phrases</span> and - to exclude terms.
                     </div>
                 </div>
 
-                <div class="footer-bottom">
-                    <p>&copy; 2025 OSINTVault. Built for cybersecurity professionals and researchers.</p>
-                    <p style="margin-top: 10px; font-size: 12px;">
-                        <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
-                        Secure • Anonymous • Professional
-                    </p>
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        Social Media Intel
+                    </div>
+                    <div class="card-content-wall">
+                        Check <span class="highlight-wall">metadata</span> in images and posts. Use reverse image searches. Look for <span class="highlight-wall">connected accounts</span> across platforms using same usernames or profile pics.
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                        </svg>
+                        Documentation
+                    </div>
+                    <div class="card-content-wall">
+                        Always <span class="highlight-wall">screenshot evidence</span> before it disappears. Use timestamps and archive tools like Wayback Machine. Document your <span class="highlight-wall">methodology</span> for legal purposes.
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        Digital Footprints
+                    </div>
+                    <div class="card-content-wall">
+                        Check <span class="highlight-wall">WHOIS data</span> for domains. Look at DNS records, SSL certificates. Use tools like Shodan for IoT devices. Email headers reveal routing paths.
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                        </svg>
+                        Privacy & Security
+                    </div>
+                    <div class="card-content-wall">
+                        Use <span class="highlight-wall">VPN and Tor</span> for anonymity. Create separate investigation personas. Never use personal accounts. Clear browser data and use <span class="highlight-wall">incognito mode</span>.
+                    </div>
+                </div>
+
+                <div class="evidence-card">
+                    <div class="card-header-wall">
+                        <svg class="card-icon-wall" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Verification
+                    </div>
+                    <div class="card-content-wall">
+                        <span class="highlight-wall">Cross-reference</span> information from multiple sources. Use fact-checking sites. Verify timestamps and locations. Look for <span class="highlight-wall">digital inconsistencies</span> in manipulated content.
+                    </div>
                 </div>
             </div>
+        </section>
+        <!----- Claude Investigation Wall End ------->
+
+        <footer class="footer-bottom">
+            <p>&copy; 2025 OSINTVault. Built for cybersecurity professionals and researchers.</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
+                Secure • Anonymous • Professional
+            </p>
         </footer>
     </div>
 
@@ -5466,5 +5575,92 @@
        // Initialize the application when DOM is loaded
        document.addEventListener('DOMContentLoaded', initApp);
    </script>
+   
+   <script>
+        // Create connecting lines between evidence cards
+        function createConnectingLines() {
+            const cards = document.querySelectorAll('.evidence-card');
+            const linesContainer = document.getElementById('connecting-lines');
+            
+            for (let i = 0; i < cards.length - 1; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                
+                const card1 = cards[i].getBoundingClientRect();
+                const card2 = cards[i + 1].getBoundingClientRect();
+                
+                const x1 = card1.left + card1.width / 2;
+                const y1 = card1.top + card1.height / 2;
+                const x2 = card2.left + card2.width / 2;
+                const y2 = card2.top + card2.height / 2;
+                
+                const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                
+                line.style.width = length + 'px';
+                line.style.left = x1 + 'px';
+                line.style.top = y1 + 'px';
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.animationDelay = `${i * 0.5}s`;
+                
+                linesContainer.appendChild(line);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Add hover effects to evidence cards
+        function addCardEffects() {
+            const cards = document.querySelectorAll('.evidence-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.filter = 'brightness(1.1) saturate(1.1)';
+                    card.style.borderColor = 'var(--primary)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.filter = 'none';
+                    card.style.borderColor = 'var(--border)';
+                });
+            });
+        }
+
+        // Initialize everything when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                createConnectingLines();
+            }, 100);
+            createParticles();
+            addCardEffects();
+        });
+
+        // Recreate lines on window resize
+        window.addEventListener('resize', () => {
+            const linesContainer = document.getElementById('connecting-lines');
+            linesContainer.innerHTML = '';
+            setTimeout(() => {
+                createConnectingLines();
+            }, 100);
+        });
+    </script>
+
 </body>
 </html>
