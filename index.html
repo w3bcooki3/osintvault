@@ -113,9 +113,9 @@
         }
 
         .container {
-            width: 80%;
-            max-width: 1800px;
-            padding: 0 40px; /* More generous padding on larger screens */
+            width: 100%; /* Make it full screen */
+            max-width: 100%; /* Ensure it spans fully */
+            padding: 0; /* Remove horizontal padding at container level */
             margin: 0 auto; /* Center the container */
         }
 
@@ -138,8 +138,9 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
-            max-width: 100%;
-            padding: 0 20px;
+            max-width: 1800px; /* Constrain content width within header */
+            margin: 0 auto; /* Center header content */
+            padding: 0 40px; /* Generous padding for header content */
         }
 
         .logo-container {
@@ -244,10 +245,10 @@
             display: flex;
             gap: 30px;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px 40px; /* Match header padding */
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
-            border-radius: 0 0 12px 12px; /* Rounded bottom corners for continuity */
+            border-radius: 0; /* Remove rounded corners */
             margin: 0;
             transition: background 0.3s ease, border-color 0.3s ease;
             box-shadow: var(--shadow); /* Add shadow to stats bar */
@@ -352,7 +353,7 @@
         .nav-tabs {
             display: flex;
             gap: 0;
-            margin: 20px 0;
+            margin: 20px 40px 0; /* Add horizontal padding for main tabs */
             /* Replaced border-bottom with a more integrated look */
             background: var(--bg-secondary);
             border-radius: 12px; /* Rounded container for tabs */
@@ -431,8 +432,8 @@
             display: grid;
             grid-template-columns: 320px 1fr;
             gap: 30px;
-            margin-bottom: 30px;
-            width: 100%;
+            margin: 30px 40px; /* Add horizontal padding to dashboard */
+            width: calc(100% - 80px); /* Adjust width for padding */
         }
 
         /* Sidebar */
@@ -815,14 +816,14 @@
         .footer {
             background: var(--bg-card);
             border-top: 1px solid var(--border);
-            padding: 40px 20px 20px;
+            padding: 40px 40px 20px; /* Add horizontal padding to footer */
             margin-top: 50px;
             transition: background 0.3s ease, border-color 0.3s ease;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.1); /* Shadow pushing up */
         }
 
         .footer-content {
-            max-width: 1200px;
+            max-width: 1800px; /* Match main content width */
             margin: 0 auto;
         }
 
@@ -888,21 +889,30 @@
         @media (max-width: 1200px) {
             .dashboard {
                 grid-template-columns: 1fr;
+                margin: 30px 20px; /* Adjust padding for medium screens */
+                width: calc(100% - 40px);
             }
             
             .sidebar {
                 position: static;
             }
+            .header-content, .stats-bar, .nav-tabs, .footer-content {
+                padding: 0 20px; /* Adjust padding for medium screens */
+            }
+            .nav-tabs {
+                margin: 20px 20px 0;
+            }
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 15px; /* Adjusted padding for smaller screens */
+                padding: 0;
             }
             
             .header-content {
                 flex-direction: column;
                 align-items: stretch;
+                padding: 0 15px; /* Further adjust padding for smaller screens */
             }
             
             .search-container {
@@ -933,6 +943,8 @@
             .nav-tabs {
                 flex-wrap: wrap;
                 justify-content: center;
+                margin: 20px 15px 0; /* Adjust margin for smaller screens */
+                padding: 8px;
             }
 
             .nav-tab {
@@ -944,6 +956,12 @@
                 flex-wrap: wrap;
                 gap: 15px;
                 justify-content: center;
+                padding: 15px;
+            }
+
+            .dashboard {
+                margin: 20px 15px; /* Adjust margin for smaller screens */
+                width: calc(100% - 30px);
             }
 
             .tips-grid {
@@ -952,6 +970,10 @@
 
             .analytics-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .footer {
+                padding: 40px 15px 20px;
             }
         }
 
@@ -1866,7 +1888,7 @@
                         <input type="text" id="linkPlatform" placeholder="twitter, reddit, pastebin, forum">
                     </div>
                     <div class="form-group">
-                        <label>Notes</label>
+                        <label>Notes</labe>
                         <textarea id="linkNotes" rows="3"></textarea>
                     </div>
                     <div class="form-group">
