@@ -2726,16 +2726,30 @@
         animation: fadeIn 0.3s ease-out;
         }
 
-        /* NEW: Read-only mode disabler */
-        .read-only-overlay {
-            pointer-events: none; /* Disable all clicks/interactions */
-            opacity: 0.8; /* Visually indicate it's read-only */
-            cursor: default; /* Change cursor */
+        /* NEW: Desktop Recommendation Modal Specific Styling */
+        #desktopRecommendationModal .modal-content {
+            max-width: 550px; /* Make this modal slightly narrower */
+            text-align: center;
+            padding: 30px; /* Adjust padding as needed */
         }
 
-        /* Specific overrides for buttons to just hide them in read-only */
-        .read-only-hide {
-            display: none !important;
+        #desktopRecommendationModal h3 {
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #desktopRecommendationModal p {
+            font-size: 15px;
+        }
+
+        #desktopRecommendationModal .btn {
+            margin-top: 10px;
+            width: auto; /* Allow button to size itself */
+            justify-content: center; /* Center content within the button */
         }
     </style>
 </head>
@@ -3316,6 +3330,23 @@
         </section>
         <!----- Claude Investigation Wall End ------->
 
+        <div class="modal" id="desktopRecommendationModal">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 20px; color: var(--warning);"><i class="fas fa-desktop"></i> Attention: Desktop Recommended</h3>
+                <p style="margin-bottom: 15px; color: var(--text-primary);">
+                    OSINTVault is primarily designed for desktop use to provide the best experience and access to all features. For optimal functionality, please access this tool on a larger screen.
+                </p>
+                <p style="margin-bottom: 25px; color: var(--text-secondary);">
+                    You can still proceed, but some options may not be fully visible or functional on smaller screens.
+                </p>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn btn-primary" id="continueAnywayBtn">
+                        <i class="fas fa-arrow-right"></i> Continue Anyway
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <footer class="footer-bottom">
             <p>&copy; 2025 OSINTVault. Built for cybersecurity professionals and researchers.</p>
             <p style="margin-top: 10px; font-size: 12px;">
@@ -3324,6 +3355,8 @@
             </p>
         </footer>
     </div>
+
+
 
     <div class="modal" id="addEntryModal">
         <div class="modal-content">
@@ -4397,30 +4430,31 @@
         // Initialize Application
         function initApp() {
             loadState();
-            parseShareableLink(); // Call this BEFORE anything else that might modify the UI based on non-read-only state
+            parseShareableLink();
             updateStats();
             bindEvents();
             initTheme();
-            // Ensure currentTab is valid, otherwise default to 'tools'
+
+            // NEW: Check and show desktop recommendation on app start
+            checkAndShowDesktopRecommendation();
+
             const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs', 'intelligence-vault'];
             if (!validTabs.includes(appState.currentTab)) {
-                appState.currentTab = 'intelligence-vault'; // Changed default to intelligence-vault as per user preference
+                appState.currentTab = 'intelligence-vault';
             }
-            switchTab(appState.currentTab); // This should correctly activate and render the tab
-            
-            // Explicitly call sub-tab rendering if starting in intelligence-vault
+            switchTab(appState.currentTab);
+
             if (appState.currentTab === 'intelligence-vault') {
                 switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
             }
 
-            showRandomDiscovery(); // New: Show a random tip/tool on load
-            populateCategoryFilter(); // Call after loadState
-            renderIntelligenceEntries(); // Ensure entries are rendered based on initial filters/state
-            updateAnalytics(); // Initial update for analytics display
+            showRandomDiscovery();
+            populateCategoryFilter();
+            renderIntelligenceEntries();
+            updateAnalytics();
 
-            applyReadOnlyMode(); // Apply read-only mode after initial rendering
+            applyReadOnlyMode();
 
-            // Set initial text for viewToggle buttons
             const viewToggleButton = document.getElementById('viewToggle');
             const vaultViewToggleButton = document.getElementById('vaultViewToggle');
             if (appState.viewMode === 'grid') {
@@ -4929,6 +4963,14 @@
                 renderIntelligenceEntries(); // Re-render with new scope
             });
 
+            // NEW: Event listener for Desktop Recommendation Modal's "Continue Anyway" button
+            const continueAnywayBtn = document.getElementById('continueAnywayBtn');
+            if (continueAnywayBtn) {
+                continueAnywayBtn.addEventListener('click', () => {
+                    hideModal('desktopRecommendationModal');
+                    sessionStorage.setItem('desktopRecommendationShown', 'true'); // Mark as shown for this session
+                });
+            }
 
             // Filter controls
             document.getElementById('categoryFilter').addEventListener('change', (e) => {
@@ -6027,48 +6069,37 @@
         document.getElementById('note-title-input').value = note.title;
         document.getElementById('note-content-editor').innerHTML = note.content;
 
+        // Set read-only status based on edit mode
+        document.getElementById('note-title-input').readOnly = !notesState.editMode;
+        document.getElementById('note-content-editor').contentEditable = notesState.editMode;
+
         // Get button references
-        const noteTitleInput = document.getElementById('note-title-input'); // NEW reference
-        const noteContentEditor = document.getElementById('note-content-editor'); // NEW reference
         const saveNoteBtn = document.getElementById('save-note-btn');
         const editNoteBtn = document.getElementById('edit-note-btn');
-        const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
+        const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn'); // NEW reference
         const tagInputContainer = document.getElementById('tag-input-container');
         const formattingToolbar = document.getElementById('formatting-toolbar');
 
-        // Determine actual editability based on current notesState.editMode AND appState.readOnlyMode
-        const canEdit = notesState.editMode && !appState.readOnlyMode;
-
-        // Apply read-only/editable state to inputs and contenteditable
-        noteTitleInput.readOnly = !canEdit;
-        noteContentEditor.contentEditable = canEdit;
-
-        // Show/hide appropriate buttons and elements based on 'canEdit' and appState.readOnlyMode
-        if (canEdit) { // If truly editable
+        // Show/hide appropriate buttons and elements based on editMode
+        if (notesState.editMode) {
             saveNoteBtn.style.display = 'inline-flex';
-            cancelEditNoteBtn.style.display = 'inline-flex';
+            cancelEditNoteBtn.style.display = 'inline-flex'; // NEW: Show cancel button in edit mode
             editNoteBtn.style.display = 'none';
             tagInputContainer.style.display = 'flex';
             formattingToolbar.style.display = 'flex';
-        } else if (appState.readOnlyMode) { // If in read-only mode, hide all editing-related buttons
+        } else {
             saveNoteBtn.style.display = 'none';
-            cancelEditNoteBtn.style.display = 'none';
-            editNoteBtn.style.display = 'none'; // Hide edit button too in read-only
-            tagInputContainer.style.display = 'none';
-            formattingToolbar.style.display = 'none';
-        } else { // If not in read-only and not in editMode (i.e., preview mode)
-            saveNoteBtn.style.display = 'none';
-            cancelEditNoteBtn.style.display = 'none';
-            editNoteBtn.style.display = 'inline-flex'; // Show edit button for normal preview
+            cancelEditNoteBtn.style.display = 'none'; // NEW: Hide cancel button in preview mode
+            editNoteBtn.style.display = 'inline-flex';
             tagInputContainer.style.display = 'none';
             formattingToolbar.style.display = 'none';
         }
 
         // Render tags
-        renderNoteTags(); // Tags and remove buttons will be handled by their own functions
+        renderNoteTags();
 
-        // If in edit mode and not read-only, setup the rich text editor
-        if (canEdit) {
+        // If in edit mode, setup the rich text editor (only needed once, but safe to call)
+        if (notesState.editMode) {
             setupRichTextEditor();
         }
         }
@@ -6077,21 +6108,18 @@
         function renderNoteTags() {
         const tagsContainer = document.getElementById('note-tags-container');
         const note = notesState.notes.find(n => n.id === notesState.currentNote);
-
+        
         if (!note) return;
-
-        // Check if tag removal is allowed (edit mode AND not read-only)
-        const canRemoveTags = notesState.editMode && !appState.readOnlyMode;
-
+        
         tagsContainer.innerHTML = note.tags.map(tag => `
             <div class="note-tag">
             <span>${tag}</span>
-            ${canRemoveTags ? `<button class="remove-tag-btn" data-tag="${tag}"><i class="fas fa-times"></i></button>` : ''}
+            ${notesState.editMode ? `<button class="remove-tag-btn" data-tag="${tag}"><i class="fas fa-times"></i></button>` : ''}
             </div>
         `).join('');
-
-        // Add event listeners to remove tag buttons only if allowed
-        if (canRemoveTags) {
+        
+        // Add event listeners to remove tag buttons
+        if (notesState.editMode) {
             document.querySelectorAll('.remove-tag-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tagToRemove = btn.dataset.tag;
@@ -6159,7 +6187,7 @@
         // Show success message
         showToast('Note saved successfully!');
         }
-
+        
         // Search notes by title, content, or tags
         function searchNotes(searchTerm) {
         searchTerm = searchTerm.toLowerCase();
@@ -6575,12 +6603,7 @@
         function addHandbookControls() {
         const handbookContent = document.querySelector('.handbook-content-container');
         if (!handbookContent) return;
-
-        // Check if controls already exist to prevent duplicates if initHandbookFeatures is called multiple times
-        if (document.querySelector('.handbook-controls')) {
-            return;
-        }
-
+        
         // Create handbook controls container
         const controlsHtml = `
             <div class="handbook-controls">
@@ -6595,22 +6618,14 @@
             </button>
             </div>
         `;
-
+        
         // Insert controls before the content area
         handbookContent.insertAdjacentHTML('afterbegin', controlsHtml);
-
+        
         // Add event listeners
         document.getElementById('add-section-btn').addEventListener('click', openAddSectionModal);
         document.getElementById('edit-section-btn').addEventListener('click', openEditSectionModal);
         document.getElementById('delete-section-btn').addEventListener('click', confirmDeleteSection);
-
-        // Immediately apply read-only state if already in read-only mode
-        if (appState.readOnlyMode) {
-            document.getElementById('add-section-btn').classList.add('read-only-hide');
-            document.getElementById('edit-section-btn').classList.add('read-only-hide');
-            document.getElementById('delete-section-btn').classList.add('read-only-hide');
-            document.querySelector('.handbook-controls').classList.add('read-only-hide');
-        }
         }
 
         function enhanceHandbookSearch() {
@@ -7155,23 +7170,18 @@
         showHandbookSection = function(sectionId) {
         // Call the original function
         originalShowHandbookSection(sectionId);
-
+        
         // Update edit/delete buttons visibility
         const editSectionBtn = document.getElementById('edit-section-btn');
         const deleteSectionBtn = document.getElementById('delete-section-btn');
-
+        
         if (editSectionBtn && deleteSectionBtn) {
             const sectionData = findSectionById(sectionId);
-            // Only show buttons if not in read-only mode AND section data exists
-            if (sectionData && !appState.readOnlyMode) {
-            editSectionBtn.classList.remove('read-only-hide'); // Use class for consistency
-            editSectionBtn.style.display = 'inline-flex'; // Ensure display property is set
-            deleteSectionBtn.classList.remove('read-only-hide');
+            if (sectionData) {
+            editSectionBtn.style.display = 'inline-flex';
             deleteSectionBtn.style.display = 'inline-flex';
             } else {
-            editSectionBtn.classList.add('read-only-hide');
-            editSectionBtn.style.display = 'none'; // Explicitly hide
-            deleteSectionBtn.classList.add('read-only-hide');
+            editSectionBtn.style.display = 'none';
             deleteSectionBtn.style.display = 'none';
             }
         }
@@ -7184,6 +7194,25 @@
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return weekNo;
+        }
+
+
+        // NEW: Function to check screen size and show desktop recommendation modal
+        function checkAndShowDesktopRecommendation() {
+            // Only show if not in read-only mode, as read-only implies sharing, which might be on mobile
+            if (appState.readOnlyMode) {
+                return;
+            }
+
+            const modalShownForSession = sessionStorage.getItem('desktopRecommendationShown');
+
+            // Define your screen width threshold for showing the recommendation
+            // A common breakpoint for tablet portrait is 768px or 1024px for smaller laptops/large tablets
+            const screenWidthThreshold = 1024; // You can adjust this value
+
+            if (window.innerWidth < screenWidthThreshold && !modalShownForSession) {
+                showModal('desktopRecommendationModal');
+            }
         }
 
 
@@ -8524,7 +8553,7 @@
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
             const exportSubTabBtn = document.getElementById('exportSubTabBtn');
-            const shareOptionsBtn = document.getElementById('shareOptionsBtn');
+            const shareOptionsBtn = document.getElementById('shareOptionsBtn'); // Reference to the new global share button
             const categoryFilter = document.getElementById('categoryFilter');
             const sortFilter = document.getElementById('sortFilter');
             const searchInput = document.getElementById('searchInput');
@@ -8533,133 +8562,62 @@
             const pinAllBtn = document.getElementById('pinAllBtn');
             const starAllBtn = document.getElementById('starAllBtn');
             const reportBtn = document.getElementById('reportBtn');
-            const newRandomBtn = document.getElementById('newRandomBtn');
-            const handbookMobileToggle = document.getElementById('handbook-mobile-toggle'); // NEW
-            const handbookSearchInput = document.getElementById('handbook-search'); // NEW
-            const noteSortFilterElement = document.getElementById('noteSortFilter'); // NEW
-            const newNoteBtn = document.getElementById('new-note-btn'); // NEW
-
-            // Selectors for Handbook/Notes editable elements
-            const handbookEditables = document.querySelectorAll('#section-editor-modal input, #section-editor-modal select, #section-editor-modal textarea, #section-editor-content[contenteditable="true"], #section-editor-modal .formatting-btn, #section-editor-modal .copy-btn, #section-editor-modal button[type="submit"], #section-editor-modal .icon-picker-item, #section-editor-modal .color-picker-item'); // NEW
-            const notesEditables = document.querySelectorAll('#note-editor-view input, #note-editor-view textarea, #note-content-editor[contenteditable="true"], #note-editor-view .formatting-btn, #note-editor-view .copy-btn, #note-editor-view button[type="submit"], #note-editor-view .remove-tag-btn, #note-editor-view #note-tags-input, #note-editor-view #add-tag-btn, #notes-list-view .note-action-btn, #notes-list-view .note-card'); // NEW
-            const handbookControls = document.querySelector('.handbook-controls'); // NEW
+            const newRandomBtn = document.getElementById('newRandomBtn'); // New: Random tool button
 
             if (appState.readOnlyMode) {
-                // General UI elements
-                if (addEntryBtn) addEntryBtn.classList.add('read-only-hide');
-                editButtons.forEach(btn => btn.classList.add('read-only-hide'));
-                deleteButtons.forEach(btn => btn.classList.add('read-only-hide'));
-                if (bulkActionsDiv) bulkActionsDiv.classList.add('read-only-hide');
-                if (createSubTabBtn) createSubTabBtn.classList.add('read-only-hide');
-                if (editSubTabBtn) editSubTabBtn.classList.add('read-only-hide');
-                if (deleteSubTabBtn) deleteSubTabBtn.classList.add('read-only-hide');
-                if (exportSubTabBtn) exportSubTabBtn.classList.add('read-only-hide');
-                if (shareOptionsBtn) shareOptionsBtn.classList.add('read-only-hide');
-
-                // Filters and Search
+                // Hide or disable buttons/controls
+                if (addEntryBtn) addEntryBtn.style.display = 'none';
+                editButtons.forEach(btn => btn.style.display = 'none');
+                deleteButtons.forEach(btn => btn.style.display = 'none');
+                if (bulkActionsDiv) bulkActionsDiv.style.display = 'none';
+                if (createSubTabBtn) createSubTabBtn.style.display = 'none';
+                if (editSubTabBtn) editSubTabBtn.style.display = 'none';
+                if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'none';
+                if (exportSubTabBtn) exportSubTabBtn.style.display = 'none';
+                if (shareOptionsBtn) shareOptionsBtn.style.display = 'none'; // Hide the new global share button
                 if (categoryFilter) categoryFilter.setAttribute('disabled', 'disabled');
                 if (sortFilter) sortFilter.setAttribute('disabled', 'disabled');
-                if (searchInput) searchInput.setAttribute('disabled', 'disabled');
+                if (searchInput) searchInput.setAttribute('disabled', 'disabled'); // Disable search too in read-only
                 if (searchScopeSelect) searchScopeSelect.setAttribute('disabled', 'disabled');
+                if (showAllBtn) showAllBtn.style.display = 'none';
+                if (pinAllBtn) pinAllBtn.style.display = 'none';
+                if (starAllBtn) starAllBtn.style.display = 'none';
+                if (reportBtn) reportBtn.style.display = 'none';
+                if (newRandomBtn) newRandomBtn.style.display = 'none'; // Hide random tool button
 
-                // Quick Actions
-                if (showAllBtn) showAllBtn.classList.add('read-only-hide');
-                if (pinAllBtn) pinAllBtn.classList.add('read-only-hide');
-                if (starAllBtn) starAllBtn.classList.add('read-only-hide');
-                if (reportBtn) reportBtn.classList.add('read-only-hide');
-                if (newRandomBtn) newRandomBtn.classList.add('read-only-hide');
-
-                // Modals: Disable inputs and hide submit buttons
+                // Also disable form submissions and inputs in modals
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
-                    else el.setAttribute('disabled', 'disabled');
+                    if (el.tagName === 'BUTTON') el.style.display = 'none'; // Hide submit buttons
+                    else el.setAttribute('disabled', 'disabled'); // Disable inputs
                 });
-
-                // NEW: Handbook specific elements
-                if (handbookMobileToggle) handbookMobileToggle.classList.add('read-only-hide');
-                if (handbookSearchInput) handbookSearchInput.setAttribute('disabled', 'disabled');
-                if (handbookControls) handbookControls.classList.add('read-only-hide'); // Hide Add/Edit/Delete Section buttons
-
-                handbookEditables.forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
-                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'false');
-                    else el.setAttribute('disabled', 'disabled');
-                });
-                // Apply overlay for visual indication but keep text readable
-                document.querySelectorAll('#handbook-article-area').forEach(el => el.classList.add('read-only-overlay'));
-                document.querySelectorAll('#handbook-sidebar').forEach(el => el.classList.add('read-only-overlay'));
-
-
-                // NEW: Notes specific elements
-                if (noteSortFilterElement) noteSortFilterElement.setAttribute('disabled', 'disabled');
-                if (newNoteBtn) newNoteBtn.classList.add('read-only-hide');
-
-                notesEditables.forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
-                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'false');
-                    else if (el.type === 'checkbox') el.setAttribute('disabled', 'disabled'); // For bulk checkboxes in notes list
-                    else el.setAttribute('disabled', 'disabled');
-                });
-                // Apply overlay for visual indication but keep text readable
-                document.querySelectorAll('#notes-list-view').forEach(el => el.classList.add('read-only-overlay'));
-                document.querySelectorAll('#note-editor-view').forEach(el => el.classList.add('read-only-overlay'));
 
             } else {
                 // Re-enable everything for normal use
-                if (addEntryBtn) addEntryBtn.classList.remove('read-only-hide');
-                editButtons.forEach(btn => btn.classList.remove('read-only-hide'));
-                deleteButtons.forEach(btn => btn.classList.remove('read-only-hide'));
-                if (bulkActionsDiv) bulkActionsDiv.classList.remove('read-only-hide'); // updateBulkActions() will handle visibility based on selection
-                if (createSubTabBtn) createSubTabBtn.classList.remove('read-only-hide');
-                if (editSubTabBtn) editSubTabBtn.classList.remove('read-only-hide');
-                if (deleteSubTabBtn) deleteSubTabBtn.classList.remove('read-only-hide');
-                if (exportSubTabBtn) exportSubTabBtn.classList.remove('read-only-hide');
-                if (shareOptionsBtn) shareOptionsBtn.classList.remove('read-only-hide');
-
+                if (addEntryBtn) addEntryBtn.style.display = 'inline-flex';
+                editButtons.forEach(btn => btn.style.display = 'inline-flex');
+                deleteButtons.forEach(btn => btn.style.display = 'inline-flex');
+                // updateBulkActions() will handle visibility based on selection for bulk actions
+                if (createSubTabBtn) createSubTabBtn.style.display = 'inline-flex';
+                // These will be re-enabled by renderCustomTabs() based on currentCustomTab presence
+                if (exportSubTabBtn) exportSubTabBtn.style.display = 'inline-flex';
+                if (shareOptionsBtn) shareOptionsBtn.style.display = 'inline-flex'; // Show the new global share button
+                
                 if (categoryFilter) categoryFilter.removeAttribute('disabled');
                 if (sortFilter) sortFilter.removeAttribute('disabled');
                 if (searchInput) searchInput.removeAttribute('disabled');
                 if (searchScopeSelect) searchScopeSelect.removeAttribute('disabled');
-
-                if (showAllBtn) showAllBtn.classList.remove('read-only-hide');
-                if (pinAllBtn) pinAllBtn.classList.remove('read-only-hide');
-                if (starAllBtn) starAllBtn.classList.remove('read-only-hide');
-                if (reportBtn) reportBtn.classList.remove('read-only-hide');
-                if (newRandomBtn) newRandomBtn.classList.remove('read-only-hide');
+                if (showAllBtn) showAllBtn.style.display = 'block';
+                if (pinAllBtn) pinAllBtn.style.display = 'block';
+                if (starAllBtn) starAllBtn.style.display = 'block';
+                if (reportBtn) reportBtn.style.display = 'block';
+                if (newRandomBtn) newRandomBtn.style.display = 'block'; // Show random tool button
 
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
+                    if (el.tagName === 'BUTTON') el.style.removeProperty('display');
                     else el.removeAttribute('disabled');
                 });
-                updateBulkActions();
-                renderCustomTabs();
-
-                // NEW: Handbook specific elements
-                if (handbookMobileToggle) handbookMobileToggle.classList.remove('read-only-hide');
-                if (handbookSearchInput) handbookSearchInput.removeAttribute('disabled');
-                if (handbookControls) handbookControls.classList.remove('read-only-hide');
-
-                handbookEditables.forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
-                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
-                    else el.removeAttribute('disabled');
-                });
-                document.querySelectorAll('#handbook-article-area').forEach(el => el.classList.remove('read-only-overlay'));
-                document.querySelectorAll('#handbook-sidebar').forEach(el => el.classList.remove('read-only-overlay'));
-
-
-                // NEW: Notes specific elements
-                if (noteSortFilterElement) noteSortFilterElement.removeAttribute('disabled');
-                if (newNoteBtn) newNoteBtn.classList.remove('read-only-hide');
-
-                notesEditables.forEach(el => {
-                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
-                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
-                    else if (el.type === 'checkbox') el.removeAttribute('disabled');
-                    else el.removeAttribute('disabled');
-                });
-                document.querySelectorAll('#notes-list-view').forEach(el => el.classList.remove('read-only-overlay'));
-                document.querySelectorAll('#note-editor-view').forEach(el => el.classList.remove('read-only-overlay'));
+                updateBulkActions(); // Ensure bulk actions bar visibility is correct
+                renderCustomTabs(); // This will re-evaluate display of edit/delete/share buttons based on current state
             }
         }
 
