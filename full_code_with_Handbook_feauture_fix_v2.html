@@ -2725,6 +2725,18 @@
         .handbook-controls {
         animation: fadeIn 0.3s ease-out;
         }
+
+        /* NEW: Read-only mode disabler */
+        .read-only-overlay {
+            pointer-events: none; /* Disable all clicks/interactions */
+            opacity: 0.8; /* Visually indicate it's read-only */
+            cursor: default; /* Change cursor */
+        }
+
+        /* Specific overrides for buttons to just hide them in read-only */
+        .read-only-hide {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -3143,6 +3155,9 @@
                                         </button>
                                         <button id="edit-note-btn" class="edit-note-btn" style="display: none;">
                                             <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button id="cancel-edit-note-btn" class="btn btn-secondary" style="display: none;">
+                                            <i class="fas fa-times"></i> Cancel
                                         </button>
                                         <button id="save-note-btn" class="save-note-btn">
                                             <i class="fas fa-save"></i> Save
@@ -5850,18 +5865,26 @@
             saveNoteBtn.addEventListener('click', saveCurrentNote);
         }
 
-        // FIX START: Edit note button in editor view
+        // Edit note button in editor view
         const editNoteInEditorBtn = document.getElementById('edit-note-btn');
         if (editNoteInEditorBtn) {
             editNoteInEditorBtn.addEventListener('click', () => {
-            // Set editMode to true when the edit button in the editor is clicked
             notesState.editMode = true;
-            // Re-render the editor to enable editable fields and show save button
             showNoteEditor();
-            focusEditor(); // Optionally refocus cursor
+            focusEditor();
             });
         }
-        // FIX END
+
+        // NEW: Cancel edit button listener
+        const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
+        if (cancelEditNoteBtn) {
+            cancelEditNoteBtn.addEventListener('click', () => {
+                // Discard changes by reverting editMode and re-showing editor (which loads original content)
+                notesState.editMode = false;
+                showNoteEditor();
+                showToast('Changes discarded.', 'info'); // Provide feedback
+            });
+        }
 
         // Search notes
         const searchNotesInput = document.getElementById('search-notes');
@@ -5871,14 +5894,14 @@
             });
         }
 
-        // NEW: Sort notes dropdown listener
+        // Sort notes dropdown listener
         const noteSortFilterElement = document.getElementById('noteSortFilter');
         if (noteSortFilterElement) {
             noteSortFilterElement.addEventListener('change', (e) => {
                 notesState.noteSortFilter = e.target.value;
-                localStorage.setItem('noteSortFilter', notesState.noteSortFilter); // Save preference
-                sortNotes(); // Re-sort the notes array
-                renderNotesList(); // Re-render the list with new sort order
+                localStorage.setItem('noteSortFilter', notesState.noteSortFilter);
+                sortNotes();
+                renderNotesList();
             });
         }
 
@@ -5996,31 +6019,56 @@
         function showNoteEditor() {
         document.getElementById('notes-list-view').style.display = 'none';
         document.getElementById('note-editor-view').style.display = 'block';
-        
+
         const note = notesState.notes.find(n => n.id === notesState.currentNote);
         if (!note) return;
-        
+
         // Set editor content
         document.getElementById('note-title-input').value = note.title;
         document.getElementById('note-content-editor').innerHTML = note.content;
-        
-        // Set read-only status based on edit mode
-        document.getElementById('note-title-input').readOnly = !notesState.editMode;
-        document.getElementById('note-content-editor').contentEditable = notesState.editMode;
-        
-        // Show/hide appropriate buttons
-        document.getElementById('save-note-btn').style.display = notesState.editMode ? 'inline-flex' : 'none';
-        document.getElementById('edit-note-btn').style.display = notesState.editMode ? 'none' : 'inline-flex';
-        document.getElementById('tag-input-container').style.display = notesState.editMode ? 'flex' : 'none';
-        
-        // Update formatting toolbar visibility
-        document.getElementById('formatting-toolbar').style.display = notesState.editMode ? 'flex' : 'none';
-        
+
+        // Get button references
+        const noteTitleInput = document.getElementById('note-title-input'); // NEW reference
+        const noteContentEditor = document.getElementById('note-content-editor'); // NEW reference
+        const saveNoteBtn = document.getElementById('save-note-btn');
+        const editNoteBtn = document.getElementById('edit-note-btn');
+        const cancelEditNoteBtn = document.getElementById('cancel-edit-note-btn');
+        const tagInputContainer = document.getElementById('tag-input-container');
+        const formattingToolbar = document.getElementById('formatting-toolbar');
+
+        // Determine actual editability based on current notesState.editMode AND appState.readOnlyMode
+        const canEdit = notesState.editMode && !appState.readOnlyMode;
+
+        // Apply read-only/editable state to inputs and contenteditable
+        noteTitleInput.readOnly = !canEdit;
+        noteContentEditor.contentEditable = canEdit;
+
+        // Show/hide appropriate buttons and elements based on 'canEdit' and appState.readOnlyMode
+        if (canEdit) { // If truly editable
+            saveNoteBtn.style.display = 'inline-flex';
+            cancelEditNoteBtn.style.display = 'inline-flex';
+            editNoteBtn.style.display = 'none';
+            tagInputContainer.style.display = 'flex';
+            formattingToolbar.style.display = 'flex';
+        } else if (appState.readOnlyMode) { // If in read-only mode, hide all editing-related buttons
+            saveNoteBtn.style.display = 'none';
+            cancelEditNoteBtn.style.display = 'none';
+            editNoteBtn.style.display = 'none'; // Hide edit button too in read-only
+            tagInputContainer.style.display = 'none';
+            formattingToolbar.style.display = 'none';
+        } else { // If not in read-only and not in editMode (i.e., preview mode)
+            saveNoteBtn.style.display = 'none';
+            cancelEditNoteBtn.style.display = 'none';
+            editNoteBtn.style.display = 'inline-flex'; // Show edit button for normal preview
+            tagInputContainer.style.display = 'none';
+            formattingToolbar.style.display = 'none';
+        }
+
         // Render tags
-        renderNoteTags();
-        
-        // If in edit mode, setup the rich text editor
-        if (notesState.editMode) {
+        renderNoteTags(); // Tags and remove buttons will be handled by their own functions
+
+        // If in edit mode and not read-only, setup the rich text editor
+        if (canEdit) {
             setupRichTextEditor();
         }
         }
@@ -6029,18 +6077,21 @@
         function renderNoteTags() {
         const tagsContainer = document.getElementById('note-tags-container');
         const note = notesState.notes.find(n => n.id === notesState.currentNote);
-        
+
         if (!note) return;
-        
+
+        // Check if tag removal is allowed (edit mode AND not read-only)
+        const canRemoveTags = notesState.editMode && !appState.readOnlyMode;
+
         tagsContainer.innerHTML = note.tags.map(tag => `
             <div class="note-tag">
             <span>${tag}</span>
-            ${notesState.editMode ? `<button class="remove-tag-btn" data-tag="${tag}"><i class="fas fa-times"></i></button>` : ''}
+            ${canRemoveTags ? `<button class="remove-tag-btn" data-tag="${tag}"><i class="fas fa-times"></i></button>` : ''}
             </div>
         `).join('');
-        
-        // Add event listeners to remove tag buttons
-        if (notesState.editMode) {
+
+        // Add event listeners to remove tag buttons only if allowed
+        if (canRemoveTags) {
             document.querySelectorAll('.remove-tag-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tagToRemove = btn.dataset.tag;
@@ -6087,6 +6138,12 @@
         function saveCurrentNote() {
         const note = notesState.notes.find(n => n.id === notesState.currentNote);
         if (!note) return;
+
+        // NEW: Confirmation dialog
+        if (!confirm('Are you sure you want to save changes to this note?')) {
+            showToast('Save cancelled.', 'info'); // User clicked cancel
+            return;
+        }
 
         note.title = document.getElementById('note-title-input').value || 'Untitled Note';
         note.content = document.getElementById('note-content-editor').innerHTML;
@@ -6499,608 +6556,626 @@
         }
 
         // Enhanced OSINT Handbook functionality
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize handbook features when loaded
-  initHandbookFeatures();
-});
+        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize handbook features when loaded
+        initHandbookFeatures();
+        });
 
-function initHandbookFeatures() {
-  // Add section management buttons to handbook content container
-  addHandbookControls();
-  
-  // Enhance search functionality
-  enhanceHandbookSearch();
-  
-  // Initialize editor for section content
-  initSectionEditor();
-}
-
-function addHandbookControls() {
-  const handbookContent = document.querySelector('.handbook-content-container');
-  if (!handbookContent) return;
-  
-  // Create handbook controls container
-  const controlsHtml = `
-    <div class="handbook-controls">
-      <button id="add-section-btn" class="btn btn-primary handbook-btn">
-        <i class="fas fa-plus"></i> Add New Section
-      </button>
-      <button id="edit-section-btn" class="btn btn-secondary handbook-btn" style="display: none;">
-        <i class="fas fa-edit"></i> Edit Section
-      </button>
-      <button id="delete-section-btn" class="btn btn-danger handbook-btn" style="display: none;">
-        <i class="fas fa-trash"></i> Delete Section
-      </button>
-    </div>
-  `;
-  
-  // Insert controls before the content area
-  handbookContent.insertAdjacentHTML('afterbegin', controlsHtml);
-  
-  // Add event listeners
-  document.getElementById('add-section-btn').addEventListener('click', openAddSectionModal);
-  document.getElementById('edit-section-btn').addEventListener('click', openEditSectionModal);
-  document.getElementById('delete-section-btn').addEventListener('click', confirmDeleteSection);
-}
-
-function enhanceHandbookSearch() {
-  const searchInput = document.getElementById('handbook-search');
-  if (!searchInput) return;
-  
-  // Clear any existing listeners to avoid duplicates
-  const newSearchInput = searchInput.cloneNode(true);
-  searchInput.parentNode.replaceChild(newSearchInput, searchInput);
-  
-  // Add enhanced search functionality
-  newSearchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    
-    if (searchTerm.length < 2) {
-      // Reset search if term is too short
-      document.querySelectorAll('.handbook-nav-item, .handbook-category').forEach(item => {
-        item.style.display = 'flex';
-      });
-      document.querySelectorAll('.handbook-content mark').forEach(mark => {
-        const text = document.createTextNode(mark.textContent);
-        mark.parentNode.replaceChild(text, mark);
-      });
-      return;
-    }
-    
-    // Search both titles and content
-    searchHandbookSections(searchTerm);
-    
-    // Highlight matches in current content
-    highlightContentMatches(searchTerm);
-  });
-  
-  // Add search icon click handler to clear search
-  const searchIcon = document.querySelector('.handbook-search-icon');
-  if (searchIcon) {
-    searchIcon.style.cursor = 'pointer';
-    searchIcon.addEventListener('click', () => {
-      newSearchInput.value = '';
-      newSearchInput.dispatchEvent(new Event('input'));
-      newSearchInput.focus();
-    });
-  }
-}
-
-function searchHandbookSections(searchTerm) {
-  let matchFound = false;
-  
-  // Search through all sections
-  document.querySelectorAll('.handbook-nav-item').forEach(item => {
-    const sectionId = item.dataset.section;
-    let sectionData = findSectionById(sectionId);
-    
-    if (sectionData) {
-      const titleMatch = sectionData.title.toLowerCase().includes(searchTerm);
-      const contentMatch = sectionData.content && sectionData.content.toLowerCase().includes(searchTerm);
-      
-      if (titleMatch || contentMatch) {
-        item.style.display = 'flex';
-        matchFound = true;
+        function initHandbookFeatures() {
+        // Add section management buttons to handbook content container
+        addHandbookControls();
         
-        // Highlight the matching item
-        item.classList.add('search-highlight');
+        // Enhance search functionality
+        enhanceHandbookSearch();
         
-        // Expand parent category if in a subcategory
-        const parentSubcategories = item.closest('.handbook-subcategories');
-        if (parentSubcategories) {
-          const categoryId = parentSubcategories.id.replace('-subcategories', '');
-          const categoryHeader = document.querySelector(`.handbook-category-header[data-category="${categoryId}"]`);
-          
-          if (categoryHeader) {
-            categoryHeader.closest('.handbook-category').style.display = 'block';
-            parentSubcategories.style.maxHeight = parentSubcategories.scrollHeight + "px";
-            categoryHeader.querySelector('.category-toggle').classList.add('rotate');
-          }
+        // Initialize editor for section content
+        initSectionEditor();
         }
-      } else {
-        item.style.display = 'none';
-        item.classList.remove('search-highlight');
-      }
-    }
-  });
-  
-  // Show "no results" message if no matches
-  const noResultsEl = document.getElementById('handbook-search-no-results');
-  if (!matchFound) {
-    if (!noResultsEl) {
-      const searchContainer = document.querySelector('.handbook-search-container');
-      if (searchContainer) {
-        searchContainer.insertAdjacentHTML('afterend', `
-          <div id="handbook-search-no-results" class="handbook-no-results">
-            <i class="fas fa-search"></i>
-            <p>No results found for "${searchTerm}"</p>
-          </div>
-        `);
-      }
-    } else {
-      noResultsEl.style.display = 'block';
-      noResultsEl.querySelector('p').textContent = `No results found for "${searchTerm}"`;
-    }
-  } else if (noResultsEl) {
-    noResultsEl.style.display = 'none';
-  }
-}
 
-function highlightContentMatches(searchTerm) {
-  // Remove existing highlights
-  const contentArea = document.getElementById('handbook-article-area');
-  if (!contentArea) return;
-  
-  // First, remove existing highlights
-  const highlighted = contentArea.innerHTML;
-  const cleaned = highlighted.replace(/<mark class="search-highlight">(.*?)<\/mark>/gi, '$1');
-  contentArea.innerHTML = cleaned;
-  
-  // Don't highlight if search term is too short
-  if (searchTerm.length < 2) return;
-  
-  // Then add new highlights
-  const contentNodes = Array.from(contentArea.querySelectorAll('p, h2, h3, h4, li, code'));
-  
-  contentNodes.forEach(node => {
-    const originalText = node.innerHTML;
-    if (!originalText.includes('<mark class="search-highlight">')) {
-      const newText = originalText.replace(
-        new RegExp(searchTerm, 'gi'),
-        match => `<mark class="search-highlight">${match}</mark>`
-      );
-      if (originalText !== newText) {
-        node.innerHTML = newText;
-      }
-    }
-  });
-}
+        function addHandbookControls() {
+        const handbookContent = document.querySelector('.handbook-content-container');
+        if (!handbookContent) return;
 
-function findSectionById(sectionId) {
-  // Look through handbookData to find the section
-  let foundSection = null;
-  
-  handbookData.sections.forEach(section => {
-    if (section.id === sectionId) {
-      foundSection = section;
-    } else if (section.isCategory && section.subcategories) {
-      section.subcategories.forEach(subsection => {
-        if (subsection.id === sectionId) {
-          foundSection = subsection;
+        // Check if controls already exist to prevent duplicates if initHandbookFeatures is called multiple times
+        if (document.querySelector('.handbook-controls')) {
+            return;
         }
-      });
-    }
-  });
-  
-  return foundSection;
-}
 
-function openAddSectionModal() {
-  // Check if modal already exists
-  let modal = document.getElementById('section-editor-modal');
-  if (!modal) {
-    // Create modal if it doesn't exist
-    modal = createSectionEditorModal();
-    document.body.appendChild(modal);
-  }
-  
-  // Reset form
-  document.getElementById('section-editor-form').reset();
-  document.getElementById('section-editor-title').textContent = 'Add New Section';
-  document.getElementById('section-id').value = generateSectionId();
-  document.getElementById('section-parent').value = '';
-  document.getElementById('section-editor-content').innerHTML = '';
-  
-  // Show parent category selector and icon selector
-  document.getElementById('section-parent-group').style.display = 'block';
-  document.getElementById('section-icon-group').style.display = 'block';
-  
-  // Populate parent category select
-  populateParentCategorySelect();
-  
-  // Show the modal
-  modal.classList.add('show');
-}
-
-function openEditSectionModal() {
-  // Get current section ID
-  const currentSectionId = getCurrentSectionId();
-  if (!currentSectionId) {
-    showToast('Please select a section to edit', 'warning');
-    return;
-  }
-  
-  const sectionData = findSectionById(currentSectionId);
-  if (!sectionData) {
-    showToast('Section not found', 'error');
-    return;
-  }
-  
-  // Create or get modal
-  let modal = document.getElementById('section-editor-modal');
-  if (!modal) {
-    modal = createSectionEditorModal();
-    document.body.appendChild(modal);
-  }
-  
-  // Set form values
-  document.getElementById('section-editor-title').textContent = 'Edit Section';
-  document.getElementById('section-id').value = sectionData.id;
-  document.getElementById('section-title').value = sectionData.title;
-  document.getElementById('section-icon').value = sectionData.icon || 'fas fa-book';
-  document.getElementById('section-editor-content').innerHTML = sectionData.content;
-  
-  // Hide parent category selector for editing (can't change parent)
-  document.getElementById('section-parent-group').style.display = 'none';
-  
-  // Show the modal
-  modal.classList.add('show');
-}
-
-function confirmDeleteSection() {
-  // Get current section ID
-  const currentSectionId = getCurrentSectionId();
-  if (!currentSectionId) {
-    showToast('Please select a section to delete', 'warning');
-    return;
-  }
-  
-  const sectionData = findSectionById(currentSectionId);
-  if (!sectionData) {
-    showToast('Section not found', 'error');
-    return;
-  }
-  
-  // Ask for confirmation
-  if (confirm(`Are you sure you want to delete the section "${sectionData.title}"?`)) {
-    deleteSection(currentSectionId);
-  }
-}
-
-function deleteSection(sectionId) {
-  // Find and remove the section from handbookData
-  let deleted = false;
-  
-  // Check top-level sections
-  handbookData.sections = handbookData.sections.filter(section => {
-    if (section.id === sectionId) {
-      deleted = true;
-      return false; // Remove this section
-    }
-    
-    // Check subcategories if it's a category
-    if (section.isCategory && section.subcategories) {
-      section.subcategories = section.subcategories.filter(subsection => {
-        if (subsection.id === sectionId) {
-          deleted = true;
-          return false; // Remove this subsection
-        }
-        return true;
-      });
-    }
-    
-    return true;
-  });
-  
-  if (deleted) {
-    // Re-render handbook sidebar and show first section
-    renderHandbookSidebar();
-    if (handbookData.sections.length > 0) {
-      const firstSection = handbookData.sections[0];
-      if (firstSection.isCategory && firstSection.subcategories && firstSection.subcategories.length > 0) {
-        showHandbookSection(firstSection.subcategories[0].id);
-      } else {
-        showHandbookSection(firstSection.id);
-      }
-    }
-    
-    // Save to localStorage
-    saveHandbookData();
-    showToast('Section deleted successfully', 'success');
-  } else {
-    showToast('Failed to delete section', 'error');
-  }
-}
-
-function createSectionEditorModal() {
-  const modal = document.createElement('div');
-  modal.id = 'section-editor-modal';
-  modal.className = 'modal';
-
-  modal.innerHTML = `
-    <div class="modal-content" style="max-width: 800px;">
-      <h3 id="section-editor-title" style="margin-bottom: 20px; color: var(--primary);">Add New Section</h3>
-
-      <form id="section-editor-form">
-        <input type="hidden" id="section-id">
-
-        <div class="form-group">
-          <label for="section-title">Section Title</label>
-          <input type="text" id="section-title" required placeholder="Enter section title">
-        </div>
-
-        <div class="form-group" id="section-parent-group">
-          <label for="section-parent">Parent Category</label>
-          <select id="section-parent">
-            <option value="">None (Top-level section)</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="section-icon-group">
-          <label for="section-icon">Section Icon</label>
-          <input type="text" id="section-icon" placeholder="e.g., fas fa-book" value="fas fa-book">
-          <div class="icon-picker-grid" id="section-icon-picker"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="section-editor-content">Content</label>
-          <div class="formatting-toolbar">
-            <button type="button" class="formatting-btn" data-command="bold" title="Bold">
-              <i class="fas fa-bold"></i>
+        // Create handbook controls container
+        const controlsHtml = `
+            <div class="handbook-controls">
+            <button id="add-section-btn" class="btn btn-primary handbook-btn">
+                <i class="fas fa-plus"></i> Add New Section
             </button>
-            <button type="button" class="formatting-btn" data-command="italic" title="Italic">
-              <i class="fas fa-italic"></i>
+            <button id="edit-section-btn" class="btn btn-secondary handbook-btn" style="display: none;">
+                <i class="fas fa-edit"></i> Edit Section
             </button>
-            <button type="button" class="formatting-btn" data-command="formatBlock" data-value="h2" title="Heading 2">
-              <i class="fas fa-heading"></i>2
+            <button id="delete-section-btn" class="btn btn-danger handbook-btn" style="display: none;">
+                <i class="fas fa-trash"></i> Delete Section
             </button>
-            <button type="button" class="formatting-btn" data-command="formatBlock" data-value="h3" title="Heading 3">
-              <i class="fas fa-heading"></i>3
-            </button>
-            <button type="button" class="formatting-btn" data-command="insertUnorderedList" title="Bullet List">
-              <i class="fas fa-list-ul"></i>
-            </button>
-            <button type="button" class="formatting-btn" data-command="insertOrderedList" title="Numbered List">
-              <i class="fas fa-list-ol"></i>
-            </button>
-            <button type="button" class="formatting-btn" data-command="createLink" title="Insert Link">
-              <i class="fas fa-link"></i>
-            </button>
-            <button type="button" class="formatting-btn" data-command="insertHTML" data-value="code-block" title="Insert Code Block">
-              <i class="fas fa-code"></i>
-            </button>
-          </div>
-          <div id="section-editor-content" class="note-content-editor" contenteditable="true"></div>
-        </div>
-
-        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-          <button type="button" class="btn btn-secondary" id="cancel-section-edit">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Section</button>
-        </div>
-      </form>
-    </div>
-  `;
-
-  document.body.appendChild(modal); // Append the modal to the DOM first
-
-  // Now that the modal is in the DOM, you can safely populate the icon picker
-  populateIconPicker('section-icon-picker');
-
-  // Add event listeners
-  modal.querySelector('#cancel-section-edit').addEventListener('click', () => {
-    modal.classList.remove('show');
-  });
-
-  modal.querySelector('#section-editor-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    saveSection();
-  });
-
-  // Add click outside to close
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('show');
-    }
-  });
-
-  return modal;
-}
-
-function populateParentCategorySelect() {
-  const parentSelect = document.getElementById('section-parent');
-  
-  // Clear existing options except the first one
-  while (parentSelect.options.length > 1) {
-    parentSelect.remove(1);
-  }
-  
-  // Add category options
-  handbookData.sections.forEach(section => {
-    if (section.isCategory) {
-      const option = document.createElement('option');
-      option.value = section.id;
-      option.textContent = section.title;
-      parentSelect.appendChild(option);
-    }
-  });
-}
-
-function initSectionEditor() {
-  // Set up editor toolbar functionality
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.formatting-btn');
-    if (!btn) return;
-    
-    const command = btn.dataset.command;
-    const value = btn.dataset.value || null;
-    const editor = document.getElementById('section-editor-content');
-    
-    if (!editor) return;
-    
-    if (command === 'createLink') {
-      const url = prompt('Enter the URL:');
-      if (url) {
-        document.execCommand(command, false, url);
-      }
-    } else if (command === 'insertHTML' && value === 'code-block') {
-      // Insert a code block
-      const codeContent = prompt('Enter code content:');
-      if (codeContent) {
-        const codeBlockHtml = `
-          <div class="code-block">
-            <pre><code>${escapeHtml(codeContent)}</code></pre>
-            <button class="copy-btn" data-clipboard-target="#code-${Date.now()}"><i class="fas fa-copy"></i></button>
-          </div>
+            </div>
         `;
-        document.execCommand('insertHTML', false, codeBlockHtml);
-      }
-    } else if (command === 'formatBlock') {
-      document.execCommand(command, false, value);
-    } else {
-      document.execCommand(command, false, value);
-    }
-  });
-  
-  // Add icon picker functionality
-  document.addEventListener('click', (e) => {
-    const iconItem = e.target.closest('.icon-picker-item');
-    if (!iconItem) return;
-    
-    const iconPicker = iconItem.closest('.icon-picker-grid');
-    if (!iconPicker) return;
-    
-    // Remove selected class from all icons
-    iconPicker.querySelectorAll('.icon-picker-item').forEach(item => {
-      item.classList.remove('selected');
-    });
-    
-    // Add selected class to clicked icon
-    iconItem.classList.add('selected');
-    
-    // Update input value
-    const iconInput = document.getElementById('section-icon');
-    if (iconInput) {
-      iconInput.value = iconItem.dataset.iconClass;
-    }
-  });
-}
 
-function saveSection() {
-  const sectionId = document.getElementById('section-id').value;
-  const sectionTitle = document.getElementById('section-title').value;
-  const sectionParent = document.getElementById('section-parent').value;
-  const sectionIcon = document.getElementById('section-icon').value;
-  const sectionContent = document.getElementById('section-editor-content').innerHTML;
-  
-  // Validate required fields
-  if (!sectionTitle) {
-    showToast('Section title is required', 'error');
-    return;
-  }
-  
-  // Check if editing existing section or adding new one
-  const existingSection = findSectionById(sectionId);
-  
-  if (existingSection) {
-    // Update existing section
-    existingSection.title = sectionTitle;
-    existingSection.icon = sectionIcon;
-    existingSection.content = sectionContent;
-  } else {
-    // Create new section
-    const newSection = {
-      id: sectionId,
-      title: sectionTitle,
-      icon: sectionIcon,
-      content: sectionContent
-    };
-    
-    if (sectionParent) {
-      // Add as subcategory to parent
-      const parentCategory = handbookData.sections.find(section => section.id === sectionParent);
-      if (parentCategory) {
-        // Ensure parent is a category with subcategories array
-        if (!parentCategory.isCategory) {
-          parentCategory.isCategory = true;
+        // Insert controls before the content area
+        handbookContent.insertAdjacentHTML('afterbegin', controlsHtml);
+
+        // Add event listeners
+        document.getElementById('add-section-btn').addEventListener('click', openAddSectionModal);
+        document.getElementById('edit-section-btn').addEventListener('click', openEditSectionModal);
+        document.getElementById('delete-section-btn').addEventListener('click', confirmDeleteSection);
+
+        // Immediately apply read-only state if already in read-only mode
+        if (appState.readOnlyMode) {
+            document.getElementById('add-section-btn').classList.add('read-only-hide');
+            document.getElementById('edit-section-btn').classList.add('read-only-hide');
+            document.getElementById('delete-section-btn').classList.add('read-only-hide');
+            document.querySelector('.handbook-controls').classList.add('read-only-hide');
         }
-        if (!parentCategory.subcategories) {
-          parentCategory.subcategories = [];
         }
-        parentCategory.subcategories.push(newSection);
-      }
-    } else {
-      // Add as top-level section
-      handbookData.sections.push(newSection);
-    }
-  }
-  
-  // Save changes and update UI
-  saveHandbookData();
-  renderHandbookSidebar();
-  showHandbookSection(sectionId);
-  
-  // Hide modal
-  const modal = document.getElementById('section-editor-modal');
-  if (modal) {
-    modal.classList.remove('show');
-  }
-  
-  showToast('Section saved successfully', 'success');
-}
 
-function saveHandbookData() {
-  // Save to localStorage
-  localStorage.setItem('osintHandbookData', JSON.stringify(handbookData));
-}
+        function enhanceHandbookSearch() {
+        const searchInput = document.getElementById('handbook-search');
+        if (!searchInput) return;
+        
+        // Clear any existing listeners to avoid duplicates
+        const newSearchInput = searchInput.cloneNode(true);
+        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+        
+        // Add enhanced search functionality
+        newSearchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm.length < 2) {
+            // Reset search if term is too short
+            document.querySelectorAll('.handbook-nav-item, .handbook-category').forEach(item => {
+                item.style.display = 'flex';
+            });
+            document.querySelectorAll('.handbook-content mark').forEach(mark => {
+                const text = document.createTextNode(mark.textContent);
+                mark.parentNode.replaceChild(text, mark);
+            });
+            return;
+            }
+            
+            // Search both titles and content
+            searchHandbookSections(searchTerm);
+            
+            // Highlight matches in current content
+            highlightContentMatches(searchTerm);
+        });
+        
+        // Add search icon click handler to clear search
+        const searchIcon = document.querySelector('.handbook-search-icon');
+        if (searchIcon) {
+            searchIcon.style.cursor = 'pointer';
+            searchIcon.addEventListener('click', () => {
+            newSearchInput.value = '';
+            newSearchInput.dispatchEvent(new Event('input'));
+            newSearchInput.focus();
+            });
+        }
+        }
 
-function getCurrentSectionId() {
-  // Get the currently active section
-  const activeNavItem = document.querySelector('.handbook-nav-item.active');
-  return activeNavItem ? activeNavItem.dataset.section : null;
-}
+        function searchHandbookSections(searchTerm) {
+        let matchFound = false;
+        
+        // Search through all sections
+        document.querySelectorAll('.handbook-nav-item').forEach(item => {
+            const sectionId = item.dataset.section;
+            let sectionData = findSectionById(sectionId);
+            
+            if (sectionData) {
+            const titleMatch = sectionData.title.toLowerCase().includes(searchTerm);
+            const contentMatch = sectionData.content && sectionData.content.toLowerCase().includes(searchTerm);
+            
+            if (titleMatch || contentMatch) {
+                item.style.display = 'flex';
+                matchFound = true;
+                
+                // Highlight the matching item
+                item.classList.add('search-highlight');
+                
+                // Expand parent category if in a subcategory
+                const parentSubcategories = item.closest('.handbook-subcategories');
+                if (parentSubcategories) {
+                const categoryId = parentSubcategories.id.replace('-subcategories', '');
+                const categoryHeader = document.querySelector(`.handbook-category-header[data-category="${categoryId}"]`);
+                
+                if (categoryHeader) {
+                    categoryHeader.closest('.handbook-category').style.display = 'block';
+                    parentSubcategories.style.maxHeight = parentSubcategories.scrollHeight + "px";
+                    categoryHeader.querySelector('.category-toggle').classList.add('rotate');
+                }
+                }
+            } else {
+                item.style.display = 'none';
+                item.classList.remove('search-highlight');
+            }
+            }
+        });
+        
+        // Show "no results" message if no matches
+        const noResultsEl = document.getElementById('handbook-search-no-results');
+        if (!matchFound) {
+            if (!noResultsEl) {
+            const searchContainer = document.querySelector('.handbook-search-container');
+            if (searchContainer) {
+                searchContainer.insertAdjacentHTML('afterend', `
+                <div id="handbook-search-no-results" class="handbook-no-results">
+                    <i class="fas fa-search"></i>
+                    <p>No results found for "${searchTerm}"</p>
+                </div>
+                `);
+            }
+            } else {
+            noResultsEl.style.display = 'block';
+            noResultsEl.querySelector('p').textContent = `No results found for "${searchTerm}"`;
+            }
+        } else if (noResultsEl) {
+            noResultsEl.style.display = 'none';
+        }
+        }
 
-function generateSectionId() {
-  // Generate a unique section ID
-  return 'section-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-}
+        function highlightContentMatches(searchTerm) {
+        // Remove existing highlights
+        const contentArea = document.getElementById('handbook-article-area');
+        if (!contentArea) return;
+        
+        // First, remove existing highlights
+        const highlighted = contentArea.innerHTML;
+        const cleaned = highlighted.replace(/<mark class="search-highlight">(.*?)<\/mark>/gi, '$1');
+        contentArea.innerHTML = cleaned;
+        
+        // Don't highlight if search term is too short
+        if (searchTerm.length < 2) return;
+        
+        // Then add new highlights
+        const contentNodes = Array.from(contentArea.querySelectorAll('p, h2, h3, h4, li, code'));
+        
+        contentNodes.forEach(node => {
+            const originalText = node.innerHTML;
+            if (!originalText.includes('<mark class="search-highlight">')) {
+            const newText = originalText.replace(
+                new RegExp(searchTerm, 'gi'),
+                match => `<mark class="search-highlight">${match}</mark>`
+            );
+            if (originalText !== newText) {
+                node.innerHTML = newText;
+            }
+            }
+        });
+        }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+        function findSectionById(sectionId) {
+        // Look through handbookData to find the section
+        let foundSection = null;
+        
+        handbookData.sections.forEach(section => {
+            if (section.id === sectionId) {
+            foundSection = section;
+            } else if (section.isCategory && section.subcategories) {
+            section.subcategories.forEach(subsection => {
+                if (subsection.id === sectionId) {
+                foundSection = subsection;
+                }
+            });
+            }
+        });
+        
+        return foundSection;
+        }
 
-// Update the showHandbookSection function to handle section management buttons
-const originalShowHandbookSection = showHandbookSection;
-showHandbookSection = function(sectionId) {
-  // Call the original function
-  originalShowHandbookSection(sectionId);
-  
-  // Update edit/delete buttons visibility
-  const editSectionBtn = document.getElementById('edit-section-btn');
-  const deleteSectionBtn = document.getElementById('delete-section-btn');
-  
-  if (editSectionBtn && deleteSectionBtn) {
-    const sectionData = findSectionById(sectionId);
-    if (sectionData) {
-      editSectionBtn.style.display = 'inline-flex';
-      deleteSectionBtn.style.display = 'inline-flex';
-    } else {
-      editSectionBtn.style.display = 'none';
-      deleteSectionBtn.style.display = 'none';
-    }
-  }
-};
+        function openAddSectionModal() {
+        // Check if modal already exists
+        let modal = document.getElementById('section-editor-modal');
+        if (!modal) {
+            // Create modal if it doesn't exist
+            modal = createSectionEditorModal();
+            document.body.appendChild(modal);
+        }
+        
+        // Reset form
+        document.getElementById('section-editor-form').reset();
+        document.getElementById('section-editor-title').textContent = 'Add New Section';
+        document.getElementById('section-id').value = generateSectionId();
+        document.getElementById('section-parent').value = '';
+        document.getElementById('section-editor-content').innerHTML = '';
+        
+        // Show parent category selector and icon selector
+        document.getElementById('section-parent-group').style.display = 'block';
+        document.getElementById('section-icon-group').style.display = 'block';
+        
+        // Populate parent category select
+        populateParentCategorySelect();
+        
+        // Show the modal
+        modal.classList.add('show');
+        }
+
+        function openEditSectionModal() {
+        // Get current section ID
+        const currentSectionId = getCurrentSectionId();
+        if (!currentSectionId) {
+            showToast('Please select a section to edit', 'warning');
+            return;
+        }
+        
+        const sectionData = findSectionById(currentSectionId);
+        if (!sectionData) {
+            showToast('Section not found', 'error');
+            return;
+        }
+        
+        // Create or get modal
+        let modal = document.getElementById('section-editor-modal');
+        if (!modal) {
+            modal = createSectionEditorModal();
+            document.body.appendChild(modal);
+        }
+        
+        // Set form values
+        document.getElementById('section-editor-title').textContent = 'Edit Section';
+        document.getElementById('section-id').value = sectionData.id;
+        document.getElementById('section-title').value = sectionData.title;
+        document.getElementById('section-icon').value = sectionData.icon || 'fas fa-book';
+        document.getElementById('section-editor-content').innerHTML = sectionData.content;
+        
+        // Hide parent category selector for editing (can't change parent)
+        document.getElementById('section-parent-group').style.display = 'none';
+        
+        // Show the modal
+        modal.classList.add('show');
+        }
+
+        function confirmDeleteSection() {
+        // Get current section ID
+        const currentSectionId = getCurrentSectionId();
+        if (!currentSectionId) {
+            showToast('Please select a section to delete', 'warning');
+            return;
+        }
+        
+        const sectionData = findSectionById(currentSectionId);
+        if (!sectionData) {
+            showToast('Section not found', 'error');
+            return;
+        }
+        
+        // Ask for confirmation
+        if (confirm(`Are you sure you want to delete the section "${sectionData.title}"?`)) {
+            deleteSection(currentSectionId);
+        }
+        }
+
+        function deleteSection(sectionId) {
+        // Find and remove the section from handbookData
+        let deleted = false;
+        
+        // Check top-level sections
+        handbookData.sections = handbookData.sections.filter(section => {
+            if (section.id === sectionId) {
+            deleted = true;
+            return false; // Remove this section
+            }
+            
+            // Check subcategories if it's a category
+            if (section.isCategory && section.subcategories) {
+            section.subcategories = section.subcategories.filter(subsection => {
+                if (subsection.id === sectionId) {
+                deleted = true;
+                return false; // Remove this subsection
+                }
+                return true;
+            });
+            }
+            
+            return true;
+        });
+        
+        if (deleted) {
+            // Re-render handbook sidebar and show first section
+            renderHandbookSidebar();
+            if (handbookData.sections.length > 0) {
+            const firstSection = handbookData.sections[0];
+            if (firstSection.isCategory && firstSection.subcategories && firstSection.subcategories.length > 0) {
+                showHandbookSection(firstSection.subcategories[0].id);
+            } else {
+                showHandbookSection(firstSection.id);
+            }
+            }
+            
+            // Save to localStorage
+            saveHandbookData();
+            showToast('Section deleted successfully', 'success');
+        } else {
+            showToast('Failed to delete section', 'error');
+        }
+        }
+
+        function createSectionEditorModal() {
+        const modal = document.createElement('div');
+        modal.id = 'section-editor-modal';
+        modal.className = 'modal';
+
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 800px;">
+            <h3 id="section-editor-title" style="margin-bottom: 20px; color: var(--primary);">Add New Section</h3>
+
+            <form id="section-editor-form">
+                <input type="hidden" id="section-id">
+
+                <div class="form-group">
+                <label for="section-title">Section Title</label>
+                <input type="text" id="section-title" required placeholder="Enter section title">
+                </div>
+
+                <div class="form-group" id="section-parent-group">
+                <label for="section-parent">Parent Category</label>
+                <select id="section-parent">
+                    <option value="">None (Top-level section)</option>
+                </select>
+                </div>
+
+                <div class="form-group" id="section-icon-group">
+                <label for="section-icon">Section Icon</label>
+                <input type="text" id="section-icon" placeholder="e.g., fas fa-book" value="fas fa-book">
+                <div class="icon-picker-grid" id="section-icon-picker"></div>
+                </div>
+
+                <div class="form-group">
+                <label for="section-editor-content">Content</label>
+                <div class="formatting-toolbar">
+                    <button type="button" class="formatting-btn" data-command="bold" title="Bold">
+                    <i class="fas fa-bold"></i>
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="italic" title="Italic">
+                    <i class="fas fa-italic"></i>
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="formatBlock" data-value="h2" title="Heading 2">
+                    <i class="fas fa-heading"></i>2
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="formatBlock" data-value="h3" title="Heading 3">
+                    <i class="fas fa-heading"></i>3
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="insertUnorderedList" title="Bullet List">
+                    <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="insertOrderedList" title="Numbered List">
+                    <i class="fas fa-list-ol"></i>
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="createLink" title="Insert Link">
+                    <i class="fas fa-link"></i>
+                    </button>
+                    <button type="button" class="formatting-btn" data-command="insertHTML" data-value="code-block" title="Insert Code Block">
+                    <i class="fas fa-code"></i>
+                    </button>
+                </div>
+                <div id="section-editor-content" class="note-content-editor" contenteditable="true"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" id="cancel-section-edit">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Section</button>
+                </div>
+            </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal); // Append the modal to the DOM first
+
+        // Now that the modal is in the DOM, you can safely populate the icon picker
+        populateIconPicker('section-icon-picker');
+
+        // Add event listeners
+        modal.querySelector('#cancel-section-edit').addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        modal.querySelector('#section-editor-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveSection();
+        });
+
+        // Add click outside to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+            modal.classList.remove('show');
+            }
+        });
+
+        return modal;
+        }
+
+        function populateParentCategorySelect() {
+        const parentSelect = document.getElementById('section-parent');
+        
+        // Clear existing options except the first one
+        while (parentSelect.options.length > 1) {
+            parentSelect.remove(1);
+        }
+        
+        // Add category options
+        handbookData.sections.forEach(section => {
+            if (section.isCategory) {
+            const option = document.createElement('option');
+            option.value = section.id;
+            option.textContent = section.title;
+            parentSelect.appendChild(option);
+            }
+        });
+        }
+
+        function initSectionEditor() {
+        // Set up editor toolbar functionality
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.formatting-btn');
+            if (!btn) return;
+            
+            const command = btn.dataset.command;
+            const value = btn.dataset.value || null;
+            const editor = document.getElementById('section-editor-content');
+            
+            if (!editor) return;
+            
+            if (command === 'createLink') {
+            const url = prompt('Enter the URL:');
+            if (url) {
+                document.execCommand(command, false, url);
+            }
+            } else if (command === 'insertHTML' && value === 'code-block') {
+            // Insert a code block
+            const codeContent = prompt('Enter code content:');
+            if (codeContent) {
+                const codeBlockHtml = `
+                <div class="code-block">
+                    <pre><code>${escapeHtml(codeContent)}</code></pre>
+                    <button class="copy-btn" data-clipboard-target="#code-${Date.now()}"><i class="fas fa-copy"></i></button>
+                </div>
+                `;
+                document.execCommand('insertHTML', false, codeBlockHtml);
+            }
+            } else if (command === 'formatBlock') {
+            document.execCommand(command, false, value);
+            } else {
+            document.execCommand(command, false, value);
+            }
+        });
+        
+        // Add icon picker functionality
+        document.addEventListener('click', (e) => {
+            const iconItem = e.target.closest('.icon-picker-item');
+            if (!iconItem) return;
+            
+            const iconPicker = iconItem.closest('.icon-picker-grid');
+            if (!iconPicker) return;
+            
+            // Remove selected class from all icons
+            iconPicker.querySelectorAll('.icon-picker-item').forEach(item => {
+            item.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked icon
+            iconItem.classList.add('selected');
+            
+            // Update input value
+            const iconInput = document.getElementById('section-icon');
+            if (iconInput) {
+            iconInput.value = iconItem.dataset.iconClass;
+            }
+        });
+        }
+
+        function saveSection() {
+        const sectionId = document.getElementById('section-id').value;
+        const sectionTitle = document.getElementById('section-title').value;
+        const sectionParent = document.getElementById('section-parent').value;
+        const sectionIcon = document.getElementById('section-icon').value;
+        const sectionContent = document.getElementById('section-editor-content').innerHTML;
+        
+        // Validate required fields
+        if (!sectionTitle) {
+            showToast('Section title is required', 'error');
+            return;
+        }
+        
+        // Check if editing existing section or adding new one
+        const existingSection = findSectionById(sectionId);
+        
+        if (existingSection) {
+            // Update existing section
+            existingSection.title = sectionTitle;
+            existingSection.icon = sectionIcon;
+            existingSection.content = sectionContent;
+        } else {
+            // Create new section
+            const newSection = {
+            id: sectionId,
+            title: sectionTitle,
+            icon: sectionIcon,
+            content: sectionContent
+            };
+            
+            if (sectionParent) {
+            // Add as subcategory to parent
+            const parentCategory = handbookData.sections.find(section => section.id === sectionParent);
+            if (parentCategory) {
+                // Ensure parent is a category with subcategories array
+                if (!parentCategory.isCategory) {
+                parentCategory.isCategory = true;
+                }
+                if (!parentCategory.subcategories) {
+                parentCategory.subcategories = [];
+                }
+                parentCategory.subcategories.push(newSection);
+            }
+            } else {
+            // Add as top-level section
+            handbookData.sections.push(newSection);
+            }
+        }
+        
+        // Save changes and update UI
+        saveHandbookData();
+        renderHandbookSidebar();
+        showHandbookSection(sectionId);
+        
+        // Hide modal
+        const modal = document.getElementById('section-editor-modal');
+        if (modal) {
+            modal.classList.remove('show');
+        }
+        
+        showToast('Section saved successfully', 'success');
+        }
+
+        function saveHandbookData() {
+        // Save to localStorage
+        localStorage.setItem('osintHandbookData', JSON.stringify(handbookData));
+        }
+
+        function getCurrentSectionId() {
+        // Get the currently active section
+        const activeNavItem = document.querySelector('.handbook-nav-item.active');
+        return activeNavItem ? activeNavItem.dataset.section : null;
+        }
+
+        function generateSectionId() {
+        // Generate a unique section ID
+        return 'section-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+        }
+
+        // Update the showHandbookSection function to handle section management buttons
+        const originalShowHandbookSection = showHandbookSection;
+        showHandbookSection = function(sectionId) {
+        // Call the original function
+        originalShowHandbookSection(sectionId);
+
+        // Update edit/delete buttons visibility
+        const editSectionBtn = document.getElementById('edit-section-btn');
+        const deleteSectionBtn = document.getElementById('delete-section-btn');
+
+        if (editSectionBtn && deleteSectionBtn) {
+            const sectionData = findSectionById(sectionId);
+            // Only show buttons if not in read-only mode AND section data exists
+            if (sectionData && !appState.readOnlyMode) {
+            editSectionBtn.classList.remove('read-only-hide'); // Use class for consistency
+            editSectionBtn.style.display = 'inline-flex'; // Ensure display property is set
+            deleteSectionBtn.classList.remove('read-only-hide');
+            deleteSectionBtn.style.display = 'inline-flex';
+            } else {
+            editSectionBtn.classList.add('read-only-hide');
+            editSectionBtn.style.display = 'none'; // Explicitly hide
+            deleteSectionBtn.classList.add('read-only-hide');
+            deleteSectionBtn.style.display = 'none';
+            }
+        }
+        };
 
         // Helper function to get week number (ISO week date standard)
         function getWeekNumber(d) {
@@ -8449,7 +8524,7 @@ showHandbookSection = function(sectionId) {
             const editSubTabBtn = document.getElementById('editSubTabBtn');
             const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
             const exportSubTabBtn = document.getElementById('exportSubTabBtn');
-            const shareOptionsBtn = document.getElementById('shareOptionsBtn'); // Reference to the new global share button
+            const shareOptionsBtn = document.getElementById('shareOptionsBtn');
             const categoryFilter = document.getElementById('categoryFilter');
             const sortFilter = document.getElementById('sortFilter');
             const searchInput = document.getElementById('searchInput');
@@ -8458,62 +8533,133 @@ showHandbookSection = function(sectionId) {
             const pinAllBtn = document.getElementById('pinAllBtn');
             const starAllBtn = document.getElementById('starAllBtn');
             const reportBtn = document.getElementById('reportBtn');
-            const newRandomBtn = document.getElementById('newRandomBtn'); // New: Random tool button
+            const newRandomBtn = document.getElementById('newRandomBtn');
+            const handbookMobileToggle = document.getElementById('handbook-mobile-toggle'); // NEW
+            const handbookSearchInput = document.getElementById('handbook-search'); // NEW
+            const noteSortFilterElement = document.getElementById('noteSortFilter'); // NEW
+            const newNoteBtn = document.getElementById('new-note-btn'); // NEW
+
+            // Selectors for Handbook/Notes editable elements
+            const handbookEditables = document.querySelectorAll('#section-editor-modal input, #section-editor-modal select, #section-editor-modal textarea, #section-editor-content[contenteditable="true"], #section-editor-modal .formatting-btn, #section-editor-modal .copy-btn, #section-editor-modal button[type="submit"], #section-editor-modal .icon-picker-item, #section-editor-modal .color-picker-item'); // NEW
+            const notesEditables = document.querySelectorAll('#note-editor-view input, #note-editor-view textarea, #note-content-editor[contenteditable="true"], #note-editor-view .formatting-btn, #note-editor-view .copy-btn, #note-editor-view button[type="submit"], #note-editor-view .remove-tag-btn, #note-editor-view #note-tags-input, #note-editor-view #add-tag-btn, #notes-list-view .note-action-btn, #notes-list-view .note-card'); // NEW
+            const handbookControls = document.querySelector('.handbook-controls'); // NEW
 
             if (appState.readOnlyMode) {
-                // Hide or disable buttons/controls
-                if (addEntryBtn) addEntryBtn.style.display = 'none';
-                editButtons.forEach(btn => btn.style.display = 'none');
-                deleteButtons.forEach(btn => btn.style.display = 'none');
-                if (bulkActionsDiv) bulkActionsDiv.style.display = 'none';
-                if (createSubTabBtn) createSubTabBtn.style.display = 'none';
-                if (editSubTabBtn) editSubTabBtn.style.display = 'none';
-                if (deleteSubTabBtn) deleteSubTabBtn.style.display = 'none';
-                if (exportSubTabBtn) exportSubTabBtn.style.display = 'none';
-                if (shareOptionsBtn) shareOptionsBtn.style.display = 'none'; // Hide the new global share button
+                // General UI elements
+                if (addEntryBtn) addEntryBtn.classList.add('read-only-hide');
+                editButtons.forEach(btn => btn.classList.add('read-only-hide'));
+                deleteButtons.forEach(btn => btn.classList.add('read-only-hide'));
+                if (bulkActionsDiv) bulkActionsDiv.classList.add('read-only-hide');
+                if (createSubTabBtn) createSubTabBtn.classList.add('read-only-hide');
+                if (editSubTabBtn) editSubTabBtn.classList.add('read-only-hide');
+                if (deleteSubTabBtn) deleteSubTabBtn.classList.add('read-only-hide');
+                if (exportSubTabBtn) exportSubTabBtn.classList.add('read-only-hide');
+                if (shareOptionsBtn) shareOptionsBtn.classList.add('read-only-hide');
+
+                // Filters and Search
                 if (categoryFilter) categoryFilter.setAttribute('disabled', 'disabled');
                 if (sortFilter) sortFilter.setAttribute('disabled', 'disabled');
-                if (searchInput) searchInput.setAttribute('disabled', 'disabled'); // Disable search too in read-only
+                if (searchInput) searchInput.setAttribute('disabled', 'disabled');
                 if (searchScopeSelect) searchScopeSelect.setAttribute('disabled', 'disabled');
-                if (showAllBtn) showAllBtn.style.display = 'none';
-                if (pinAllBtn) pinAllBtn.style.display = 'none';
-                if (starAllBtn) starAllBtn.style.display = 'none';
-                if (reportBtn) reportBtn.style.display = 'none';
-                if (newRandomBtn) newRandomBtn.style.display = 'none'; // Hide random tool button
 
-                // Also disable form submissions and inputs in modals
+                // Quick Actions
+                if (showAllBtn) showAllBtn.classList.add('read-only-hide');
+                if (pinAllBtn) pinAllBtn.classList.add('read-only-hide');
+                if (starAllBtn) starAllBtn.classList.add('read-only-hide');
+                if (reportBtn) reportBtn.classList.add('read-only-hide');
+                if (newRandomBtn) newRandomBtn.classList.add('read-only-hide');
+
+                // Modals: Disable inputs and hide submit buttons
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
-                    if (el.tagName === 'BUTTON') el.style.display = 'none'; // Hide submit buttons
-                    else el.setAttribute('disabled', 'disabled'); // Disable inputs
+                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
+                    else el.setAttribute('disabled', 'disabled');
                 });
+
+                // NEW: Handbook specific elements
+                if (handbookMobileToggle) handbookMobileToggle.classList.add('read-only-hide');
+                if (handbookSearchInput) handbookSearchInput.setAttribute('disabled', 'disabled');
+                if (handbookControls) handbookControls.classList.add('read-only-hide'); // Hide Add/Edit/Delete Section buttons
+
+                handbookEditables.forEach(el => {
+                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
+                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'false');
+                    else el.setAttribute('disabled', 'disabled');
+                });
+                // Apply overlay for visual indication but keep text readable
+                document.querySelectorAll('#handbook-article-area').forEach(el => el.classList.add('read-only-overlay'));
+                document.querySelectorAll('#handbook-sidebar').forEach(el => el.classList.add('read-only-overlay'));
+
+
+                // NEW: Notes specific elements
+                if (noteSortFilterElement) noteSortFilterElement.setAttribute('disabled', 'disabled');
+                if (newNoteBtn) newNoteBtn.classList.add('read-only-hide');
+
+                notesEditables.forEach(el => {
+                    if (el.tagName === 'BUTTON') el.classList.add('read-only-hide');
+                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'false');
+                    else if (el.type === 'checkbox') el.setAttribute('disabled', 'disabled'); // For bulk checkboxes in notes list
+                    else el.setAttribute('disabled', 'disabled');
+                });
+                // Apply overlay for visual indication but keep text readable
+                document.querySelectorAll('#notes-list-view').forEach(el => el.classList.add('read-only-overlay'));
+                document.querySelectorAll('#note-editor-view').forEach(el => el.classList.add('read-only-overlay'));
 
             } else {
                 // Re-enable everything for normal use
-                if (addEntryBtn) addEntryBtn.style.display = 'inline-flex';
-                editButtons.forEach(btn => btn.style.display = 'inline-flex');
-                deleteButtons.forEach(btn => btn.style.display = 'inline-flex');
-                // updateBulkActions() will handle visibility based on selection for bulk actions
-                if (createSubTabBtn) createSubTabBtn.style.display = 'inline-flex';
-                // These will be re-enabled by renderCustomTabs() based on currentCustomTab presence
-                if (exportSubTabBtn) exportSubTabBtn.style.display = 'inline-flex';
-                if (shareOptionsBtn) shareOptionsBtn.style.display = 'inline-flex'; // Show the new global share button
-                
+                if (addEntryBtn) addEntryBtn.classList.remove('read-only-hide');
+                editButtons.forEach(btn => btn.classList.remove('read-only-hide'));
+                deleteButtons.forEach(btn => btn.classList.remove('read-only-hide'));
+                if (bulkActionsDiv) bulkActionsDiv.classList.remove('read-only-hide'); // updateBulkActions() will handle visibility based on selection
+                if (createSubTabBtn) createSubTabBtn.classList.remove('read-only-hide');
+                if (editSubTabBtn) editSubTabBtn.classList.remove('read-only-hide');
+                if (deleteSubTabBtn) deleteSubTabBtn.classList.remove('read-only-hide');
+                if (exportSubTabBtn) exportSubTabBtn.classList.remove('read-only-hide');
+                if (shareOptionsBtn) shareOptionsBtn.classList.remove('read-only-hide');
+
                 if (categoryFilter) categoryFilter.removeAttribute('disabled');
                 if (sortFilter) sortFilter.removeAttribute('disabled');
                 if (searchInput) searchInput.removeAttribute('disabled');
                 if (searchScopeSelect) searchScopeSelect.removeAttribute('disabled');
-                if (showAllBtn) showAllBtn.style.display = 'block';
-                if (pinAllBtn) pinAllBtn.style.display = 'block';
-                if (starAllBtn) starAllBtn.style.display = 'block';
-                if (reportBtn) reportBtn.style.display = 'block';
-                if (newRandomBtn) newRandomBtn.style.display = 'block'; // Show random tool button
+
+                if (showAllBtn) showAllBtn.classList.remove('read-only-hide');
+                if (pinAllBtn) pinAllBtn.classList.remove('read-only-hide');
+                if (starAllBtn) starAllBtn.classList.remove('read-only-hide');
+                if (reportBtn) reportBtn.classList.remove('read-only-hide');
+                if (newRandomBtn) newRandomBtn.classList.remove('read-only-hide');
 
                 document.querySelectorAll('.modal form button[type="submit"], .modal input, .modal select, .modal textarea').forEach(el => {
-                    if (el.tagName === 'BUTTON') el.style.removeProperty('display');
+                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
                     else el.removeAttribute('disabled');
                 });
-                updateBulkActions(); // Ensure bulk actions bar visibility is correct
-                renderCustomTabs(); // This will re-evaluate display of edit/delete/share buttons based on current state
+                updateBulkActions();
+                renderCustomTabs();
+
+                // NEW: Handbook specific elements
+                if (handbookMobileToggle) handbookMobileToggle.classList.remove('read-only-hide');
+                if (handbookSearchInput) handbookSearchInput.removeAttribute('disabled');
+                if (handbookControls) handbookControls.classList.remove('read-only-hide');
+
+                handbookEditables.forEach(el => {
+                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
+                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
+                    else el.removeAttribute('disabled');
+                });
+                document.querySelectorAll('#handbook-article-area').forEach(el => el.classList.remove('read-only-overlay'));
+                document.querySelectorAll('#handbook-sidebar').forEach(el => el.classList.remove('read-only-overlay'));
+
+
+                // NEW: Notes specific elements
+                if (noteSortFilterElement) noteSortFilterElement.removeAttribute('disabled');
+                if (newNoteBtn) newNoteBtn.classList.remove('read-only-hide');
+
+                notesEditables.forEach(el => {
+                    if (el.tagName === 'BUTTON') el.classList.remove('read-only-hide');
+                    else if (el.hasAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
+                    else if (el.type === 'checkbox') el.removeAttribute('disabled');
+                    else el.removeAttribute('disabled');
+                });
+                document.querySelectorAll('#notes-list-view').forEach(el => el.classList.remove('read-only-overlay'));
+                document.querySelectorAll('#note-editor-view').forEach(el => el.classList.remove('read-only-overlay'));
             }
         }
 
