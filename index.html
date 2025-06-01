@@ -617,17 +617,15 @@
         /* Tools Grid */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Slightly reduce min width for more columns on larger screens, but adapt better on smaller */
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 20px;
             width: 100%;
         }
 
         .tools-list {
             display: flex;
-            flex-direction: column; /* Stack cards vertically */
-            gap: 10px; /* Space between cards */
-            width: 100%; /* Ensure it takes full available width */
-            overflow-x: hidden; /* Prevent horizontal overflow */
+            flex-direction: column;
+            gap: 10px;
         }
 
         .tool-card {
@@ -643,53 +641,40 @@
 
         .tools-list .tool-card {
             display: flex;
-            flex-direction: column; /* Stack content within card */
+            flex-direction: column;
             align-items: flex-start;
             padding: 15px 20px;
-            width: 100%; /* Important: Ensure card takes full width */
-            box-sizing: border-box; /* Include padding/border in width */
-            max-width: 100%; /* Ensure it doesn't break out */
         }
 
         .tools-list .tool-header {
-            width: 100%; /* Ensure header spans full width of card */
-            display: flex; /* Make header a flex container */
-            flex-wrap: wrap; /* Allow items in header to wrap */
-            justify-content: space-between; /* Space out title and actions */
-            align-items: flex-start; /* Align items to the top */
+            width: 100%;
+            flex-direction: row;
+            align-items: center;
             margin-bottom: 10px;
-            gap: 10px; /* Gap between title/url and actions */
         }
 
-        .tools-list .tool-header > div:first-child { /* Targets the div containing title and url */
-            flex-grow: 1; /* Allow it to grow */
-            min-width: 0; /* Allow content to shrink below its normal size */
-            overflow-wrap: break-word; /* Break long words */
-            word-wrap: break-word; /* Fallback for older browsers */
+        .tool-header > div:first-child { /* This targets the container holding tool-title and tool-url */
+            flex-grow: 1; /* Allow it to grow and take available space */
+            flex-shrink: 1; /* Allow it to shrink */
+            min-width: 0; /* Crucial: Allows content to shrink below its intrinsic width */
+            /* If titles are very long and you want them to truncate, you might add: */
+            /* overflow: hidden; */
+            /* text-overflow: ellipsis; */
+            /* white-space: nowrap; */
+            /* However, wrapping is generally preferred for readability. */
         }
-
         .tools-list .tool-title {
             font-size: 16px;
             margin-bottom: 5px;
-            display: flex; /* Ensure title content is also flex */
-            align-items: center;
-            flex-wrap: wrap; /* Allow favicon/icon and text to wrap if title is too long */
-            gap: 8px; /* Gap between icon/favicon and text */
         }
-
+        
         .tools-list .tool-url {
             font-size: 11px;
-            word-break: break-all; /* Ensure URL breaks to prevent overflow */
-            min-width: 0; /* Allow URL to shrink */
         }
 
         .tools-list .tool-actions {
             margin-left: auto;
-            flex-shrink: 0; /* Prevent actions from shrinking */
-            display: flex;
-            gap: 5px; /* Smaller gap for action buttons in list view */
-            flex-wrap: wrap; /* Allow action buttons to wrap if needed */
-            justify-content: flex-end; /* Align action buttons to the right */
+            flex-shrink: 0;
         }
 
         .tools-list .tool-tags {
@@ -698,13 +683,6 @@
             flex-wrap: wrap;
             align-items: center;
             margin-top: 10px;
-            gap: 5px; /* Gap between individual tags */
-        }
-
-        /* Adjust specific elements for List View */
-        .tools-list .action-btn {
-            padding: 4px 6px; /* Smaller padding for actions in list mode */
-            font-size: 0.8rem; /* Smaller icon size for list mode */
         }
 
         .tools-list .tool-tags .threat-level {
@@ -758,18 +736,24 @@
         .tool-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-start; /* Align items to the top */
             margin-bottom: 15px;
+            width: 100%; /* Ensure it takes full width of the card */
+            flex-wrap: wrap; /* Allow header content to wrap if needed */
+            gap: 10px; /* Space between the title/URL part and actions */
         }
 
         .tool-title {
-            font-size: 1.15rem; /* Slightly larger title */
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap; /* NEW: Allow elements within the title (checkbox, favicon, text) to wrap */
+            min-width: 0; /* Ensures the title itself can shrink if necessary */
+            word-break: break-word; /* NEW: Ensure long words break */
         }
 
         .tool-favicon {
@@ -823,6 +807,7 @@
         .action-btn.pinned {
             color: var(--accent);
         }
+
 
         /* Bulk Actions */
         .bulk-actions {
@@ -3179,7 +3164,7 @@
                                     </div>
                                 </div>
                                 
-                                <input type="text" id="note-title-input" class="note-title-input" placeholder="Note Title">
+                                <input type="text" id="note-title-input" class="note-title-input" placeholder="Note Title" maxlength="70">
                                 
                                 <div id="formatting-toolbar" class="formatting-toolbar">
                                     <button class="formatting-btn" data-command="bold" title="Bold">
@@ -3381,7 +3366,7 @@
                 <div id="addToolFields" class="entry-fields">
                     <div class="form-group">
                         <label>Tool Name</label>
-                        <input type="text" id="toolName">
+                        <input type="text" id="toolName" maxlength="50" placeholder="e.g., Maltego, Shodan, Recon-NG">
                     </div>
                     <div class="form-group">
                         <label>URL</label>
@@ -3407,7 +3392,7 @@
                 <div id="addEmailFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" id="emailAddress">
+                        <input type="email" id="emailAddress"  maxlength="60"  >
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3426,7 +3411,7 @@
                 <div id="addPhoneFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="text" id="phoneNumber">
+                        <input type="text" id="phoneNumber" maxlength="15" placeholder="e.g., +1-234-567-8901">
                     </div>
                     <div class="form-group">
                         <label>Type</label>
@@ -3439,7 +3424,7 @@
                     </div>
                     <div class="form-group">
                         <label>Location</label>
-                        <input type="text" id="phoneLocation" placeholder="City, State, Country">
+                        <input type="text" id="phoneLocation" placeholder="e.g., City, State, Country">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3450,7 +3435,7 @@
                 <div id="addCryptoFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Crypto Address</label>
-                        <input type="text" id="cryptoAddress">
+                        <input type="text" id="cryptoAddress" maxlength="120" placeholder="e.g., 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
                     </div>
                     <div class="form-group">
                         <label>Transaction ID (TXID)</label>
@@ -3462,7 +3447,7 @@
                     </div>
                     <div class="form-group">
                         <label>Source</label>
-                        <input type="text" id="cryptoSource" placeholder="exchange, darkweb, personal">
+                        <input type="text" id="cryptoSource" placeholder="exchange, darkweb, personal" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Tags (comma separated)</label>
@@ -3473,7 +3458,7 @@
                 <div id="addLocationFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Location Name</label>
-                        <input type="text" id="locationName" placeholder="e.g., Target building, Suspect's residence">
+                        <input type="text" id="locationName" placeholder="e.g., Target building, Suspect's residence" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Coordinates (Lat, Long)</label>
@@ -3496,11 +3481,11 @@
                 <div id="addLinkFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>URL</label>
-                        <input type="url" id="linkUrl">
+                        <input type="url" id="linkUrl" placeholder="e.g., https://twitter.com/suspectprofile">
                     </div>
                     <div class="form-group">
                         <label>Platform/Type</label>
-                        <input type="text" id="linkPlatform" placeholder="twitter, reddit, pastebin, forum">
+                        <input type="text" id="linkPlatform" placeholder="twitter, reddit, pastebin, forum" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Notes</labe>
@@ -3515,7 +3500,7 @@
                 <div id="addMediaFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" id="mediaTitle">
+                        <input type="text" id="mediaTitle" maxlength="50" placeholder="e.g., Suspect Photo, Video Evidence">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3542,11 +3527,11 @@
                     </div>
                     <div class="form-group">
                         <label>Username/Email</label>
-                        <input type="text" id="passwordUsername">
+                        <input type="text" id="passwordUsername" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="text" id="passwordValue">
+                        <input type="text" id="passwordValue" placeholder="e.g., P@ssw0rd123!" maxlength="120">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3580,11 +3565,11 @@
                     </div>
                     <div class="form-group">
                         <label>Profile URL</label>
-                        <input type="url" id="socialUrl">
+                        <input type="url" id="socialUrl" placeholder="e.g., https://twitter.com/suspectprofile">
                     </div>
                     <div class="form-group">
                         <label>Username/Handle</label>
-                        <input type="text" id="socialUsername">
+                        <input type="text" id="socialUsername" placeholder="e.g., @suspectprofile" maxlength="60">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3592,7 +3577,7 @@
                     </div>
                     <div class="form-group">
                         <label>Followers/Following Count</label>
-                        <input type="text" id="socialFollowCounts" placeholder="e.g., 12k followers, 500 following">
+                        <input type="text" id="socialFollowCounts" maxlength="50" placeholder="e.g., 12k followers, 500 following">
                     </div>
                 </div>
 
@@ -3612,7 +3597,7 @@
                 <div id="editToolFields" class="entry-fields">
                     <div class="form-group">
                         <label>Tool Name</label>
-                        <input type="text" id="editToolName" required>
+                        <input type="text" id="editToolName" maxlength="50" placeholder="e.g., Maltego, Shodan, Recon-NG" required>
                     </div>
                     <div class="form-group">
                         <label>URL</label>
@@ -3638,7 +3623,7 @@
                 <div id="editEmailFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" id="editEmailAddress" required>
+                        <input type="email" id="editEmailAddress" maxlength="60" required>
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3657,7 +3642,7 @@
                 <div id="editPhoneFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="text" id="editPhoneNumber" required>
+                        <input type="text" id="editPhoneNumber" maxlength="15" placeholder="e.g., +1-234-567-8901" required>
                     </div>
                     <div class="form-group">
                         <label>Type</label>
@@ -3670,7 +3655,7 @@
                     </div>
                     <div class="form-group">
                         <label>Location</label>
-                        <input type="text" id="editPhoneLocation" placeholder="City, State, Country">
+                        <input type="text" id="editPhoneLocation" placeholder="e.g., City, State, Country">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3681,7 +3666,7 @@
                 <div id="editCryptoFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Crypto Address</label>
-                        <input type="text" id="editCryptoAddress" required>
+                        <input type="text" id="editCryptoAddress" maxlength="120" placeholder="e.g., 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" required>
                     </div>
                     <div class="form-group">
                         <label>Transaction ID (TXID)</label>
@@ -3693,7 +3678,7 @@
                     </div>
                     <div class="form-group">
                         <label>Source</label>
-                        <input type="text" id="editCryptoSource" placeholder="exchange, darkweb, personal">
+                        <input type="text" id="editCryptoSource" placeholder="exchange, darkweb, personal" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Tags (comma separated)</label>
@@ -3704,7 +3689,7 @@
                 <div id="editLocationFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Location Name</label>
-                        <input type="text" id="editLocationName" placeholder="e.g., Target building, Suspect's residence" required>
+                        <input type="text" id="editLocationName" placeholder="e.g., Target building, Suspect's residence" maxlength="50" required>
                     </div>
                     <div class="form-group">
                         <label>Coordinates (Lat, Long)</label>
@@ -3727,11 +3712,11 @@
                 <div id="editLinkFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>URL</label>
-                        <input type="url" id="editLinkUrl" required>
+                        <input type="url" id="editLinkUrl" placeholder="e.g., https://twitter.com/suspectprofile" required>
                     </div>
                     <div class="form-group">
                         <label>Platform/Type</label>
-                        <input type="text" id="editLinkPlatform" placeholder="twitter, reddit, pastebin, forum">
+                        <input type="text" id="editLinkPlatform" placeholder="twitter, reddit, pastebin, forum" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3746,7 +3731,7 @@
                 <div id="editMediaFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" id="editMediaTitle" required>
+                        <input type="text" id="editMediaTitle" maxlength="50" placeholder="e.g., Suspect Photo, Video Evidence" required>
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3773,11 +3758,11 @@
                     </div>
                     <div class="form-group">
                         <label>Username/Email</label>
-                        <input type="text" id="editPasswordUsername">
+                        <input type="text" id="editPasswordUsername" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="text" id="editPasswordValue">
+                        <input type="text" id="editPasswordValue" placeholder="e.g., P@ssw0rd123!" maxlength="120">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3811,11 +3796,11 @@
                     </div>
                     <div class="form-group">
                         <label>Profile URL</label>
-                        <input type="url" id="editSocialUrl">
+                        <input type="url" id="editSocialUrl" placeholder="e.g., https://twitter.com/suspectprofile">
                     </div>
                     <div class="form-group">
                         <label>Username/Handle</label>
-                        <input type="text" id="editSocialUsername">
+                        <input type="text" id="editSocialUsername" placeholder="e.g., @suspectprofile" maxlength="60">
                     </div>
                     <div class="form-group">
                         <label>Notes</label>
@@ -3823,7 +3808,7 @@
                     </div>
                     <div class="form-group">
                         <label>Followers/Following Count</label>
-                        <input type="text" id="editSocialFollowCounts" placeholder="e.g., 12k followers, 500 following">
+                        <input type="text" id="editSocialFollowCounts" maxlength="50" placeholder="e.g., 12k followers, 500 following">
                     </div>
                 </div>
 
