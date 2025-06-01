@@ -5791,7 +5791,7 @@
 
 
         // Load threat intelligence
-        function loadThreats() {
+function loadThreats() {
             const threatsList = document.getElementById('threatsList');
             const mockThreats = [
                 {
@@ -5838,21 +5838,18 @@
 
             // Sort threats by timestamp (most recent first)
             mockThreats.sort((a, b) => b.timestamp - a.timestamp);
-            
+
             threatsList.innerHTML = mockThreats.map(threat => `
                 <div class="threat-item">
                     <div class="threat-header">
-                        <h4><span class="math-inline">\{threat\.title\}</h4\>
-<div class\="threat\-level threat\-</span>{threat.severity}"><span class="math-inline">\{threat\.severity\}</div\>
-</div\>
-<p\></span>{threat.description}</p>
-                    <div class="threat-tags">
+                        <h4>${threat.title}</h4> <div class="threat-level threat-${threat.severity}">${threat.severity}</div> </div>
+                    <p>${threat.description}</p> <div class="threat-tags">
                         ${threat.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                     </div>
                     <div class="threat-time">${formatTime(threat.timestamp)}</div>
                 </div>
             `).join('');
-            
+
         }
 
         // Update analytics data (display)
