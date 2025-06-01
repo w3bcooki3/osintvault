@@ -126,12 +126,12 @@
             background: var(--bg-card);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow); /* Use the new softer shadow */
+            box-shadow: var(--shadow);
             transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
         }
 
         .header-content {
@@ -139,47 +139,135 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px; /* Keep the default gap */
+            gap: 20px;
             max-width: 1800px;
             margin: 0 auto;
-            padding: 0 40px;
+            padding: 20px 40px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .logo-container {
+        /* Container for Logo and Title/Tagline Group */
+        .logo-and-title-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0; /* Prevents this group from shrinking */
+            min-width: 0;
+            /* FIXED: Ensure it stays at the left */
+            margin-right: auto; /* This pushes controls to the right */
+        }
+
+        /* Styles for the Logo */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 65px;
+            flex-shrink: 0;
+        }
+
+        .osintvault-logo-img {
+            display: block;
+            max-height: 100%;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.4));
+            transition: filter 0.3s ease;
+        }
+
+        .osintvault-logo-img:hover {
+            filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6));
+        }
+
+        /* Container for OSINTVault Title and Tagline */
+        .header-text-group {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            justify-content: center;
+            flex-grow: 1;
+            min-width: 0;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 28px; /* Slightly larger logo text */
+        /* Style for OSINTVault Title */
+        .header-title {
+            font-size: 2.2em;
             font-weight: 700;
             color: var(--primary);
-            font-family: 'Outfit', sans-serif; /* New font for logo */
-            letter-spacing: -0.5px; /* Tighter letter spacing */
-            cursor: default; /* Indicate not clickable */
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .logo i {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
-            transition: transform 0.2s ease-out, filter 0.2s ease-out; /* Smooth transition */
-        }
-        .logo:hover i {
-            transform: scale(1.05); /* Subtle scale on hover */
-            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.7));
-        }
-
-        .tagline {
-            font-size: 0.8rem; /* Slightly smaller, more refined tagline */
+        /* Style for the single Tagline */
+        .header-tagline {
+            font-size: 0.9rem;
             color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
             margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* Responsive adjustments for header-content padding */
+        @media (max-width: 1200px) {
+            .header-content {
+                padding: 20px; /* Adjust padding for medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column; /* Stack logo/text group and controls vertically */
+                align-items: stretch; /* Stretch to full width */
+                padding: 15px; /* Further adjust padding for smaller screens */
+                gap: 15px; /* Space between stacked groups */
+            }
+            .logo-and-title-container {
+                justify-content: center; /* Center logo and text group when stacked */
+                width: 100%;
+                gap: 10px; /* Reduced gap */
+            }
+            .header-logo {
+                height: 55px; /* Smaller logo height on tablets */
+            }
+            .header-title {
+                font-size: 1.8em; /* Smaller title font on tablets */
+            }
+            .header-tagline {
+                font-size: 0.8rem; /* Smaller tagline font on tablets */
+            }
+            .controls {
+                width: 100%; /* Ensure controls take full width */
+                justify-content: center; /* Center buttons within controls */
+                margin-left: 0; /* Reset margin to avoid pushing controls to the right */;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                padding: 10px; /* Minimal padding on very small screens */
+                gap: 10px; /* Reduced gap */
+            }
+            .header-logo {
+                height: 45px; /* Smallest logo height on phones */
+            }
+            .header-title {
+                font-size: 1.5em; /* Smallest title font on phones */
+            }
+            .header-tagline {
+                font-size: 0.7rem; /* Smallest tagline font on phones */
+            }
+            /* Ensure text truncation or wrapping for very small screens */
+            .header-title, .header-tagline {
+                white-space: normal; /* Allow text to wrap on very small screens */
+                overflow: visible; /* Make overflow visible as wrapping is enabled */
+                text-overflow: clip; /* No ellipsis needed if wrapping */
+            }
         }
 
         .controls {
@@ -187,6 +275,11 @@
             gap: 15px;
             align-items: center;
             flex-wrap: wrap;
+            flex-shrink: 0; /* Prevents controls from shrinking */
+            min-width: 0;
+            justify-content: flex-end;
+            /* FIXED: Ensure it stays at the right */
+            margin-left: auto; /* This ensures controls stay at the right */
         }
 
         .search-container {
@@ -199,14 +292,14 @@
         .search-input {
             width: 100%;
             padding: 15px 50px 15px 20px;
-            border: 1px solid var(--border-light); /* Thinner, lighter border */
+            border: 1px solid var(--border-light);
             border-radius: 12px;
             font-size: 14px;
-            background: var(--bg-tertiary); /* Lighter background for inputs */
+            background: var(--bg-tertiary);
             color: var(--text-primary);
             transition: all 0.3s ease;
             flex-grow: 1;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Inner shadow for depth */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .search-input:focus {
@@ -222,6 +315,7 @@
             transform: translateY(-50%);
             color: var(--text-secondary);
         }
+
         
         /* New: Search Scope Select */
         #searchScopeSelect {
@@ -2757,12 +2851,16 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <div class="logo-container">
-                    <div class="logo">
-                        <i class="fas fa-shield-alt"></i>
-                        OSINTVault
+                <div class="logo-and-title-container">
+                    <div class="header-logo">
+                        <img src="./favicon.png" alt="OSINTVault Logo" class="osintvault-logo-img">
                     </div>
-                    <span class="tagline">Carry your investigations everywhere.</span>
+                    <div class="header-text-group">
+                        <div class="header-title">
+                            OSINTVault
+                        </div>
+                        <span class="header-tagline">Your OSINT tools, always with you.</span>
+                    </div>
                 </div>
                 <div class="controls">
                     <div class="search-container">
