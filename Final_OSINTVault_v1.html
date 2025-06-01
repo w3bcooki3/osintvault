@@ -3505,6 +3505,7 @@
                 </div>
             </div>
         </section>
+
         <div class="modal" id="desktopRecommendationModal">
             <div class="modal-content">
                 <h3 style="margin-bottom: 20px; color: var(--warning);"><i class="fas fa-desktop"></i> Attention: Desktop Recommended</h3>
@@ -3519,6 +3520,50 @@
                         <i class="fas fa-arrow-right"></i> Continue Anyway
                     </button>
                 </div>
+            </div>
+        </div>
+
+
+        <div class="modal" id="addToolOnlyModal">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-plus-circle"></i> Add New Tool</h3>
+                <form id="addToolOnlyForm">
+                    <div class="form-group">
+                        <label>Tool Name</label>
+                        <input type="text" id="toolOnlyName" name="toolOnlyName" maxlength="50" placeholder="e.g., Maltego, Shodan, Recon-NG" required>
+                    </div>
+                    <div class="form-group">
+                        <label>URL</label>
+                        <input type="url" id="toolOnlyUrl" name="toolOnlyUrl" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="toolOnlyCategory" required>
+                            <option value="">Select Category</option>
+                            </select>
+                        <input type="text" id="newToolOnlyCategoryInput" placeholder="Or enter new category" style="margin-top: 10px; display: none;">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="toolOnlyDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (comma separated)</label>
+                        <input type="text" id="toolOnlyTags" placeholder="osint, investigation, cybersecurity">
+                    </div>
+
+                    <div class="custom-tab-assignment" id="intelligenceVaultCategoriesAssignmentAddTool">
+                        <h4>Add to Intelligence Vault Categories</h4>
+                        <p style="font-size: 0.9em; color: var(--text-muted); margin-bottom: 10px;">Select one or more intelligence categories for this tool.</p>
+                        <div class="custom-tab-checkboxes" id="intelligenceVaultCategoriesCheckboxesAddTool" style="max-height: 150px; overflow-y: auto;">
+                            </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" id="cancelAddToolOnly">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Tool</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -4147,7 +4192,7 @@
 
 
     <script>
-      // Application State
+        // Existing application state and default tools
         let appState = {
             tools: [],
             emails: [],
@@ -4209,7 +4254,6 @@
             'var(--tab-color-orange)'
         ];
 
-        // Default Tools Database
         const defaultTools = [
             {
                 id: 'google-advanced-search',
@@ -4217,6 +4261,7 @@
                 name: 'Google Advanced Search',
                 url: 'https://www.google.com/advanced_search',
                 category: 'search engines',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Advanced search operators and techniques for comprehensive information gathering',
                 tags: ['search', 'google', 'operators'],
                 starred: false,
@@ -4232,6 +4277,7 @@
                 name: 'Shodan',
                 url: 'https://www.shodan.io',
                 category: 'network analysis',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Search engine for Internet-connected devices and systems',
                 tags: ['iot', 'network', 'scanning', 'security'],
                 starred: true,
@@ -4247,6 +4293,7 @@
                 name: 'Maltego',
                 url: 'https://www.maltego.com',
                 category: 'network analysis',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Link analysis and data mining application for gathering and connecting information',
                 tags: ['analysis', 'visualization', 'mapping'],
                 starred: false,
@@ -4262,6 +4309,7 @@
                 name: 'Have I Been Pwned',
                 url: 'https://haveibeenpwned.com',
                 category: 'email investigation',
+                intelligenceVaultCategories: ['emailTools'], // Assign to 'Email Tools'
                 description: 'Check if email addresses have been compromised in data breaches',
                 tags: ['breach', 'email', 'security', 'compromise'],
                 starred: true,
@@ -4277,6 +4325,7 @@
                 name: 'VirusTotal',
                 url: 'https://www.virustotal.com',
                 category: 'threat intelligence',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Analyze suspicious files and URLs to detect types of malware',
                 tags: ['malware', 'analysis', 'threat', 'security'],
                 starred: false,
@@ -4292,6 +4341,7 @@
                 name: 'Wayback Machine',
                 url: 'https://web.archive.org',
                 category: 'archive',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Browse historical snapshots of websites',
                 tags: ['archive', 'history', 'web', 'research'],
                 starred: false,
@@ -4307,6 +4357,7 @@
                 name: 'WHOIS Lookup',
                 url: 'https://whois.net',
                 category: 'domain research',
+                intelligenceVaultCategories: ['tools'], // Assign to 'General Tools'
                 description: 'Domain registration and ownership information',
                 tags: ['domain', 'registration', 'ownership'],
                 starred: false,
@@ -4322,6 +4373,7 @@
                 name: 'TinEye',
                 url: 'https://tineye.com',
                 category: 'image analysis',
+                intelligenceVaultCategories: ['mediaTools'], // Assign to 'Media Tools'
                 description: 'Reverse image search engine',
                 tags: ['image', 'reverse', 'search', 'verification'],
                 starred: false,
@@ -4332,6 +4384,7 @@
                 customTabs: []
             }
         ];
+
 
         let notesState = {
             notes: [],
@@ -4687,60 +4740,78 @@
             }
         }
 
-        // Load application state from localStorage
-        function loadState() {
-            const savedState = localStorage.getItem('osintArsenalState');
-            if (savedState) {
-                const parsedState = JSON.parse(savedState);
-                appState.tools = (parsedState.tools || []).map(entry => ({ // Ensure tools is an array
-                    ...entry,
-                    addedDate: new Date(entry.addedDate), // Convert string back to Date object
-                    lastUsed: entry.lastUsed || 0, // Ensure lastUsed is a number, default to 0
-                    customTabs: entry.customTabs || [] // Ensure customTabs array exists
-                }));
-                // Load new entry types
-                appState.emails = parsedState.emails || [];
-                appState.phones = parsedState.phones || [];
-                appState.crypto = parsedState.crypto || [];
-                appState.locations = parsedState.locations || [];
-                appState.links = parsedState.links || [];
-                appState.media = parsedState.media || [];
-                appState.passwords = parsedState.passwords || []; // New
-                appState.keywords = parsedState.keywords || []; // New
-                appState.socials = parsedState.socials || []; // New
+    // Load application state from localStorage
+    function loadState() {
+        const savedState = localStorage.getItem('osintArsenalState');
+        if (savedState) {
+            const parsedState = JSON.parse(savedState);
+            appState.tools = (parsedState.tools || []).map(entry => ({
+                ...entry,
+                addedDate: new Date(entry.addedDate), // Convert string back to Date object
+                lastUsed: entry.lastUsed || 0, // Ensure lastUsed is a number, default to 0
+                customTabs: entry.customTabs || [], // Ensure customTabs array exists
+                intelligenceVaultCategories: entry.intelligenceVaultCategories || [] // NEW: Initialize new property
+            }));
+            // Load new entry types
+            appState.emails = parsedState.emails || [];
+            appState.phones = parsedState.phones || [];
+            appState.crypto = parsedState.crypto || [];
+            appState.locations = parsedState.locations || [];
+            appState.links = parsedState.links || [];
+            appState.media = parsedState.media || [];
+            appState.passwords = parsedState.passwords || [];
+            appState.keywords = parsedState.keywords || [];
+            appState.socials = parsedState.socials || [];
 
-                appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []); // Ensure it's an array
-                appState.filters = parsedState.filters || {category: '', search: '', sort: 'name', searchScope: 'currentTab'}; // Updated default filter
-                appState.theme = parsedState.theme || 'dark';
-                appState.viewMode = parsedState.viewMode || 'grid';
-                appState.usageStats = parsedState.usageStats || {
-                    toolsUsedToday: 0
-                };
-                appState.customTabs = parsedState.customTabs || [];
-                appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
-                appState.currentIntelligenceVaultSubTab = parsedState.currentIntelligenceVaultSubTab || 'tools';
-                appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tools'; // New: Load current sub-tab for custom vault entries
+            appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
+            appState.filters = parsedState.filters || {
+                category: '',
+                search: '',
+                sort: 'name',
+                searchScope: 'currentTab'
+            };
+            appState.theme = parsedState.theme || 'dark';
+            appState.viewMode = parsedState.viewMode || 'grid';
+            appState.usageStats = parsedState.usageStats || {
+                toolsUsedToday: 0
+            };
+            appState.customTabs = parsedState.customTabs || [];
+            appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+            appState.currentIntelligenceVaultSubTab = parsedState.currentIntelligenceVaultSubTab || 'tools';
+            appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tools';
 
-            } else {
-                appState.tools = [...defaultTools];
-                 // Initialize default custom tabs if no state is loaded
-                appState.customTabs = [
-                    { id: generateId(), name: 'Crypto', toolIds: [], icon: 'fas fa-coins', color: 'var(--tab-color-yellow)' },
-                    { id: generateId(), name: 'Social Media Analysis', toolIds: [], icon: 'fas fa-users', color: 'var(--tab-color-blue)' }
-                ];
-                appState.currentCustomTab = appState.customTabs[0]?.id || null;
-                // Initialize empty arrays for new types if starting fresh
-                appState.emails = [];
-                appState.phones = [];
-                appState.crypto = [];
-                appState.locations = [];
-                appState.links = [];
-                appState.media = [];
-                appState.passwords = [];
-                appState.keywords = [];
-                appState.socials = [];
-            }
+        } else {
+            appState.tools = [...defaultTools];
+            // Initialize default custom tabs if no state is loaded
+            appState.customTabs = [
+                {
+                    id: generateId(),
+                    name: 'Crypto',
+                    toolIds: [],
+                    icon: 'fas fa-coins',
+                    color: 'var(--tab-color-yellow)'
+                },
+                {
+                    id: generateId(),
+                    name: 'Social Media Analysis',
+                    toolIds: [],
+                    icon: 'fas fa-users',
+                    color: 'var(--tab-color-blue)'
+                }
+            ];
+            appState.currentCustomTab = appState.customTabs[0]?.id || null;
+            // Initialize empty arrays for new types if starting fresh
+            appState.emails = [];
+            appState.phones = [];
+            appState.crypto = [];
+            appState.locations = [];
+            appState.links = [];
+            appState.media = [];
+            appState.passwords = [];
+            appState.keywords = [];
+            appState.socials = [];
         }
+    }
 
         // Save application state to localStorage
         function saveState() {
@@ -4763,21 +4834,23 @@
             const categoryFilter = document.getElementById('categoryFilter');
             const toolCategorySelect = document.getElementById('toolCategory');
             const editToolCategorySelect = document.getElementById('editToolCategory');
-            
+            const toolOnlyCategorySelect = document.getElementById('toolOnlyCategory'); // For Add Tool Only Modal
+
             const existingCategories = new Set(appState.tools.map(tool => tool.category.toLowerCase()));
-            
+
             // Add static options
             const defaultCategories = [
-                'Search Engines', 'Social Media', 'Network Analysis', 'Email Investigation', 
+                'Search Engines', 'Social Media', 'Network Analysis', 'Email Investigation',
                 'Domain Research', 'Image Analysis', 'GEOINT', 'Threat Intelligence', 'Archive', 'Other'
             ];
 
             const allCategories = new Set([...defaultCategories.map(cat => cat.toLowerCase()), ...Array.from(existingCategories)]);
-            
+
             // Clear existing options
             categoryFilter.innerHTML = '<option value="">All Categories</option>';
             toolCategorySelect.innerHTML = '<option value="">Select Category</option>';
             editToolCategorySelect.innerHTML = '<option value="">Select Category</option>';
+            toolOnlyCategorySelect.innerHTML = '<option value="">Select Category</option>';
 
 
             // Sort categories alphabetically for dropdowns
@@ -4801,6 +4874,12 @@
                 editToolOption.value = category;
                 editToolOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
                 editToolCategorySelect.appendChild(editToolOption);
+
+                // Add Tool Only dropdown
+                const toolOnlyOption = document.createElement('option');
+                toolOnlyOption.value = category;
+                toolOnlyOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                toolOnlyCategorySelect.appendChild(toolOnlyOption);
             });
 
             // Add "Custom" option to tool category select
@@ -4808,6 +4887,12 @@
             customOptionAdd.value = 'custom';
             customOptionAdd.textContent = 'Custom Category';
             toolCategorySelect.appendChild(customOptionAdd);
+
+            // Add "Custom" option to toolOnlyCategorySelect
+            const customOptionAddToolOnly = document.createElement('option');
+            customOptionAddToolOnly.value = 'custom';
+            customOptionAddToolOnly.textContent = 'Custom Category';
+            toolOnlyCategorySelect.appendChild(customOptionAddToolOnly);
 
             const customOptionEdit = document.createElement('option');
             customOptionEdit.value = 'custom';
@@ -4919,146 +5004,158 @@
             saveState(); // Save state after rendering entries
         }
 
-        // Filter entries based on current filters and active tab
-        function filterEntries() {
-            let entriesToSearch = [];
+    // Filter entries based on current filters and active tab
+    function filterEntries() {
+        let entriesToSearch = [];
 
-            // Determine the base set of entries based on searchScope and currentTab
-            if (appState.filters.searchScope === 'allData') {
-                entriesToSearch = [
-                    ...appState.tools,
-                    ...appState.emails,
-                    ...appState.phones,
-                    ...appState.crypto,
-                    ...appState.locations,
-                    ...appState.links,
-                    ...appState.media,
-                    ...appState.passwords, // New
-                    ...appState.keywords,  // New
-                    ...appState.socials    // New
-                ];
-            } else if (appState.filters.searchScope === 'allVault') {
-                 // Combine all entries from the Intelligence Vault (excluding Custom Tabs)
-                 entriesToSearch = [
-                    ...appState.tools,
-                    ...appState.emails,
-                    ...appState.phones,
-                    ...appState.crypto,
-                    ...appState.locations,
-                    ...appState.links,
-                    ...appState.media,
-                    ...appState.passwords, // New
-                    ...appState.keywords,  // New
-                    ...appState.socials    // New
-                ];
-            } else { // 'currentTab' is default and also for 'custom-tabs' specifics
-                if (appState.currentTab === 'tools') { // This case might not be reached if 'intelligence-vault' is default
-                    entriesToSearch = [...appState.tools];
-                } else if (appState.currentTab === 'intelligence-vault') {
-                    switch (appState.currentIntelligenceVaultSubTab) {
-                        // In Intelligence Vault, all sub-tabs now show tools
-                        case 'tools': entriesToSearch = appState.tools.filter(tool => tool.category === 'search engines' || tool.category === 'network analysis' || tool.category === 'threat intelligence' || tool.category === 'archive' || tool.category === 'domain research' || tool.category === 'image analysis' || tool.category === 'other'); break;
-                        case 'emailTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'email investigation'); break;
-                        case 'phoneTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'phone investigation' || tool.category === 'telecom'); break;
-                        case 'cryptoTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'cryptocurrency analysis'); break;
-                        case 'locationTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'geospatial intelligence' || tool.category === 'osint mapping'); break;
-                        case 'linkTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'link analysis' || tool.category === 'url analysis'); break;
-                        case 'mediaTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'media analysis' || tool.category === 'image analysis' || tool.category === 'video analysis'); break;
-                        case 'passwordTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'password analysis' || tool.category === 'credential analysis'); break;
-                        case 'keywordTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'keyword analysis' || tool.category === 'text analysis'); break;
-                        case 'socialTools': entriesToSearch = appState.tools.filter(tool => tool.category === 'social media analysis' || tool.category === 'social engineering'); break;
-                        default: entriesToSearch = []; break;
-                    }
-                } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
-                    const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
-                    if (activeCustomTab) {
-                        const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-                        
-                        // Filter entries that belong to the active custom tab
-                        let entriesInCustomTab = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(activeCustomTab.id));
+        // Determine the base set of entries based on searchScope and currentTab
+        if (appState.filters.searchScope === 'allData') {
+            entriesToSearch = [
+                ...appState.tools,
+                ...appState.emails,
+                ...appState.phones,
+                ...appState.crypto,
+                ...appState.locations,
+                ...appState.links,
+                ...appState.media,
+                ...appState.passwords,
+                ...appState.keywords,
+                ...appState.socials
+            ];
+        } else if (appState.filters.searchScope === 'allVault') {
+            // Combine all entries from the Intelligence Vault (excluding Custom Tabs)
+            entriesToSearch = [
+                ...appState.tools,
+                ...appState.emails,
+                ...appState.phones,
+                ...appState.crypto,
+                ...appState.locations,
+                ...appState.links,
+                ...appState.media,
+                ...appState.passwords,
+                ...appState.keywords,
+                ...appState.socials
+            ];
+        } else { // 'currentTab' is default and also for 'custom-tabs' specifics
+            if (appState.currentTab === 'tools') { // This case might not be reached if 'intelligence-vault' is default
+                entriesToSearch = [...appState.tools];
+            } else if (appState.currentTab === 'intelligence-vault') {
+                // MODIFIED: Filter by `intelligenceVaultCategories` for tools within Intelligence Vault tabs
+                entriesToSearch = appState.tools.filter(tool =>
+                    (tool.intelligenceVaultCategories || []).includes(appState.currentIntelligenceVaultSubTab)
+                );
+            } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+                const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+                if (activeCustomTab) {
+                    const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
 
-                        // Now filter these entries based on the active sub-tab within the custom vault
-                        switch (appState.currentCustomVaultEntrySubTab) {
-                            case 'tools': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'tool'); break;
-                            case 'emails': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'email'); break;
-                            case 'phones': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'phone'); break;
-                            case 'crypto': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'crypto'); break;
-                            case 'locations': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'location'); break;
-                            case 'links': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'link'); break;
-                            case 'media': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'media'); break;
-                            case 'passwords': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'password'); break;
-                            case 'keywords': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'keyword'); break;
-                            case 'socials': entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'social'); break;
-                            default: entriesToSearch = []; break;
-                        }
+                    // Filter entries that belong to the active custom tab
+                    let entriesInCustomTab = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(activeCustomTab.id));
 
-                    } else {
-                        entriesToSearch = [];
-                    }
-                }
-            }
-            
-            let filtered = [...entriesToSearch]; // Start filtering from this base set
-
-            // Apply search filter
-            if (appState.filters.search) {
-                const searchTerm = appState.filters.search.toLowerCase();
-                filtered = filtered.filter(entry => {
-                    const searchableFields = [
-                        entry.name, 
-                        entry.description, 
-                        entry.category, // For tools
-                        entry.email, entry.number, entry.address, entry.txid, entry.locationName, entry.url, entry.title, // For other entry types
-                        entry.service, entry.username, entry.password, entry.strength, // For passwords
-                        entry.value, entry.context, // For keywords
-                        entry.platform, entry.socialUsername, entry.followCounts, // For socials
-                        // NEW: Include source and custom metadata in search
-                        entry.source,
-                        ...(entry.metadata || []).flatMap(meta => [meta.key, meta.value])
-                    ].map(field => String(field || '').toLowerCase()); // Ensure all fields are strings or empty strings
-
-                    if (entry.tags) {
-                        searchableFields.push(...entry.tags.map(tag => tag.toLowerCase()));
+                    // Now filter these entries based on the active sub-tab within the custom vault
+                    switch (appState.currentCustomVaultEntrySubTab) {
+                        case 'tools':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'tool');
+                            break;
+                        case 'emails':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'email');
+                            break;
+                        case 'phones':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'phone');
+                            break;
+                        case 'crypto':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'crypto');
+                            break;
+                        case 'locations':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'location');
+                            break;
+                        case 'links':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'link');
+                            break;
+                        case 'media':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'media');
+                            break;
+                        case 'passwords':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'password');
+                            break;
+                        case 'keywords':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'keyword');
+                            break;
+                        case 'socials':
+                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'social');
+                            break;
+                        default:
+                            entriesToSearch = [];
+                            break;
                     }
 
-                    return searchableFields.some(field => field.includes(searchTerm));
-                });
-            }
-            
-            // Apply universal "category" filters for pinned/starred
-            if (appState.filters.category === 'pinned') {
-                filtered = filtered.filter(entry => entry.pinned);
-            } else if (appState.filters.category === 'starred') {
-                filtered = filtered.filter(entry => entry.starred);
-            } else if (appState.filters.category) {
-                // This 'else if' block handles actual categories, only apply if the current view is for tools
-                // Now, only filter by category if we are explicitly on an 'Intelligence Vault' tab that displays tools,
-                // or if we are on the 'tools' sub-tab within a custom vault.
-                if (appState.currentTab === 'intelligence-vault' || (appState.currentTab === 'custom-tabs' && appState.currentCustomVaultEntrySubTab === 'tools')) {
-                    filtered = filtered.filter(entry => entry.type === 'tool' && entry.category === appState.filters.category);
                 } else {
-                    // If a category filter is applied while not on a 'tools' tab, clear it visually.
-                    document.getElementById('categoryFilter').value = '';
-                    appState.filters.category = ''; // Ensure state is reset too
+                    entriesToSearch = [];
                 }
             }
-
-            // Apply sorting
-            filtered.sort((a, b) => {
-                switch (appState.filters.sort) {
-                    case 'recent':
-                        return new Date(b.addedDate || 0) - new Date(a.addedDate || 0);
-                    case 'popular': // Sort by lastUsed (most recent first)
-                        return (b.lastUsed || 0) - (a.lastUsed || 0);
-                    default: // 'name' (or primary identifier)
-                        const nameA = a.name || a.email || a.number || a.address || a.locationName || a.url || a.title || a.service || a.value || a.username || '';
-                        const nameB = b.name || b.email || b.number || b.address || b.locationName || b.url || b.title || b.service || b.value || b.username || '';
-                        return nameA.localeCompare(nameB);
-                }
-            });
-            
-            return filtered;
         }
+
+        let filtered = [...entriesToSearch]; // Start filtering from this base set
+
+        // Apply search filter
+        if (appState.filters.search) {
+            const searchTerm = appState.filters.search.toLowerCase();
+            filtered = filtered.filter(entry => {
+                const searchableFields = [
+                    entry.name,
+                    entry.description,
+                    entry.category, // For tools
+                    entry.email, entry.number, entry.address, entry.txid, entry.locationName, entry.url, entry.title, // For other entry types
+                    entry.service, entry.username, entry.password, entry.strength, // For passwords
+                    entry.value, entry.context, // For keywords
+                    entry.platform, entry.socialUsername, entry.followCounts, // For socials
+                    // Include source and custom metadata in search
+                    entry.source,
+                    ...(entry.metadata || []).flatMap(meta => [meta.key, meta.value])
+                ].map(field => String(field || '').toLowerCase()); // Ensure all fields are strings or empty strings
+
+                if (entry.tags) {
+                    searchableFields.push(...entry.tags.map(tag => tag.toLowerCase()));
+                }
+
+                return searchableFields.some(field => field.includes(searchTerm));
+            });
+        }
+
+        // Apply universal "category" filters for pinned/starred
+        if (appState.filters.category === 'pinned') {
+            filtered = filtered.filter(entry => entry.pinned);
+        } else if (appState.filters.category === 'starred') {
+            filtered = filtered.filter(entry => entry.starred);
+        } else if (appState.filters.category) {
+            // This 'else if' block handles actual categories, only apply if the current view is for tools
+            // Now, only filter by category if we are explicitly on an 'Intelligence Vault' tab that displays tools,
+            // or if we are on the 'tools' sub-tab within a custom vault.
+            if (appState.currentTab === 'intelligence-vault' || (appState.currentTab === 'custom-tabs' && appState.currentCustomVaultEntrySubTab === 'tools')) {
+                filtered = filtered.filter(entry => entry.type === 'tool' && entry.category === appState.filters.category);
+            } else {
+                // If a category filter is applied while not on a 'tools' tab, clear it visually.
+                document.getElementById('categoryFilter').value = '';
+                appState.filters.category = ''; // Ensure state is reset too
+            }
+        }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            switch (appState.filters.sort) {
+                case 'recent':
+                    return new Date(b.addedDate || 0) - new Date(a.addedDate || 0);
+                case 'popular': // Sort by lastUsed (most recent first)
+                    return (b.lastUsed || 0) - (a.lastUsed || 0);
+                default: // 'name' (or primary identifier)
+                    const nameA = a.name || a.email || a.number || a.address || a.locationName || a.url || a.title || a.service || a.value || a.username || '';
+                    const nameB = b.name || b.email || b.number || b.address || b.locationName || b.url || b.title || b.service || b.value || b.username || '';
+                    return nameA.localeCompare(nameB);
+            }
+        });
+
+        return filtered;
+    }
 
         // Create a generic entry card HTML
         function createEntryCard(entry) {
@@ -5259,11 +5356,27 @@
                 document.getElementById('entryTypeSelect').value = 'tool';
                 showModal('addEntryModal');
             });
+
             document.getElementById('addToolBtnIntelligenceVault').addEventListener('click', () => {
-                document.getElementById('entryTypeSelect').value = 'tool';
-                showModal('addEntryModal');
+                openAddToolOnlyModal(); // Call a new function to handle this modal
             });
 
+            // Add event listeners for the new modal (inside bindEvents)
+            document.getElementById('cancelAddToolOnly').addEventListener('click', () => hideModal('addToolOnlyModal'));
+            document.getElementById('addToolOnlyForm').addEventListener('submit', handleAddToolOnly);
+
+            // Add custom category input for the new modal
+            document.getElementById('toolOnlyCategory').addEventListener('change', (e) => {
+                const newCategoryInput = document.getElementById('newToolOnlyCategoryInput');
+                if (e.target.value === 'custom') {
+                    newCategoryInput.style.display = 'block';
+                    newCategoryInput.setAttribute('required', 'required');
+                } else {
+                    newCategoryInput.style.display = 'none';
+                    newCategoryInput.removeAttribute('required');
+                    newCategoryInput.value = ''; // Clear input if not custom
+                }
+            });
 
             // Tab navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -5468,6 +5581,305 @@
             });
 
         }
+
+        // NEW: Function to open the Add Tool Only Modal
+        function openAddToolOnlyModal() {
+            if (appState.readOnlyMode) {
+                showToast("Cannot add tools in read-only shared view.", "warning");
+                return;
+            }
+            document.getElementById('addToolOnlyForm').reset();
+            populateCategoryFilterForAddToolOnly();
+            populateIntelligenceVaultCategoriesCheckboxesAddTool();
+
+            document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.value === appState.currentIntelligenceVaultSubTab) {
+                    checkbox.checked = true;
+                    checkbox.closest('.custom-tab-checkbox').classList.add('checked');
+                } else {
+                    checkbox.checked = false;
+                    checkbox.closest('.custom-tab-checkbox').classList.remove('checked');
+                }
+            });
+
+            document.getElementById('newToolOnlyCategoryInput').style.display = 'none';
+            showModal('addToolOnlyModal');
+        }
+
+        // NEW: Populate Category dropdown for the Add Tool Only Modal
+        function populateCategoryFilterForAddToolOnly() {
+            const toolCategorySelect = document.getElementById('toolOnlyCategory');
+            const existingCategories = new Set(appState.tools.map(tool => tool.category.toLowerCase()));
+
+            const defaultCategories = [
+                'Search Engines', 'Social Media', 'Network Analysis', 'Email Investigation',
+                'Domain Research', 'Image Analysis', 'GEOINT', 'Threat Intelligence', 'Archive', 'Other',
+                'Phone Investigation', 'Telecom', 'Cryptocurrency Analysis', 'Geospatial Intelligence',
+                'OSINT Mapping', 'Link Analysis', 'URL Analysis', 'Media Analysis', 'Video Analysis',
+                'Password Analysis', 'Credential Analysis', 'Keyword Analysis', 'Text Analysis',
+                'Social Media Analysis', 'Social Engineering'
+            ];
+
+            const allCategories = new Set([...defaultCategories.map(cat => cat.toLowerCase()), ...existingCategories]);
+
+            toolCategorySelect.innerHTML = '<option value="">Select Category</option>';
+
+            Array.from(allCategories)
+                .sort((a, b) => a.localeCompare(b))
+                .forEach(category => {
+                    const toolOption = document.createElement('option');
+                    toolOption.value = category;
+                    toolOption.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                    toolCategorySelect.appendChild(toolOption);
+                });
+
+            const customOptionAdd = document.createElement('option');
+            customOptionAdd.value = 'custom';
+            customOptionAdd.textContent = 'Custom Category';
+            toolCategorySelect.appendChild(customOptionAdd);
+        }
+
+// NEW: Populate "Where to add" checkboxes for the Add Tool Only Modal
+    function populateIntelligenceVaultCategoriesCheckboxesAddTool(assignedCategories = []) {
+        const container = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
+        container.innerHTML = '';
+
+        const intelligenceVaultCategories = [
+            {
+                id: 'tools',
+                name: 'General Tools',
+                icon: 'fas fa-tools'
+            },
+            {
+                id: 'emailTools',
+                name: 'Email Tools',
+                icon: 'fas fa-envelope'
+            },
+            {
+                id: 'phoneTools',
+                name: 'Phone Tools',
+                icon: 'fas fa-phone'
+            },
+            {
+                id: 'cryptoTools',
+                name: 'Crypto Tools',
+                icon: 'fas fa-coins'
+            },
+            {
+                id: 'locationTools',
+                name: 'Location Tools',
+                icon: 'fas fa-map-marker-alt'
+            },
+            {
+                id: 'linkTools',
+                name: 'Link Tools',
+                icon: 'fas fa-link'
+            },
+            {
+                id: 'mediaTools',
+                name: 'Media Tools',
+                icon: 'fas fa-camera'
+            },
+            {
+                id: 'passwordTools',
+                name: 'Password Tools',
+                icon: 'fas fa-key'
+            },
+            {
+                id: 'keywordTools',
+                name: 'Keyword Tools',
+                icon: 'fas fa-font'
+            },
+            {
+                id: 'socialTools',
+                name: 'Social Tools',
+                icon: 'fas fa-users'
+            },
+        ];
+
+        intelligenceVaultCategories.forEach(category => {
+            const isChecked = assignedCategories.includes(category.id);
+            const checkboxContainer = document.createElement('label');
+            checkboxContainer.classList.add('custom-tab-checkbox');
+            if (isChecked) checkboxContainer.classList.add('checked');
+
+            checkboxContainer.innerHTML = `
+                <input type="checkbox" class="intelligence-vault-category-checkbox-add-tool" value="${category.id}" ${isChecked ? 'checked' : ''}>
+                <i class="${category.icon}" style="margin-right: 5px;"></i>
+                <span>${category.name}</span>
+            `;
+            container.appendChild(checkboxContainer);
+        });
+
+        container.addEventListener('change', (e) => {
+            if (e.target.classList.contains('intelligence-vault-category-checkbox-add-tool')) {
+                const checkbox = e.target;
+                const label = checkbox.closest('.custom-tab-checkbox');
+                if (label) {
+                    label.classList.toggle('checked', checkbox.checked);
+                }
+            }
+        });
+    }
+
+    // NEW: Function to populate Intelligence Vault Categories Checkboxes for Edit Tool Modal
+    function populateIntelligenceVaultCategoriesCheckboxesEditTool(assignedCategories) {
+        const container = document.getElementById('intelligenceVaultCategoriesAssignmentAddTool');
+        container.style.display = 'block'; // Ensure it's visible in the edit modal
+
+        const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
+        checkboxesContainer.innerHTML = ''; // Clear previous checkboxes
+
+        const intelligenceVaultCategories = [
+            {
+                id: 'tools',
+                name: 'General Tools',
+                icon: 'fas fa-tools'
+            },
+            {
+                id: 'emailTools',
+                name: 'Email Tools',
+                icon: 'fas fa-envelope'
+            },
+            {
+                id: 'phoneTools',
+                name: 'Phone Tools',
+                icon: 'fas fa-phone'
+            },
+            {
+                id: 'cryptoTools',
+                name: 'Crypto Tools',
+                icon: 'fas fa-coins'
+            },
+            {
+                id: 'locationTools',
+                name: 'Location Tools',
+                icon: 'fas fa-map-marker-alt'
+            },
+            {
+                id: 'linkTools',
+                name: 'Link Tools',
+                icon: 'fas fa-link'
+            },
+            {
+                id: 'mediaTools',
+                name: 'Media Tools',
+                icon: 'fas fa-camera'
+            },
+            {
+                id: 'passwordTools',
+                name: 'Password Tools',
+                icon: 'fas fa-key'
+            },
+            {
+                id: 'keywordTools',
+                name: 'Keyword Tools',
+                icon: 'fas fa-font'
+            },
+            {
+                id: 'socialTools',
+                name: 'Social Tools',
+                icon: 'fas fa-users'
+            },
+        ];
+
+        intelligenceVaultCategories.forEach(category => {
+            const isChecked = assignedCategories.includes(category.id);
+            const checkboxContainer = document.createElement('label');
+            checkboxContainer.classList.add('custom-tab-checkbox');
+            if (isChecked) checkboxContainer.classList.add('checked');
+
+            checkboxContainer.innerHTML = `
+                <input
+                    type="checkbox"
+                    class="intelligence-vault-category-checkbox-edit-tool"
+                    value="${category.id}"
+                    ${isChecked ? 'checked' : ''}
+                >
+                <i class="${category.icon}" style="margin-right: 5px;"></i>
+                <span>${category.name}</span>
+            `;
+            checkboxesContainer.appendChild(checkboxContainer);
+        });
+
+        // Avoid attaching multiple listeners
+        checkboxesContainer.addEventListener('change', (e) => {
+            if (e.target.classList.contains('intelligence-vault-category-checkbox-edit-tool')) {
+                const checkbox = e.target;
+                const label = checkbox.closest('.custom-tab-checkbox');
+                if (label) {
+                    label.classList.toggle('checked', checkbox.checked);
+                }
+            }
+        }, {
+            once: true
+        }); // Ensures this listener is attached only once
+    }
+
+// NEW: Handle adding a new tool from the dedicated Intelligence Vault modal
+    async function handleAddToolOnly(e) {
+        e.preventDefault();
+        if (appState.readOnlyMode) {
+            showToast("Cannot add tools in read-only shared view.", "warning");
+            return;
+        }
+
+        const toolName = document.getElementById('toolOnlyName').value.trim();
+        const toolUrl = document.getElementById('toolOnlyUrl').value.trim();
+        let toolCategory = document.getElementById('toolOnlyCategory').value;
+        const newCategoryInput = document.getElementById('newToolOnlyCategoryInput').value.trim();
+        const toolDescription = document.getElementById('toolOnlyDescription').value.trim();
+        const toolTags = document.getElementById('toolOnlyTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+        const selectedIntelligenceVaultCategories = Array.from(document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        if (!toolName || !toolUrl || !toolCategory) {
+            showToast('Please fill in all required tool fields (Name, URL, Category).', 'error');
+            return;
+        }
+
+        if (toolCategory === 'custom') {
+            if (!newCategoryInput) {
+                showToast('Please enter a custom category name.', 'error');
+                return;
+            }
+            toolCategory = newCategoryInput.toLowerCase();
+        }
+
+        if (selectedIntelligenceVaultCategories.length === 0) {
+            showToast('Please select at least one Intelligence Vault category for the tool.', 'error');
+            return;
+        }
+
+        const newTool = {
+            id: generateId(),
+            type: 'tool',
+            name: toolName,
+            url: toolUrl,
+            category: toolCategory,
+            description: toolDescription,
+            tags: toolTags,
+            starred: false,
+            pinned: false,
+            favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`,
+            lastUsed: 0,
+            addedDate: new Date(),
+            customTabs: [],
+            intelligenceVaultCategories: selectedIntelligenceVaultCategories
+        };
+
+        appState.tools.push(newTool);
+        hideModal('addToolOnlyModal');
+        document.getElementById('addToolOnlyForm').reset();
+        showToast('Tool added successfully!');
+        updateStats();
+        populateCategoryFilter();
+        renderIntelligenceEntries();
+        saveState();
+    }
+
+
 
         // Handle generic entry actions
         function handleEntryAction(e) {
@@ -6055,476 +6467,500 @@ function loadThreats() {
             }
         }
 
-        // Handle adding a new entry (tool, email, etc.)
-        async function handleAddEntry(e) {
-            e.preventDefault();
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot add entries in read-only shared view.", "warning");
-                return;
-            }
-
-            const entryType = document.getElementById('entryTypeSelect').value;
-            let newEntry = {
-                id: generateId(),
-                type: entryType,
-                starred: false,
-                pinned: false,
-                lastUsed: 0,
-                addedDate: new Date(),
-                customTabs: [] // Initialize with empty array
-            };
-
-            // Collect custom metadata
-            const customMetadata = [];
-            document.querySelectorAll('#customMetadataEntries .metadata-entry').forEach(row => {
-                const key = row.querySelector('.metadata-key').value.trim();
-                const value = row.querySelector('.metadata-value').value.trim();
-                if (key && value) {
-                    customMetadata.push({
-                        key,
-                        value
-                    });
-                }
-            });
-            if (customMetadata.length > 0) {
-                newEntry.metadata = customMetadata;
-            }
-
-            // Collect source
-            const entrySource = document.getElementById('entrySource').value.trim();
-            if (entrySource) {
-                newEntry.source = entrySource;
-            }
-
-
-            switch (entryType) {
-                case 'tool':
-                    const toolName = document.getElementById('toolName').value.trim();
-                    const toolUrl = document.getElementById('toolUrl').value.trim();
-                    let toolCategory = document.getElementById('toolCategory').value;
-                    const newCategoryInput = document.getElementById('newCategoryInput').value.trim();
-                    const toolDescription = document.getElementById('toolDescription').value.trim();
-                    const toolTags = document.getElementById('toolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-                    if (!toolName || !toolUrl || !toolCategory) {
-                        showToast('Please fill in all required tool fields (Name, URL, Category).', 'error');
-                        return;
-                    }
-
-                    if (toolCategory === 'custom') {
-                        if (!newCategoryInput) {
-                            showToast('Please enter a custom category name.', 'error');
-                            return;
-                        }
-                        toolCategory = newCategoryInput.toLowerCase();
-                    }
-
-                    newEntry = {
-                        ...newEntry,
-                        name: toolName,
-                        url: toolUrl,
-                        category: toolCategory,
-                        description: toolDescription,
-                        tags: toolTags,
-                        favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`
-                    };
-                    appState.tools.push(newEntry);
-                    break;
-                case 'email':
-                    const emailAddress = document.getElementById('emailAddress').value.trim();
-                    const emailNotes = document.getElementById('emailNotes').value.trim();
-                    const emailLinkedPlatforms = document.getElementById('emailLinkedPlatforms').value.split(',').map(p => p.trim()).filter(p => p);
-                    const emailBreachResults = document.getElementById('emailBreachResults').value.trim();
-
-                    if (!emailAddress) {
-                        showToast('Please enter an email address.', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        email: emailAddress,
-                        notes: emailNotes,
-                        linkedPlatforms: emailLinkedPlatforms,
-                        breachResults: emailBreachResults
-                    };
-                    appState.emails.push(newEntry);
-                    break;
-                case 'phone':
-                    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-                    const phoneType = document.getElementById('phoneType').value;
-                    const phoneLocation = document.getElementById('phoneLocation').value.trim();
-                    const phoneNotes = document.getElementById('phoneNotes').value.trim();
-
-                    if (!phoneNumber) {
-                        showToast('Please enter a phone number.', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        number: phoneNumber,
-                        phoneType: phoneType,
-                        location: phoneLocation,
-                        notes: phoneNotes
-                    };
-                    appState.phones.push(newEntry);
-                    break;
-                case 'crypto':
-                    const cryptoAddress = document.getElementById('cryptoAddress').value.trim();
-                    const cryptoTxid = document.getElementById('cryptoTxid').value.trim();
-                    const cryptoAmount = parseFloat(document.getElementById('cryptoAmount').value);
-                    const cryptoSource = document.getElementById('cryptoSource').value.trim();
-                    const cryptoTags = document.getElementById('cryptoTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-                    if (!cryptoAddress || !cryptoTxid || isNaN(cryptoAmount)) {
-                        showToast('Please fill in all required crypto fields (Address, TXID, Amount).', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        address: cryptoAddress,
-                        txid: cryptoTxid,
-                        amount: cryptoAmount,
-                        source: cryptoSource,
-                        tags: cryptoTags
-                    };
-                    appState.crypto.push(newEntry);
-                    break;
-                case 'location':
-                    const locationName = document.getElementById('locationName').value.trim();
-                    const locationCoordinates = document.getElementById('locationCoordinates').value.trim();
-                    const locationMapLink = document.getElementById('locationMapLink').value.trim();
-                    const locationNotes = document.getElementById('locationNotes').value.trim();
-                    const locationIpGeoIntel = document.getElementById('locationIpGeoIntel').value.trim();
-
-                    if (!locationName || !locationCoordinates) {
-                        showToast('Please fill in all required location fields (Name, Coordinates).', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        name: locationName,
-                        coordinates: locationCoordinates,
-                        mapLink: locationMapLink,
-                        notes: locationNotes,
-                        ipGeoIntel: locationIpGeoIntel
-                    };
-                    appState.locations.push(newEntry);
-                    break;
-                case 'link':
-                    const linkUrl = document.getElementById('linkUrl').value.trim();
-                    const linkPlatform = document.getElementById('linkPlatform').value.trim();
-                    const linkNotes = document.getElementById('linkNotes').value.trim();
-                    const linkTags = document.getElementById('linkTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-                    if (!linkUrl) {
-                        showToast('Please enter a URL.', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        url: linkUrl,
-                        platform: linkPlatform,
-                        notes: linkNotes,
-                        tags: linkTags
-                    };
-                    appState.links.push(newEntry);
-                    break;
-                case 'media':
-                    const mediaTitle = document.getElementById('mediaTitle').value.trim();
-                    const mediaNotes = document.getElementById('mediaNotes').value.trim();
-                    const mediaType = document.getElementById('mediaType').value;
-                    const mediaFile = document.getElementById('mediaFile').files[0];
-                    let base64Data = '';
-
-                    if (!mediaTitle) {
-                        showToast('Please enter a title for the media.', 'error');
-                        return;
-                    }
-
-                    if (mediaFile) {
-                        base64Data = await readFileAsBase64(mediaFile);
-                        newEntry.base64Data = base64Data;
-                    } else if (document.getElementById('mediaBase64Data').value) {
-                        // If there's existing base64 data (e.g., from an edit where file wasn't changed)
-                        base64Data = document.getElementById('mediaBase64Data').value;
-                        newEntry.base64Data = base64Data;
-                    } else {
-                        showToast('Please upload a file for media entry.', 'error');
-                        return;
-                    }
-
-                    newEntry = {
-                        ...newEntry,
-                        title: mediaTitle,
-                        notes: mediaNotes,
-                        mediaType: mediaType,
-                        base64Data: base64Data // Storing base64 for local persistence
-                    };
-                    appState.media.push(newEntry);
-                    break;
-                case 'password': // New
-                    const passwordService = document.getElementById('passwordService').value.trim();
-                    const passwordUsername = document.getElementById('passwordUsername').value.trim();
-                    const passwordValue = document.getElementById('passwordValue').value.trim();
-                    const passwordNotes = document.getElementById('passwordNotes').value.trim();
-                    const passwordStrength = document.getElementById('passwordStrength').value.trim();
-
-                    if (!passwordService || !passwordValue) {
-                        showToast('Please fill in all required password fields (Service, Password).', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        service: passwordService,
-                        username: passwordUsername,
-                        password: passwordValue,
-                        notes: passwordNotes,
-                        strength: passwordStrength,
-                        tags: [] // Passwords don't have tags in the form, but keep the property
-                    };
-                    appState.passwords.push(newEntry);
-                    break;
-                case 'keyword': // New
-                    const keywordValue = document.getElementById('keywordValue').value.trim();
-                    const keywordContext = document.getElementById('keywordContext').value.trim();
-                    const keywordNotes = document.getElementById('keywordNotes').value.trim();
-
-                    if (!keywordValue) {
-                        showToast('Please enter a keyword/phrase.', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        value: keywordValue,
-                        context: keywordContext,
-                        notes: keywordNotes,
-                        tags: [] // Keywords don't have tags in the form, but keep the property
-                    };
-                    appState.keywords.push(newEntry);
-                    break;
-                case 'social': // New
-                    const socialPlatform = document.getElementById('socialPlatform').value.trim();
-                    const socialUrl = document.getElementById('socialUrl').value.trim();
-                    const socialUsername = document.getElementById('socialUsername').value.trim();
-                    const socialNotes = document.getElementById('socialNotes').value.trim();
-                    const socialFollowCounts = document.getElementById('socialFollowCounts').value.trim();
-
-                    if (!socialPlatform || !socialUrl || !socialUsername) {
-                        showToast('Please fill in all required social profile fields (Platform, URL, Username).', 'error');
-                        return;
-                    }
-                    newEntry = {
-                        ...newEntry,
-                        platform: socialPlatform,
-                        url: socialUrl,
-                        username: socialUsername,
-                        notes: socialNotes,
-                        followCounts: socialFollowCounts,
-                        tags: [] // Socials don't have tags in the form, but keep the property
-                    };
-                    appState.socials.push(newEntry);
-                    break;
-            }
-
-            // If in a custom tab, automatically assign the new entry to it
-            if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
-                const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
-                if (activeCustomTab && !activeCustomTab.toolIds.includes(newEntry.id)) {
-                    activeCustomTab.toolIds.push(newEntry.id);
-                    newEntry.customTabs.push(activeCustomTab.id); // Also update the entry itself
-                }
-            }
-
-            hideModal('addEntryModal');
-            document.getElementById('addEntryForm').reset(); // Reset form fields
-            document.getElementById('customMetadataEntries').innerHTML = ''; // Clear metadata fields
-            showToast('Entry added successfully!');
-            updateStats();
-            populateCategoryFilter(); // Update categories if a new tool category was added
-            renderIntelligenceEntries(); // Re-render to show new entry
-            renderCustomTabs(); // Re-render custom tabs to update counts/content
-            saveState();
+// Handle adding a new entry (tool, email, etc.)
+    async function handleAddEntry(e) {
+        e.preventDefault();
+        if (appState.readOnlyMode) {
+            showToast("Cannot add entries in read-only shared view.", "warning");
+            return;
         }
 
-        // Handle editing an existing entry
-        async function handleEditEntry(e) {
-            e.preventDefault();
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot edit entries in read-only shared view.", "warning");
-                return;
+        const entryType = document.getElementById('entryTypeSelect').value;
+        let newEntry = {
+            id: generateId(),
+            type: entryType,
+            starred: false,
+            pinned: false,
+            lastUsed: 0,
+            addedDate: new Date(),
+            customTabs: [] // Initialize with empty array
+        };
+
+        // Collect custom metadata
+        const customMetadata = [];
+        document.querySelectorAll('#customMetadataEntries .metadata-entry').forEach(row => {
+            const key = row.querySelector('.metadata-key').value.trim();
+            const value = row.querySelector('.metadata-value').value.trim();
+            if (key && value) {
+                customMetadata.push({
+                    key,
+                    value
+                });
             }
+        });
+        if (customMetadata.length > 0) {
+            newEntry.metadata = customMetadata;
+        }
 
-            const entryId = document.getElementById('editEntryId').value;
-            const entryType = document.getElementById('editEntryType').value;
+        // Collect source
+        const entrySource = document.getElementById('entrySource').value.trim();
+        if (entrySource) {
+            newEntry.source = entrySource;
+        }
 
-            let entryToEdit = null;
-            let entryArray = null;
 
-            switch (entryType) {
-                case 'tool': entryArray = appState.tools; break;
-                case 'email': entryArray = appState.emails; break;
-                case 'phone': entryArray = appState.phones; break;
-                case 'crypto': entryArray = appState.crypto; break;
-                case 'location': entryArray = appState.locations; break;
-                case 'link': entryArray = appState.links; break;
-                case 'media': entryArray = appState.media; break;
-                case 'password': entryArray = appState.passwords; break;
-                case 'keyword': entryArray = appState.keywords; break;
-                case 'social': entryArray = appState.socials; break;
-            }
+        switch (entryType) {
+            case 'tool':
+                const toolName = document.getElementById('toolName').value.trim();
+                const toolUrl = document.getElementById('toolUrl').value.trim();
+                let toolCategory = document.getElementById('toolCategory').value;
+                const newCategoryInput = document.getElementById('newCategoryInput').value.trim();
+                const toolDescription = document.getElementById('toolDescription').value.trim();
+                const toolTags = document.getElementById('toolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
 
-            if (entryArray) {
-                entryToEdit = entryArray.find(t => t.id === entryId);
-            }
-
-            if (!entryToEdit) {
-                showToast('Error: Entry not found for editing.', 'error');
-                return;
-            }
-
-            // Collect custom metadata
-            const customMetadata = [];
-            document.querySelectorAll('#editCustomMetadataEntries .metadata-entry').forEach(row => {
-                const key = row.querySelector('.metadata-key').value.trim();
-                const value = row.querySelector('.metadata-value').value.trim();
-                if (key && value) {
-                    customMetadata.push({
-                        key,
-                        value
-                    });
+                if (!toolName || !toolUrl || !toolCategory) {
+                    showToast('Please fill in all required tool fields (Name, URL, Category).', 'error');
+                    return;
                 }
-            });
-            entryToEdit.metadata = customMetadata.length > 0 ? customMetadata : undefined; // Set to undefined if empty
 
-            // Collect source
-            const entrySource = document.getElementById('editEntrySource').value.trim();
-            entryToEdit.source = entrySource || undefined; // Set to undefined if empty
-
-
-            switch (entryType) {
-                case 'tool':
-                    const editToolName = document.getElementById('editToolName').value.trim();
-                    const editToolUrl = document.getElementById('editToolUrl').value.trim();
-                    let editToolCategory = document.getElementById('editToolCategory').value;
-                    const editNewCategoryInput = document.getElementById('editNewCategoryInput').value.trim();
-                    const editToolDescription = document.getElementById('editToolDescription').value.trim();
-                    const editToolTags = document.getElementById('editToolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-                    if (!editToolName || !editToolUrl || !editToolCategory) {
-                        showToast('Please fill in all required tool fields (Name, URL, Category).', 'error');
+                if (toolCategory === 'custom') {
+                    if (!newCategoryInput) {
+                        showToast('Please enter a custom category name.', 'error');
                         return;
                     }
+                    toolCategory = newCategoryInput.toLowerCase();
+                }
 
-                    if (editToolCategory === 'custom') {
-                        if (!editNewCategoryInput) {
-                            showToast('Please enter a custom category name.', 'error');
+                newEntry = {
+                    ...newEntry,
+                    name: toolName,
+                    url: toolUrl,
+                    category: toolCategory,
+                    description: toolDescription,
+                    tags: toolTags,
+                    favicon: `https://www.google.com/s2/favicons?domain=${new URL(toolUrl).hostname}`
+                };
+                appState.tools.push(newEntry);
+                break;
+            case 'email':
+                const emailAddress = document.getElementById('emailAddress').value.trim();
+                const emailNotes = document.getElementById('emailNotes').value.trim();
+                const emailLinkedPlatforms = document.getElementById('emailLinkedPlatforms').value.split(',').map(p => p.trim()).filter(p => p);
+                const emailBreachResults = document.getElementById('emailBreachResults').value.trim();
+
+                if (!emailAddress) {
+                    showToast('Please enter an email address.', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    email: emailAddress,
+                    notes: emailNotes,
+                    linkedPlatforms: emailLinkedPlatforms,
+                    breachResults: emailBreachResults
+                };
+                appState.emails.push(newEntry);
+                break;
+            case 'phone':
+                const phoneNumber = document.getElementById('phoneNumber').value.trim();
+                const phoneType = document.getElementById('phoneType').value;
+                const phoneLocation = document.getElementById('phoneLocation').value.trim();
+                const phoneNotes = document.getElementById('phoneNotes').value.trim();
+
+                if (!phoneNumber) {
+                    showToast('Please enter a phone number.', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    number: phoneNumber,
+                    phoneType: phoneType,
+                    location: phoneLocation,
+                    notes: phoneNotes
+                };
+                appState.phones.push(newEntry);
+                break;
+            case 'crypto':
+                const cryptoAddress = document.getElementById('cryptoAddress').value.trim();
+                const cryptoTxid = document.getElementById('cryptoTxid').value.trim();
+                const cryptoAmount = parseFloat(document.getElementById('cryptoAmount').value);
+                const cryptoSource = document.getElementById('cryptoSource').value.trim();
+                const cryptoTags = document.getElementById('cryptoTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+                if (!cryptoAddress || !cryptoTxid || isNaN(cryptoAmount)) {
+                    showToast('Please fill in all required crypto fields (Address, TXID, Amount).', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    address: cryptoAddress,
+                    txid: cryptoTxid,
+                    amount: cryptoAmount,
+                    source: cryptoSource,
+                    tags: cryptoTags
+                };
+                appState.crypto.push(newEntry);
+                break;
+            case 'location':
+                const locationName = document.getElementById('locationName').value.trim();
+                const locationCoordinates = document.getElementById('locationCoordinates').value.trim();
+                const locationMapLink = document.getElementById('locationMapLink').value.trim();
+                const locationNotes = document.getElementById('locationNotes').value.trim();
+                const locationIpGeoIntel = document.getElementById('locationIpGeoIntel').value.trim();
+
+                if (!locationName || !locationCoordinates) {
+                    showToast('Please fill in all required location fields (Name, Coordinates).', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    name: locationName,
+                    coordinates: locationCoordinates,
+                    mapLink: locationMapLink,
+                    notes: locationNotes,
+                    ipGeoIntel: locationIpGeoIntel
+                };
+                appState.locations.push(newEntry);
+                break;
+            case 'link':
+                const linkUrl = document.getElementById('linkUrl').value.trim();
+                const linkPlatform = document.getElementById('linkPlatform').value.trim();
+                const linkNotes = document.getElementById('linkNotes').value.trim();
+                const linkTags = document.getElementById('linkTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+                if (!linkUrl) {
+                    showToast('Please enter a URL.', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    url: linkUrl,
+                    platform: linkPlatform,
+                    notes: linkNotes,
+                    tags: linkTags
+                };
+                appState.links.push(newEntry);
+                break;
+            case 'media':
+                const mediaTitle = document.getElementById('mediaTitle').value.trim();
+                const mediaNotes = document.getElementById('mediaNotes').value.trim();
+                const mediaType = document.getElementById('mediaType').value;
+                const mediaFile = document.getElementById('mediaFile').files[0];
+                let base64Data = '';
+
+                if (!mediaTitle) {
+                    showToast('Please enter a title for the media.', 'error');
+                    return;
+                }
+
+                if (mediaFile) {
+                    base64Data = await readFileAsBase64(mediaFile);
+                    newEntry.base64Data = base64Data;
+                } else if (document.getElementById('mediaBase64Data').value) {
+                    // If there's existing base64 data (e.g., from an edit where file wasn't changed)
+                    base64Data = document.getElementById('mediaBase64Data').value;
+                    newEntry.base64Data = base64Data;
+                } else {
+                    showToast('Please upload a file for media entry.', 'error');
+                    return;
+                }
+
+                newEntry = {
+                    ...newEntry,
+                    title: mediaTitle,
+                    notes: mediaNotes,
+                    mediaType: mediaType,
+                    base64Data: base64Data // Storing base64 for local persistence
+                };
+                appState.media.push(newEntry);
+                break;
+            case 'password': // New
+                const passwordService = document.getElementById('passwordService').value.trim();
+                const passwordUsername = document.getElementById('passwordUsername').value.trim();
+                const passwordValue = document.getElementById('passwordValue').value.trim();
+                const passwordNotes = document.getElementById('passwordNotes').value.trim();
+                const passwordStrength = document.getElementById('passwordStrength').value.trim();
+
+                if (!passwordService || !passwordValue) {
+                    showToast('Please fill in all required password fields (Service, Password).', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    service: passwordService,
+                    username: passwordUsername,
+                    password: passwordValue,
+                    notes: passwordNotes,
+                    strength: passwordStrength,
+                    tags: [] // Passwords don't have tags in the form, but keep the property
+                };
+                appState.passwords.push(newEntry);
+                break;
+            case 'keyword': // New
+                const keywordValue = document.getElementById('keywordValue').value.trim();
+                const keywordContext = document.getElementById('keywordContext').value.trim();
+                const keywordNotes = document.getElementById('keywordNotes').value.trim();
+
+                if (!keywordValue) {
+                    showToast('Please enter a keyword/phrase.', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    value: keywordValue,
+                    context: keywordContext,
+                    notes: keywordNotes,
+                    tags: [] // Keywords don't have tags in the form, but keep the property
+                };
+                appState.keywords.push(newEntry);
+                break;
+            case 'social': // New
+                const socialPlatform = document.getElementById('socialPlatform').value.trim();
+                const socialUrl = document.getElementById('socialUrl').value.trim();
+                const socialUsername = document.getElementById('socialUsername').value.trim();
+                const socialNotes = document.getElementById('socialNotes').value.trim();
+                const socialFollowCounts = document.getElementById('socialFollowCounts').value.trim();
+
+                if (!socialPlatform || !socialUrl || !socialUsername) {
+                    showToast('Please fill in all required social profile fields (Platform, URL, Username).', 'error');
+                    return;
+                }
+                newEntry = {
+                    ...newEntry,
+                    platform: socialPlatform,
+                    url: socialUrl,
+                    username: socialUsername,
+                    notes: socialNotes,
+                    followCounts: socialFollowCounts,
+                    tags: [] // Socials don't have tags in the form, but keep the property
+                };
+                appState.socials.push(newEntry);
+                break;
+        }
+
+        // If in a custom tab, automatically assign the new entry to it
+        if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
+            const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
+            if (activeCustomTab && !activeCustomTab.toolIds.includes(newEntry.id)) {
+                activeCustomTab.toolIds.push(newEntry.id);
+                newEntry.customTabs.push(activeCustomTab.id); // Also update the entry itself
+            }
+        }
+
+        hideModal('addEntryModal');
+        document.getElementById('addEntryForm').reset(); // Reset form fields
+        document.getElementById('customMetadataEntries').innerHTML = ''; // Clear metadata fields
+        showToast('Entry added successfully!');
+        updateStats();
+        populateCategoryFilter(); // Update categories if a new tool category was added
+        renderIntelligenceEntries(); // Re-render to show new entry
+        renderCustomTabs(); // Re-render custom tabs to update counts/content
+        saveState();
+    }
+
+            // Handle editing an existing entry
+            async function handleEditEntry(e) {
+                e.preventDefault();
+                if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+                    showToast("Cannot edit entries in read-only shared view.", "warning");
+                    return;
+                }
+
+                const entryId = document.getElementById('editEntryId').value;
+                const entryType = document.getElementById('editEntryType').value;
+
+                let entryToEdit = null;
+                let entryArray = null;
+
+                switch (entryType) {
+                    case 'tool':
+                        entryArray = appState.tools;
+                        break;
+                    case 'email':
+                        entryArray = appState.emails;
+                        break;
+                    case 'phone':
+                        entryArray = appState.phones;
+                        break;
+                    case 'crypto':
+                        entryArray = appState.crypto;
+                        break;
+                    case 'location':
+                        entryArray = appState.locations;
+                        break;
+                    case 'link':
+                        entryArray = appState.links;
+                        break;
+                    case 'media':
+                        entryArray = appState.media;
+                        break;
+                    case 'password':
+                        entryArray = appState.passwords;
+                        break;
+                    case 'keyword':
+                        entryArray = appState.keywords;
+                        break;
+                    case 'social':
+                        entryArray = appState.socials;
+                        break;
+                }
+
+                if (entryArray) {
+                    entryToEdit = entryArray.find(t => t.id === entryId);
+                }
+
+                if (!entryToEdit) {
+                    showToast('Error: Entry not found for editing.', 'error');
+                    return;
+                }
+
+                // Collect custom metadata
+                const customMetadata = [];
+                document.querySelectorAll('#editCustomMetadataEntries .metadata-entry').forEach(row => {
+                    const key = row.querySelector('.metadata-key').value.trim();
+                    const value = row.querySelector('.metadata-value').value.trim();
+                    if (key && value) {
+                        customMetadata.push({
+                            key,
+                            value
+                        });
+                    }
+                });
+                entryToEdit.metadata = customMetadata.length > 0 ? customMetadata : undefined; // Set to undefined if empty
+
+                // Collect source
+                const entrySource = document.getElementById('editEntrySource').value.trim();
+                entryToEdit.source = entrySource || undefined; // Set to undefined if empty
+
+
+                switch (entryType) {
+                    case 'tool':
+                        const editToolName = document.getElementById('editToolName').value.trim();
+                        const editToolUrl = document.getElementById('editToolUrl').value.trim();
+                        let editToolCategory = document.getElementById('editToolCategory').value;
+                        const editNewCategoryInput = document.getElementById('editNewCategoryInput').value.trim();
+                        const editToolDescription = document.getElementById('editToolDescription').value.trim();
+                        const editToolTags = document.getElementById('editToolTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                        // MODIFIED: Get selected intelligence vault categories for tool being edited
+                        const editedIntelligenceVaultCategories = Array.from(document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]:checked'))
+                            .map(checkbox => checkbox.value);
+                        entryToEdit.intelligenceVaultCategories = editedIntelligenceVaultCategories;
+
+                        if (!editToolName || !editToolUrl || !editToolCategory) {
+                            showToast('Please fill in all required tool fields (Name, URL, Category).', 'error');
                             return;
                         }
-                        editToolCategory = editNewCategoryInput.toLowerCase();
-                    }
 
-                    entryToEdit.name = editToolName;
-                    entryToEdit.url = editToolUrl;
-                    entryToEdit.category = editToolCategory;
-                    entryToEdit.description = editToolDescription;
-                    entryToEdit.tags = editToolTags;
-                    entryToEdit.favicon = `https://www.google.com/s2/favicons?domain=${new URL(editToolUrl).hostname}`;
-                    break;
-                case 'email':
-                    entryToEdit.email = document.getElementById('editEmailAddress').value.trim();
-                    entryToEdit.notes = document.getElementById('editEmailNotes').value.trim();
-                    entryToEdit.linkedPlatforms = document.getElementById('editEmailLinkedPlatforms').value.split(',').map(p => p.trim()).filter(p => p);
-                    entryToEdit.breachResults = document.getElementById('editEmailBreachResults').value.trim();
-                    break;
-                case 'phone':
-                    entryToEdit.number = document.getElementById('editPhoneNumber').value.trim();
-                    entryToEdit.phoneType = document.getElementById('editPhoneType').value;
-                    entryToEdit.location = document.getElementById('editPhoneLocation').value.trim();
-                    entryToEdit.notes = document.getElementById('editPhoneNotes').value.trim();
-                    break;
-                case 'crypto':
-                    entryToEdit.address = document.getElementById('editCryptoAddress').value.trim();
-                    entryToEdit.txid = document.getElementById('editCryptoTxid').value.trim();
-                    entryToEdit.amount = parseFloat(document.getElementById('editCryptoAmount').value);
-                    entryToEdit.source = document.getElementById('editCryptoSource').value.trim();
-                    entryToEdit.tags = document.getElementById('editCryptoTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                    break;
-                case 'location':
-                    entryToEdit.name = document.getElementById('editLocationName').value.trim();
-                    entryToEdit.coordinates = document.getElementById('editLocationCoordinates').value.trim();
-                    entryToEdit.mapLink = document.getElementById('editLocationMapLink').value.trim();
-                    entryToEdit.notes = document.getElementById('editLocationNotes').value.trim();
-                    entryToEdit.ipGeoIntel = document.getElementById('editLocationIpGeoIntel').value.trim();
-                    break;
-                case 'link':
-                    entryToEdit.url = document.getElementById('editLinkUrl').value.trim();
-                    entryToEdit.platform = document.getElementById('editLinkPlatform').value.trim();
-                    entryToEdit.notes = document.getElementById('editLinkNotes').value.trim();
-                    entryToEdit.tags = document.getElementById('editLinkTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-                    break;
-                case 'media':
-                    entryToEdit.title = document.getElementById('editMediaTitle').value.trim();
-                    entryToEdit.notes = document.getElementById('editMediaNotes').value.trim();
-                    entryToEdit.mediaType = document.getElementById('editMediaType').value;
+                        if (editToolCategory === 'custom') {
+                            if (!editNewCategoryInput) {
+                                showToast('Please enter a custom category name.', 'error');
+                                return;
+                            }
+                            editToolCategory = editNewCategoryInput.toLowerCase();
+                        }
 
-                    const editMediaFile = document.getElementById('editMediaFile').files[0];
-                    if (editMediaFile) {
-                        entryToEdit.base64Data = await readFileAsBase64(editMediaFile);
-                    }
-                    break;
-                case 'password':
-                    entryToEdit.service = document.getElementById('editPasswordService').value.trim();
-                    entryToEdit.username = document.getElementById('editPasswordUsername').value.trim();
-                    entryToEdit.password = document.getElementById('editPasswordValue').value.trim();
-                    entryToEdit.notes = document.getElementById('editPasswordNotes').value.trim();
-                    entryToEdit.strength = document.getElementById('editPasswordStrength').value.trim();
-                    break;
-                case 'keyword':
-                    entryToEdit.value = document.getElementById('editKeywordValue').value.trim();
-                    entryToEdit.context = document.getElementById('editKeywordContext').value.trim();
-                    entryToEdit.notes = document.getElementById('editKeywordNotes').value.trim();
-                    break;
-                case 'social':
-                    entryToEdit.platform = document.getElementById('editSocialPlatform').value.trim();
-                    entryToEdit.url = document.getElementById('editSocialUrl').value.trim();
-                    entryToEdit.username = document.getElementById('editSocialUsername').value.trim();
-                    entryToEdit.notes = document.getElementById('editSocialNotes').value.trim();
-                    entryToEdit.followCounts = document.getElementById('editSocialFollowCounts').value.trim();
-                    break;
-            }
+                        entryToEdit.name = editToolName;
+                        entryToEdit.url = editToolUrl;
+                        entryToEdit.category = editToolCategory;
+                        entryToEdit.description = editToolDescription;
+                        entryToEdit.tags = editToolTags;
+                        entryToEdit.favicon = `https://www.google.com/s2/favicons?domain=${new URL(editToolUrl).hostname}`;
+                        break;
+                    case 'email':
+                        entryToEdit.email = document.getElementById('editEmailAddress').value.trim();
+                        entryToEdit.notes = document.getElementById('editEmailNotes').value.trim();
+                        entryToEdit.linkedPlatforms = document.getElementById('editEmailLinkedPlatforms').value.split(',').map(p => p.trim()).filter(p => p);
+                        entryToEdit.breachResults = document.getElementById('editEmailBreachResults').value.trim();
+                        break;
+                    case 'phone':
+                        entryToEdit.number = document.getElementById('editPhoneNumber').value.trim();
+                        entryToEdit.phoneType = document.getElementById('editPhoneType').value;
+                        entryToEdit.location = document.getElementById('editPhoneLocation').value.trim();
+                        entryToEdit.notes = document.getElementById('editPhoneNotes').value.trim();
+                        break;
+                    case 'crypto':
+                        entryToEdit.address = document.getElementById('editCryptoAddress').value.trim();
+                        entryToEdit.txid = document.getElementById('editCryptoTxid').value.trim();
+                        entryToEdit.amount = parseFloat(document.getElementById('editCryptoAmount').value);
+                        entryToEdit.source = document.getElementById('editCryptoSource').value.trim();
+                        entryToEdit.tags = document.getElementById('editCryptoTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                        break;
+                    case 'location':
+                        entryToEdit.name = document.getElementById('editLocationName').value.trim();
+                        entryToEdit.coordinates = document.getElementById('editLocationCoordinates').value.trim();
+                        entryToEdit.mapLink = document.getElementById('editLocationMapLink').value.trim();
+                        entryToEdit.notes = document.getElementById('editLocationNotes').value.trim();
+                        entryToEdit.ipGeoIntel = document.getElementById('editLocationIpGeoIntel').value.trim();
+                        break;
+                    case 'link':
+                        entryToEdit.url = document.getElementById('editLinkUrl').value.trim();
+                        entryToEdit.platform = document.getElementById('editLinkPlatform').value.trim();
+                        entryToEdit.notes = document.getElementById('editLinkNotes').value.trim();
+                        entryToEdit.tags = document.getElementById('editLinkTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                        break;
+                    case 'media':
+                        entryToEdit.title = document.getElementById('editMediaTitle').value.trim();
+                        entryToEdit.notes = document.getElementById('editMediaNotes').value.trim();
+                        entryToEdit.mediaType = document.getElementById('editMediaType').value;
 
-            // Update custom tab assignments for this entry
-            const assignedCustomTabs = Array.from(document.querySelectorAll('#assignCustomTabsCheckboxes input[type="checkbox"]:checked'))
-                .map(checkbox => checkbox.value);
-
-            // Clear existing custom tab assignments for this entry
-            appState.customTabs.forEach(tab => {
-                tab.toolIds = tab.toolIds.filter(id => id !== entryId);
-            });
-            entryToEdit.customTabs = []; // Reset the entry's customTabs array
-
-            // Add back selected assignments
-            assignedCustomTabs.forEach(tabId => {
-                const tab = appState.customTabs.find(t => t.id === tabId);
-                if (tab) {
-                    tab.toolIds.push(entryId);
-                    entryToEdit.customTabs.push(tabId); // Also update the entry itself
+                        const editMediaFile = document.getElementById('editMediaFile').files[0];
+                        if (editMediaFile) {
+                            entryToEdit.base64Data = await readFileAsBase64(editMediaFile);
+                        }
+                        break;
+                    case 'password':
+                        entryToEdit.service = document.getElementById('editPasswordService').value.trim();
+                        entryToEdit.username = document.getElementById('editPasswordUsername').value.trim();
+                        entryToEdit.password = document.getElementById('editPasswordValue').value.trim();
+                        entryToEdit.notes = document.getElementById('editPasswordNotes').value.trim();
+                        entryToEdit.strength = document.getElementById('editPasswordStrength').value.trim();
+                        break;
+                    case 'keyword':
+                        entryToEdit.value = document.getElementById('editKeywordValue').value.trim();
+                        entryToEdit.context = document.getElementById('editKeywordContext').value.trim();
+                        entryToEdit.notes = document.getElementById('editKeywordNotes').value.trim();
+                        break;
+                    case 'social':
+                        entryToEdit.platform = document.getElementById('editSocialPlatform').value.trim();
+                        entryToEdit.url = document.getElementById('editSocialUrl').value.trim();
+                        entryToEdit.username = document.getElementById('editSocialUsername').value.trim();
+                        entryToEdit.notes = document.getElementById('editSocialNotes').value.trim();
+                        entryToEdit.followCounts = document.getElementById('editSocialFollowCounts').value.trim();
+                        break;
                 }
-            });
+
+                // Update custom tab assignments for this entry
+                const assignedCustomTabs = Array.from(document.querySelectorAll('#assignCustomTabsCheckboxes input[type="checkbox"]:checked'))
+                    .map(checkbox => checkbox.value);
+
+                // Clear existing custom tab assignments for this entry
+                appState.customTabs.forEach(tab => {
+                    tab.toolIds = tab.toolIds.filter(id => id !== entryId);
+                });
+                entryToEdit.customTabs = []; // Reset the entry's customTabs array
+
+                // Add back selected assignments
+                assignedCustomTabs.forEach(tabId => {
+                    const tab = appState.customTabs.find(t => t.id === tabId);
+                    if (tab) {
+                        tab.toolIds.push(entryId);
+                        entryToEdit.customTabs.push(tabId); // Also update the entry itself
+                    }
+                });
 
 
-            hideModal('editEntryModal');
-            showToast('Entry updated successfully!');
-            updateStats();
-            populateCategoryFilter();
-            renderIntelligenceEntries();
-            renderCustomTabs(); // Re-render custom tabs to update counts/content
-            saveState();
-        }
+                hideModal('editEntryModal');
+                showToast('Entry updated successfully!');
+                updateStats();
+                populateCategoryFilter();
+                renderIntelligenceEntries();
+                renderCustomTabs(); // Re-render custom tabs to update counts/content
+                saveState();
+            }
 
         // Open the Edit Entry Modal and populate fields
         function openEditEntryModal(entry) {
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+            if (appState.readOnlyMode) {
                 showToast("Cannot edit entries in read-only shared view.", "warning");
                 return;
             }
@@ -6532,12 +6968,17 @@ function loadThreats() {
             document.getElementById('editEntryId').value = entry.id;
             document.getElementById('editEntryType').value = entry.type;
 
-            // Hide all entry-specific field sets
+            // Hide all entry-specific field sets and remove their 'required' attributes
             document.querySelectorAll('#editEntryModal .entry-fields').forEach(fieldSet => {
                 fieldSet.style.display = 'none';
+                fieldSet.querySelectorAll('[required]').forEach(input => {
+                    input.removeAttribute('required');
+                });
             });
             document.getElementById('editEntrySourceGroup').style.display = 'none';
+            document.getElementById('editEntrySource').removeAttribute('required'); // Ensure source is also handled
             document.getElementById('editCustomMetadataGroup').style.display = 'none';
+
 
             // Populate custom metadata fields
             const editCustomMetadataEntries = document.getElementById('editCustomMetadataEntries');
@@ -6558,6 +6999,7 @@ function loadThreats() {
                     document.getElementById('editToolCategory').value = entry.category;
                     document.getElementById('editToolDescription').value = entry.description;
                     document.getElementById('editToolTags').value = entry.tags ? entry.tags.join(', ') : '';
+                    populateIntelligenceVaultCategoriesCheckboxesEditTool(entry.intelligenceVaultCategories || []);
                     // Handle custom category selection
                     const editNewCategoryInput = document.getElementById('editNewCategoryInput');
                     if (!document.getElementById('editToolCategory').value) { // If category is not in dropdown, it's custom
@@ -6568,6 +7010,13 @@ function loadThreats() {
                         editNewCategoryInput.style.display = 'none';
                         editNewCategoryInput.value = '';
                     }
+                    // Add required attributes for visible tool fields
+                    document.getElementById('editToolName').setAttribute('required', 'required');
+                    document.getElementById('editToolUrl').setAttribute('required', 'required');
+                    document.getElementById('editToolCategory').setAttribute('required', 'required');
+                    if (editNewCategoryInput.style.display === 'block') { // If custom category is shown
+                        editNewCategoryInput.setAttribute('required', 'required');
+                    }
                     break;
                 case 'email':
                     fieldsToShow = ['editEmailFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6575,6 +7024,8 @@ function loadThreats() {
                     document.getElementById('editEmailNotes').value = entry.notes;
                     document.getElementById('editEmailLinkedPlatforms').value = entry.linkedPlatforms ? entry.linkedPlatforms.join(', ') : '';
                     document.getElementById('editEmailBreachResults').value = entry.breachResults;
+                    // Add required attributes for visible email fields
+                    document.getElementById('editEmailAddress').setAttribute('required', 'required');
                     break;
                 case 'phone':
                     fieldsToShow = ['editPhoneFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6582,6 +7033,8 @@ function loadThreats() {
                     document.getElementById('editPhoneType').value = entry.phoneType;
                     document.getElementById('editPhoneLocation').value = entry.location;
                     document.getElementById('editPhoneNotes').value = entry.notes;
+                    // Add required attributes for visible phone fields
+                    document.getElementById('editPhoneNumber').setAttribute('required', 'required');
                     break;
                 case 'crypto':
                     fieldsToShow = ['editCryptoFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6590,6 +7043,10 @@ function loadThreats() {
                     document.getElementById('editCryptoAmount').value = entry.amount;
                     document.getElementById('editCryptoSource').value = entry.source;
                     document.getElementById('editCryptoTags').value = entry.tags ? entry.tags.join(', ') : '';
+                    // Add required attributes for visible crypto fields
+                    document.getElementById('editCryptoAddress').setAttribute('required', 'required');
+                    document.getElementById('editCryptoTxid').setAttribute('required', 'required');
+                    document.getElementById('editCryptoAmount').setAttribute('required', 'required');
                     break;
                 case 'location':
                     fieldsToShow = ['editLocationFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6598,6 +7055,9 @@ function loadThreats() {
                     document.getElementById('editLocationMapLink').value = entry.mapLink;
                     document.getElementById('editLocationNotes').value = entry.notes;
                     document.getElementById('editLocationIpGeoIntel').value = entry.ipGeoIntel;
+                    // Add required attributes for visible location fields
+                    document.getElementById('editLocationName').setAttribute('required', 'required');
+                    document.getElementById('editLocationCoordinates').setAttribute('required', 'required');
                     break;
                 case 'link':
                     fieldsToShow = ['editLinkFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6605,6 +7065,8 @@ function loadThreats() {
                     document.getElementById('editLinkPlatform').value = entry.platform;
                     document.getElementById('editLinkNotes').value = entry.notes;
                     document.getElementById('editLinkTags').value = entry.tags ? entry.tags.join(', ') : '';
+                    // Add required attributes for visible link fields
+                    document.getElementById('editLinkUrl').setAttribute('required', 'required');
                     break;
                 case 'media':
                     fieldsToShow = ['editMediaFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6612,6 +7074,11 @@ function loadThreats() {
                     document.getElementById('editMediaNotes').value = entry.notes;
                     document.getElementById('editMediaType').value = entry.mediaType;
                     document.getElementById('editMediaBase64Data').value = entry.base64Data || ''; // Store existing base64
+                    // Add required attributes for visible media fields
+                    document.getElementById('editMediaTitle').setAttribute('required', 'required');
+                    // Note: File input itself usually doesn't need 'required' if base64Data might exist
+                    // If you want to force a file upload on *every* media edit, you'd add:
+                    // document.getElementById('editMediaFile').setAttribute('required', 'required');
                     break;
                 case 'password':
                     fieldsToShow = ['editPasswordFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6620,12 +7087,17 @@ function loadThreats() {
                     document.getElementById('editPasswordValue').value = entry.password;
                     document.getElementById('editPasswordNotes').value = entry.notes;
                     document.getElementById('editPasswordStrength').value = entry.strength;
+                    // Add required attributes for visible password fields
+                    document.getElementById('editPasswordService').setAttribute('required', 'required');
+                    document.getElementById('editPasswordValue').setAttribute('required', 'required');
                     break;
                 case 'keyword':
                     fieldsToShow = ['editKeywordFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
                     document.getElementById('editKeywordValue').value = entry.value;
                     document.getElementById('editKeywordContext').value = entry.context;
                     document.getElementById('editKeywordNotes').value = entry.notes;
+                    // Add required attributes for visible keyword fields
+                    document.getElementById('editKeywordValue').setAttribute('required', 'required');
                     break;
                 case 'social':
                     fieldsToShow = ['editSocialFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -6634,6 +7106,10 @@ function loadThreats() {
                     document.getElementById('editSocialUsername').value = entry.username;
                     document.getElementById('editSocialNotes').value = entry.notes;
                     document.getElementById('editSocialFollowCounts').value = entry.followCounts;
+                    // Add required attributes for visible social fields
+                    document.getElementById('editSocialPlatform').setAttribute('required', 'required');
+                    document.getElementById('editSocialUrl').setAttribute('required', 'required');
+                    document.getElementById('editSocialUsername').setAttribute('required', 'required');
                     break;
             }
 
@@ -6641,11 +7117,81 @@ function loadThreats() {
                 document.getElementById(id).style.display = 'block';
             });
 
+            // Ensure source field is marked required if it's visible and needs to be
+            if (fieldsToShow.includes('editEntrySourceGroup')) {
+                // Determine if the source input itself *should* be required.
+                // In this context, it's not explicitly required in the original code,
+                // but if you wanted it to be for certain types, you'd add it here.
+                // Example: document.getElementById('editEntrySource').setAttribute('required', 'required');
+            }
+
+            // Ensure metadata fields are marked required if they are visible
+            if (fieldsToShow.includes('editCustomMetadataGroup')) {
+                document.querySelectorAll('#editCustomMetadataEntries .metadata-entry').forEach(row => {
+                    row.querySelector('.metadata-key').setAttribute('required', 'required');
+                    row.querySelector('.metadata-value').setAttribute('required', 'required');
+                });
+            }
+
+
             // Populate custom tab assignment checkboxes
             populateCustomTabAssignmentCheckboxes(entry.customTabs || []);
 
             showModal('editEntryModal');
         }
+
+
+        function populateIntelligenceVaultCategoriesCheckboxesEditTool(assignedCategories) {
+            const container = document.getElementById('intelligenceVaultCategoriesAssignmentAddTool');
+            container.style.display = 'block'; // Ensure it's visible in the edit modal
+
+            const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
+            checkboxesContainer.innerHTML = ''; // Clear previous checkboxes
+
+            const intelligenceVaultCategories = [
+                { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+                { id: 'emailTools', name: 'Email Tools', icon: 'fas fa-envelope' },
+                { id: 'phoneTools', name: 'Phone Tools', icon: 'fas fa-phone' },
+                { id: 'cryptoTools', name: 'Crypto Tools', icon: 'fas fa-coins' },
+                { id: 'locationTools', name: 'Location Tools', icon: 'fas fa-map-marker-alt' },
+                { id: 'linkTools', name: 'Link Tools', icon: 'fas fa-link' },
+                { id: 'mediaTools', name: 'Media Tools', icon: 'fas fa-camera' },
+                { id: 'passwordTools', name: 'Password Tools', icon: 'fas fa-key' },
+                { id: 'keywordTools', name: 'Keyword Tools', icon: 'fas fa-font' },
+                { id: 'socialTools', name: 'Social Tools', icon: 'fas fa-users' },
+            ];
+
+            intelligenceVaultCategories.forEach(category => {
+                const isChecked = assignedCategories.includes(category.id);
+                const checkboxContainer = document.createElement('label');
+                checkboxContainer.classList.add('custom-tab-checkbox');
+                if (isChecked) checkboxContainer.classList.add('checked');
+
+                checkboxContainer.innerHTML = `
+                    <input 
+                        type="checkbox" 
+                        class="intelligence-vault-category-checkbox-edit-tool" 
+                        value="${category.id}" 
+                        ${isChecked ? 'checked' : ''}
+                    >
+                    <i class="${category.icon}" style="margin-right: 5px;"></i>
+                    <span>${category.name}</span>
+                `;
+                checkboxesContainer.appendChild(checkboxContainer);
+            });
+
+            // Avoid attaching multiple listeners
+            checkboxesContainer.addEventListener('change', (e) => {
+                if (e.target.classList.contains('intelligence-vault-category-checkbox-edit-tool')) {
+                    const checkbox = e.target;
+                    const label = checkbox.closest('.custom-tab-checkbox');
+                    if (label) {
+                        label.classList.toggle('checked', checkbox.checked);
+                    }
+                }
+            }, { once: true }); // Ensures this listener is attached only once
+        }
+
 
         // Add a new metadata field row to the form
         function addMetadataField(formType, key = '', value = '') {
