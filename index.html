@@ -547,10 +547,25 @@
             font-weight: 600;
             text-decoration: none;
             color: var(--primary);
-            display: flex;
+            display: flex; /* Keep flex for icon/text alignment */
             align-items: center;
-            justify-content: center; /* Center the tool link */
-            gap: 8px; /* Space between favicon/icon and text */
+            justify-content: center;
+            gap: 8px;
+            /* NEW: Allow text to wrap within the link */
+            flex-wrap: wrap; /* Allow items within the link to wrap (e.g., icon and text) */
+            text-align: center; /* Center text lines if they wrap */
+            word-break: break-word; /* Break long words if they don't fit */
+            min-width: 0; /* Important for flex items to allow shrinking */
+            overflow: hidden; /* Hide any content that still overflows after wrapping/breaking */
+        }
+
+        /* Further ensure the parent text container allows text to wrap */
+        .random-display .random-item-placeholder p {
+            margin-bottom: 8px; /* Space between paragraphs */
+            line-height: 1.4;
+            word-wrap: break-word; /* Ensure long words wrap */
+            overflow-wrap: break-word; /* Modern equivalent */
+            max-width: 100%; /* Ensure it doesn't overflow its parent */
         }
 
         .random-display .random-tool-link:hover {
@@ -2868,7 +2883,7 @@
                     </button>
                     <button class="nav-tab" data-tab="custom-tabs">
                         <i class="fas fa-layer-group"></i>
-                        Custom Tabs
+                        Multi-Vault
                     </button>
                     <button class="nav-tab" data-tab="analytics">
                         <i class="fas fa-chart-bar"></i>
@@ -3039,23 +3054,23 @@
 
                 <div class="tab-content" id="custom-tabsTab">
                     <div class="content-header">
-                        <h2 class="content-title">Custom Tool Categories</h2>
+                        <h2 class="content-title">Custom Vault Categories</h2>
                         <div class="controls">
                             <button class="btn btn-primary" id="createSubTabBtn">
                                 <i class="fas fa-plus"></i>
-                                Create Sub-tab
+                                Create Custom Vault
                             </button>
                             <button class="btn btn-secondary" id="editSubTabBtn" style="display: none;">
                                 <i class="fas fa-edit"></i>
-                                Edit Sub-tab
+                                Edit Vault
                             </button>
                             <button class="btn btn-danger" id="deleteSubTabBtn" style="display: none;">
                                 <i class="fas fa-trash"></i>
-                                Delete Sub-tab
+                                Delete Vault
                             </button>
                             <button class="btn btn-secondary" id="exportSubTabBtn" style="display: none;">
                                 <i class="fas fa-download"></i>
-                                Export Tab
+                                Export Vault
                             </button>
                             </div>
                     </div>
@@ -3068,8 +3083,8 @@
 
                     <div class="empty-state" id="emptyCustomTabState" style="display: none;">
                         <i class="fas fa-folder-open"></i>
-                        <h3>No Custom Tabs Yet</h3>
-                        <p>Create your first custom sub-tab to organize your tools!</p>
+                        <h3>No Custom Vault Yet</h3>
+                        <p>Create your first custom vault to organize your Collection!</p>
                         <button class="btn btn-primary" id="createSubTabBtnEmptyState">
                             <i class="fas fa-plus"></i>
                             Create Sub-tab
@@ -3814,7 +3829,7 @@
 
 
                 <div class="custom-tab-assignment" id="assignCustomTabs">
-                    <h4>Assign to Custom Tabs</h4>
+                    <h4>Assign to Custom Vault Tab(s)</h4>
                     <div class="custom-tab-checkboxes" id="assignCustomTabsCheckboxes">
                         </div>
                 </div>
@@ -3831,11 +3846,11 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 20px; color: var(--primary);">
                 <i class="fas fa-plus-circle"></i>
-                Create New Sub-tab
+                Create New Vault
             </h3>
             <form id="createSubTabForm">
                 <div class="form-group">
-                    <label>Sub-tab Name</label>
+                    <label>Vault Name</label>
                     <input type="text" id="newSubTabName" required>
                 </div>
                 <div class="form-group">
@@ -8165,7 +8180,7 @@
 
         function showCreateSubTabModal() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot create custom tabs in read-only shared view.", "warning");
+                showToast("Cannot create vault in read-only shared view.", "warning");
                 return;
             }
 
@@ -8180,7 +8195,7 @@
 
         function handleCreateSubTab(e) {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot create custom tabs in read-only shared view.", "warning");
+                showToast("Cannot create vault in read-only shared view.", "warning");
                 return;
             }
 
@@ -8190,13 +8205,13 @@
             const newSubTabColor = document.getElementById('newSubTabColor').value.trim();
 
             if (!newSubTabName) {
-                showToast('Sub-tab name cannot be empty.', 'warning');
+                showToast('Vault name cannot be empty.', 'warning');
                 return;
             }
 
             // Check for duplicate name (case-insensitive)
             if (appState.customTabs.some(tab => tab.name.toLowerCase() === newSubTabName.toLowerCase())) {
-                showToast('A sub-tab with this name already exists.', 'warning');
+                showToast('A vault with this name already exists.', 'warning');
                 return;
             }
 
@@ -8211,18 +8226,18 @@
             appState.currentCustomTab = newSubTab.id; // Make the new tab active
             renderCustomTabs();
             hideModal('createSubTabModal');
-            showToast('Custom sub-tab created!');
+            showToast('New Vault created!');
             saveState();
         }
 
         function openEditSubTabModal() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot edit custom tabs in read-only shared view.", "warning");
+                showToast("Cannot edit vault in read-only shared view.", "warning");
                 return;
             }
 
             if (!appState.currentCustomTab) {
-                showToast('Please select a sub-tab to edit.', 'warning');
+                showToast('Please select a vault to edit.', 'warning');
                 return;
             }
             const currentSubTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
@@ -8241,7 +8256,7 @@
 
         function handleEditSubTab(e) {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot save custom tab changes in read-only shared view.", "warning");
+                showToast("Cannot save vault changes in read-only shared view.", "warning");
                 return;
             }
 
@@ -8253,13 +8268,13 @@
 
 
             if (!editedSubTabName) {
-                showToast('Sub-tab name cannot be empty.', 'warning');
+                showToast('Vault name cannot be empty.', 'warning');
                 return;
             }
 
             // Check for duplicate name, excluding the current tab itself
             if (appState.customTabs.some(tab => tab.name.toLowerCase() === editedSubTabName.toLowerCase() && tab.id !== subTabId)) {
-                showToast('A sub-tab with this name already exists.', 'warning');
+                showToast('Vault with this name already exists.', 'warning');
                 return;
             }
 
@@ -8270,24 +8285,24 @@
                 subTab.color = editedSubTabColor || 'var(--tab-color-default)';
                 renderCustomTabs();
                 hideModal('editSubTabModal');
-                showToast('Sub-tab updated successfully!');
+                showToast('Vault updated successfully!');
                 saveState();
             } else {
-                showToast('Error: Sub-tab not found.', 'error');
+                showToast('Error: Vault not found.', 'error');
             }
         }
 
         function handleDeleteSubTab() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot delete custom tabs in read-only shared view.", "warning");
+                showToast("Cannot delete vault in read-only shared view.", "warning");
                 return;
             }
 
             if (!appState.currentCustomTab) {
-                showToast('No sub-tab selected for deletion.', 'warning');
+                showToast('No vault selected for deletion.', 'warning');
                 return;
             }
-            if (confirm(`Are you sure you want to delete the sub-tab "${appState.customTabs.find(t => t.id === appState.currentCustomTab)?.name}"? This will NOT delete the entries themselves.`)) {
+            if (confirm(`Are you sure you want to delete the vault "${appState.customTabs.find(t => t.id === appState.currentCustomTab)?.name}"? This will NOT delete the entries themselves.`)) {
                 
                 // Remove the customTabId from all entries that belong to it
                 const deletedTabId = appState.currentCustomTab;
@@ -8304,25 +8319,25 @@
                 appState.currentCustomTab = appState.customTabs.length > 0 ? appState.customTabs[0].id : null;
                 
                 renderCustomTabs();
-                showToast('Sub-tab deleted successfully!', 'error');
+                showToast('Vault deleted successfully!', 'error');
                 saveState();
             }
         }
 
         function exportCustomTab() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
-                showToast("Cannot export custom tabs in read-only shared view.", "warning");
+                showToast("Cannot export vault in read-only shared view.", "warning");
                 return;
             }
 
             if (!appState.currentCustomTab) {
-                showToast('Please select a custom tab to export.', 'warning');
+                showToast('Please select a vault tab to export.', 'warning');
                 return;
             }
 
             const customTabToExport = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
             if (!customTabToExport) {
-                showToast('Error: Selected custom tab not found.', 'error');
+                showToast('Error: Selected vault not found.', 'error');
                 return;
             }
 
@@ -8405,7 +8420,7 @@
                     return exportedEntry;
                 }),
                 exportDate: new Date().toISOString(),
-                description: `Export of the "${customTabToExport.name}" custom tab from OSINT Arsenal.`,
+                description: `Export of the "${customTabToExport.name}" Vault from OSINT Arsenal.`,
                 version: '1.5' // Version for custom tab export, reflecting new entry types
             };
 
@@ -8422,7 +8437,7 @@
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
             
-            showToast(`Custom tab "${customTabToExport.name}" exported successfully!`);
+            showToast(`Vault "${customTabToExport.name}" exported successfully!`);
         }
 
         // New: Function to display a random tool or OSINT tip professionally
@@ -8729,7 +8744,7 @@
                         entryIdsToShare = customTab.toolIds; // Custom tabs already store all assigned entry IDs
                         shareLink = `${currentBaseUrl}?tab=${sharedTabIdentifier}&entries=${entryIdsToShare.join(',')}`;
                     } else {
-                        showToast('Error: Selected custom tab not found for sharing.', 'error');
+                        showToast('Error: Selected vault not found for sharing.', 'error');
                         return;
                     }
                     break;
