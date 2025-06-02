@@ -3145,53 +3145,11 @@
                         </div>
                     </div>
                 
-                    <div class="sub-nav-tabs" id="intelligenceVaultSubTabs">
-                        <button class="sub-nav-tab active intelligence-vault-sub-tab" data-sub-tab="tools">
-                            <i class="fas fa-tools"></i> General
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="emailTools">
-                            <i class="fas fa-envelope"></i> Email
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="phoneTools">
-                            <i class="fas fa-phone"></i> Phone
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="cryptoTools">
-                            <i class="fas fa-coins"></i> Crypto
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="locationTools">
-                            <i class="fas fa-map-marker-alt"></i> Location
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="linkTools">
-                            <i class="fas fa-globe"></i> Domain/IP
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="mediaTools">
-                            <i class="fas fa-camera"></i> Media
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="passwordTools">
-                            <i class="fas fa-key"></i> Password
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="keywordTools">
-                            <i class="fas fa-font"></i> Keyword
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="socialTools">
-                            <i class="fas fa-users"></i> Social
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="darkWebTools">
-                            <i class="fas fa-mask"></i> DarkWeb
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="vulnerabilityTools">
-                            <i class="fas fa-bug"></i> Vulnerability
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="fileMalwareTools">
-                            <i class="fas fa-file-code"></i> File/Malware
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="threatIntelligenceTools">
-                            <i class="fas fa-shield-alt"></i> Threat Intelligence
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="aiTools">
-                            <i class="fas fa-brain"></i> AI
-                        </button>
-                    </div>
+                    <div class="nav-tabs" id="intelligenceVaultParentTabs" style="margin-top: 20px;">
+                        </div>
+                
+                    <div class="sub-nav-tabs" id="intelligenceVaultChildTabs" style="display: none; margin-top: 15px;">
+                        </div>
                 
                     <div class="tools-grid" id="intelligenceVaultEntries" style="margin-top: 20px;">
                         </div>
@@ -4214,7 +4172,6 @@
 
 
     <script>
-        // Existing application state and default tools
         let appState = {
             tools: [],
             emails: [],
@@ -4223,14 +4180,16 @@
             locations: [],
             links: [],
             media: [], // Stores objects for images/videos
-            passwords: [], // New
-            keywords: [], // New
-            socials: [], // New
+            passwords: [], 
+            keywords: [],
+            socials: [],
             selectedEntries: new Set(), // Now stores IDs of any selected entry type
-            currentTab: 'intelligence-vault', // Default to intelligence-vault for initial rendering check
-            currentIntelligenceVaultSubTab: 'tools', // Default sub-tab for intelligence vault
-            currentCustomVaultEntrySubTab: 'tools', // Default sub-tab for entries within custom vault
-            customTabs: [], // Array of { id: '...', name: '...', toolIds: [], icon: '...', color: '...' }
+            currentTab: 'intelligence-vault',
+            // OLD: currentIntelligenceVaultSubTab: 'tools', // This will now be handled by child tabs
+            currentIntelligenceVaultParentTab: 'collection', // Default parent tab (e.g., General, Digital, Technical, etc.)
+            currentIntelligenceVaultChildTab: 'tools', // Default child sub-tab (e.g., General Tools, Email Tools)
+            currentCustomVaultEntrySubTab: 'tools',
+            customTabs: [],
             filters: {
                 category: '',
                 search: '',
@@ -4496,6 +4455,56 @@
                 addedDate: new Date('2024-01-20T16:00:00Z'),
                 customTabs: [],
                 origin: 'pre-added'
+            }
+        ];
+
+        const intelligenceVaultTabStructure = [{
+            id: 'collection',
+            name: 'Collection',
+            icon: 'fas fa-box-open',
+            children: [
+                { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+                { id: 'emailTools', name: 'Email Tools', icon: 'fas fa-envelope' },
+                { id: 'phoneTools', name: 'Phone Tools', icon: 'fas fa-phone' },
+                
+                { id: 'mediaTools', name: 'Media Tools', icon: 'fas fa-camera' },
+                { id: 'passwordTools', name: 'Password Tools', icon: 'fas fa-key' },
+                { id: 'keywordTools', name: 'Keyword Tools', icon: 'fas fa-font' },
+                { id: 'socialTools', name: 'Social Tools', icon: 'fas fa-users' },
+                ]
+            }, 
+            {
+                id: 'identityFootprint',
+                name: 'Identity & Social',
+                icon: 'fas fa-users',
+                children: [
+                    { id: 'emailTools', name: 'Email Tools', icon: 'fas fa-envelope' },
+                    { id: 'phoneTools', name: 'Phone Tools', icon: 'fas fa-phone' },
+                    { id: 'socialTools', name: 'Social Tools', icon: 'fas fa-users' },
+                    { id: 'locationTools', name: 'Location Tools', icon: 'fas fa-map-marker-alt' },
+                ]
+            },
+            {
+                id: 'digitalFootprint',
+                name: 'Digital Footprint',
+                icon: 'fas fa-fingerprint',
+                children: [
+                    { id: 'cryptoTools', name: 'Crypto Tools', icon: 'fas fa-coins' },
+                    { id: 'locationTools', name: 'Location Tools', icon: 'fas fa-map-marker-alt' },
+                    { id: 'darkWebTools', name: 'DarkWeb', icon: 'fas fa-mask' },
+                ]
+            },
+            {
+                id: 'securityIntel',
+                name: 'Technical OSINT',
+                icon: 'fas fa-shield-alt', // Changed to shield-alt for parent
+                children: [
+                    { id: 'vulnerabilityTools', name: 'Vulnerability', icon: 'fas fa-bug' },
+                    { id: 'fileMalwareTools', name: 'File/Malware', icon: 'fas fa-file-code' },
+                    { id: 'linkTools', name: 'Domain/IP/URL', icon: 'fas fa-link' },
+                    { id: 'threatIntelligenceTools', name: 'Threat Intelligence', icon: 'fas fa-hand-fist' }, // Changed icon for child
+                    { id: 'aiTools', name: 'AI', icon: 'fas fa-brain' },
+                ]
             }
         ];
 
@@ -4817,17 +4826,33 @@
             bindEvents();
             initTheme();
 
-            // NEW: Check and show desktop recommendation on app start
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs', 'intelligence-vault'];
+            const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs', 'intelligence-vault', 'handbook']; // Add handbook here
             if (!validTabs.includes(appState.currentTab)) {
                 appState.currentTab = 'intelligence-vault';
             }
             switchTab(appState.currentTab);
 
+            // IMPORTANT: Call renderIntelligenceVaultParentTabs() here
+            renderIntelligenceVaultParentTabs(); // Render parent tabs first
+
+            // Then, if on intelligence-vault tab, activate the correct parent/child
             if (appState.currentTab === 'intelligence-vault') {
-                switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
+                // Ensure a valid parent is selected, default if current one is invalid
+                const currentParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
+                if (!currentParent) {
+                    appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
+                }
+                // Ensure a valid child is selected under the current parent, default if invalid
+                const currentChild = currentParent.children.find(c => c.id === appState.currentIntelligenceVaultChildTab);
+                if (!currentChild) {
+                    appState.currentIntelligenceVaultChildTab = currentParent.children[0].id;
+                }
+                // Now, switch to the determined parent and then its child
+                switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
+                switchIntelligenceVaultChildTab(appState.currentIntelligenceVaultChildTab);
+
             } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
                 switchCustomVaultEntrySubTab(appState.currentCustomVaultEntrySubTab);
             }
@@ -4852,6 +4877,129 @@
                 vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
                 vaultViewToggleButton.title = 'Switch to Grid View';
             }
+        }
+
+        // NEW: Render Intelligence Vault Parent Tabs
+        function renderIntelligenceVaultParentTabs() {
+            const parentTabsContainer = document.getElementById('intelligenceVaultParentTabs');
+            if (!parentTabsContainer) return;
+
+            parentTabsContainer.innerHTML = intelligenceVaultTabStructure.map(parentTab => `
+                <button class="nav-tab intelligence-vault-parent-tab" data-parent-tab="${parentTab.id}">
+                    <i class="${parentTab.icon}"></i>
+                    ${parentTab.name}
+                </button>
+            `).join('');
+
+            // Add event listeners for parent tabs (delegation)
+            parentTabsContainer.addEventListener('click', (e) => {
+                const tabBtn = e.target.closest('.intelligence-vault-parent-tab');
+                if (tabBtn && tabBtn.dataset.parentTab) {
+                    switchIntelligenceVaultParentTab(tabBtn.dataset.parentTab);
+                }
+            });
+
+            // Activate the currently selected parent tab
+            const activeParentBtn = document.querySelector(`.intelligence-vault-parent-tab[data-parent-tab="${appState.currentIntelligenceVaultParentTab}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
+            }
+        }
+
+        // NEW: Switch Intelligence Vault Parent Tab
+        function switchIntelligenceVaultParentTab(parentId) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
+
+            // Deactivate all parent tabs
+            document.querySelectorAll('.intelligence-vault-parent-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Activate the clicked parent tab
+            const activeParentBtn = document.querySelector(`.intelligence-vault-parent-tab[data-parent-tab="${parentId}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
+            }
+
+            appState.currentIntelligenceVaultParentTab = parentId;
+
+            // Find the selected parent tab's children
+            const selectedParent = intelligenceVaultTabStructure.find(p => p.id === parentId);
+            const childTabsContainer = document.getElementById('intelligenceVaultChildTabs');
+
+            if (selectedParent && childTabsContainer) {
+                childTabsContainer.style.display = 'flex'; // Show the child tabs container
+                childTabsContainer.innerHTML = selectedParent.children.map(childTab => `
+                    <button class="sub-nav-tab intelligence-vault-child-tab" data-child-tab="${childTab.id}">
+                        <i class="${childTab.icon}"></i> ${childTab.name}
+                    </button>
+                `).join('');
+
+                // Remove existing child tab listeners before adding new ones to prevent duplicates
+                const oldChildTabsContainer = childTabsContainer.cloneNode(true);
+                childTabsContainer.parentNode.replaceChild(oldChildTabsContainer, childTabsContainer);
+                const newChildTabsContainer = document.getElementById('intelligenceVaultChildTabs'); // Get the new node
+
+                // Add event listeners for child tabs (delegation)
+                newChildTabsContainer.addEventListener('click', (e) => {
+                    const tabBtn = e.target.closest('.intelligence-vault-child-tab');
+                    if (tabBtn && tabBtn.dataset.childTab) {
+                        switchIntelligenceVaultChildTab(tabBtn.dataset.childTab);
+                    }
+                });
+
+                // Automatically activate the first child tab or the previously selected child tab under this parent
+                let childToActivate = appState.currentIntelligenceVaultChildTab;
+                if (!selectedParent.children.some(c => c.id === childToActivate)) {
+                    childToActivate = selectedParent.children[0]?.id; // Default to first child if current is not in this parent
+                }
+                if (childToActivate) {
+                    switchIntelligenceVaultChildTab(childToActivate);
+                } else {
+                    // No child tabs for this parent, clear display
+                    appState.currentIntelligenceVaultChildTab = null;
+                    appState.filters.category = '';
+                    renderIntelligenceEntries();
+                }
+
+            } else {
+                childTabsContainer.style.display = 'none'; // Hide if no children or container not found
+                appState.currentIntelligenceVaultChildTab = null;
+                appState.filters.category = '';
+                renderIntelligenceEntries();
+            }
+
+            saveState(); // Save the parent tab state
+        }
+
+
+        // MODIFIED: Switch Intelligence Vault Child Sub-tabs (now show tools)
+        // This function now expects a 'childId' which maps directly to the `intelligenceVaultCategories` (tools, emailTools, etc.)
+        function switchIntelligenceVaultChildTab(childId) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
+
+            // Deactivate all child tabs
+            document.querySelectorAll('.intelligence-vault-child-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Activate the clicked child tab
+            const targetChildTabBtn = document.querySelector(`.intelligence-vault-child-tab[data-child-tab="${childId}"]`);
+            if (targetChildTabBtn) {
+                targetChildTabBtn.classList.add('active');
+            }
+
+            appState.currentIntelligenceVaultChildTab = childId;
+            appState.filters.category = ''; // Clear category filter when switching intel vault sub-tabs
+            document.getElementById('categoryFilter').value = '';
+            renderIntelligenceEntries(); // Rerender to show relevant tools
+            saveState(); // Save the child tab state
         }
 
         // Load application state from localStorage
@@ -4893,8 +5041,11 @@
                 };
                 appState.customTabs = parsedState.customTabs || [];
                 appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+
                 appState.currentIntelligenceVaultSubTab = parsedState.currentIntelligenceVaultSubTab || 'tools';
                 appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tools';
+                appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'collection';
+                appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
 
                 // *** CRUCIAL PART: Merge default tools after loading saved state ***
                 defaultTools.forEach(defaultTool => {
@@ -4908,7 +5059,6 @@
 
             } else {
                 // If no saved state exists (first-time user), initialize with default tools
-                // Map default tools to ensure 'origin' property is explicitly set, even if it's already in the definition
                 appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
                 appState.customTabs = [{
                     id: generateId(),
@@ -4925,6 +5075,10 @@
                 }];
                 appState.currentCustomTab = appState.customTabs[0]?.id || null;
 
+                // Set initial default parent/child tabs for first-time users
+                appState.currentIntelligenceVaultParentTab = 'collection';
+                appState.currentIntelligenceVaultChildTab = 'tools';
+
                 // Initialize empty arrays for new types if starting fresh
                 appState.emails = [];
                 appState.phones = [];
@@ -4937,6 +5091,8 @@
                 appState.socials = [];
             }
         }
+
+        
 
         // Save application state to localStorage
         function saveState() {
@@ -5161,13 +5317,12 @@
                 ...appState.keywords,
                 ...appState.socials
             ];
-        } else { // 'currentTab' is default and also for 'custom-tabs' specifics
-            if (appState.currentTab === 'tools') { // This case might not be reached if 'intelligence-vault' is default
+        } else { 
+            if (appState.currentTab === 'tools') { 
                 entriesToSearch = [...appState.tools];
             } else if (appState.currentTab === 'intelligence-vault') {
-                // MODIFIED: Filter by `intelligenceVaultCategories` for tools within Intelligence Vault tabs
                 entriesToSearch = appState.tools.filter(tool =>
-                    (tool.intelligenceVaultCategories || []).includes(appState.currentIntelligenceVaultSubTab)
+                    (tool.intelligenceVaultCategories || []).includes(appState.currentIntelligenceVaultChildTab)
                 );
             } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
                 const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
@@ -5835,27 +5990,27 @@
                 icon: 'fas fa-users'
             },
             {
-                id: 'darkWebTools',
+                id: 'darkWebTools', // NEW
                 name: 'DarkWeb Tools',
                 icon: 'fas fa-mask'
             },
             {
-                id: 'vulnerabilityTools',
+                id: 'vulnerabilityTools', // NEW
                 name: 'Vulnerability Tools',
                 icon: 'fas fa-bug'
             },
             {
-                id: 'fileMalwareTools',
+                id: 'fileMalwareTools', // NEW
                 name: 'File/Malware Tools',
                 icon: 'fas fa-file-code'
             },
             {
-                id: 'threatIntelligenceTools',
+                id: 'threatIntelligenceTools', // NEW
                 name: 'Threat Intelligence Tools',
-                icon: 'fas fa-shield-alt'
+                icon: 'fas fa-shield-alt' // Use shield-alt here for the individual tool category
             },
             {
-                id: 'aiTools',
+                id: 'aiTools', // NEW
                 name: 'AI Tools',
                 icon: 'fas fa-brain'
             }
