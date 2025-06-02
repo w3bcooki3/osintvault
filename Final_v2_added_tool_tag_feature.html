@@ -5382,8 +5382,7 @@
 
 
             document.getElementById('addToolBtnEmptyState').addEventListener('click', () => {
-                document.getElementById('entryTypeSelect').value = 'tool';
-                showModal('addEntryModal');
+                openAddToolOnlyModal();
             });
 
             document.getElementById('addToolBtnIntelligenceVault').addEventListener('click', () => {
@@ -5610,6 +5609,9 @@
             });
 
         }
+
+
+
 
         // NEW: Function to open the Add Tool Only Modal
         function openAddToolOnlyModal() {
@@ -6496,7 +6498,7 @@ function loadThreats() {
             }
         }
 
-// Handle adding a new entry (tool, email, etc.)
+    // Handle adding a new entry (tool, email, etc.)
     async function handleAddEntry(e) {
         e.preventDefault();
         if (appState.readOnlyMode) {
@@ -9718,12 +9720,7 @@ function loadThreats() {
             const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return weekNo;
         }
-        
 
-        /////above is right handbook and notes functions////
-
-        
-        // Initialize the app when the DOM is fully loaded
         // Initialize handbook and notes functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize handbook functionality
@@ -9743,5 +9740,4 @@ function loadThreats() {
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
-</html>                          
-    
+</html>
