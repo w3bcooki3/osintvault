@@ -1,4 +1,4 @@
-<!--Add New Tool Showing different form for each type instead of showing only 1 to all.-->
+<!-- Latest Feature. Use this lates file. All other files are old, this is the new one -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -3213,15 +3213,22 @@
                                 <i class="fas fa-download"></i>
                                 Export Vault
                             </button>
-                            <button class="btn btn-success" id="addEntryBtnCustomVault">
-                                <i class="fas fa-plus-circle"></i>
-                                Add New Entry
-                            </button>
                         </div>
                     </div>
 
                     <div class="sub-nav-tabs" id="customSubTabs">
-                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="btn btn-success" id="addEntryBtnCustomVault">
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Entry
+                        </button>
+                        <button class="btn btn-secondary" id="customVaultViewToggle" title="Switch to List View">
+                            <i class="fas fa-list"></i>
+                            List View
+                        </button>
+                    </div>
 
                     <div class="sub-nav-tabs" id="customVaultEntrySubTabs" style="display: none;">
                         <button class="sub-nav-tab active custom-vault-entry-sub-tab" data-sub-tab="tools">
@@ -5524,6 +5531,8 @@
             document.getElementById('viewToggle').addEventListener('click', toggleViewMode);
             // Intelligence Vault View Toggle
             document.getElementById('vaultViewToggle').addEventListener('click', toggleViewMode); // Both can use the same toggle
+            //Multi Vault View Toggle
+            document.getElementById('customVaultViewToggle').addEventListener('click', toggleViewMode);
 
             // Refresh Threats button
             document.getElementById('refreshThreatsBtn').addEventListener('click', loadThreats);
@@ -7320,7 +7329,41 @@ function loadThreats() {
             }
             appState.viewMode = appState.viewMode === 'grid' ? 'list' : 'grid';
             localStorage.setItem('viewMode', appState.viewMode); // Save view mode preference
-            renderIntelligenceEntries();
+
+            // Update text and icon for both toggle buttons
+            const viewToggleButton = document.getElementById('viewToggle');
+            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
+            const customVaultViewToggleButton = document.getElementById('customVaultViewToggle'); // NEW
+
+            if (appState.viewMode === 'grid') {
+                if (viewToggleButton) {
+                    viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    viewToggleButton.title = 'Switch to List View';
+                }
+                if (vaultViewToggleButton) {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    vaultViewToggleButton.title = 'Switch to List View';
+                }
+                if (customVaultViewToggleButton) { // NEW
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    customVaultViewToggleButton.title = 'Switch to List View';
+                }
+            } else {
+                if (viewToggleButton) {
+                    viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    viewToggleButton.title = 'Switch to Grid View';
+                }
+                if (vaultViewToggleButton) {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    vaultViewToggleButton.title = 'Switch to Grid View';
+                }
+                if (customVaultViewToggleButton) { // NEW
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    customVaultViewToggleButton.title = 'Switch to Grid View';
+                }
+            }
+
+            renderIntelligenceEntries(); // This function will now apply the correct view to the active tab's grid/list.
             showToast(`Switched to ${appState.viewMode} view.`);
         }
 
