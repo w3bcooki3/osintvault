@@ -3145,38 +3145,11 @@
                         </div>
                     </div>
                 
-                    <div class="sub-nav-tabs" id="intelligenceVaultSubTabs">
-                        <button class="sub-nav-tab active intelligence-vault-sub-tab" data-sub-tab="tools">
-                            <i class="fas fa-tools"></i> General Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="emailTools">
-                            <i class="fas fa-envelope"></i> Email Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="phoneTools">
-                            <i class="fas fa-phone"></i> Phone Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="cryptoTools">
-                            <i class="fas fa-coins"></i> Crypto Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="locationTools">
-                            <i class="fas fa-map-marker-alt"></i> Location Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="linkTools">
-                            <i class="fas fa-link"></i> Link Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="mediaTools">
-                            <i class="fas fa-camera"></i> Media Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="passwordTools">
-                            <i class="fas fa-key"></i> Password Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="keywordTools">
-                            <i class="fas fa-font"></i> Keyword Tools
-                        </button>
-                        <button class="sub-nav-tab intelligence-vault-sub-tab" data-sub-tab="socialTools">
-                            <i class="fas fa-users"></i> Social Tools
-                        </button>
-                    </div>
+                    <div class="nav-tabs" id="intelligenceVaultParentTabs" style="margin-top: 20px;">
+                        </div>
+                
+                    <div class="sub-nav-tabs" id="intelligenceVaultChildTabs" style="display: none; margin-top: 15px;">
+                        </div>
                 
                     <div class="tools-grid" id="intelligenceVaultEntries" style="margin-top: 20px;">
                         </div>
@@ -3213,48 +3186,28 @@
                                 <i class="fas fa-download"></i>
                                 Export Vault
                             </button>
-                            <button class="btn btn-success" id="addEntryBtnCustomVault">
-                                <i class="fas fa-plus-circle"></i>
-                                Add New Entry
-                            </button>
                         </div>
                     </div>
 
                     <div class="sub-nav-tabs" id="customSubTabs">
-                        </div>
+                    </div>
 
-                    <div class="sub-nav-tabs" id="customVaultEntrySubTabs" style="display: none;">
-                        <button class="sub-nav-tab active custom-vault-entry-sub-tab" data-sub-tab="tools">
-                            <i class="fas fa-tools"></i> Tools
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="btn btn-success" id="addEntryBtnCustomVault">
+                            <i class="fas fa-plus-circle"></i>
+                            Add New Entry
                         </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="emails">
-                            <i class="fas fa-envelope"></i> Emails
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="phones">
-                            <i class="fas fa-phone"></i> Phones
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="crypto">
-                            <i class="fas fa-coins"></i> Crypto
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="locations">
-                            <i class="fas fa-map-marker-alt"></i> Locations
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="links">
-                            <i class="fas fa-link"></i> Links
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="media">
-                            <i class="fas fa-camera"></i> Media
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="passwords">
-                            <i class="fas fa-key"></i> Passwords
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="keywords">
-                            <i class="fas fa-font"></i> Keywords
-                        </button>
-                        <button class="sub-nav-tab custom-vault-entry-sub-tab" data-sub-tab="socials">
-                            <i class="fas fa-users"></i> Socials
+                        <button class="btn btn-secondary" id="customVaultViewToggle" title="Switch to List View">
+                            <i class="fas fa-list"></i>
+                            List View
                         </button>
                     </div>
+
+                    <div class="nav-tabs" id="customVaultEntryParentTabs" style="margin-top: 20px; display: none;">
+                        </div>
+                
+                    <div class="sub-nav-tabs" id="customVaultEntryChildTabs" style="margin-top: 15px; display: none;">
+                        </div>
 
                     <div class="tools-grid" id="customTabToolsGrid" style="margin-top: 20px;">
                         </div>
@@ -3555,8 +3508,18 @@
                     <div class="custom-tab-assignment" id="intelligenceVaultCategoriesAssignmentAddTool">
                         <h4>Add to Intelligence Vault Categories</h4>
                         <p style="font-size: 0.9em; color: var(--text-muted); margin-bottom: 10px;">Select one or more intelligence categories for this tool.</p>
-                        <div class="custom-tab-checkboxes" id="intelligenceVaultCategoriesCheckboxesAddTool" style="max-height: 150px; overflow-y: auto;">
+                    
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <div style="position: relative;">
+                                <input type="text" id="intelligenceVaultCategorySearch" class="search-input" placeholder="Search categories..." style="padding-right: 40px;">
+                                <i class="fas fa-search search-icon" style="right: 15px;"></i>
                             </div>
+                        </div>
+                    
+                        <div class="custom-tab-checkboxes-container" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; border-radius: 8px; background: var(--bg-secondary);">
+                            <div class="custom-tab-checkboxes" id="intelligenceVaultCategoriesCheckboxesAddTool">
+                                </div>
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
@@ -3868,8 +3831,25 @@
                         <label>Tags (comma separated)</label>
                         <input type="text" id="editToolTags" placeholder="osint, investigation, cybersecurity">
                     </div>
-                </div>
-                
+    
+                    <div class="custom-tab-assignment" id="intelligenceVaultCategoriesAssignmentEditTool">
+                        <h4>Add to Intelligence Vault Categories</h4>
+                        <p style="font-size: 0.9em; color: var(--text-muted); margin-bottom: 10px;">Select one or more intelligence categories for this tool.</p>
+    
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <div style="position: relative;">
+                                <input type="text" id="editIntelligenceVaultCategorySearch" class="search-input" placeholder="Search categories..." style="padding-right: 40px;">
+                                <i class="fas fa-search search-icon" style="right: 15px;"></i>
+                            </div>
+                        </div>
+    
+                        <div class="custom-tab-checkboxes-container" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; border-radius: 8px; background: var(--bg-secondary);">
+                            <div class="custom-tab-checkboxes" id="intelligenceVaultCategoriesCheckboxesEditTool">
+                                </div>
+                        </div>
+                    </div>
+                    </div>
+    
                 <div id="editEmailFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Email Address</label>
@@ -3888,7 +3868,7 @@
                         <input type="text" id="editEmailBreachResults" placeholder="HIBP: Pwned, No breach found">
                     </div>
                 </div>
-                
+    
                 <div id="editPhoneFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Phone Number</label>
@@ -3912,7 +3892,7 @@
                         <textarea id="editPhoneNotes" rows="3"></textarea>
                     </div>
                 </div>
-                
+    
                 <div id="editCryptoFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Crypto Address</label>
@@ -3935,11 +3915,11 @@
                         <input type="text" id="editCryptoTags" placeholder="suspicious, darkweb, stolen">
                     </div>
                 </div>
-                
+    
                 <div id="editLocationFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Location Name</label>
-                        <input type="text" id="editLocationName" name="editLocationName" placeholder="e.g., Target building, Suspect's residence" maxlength="50" required>
+                        <input type="text" id="editLocationName" name="editLocationName" maxlength="50" placeholder="e.g., Target building, Suspect's residence" required>
                     </div>
                     <div class="form-group">
                         <label>Coordinates (Lat, Long)</label>
@@ -3958,7 +3938,7 @@
                         <input type="text" id="editLocationIpGeoIntel" placeholder="e.g., 192.168.1.1, ISP provider, Country">
                     </div>
                 </div>
-                
+    
                 <div id="editLinkFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>URL</label>
@@ -3977,7 +3957,7 @@
                         <input type="text" id="editLinkTags" placeholder="profile, leaked-content, social-engineering">
                     </div>
                 </div>
-                
+    
                 <div id="editMediaFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Title</label>
@@ -4000,7 +3980,7 @@
                         <input type="hidden" id="editMediaBase64Data"> <small style="color: var(--text-muted);">Upload a new file to replace the existing one.</small>
                     </div>
                 </div>
-
+    
                 <div id="editPasswordFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Associated Service/Website</label>
@@ -4023,7 +4003,7 @@
                         <input type="text" id="editPasswordStrength" placeholder="e.g., Weak, Strong, Leaked, Reset">
                     </div>
                 </div>
-
+    
                 <div id="editKeywordFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Keyword/Phrase</label>
@@ -4038,7 +4018,7 @@
                         <textarea id="editKeywordNotes" rows="3"></textarea>
                     </div>
                 </div>
-
+    
                 <div id="editSocialFields" class="entry-fields" style="display: none;">
                     <div class="form-group">
                         <label>Platform</label>
@@ -4061,12 +4041,12 @@
                         <input type="text" id="editSocialFollowCounts" maxlength="50" placeholder="e.g., 12k followers, 500 following">
                     </div>
                 </div>
-
+    
                 <div class="form-group" id="editEntrySourceGroup" style="display: none;">
                     <label>Source (Where was this info collected?)</label>
                     <input type="text" id="editEntrySource" name="editEntrySource" placeholder="e.g., public record, social media, dark web forum">
                 </div>
-
+    
                 <div id="editCustomMetadataGroup" style="display: none;">
                     <label>Custom Metadata</label>
                     <div id="editCustomMetadataEntries">
@@ -4075,14 +4055,14 @@
                         <i class="fas fa-plus"></i> Add Metadata Field
                     </button>
                 </div>
-
-
+    
+    
                 <div class="custom-tab-assignment" id="assignCustomTabs">
                     <h4>Assign to Custom Vault Tab(s)</h4>
                     <div class="custom-tab-checkboxes" id="assignCustomTabsCheckboxes">
                         </div>
                 </div>
-
+    
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelEditEntry">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -4192,7 +4172,6 @@
 
 
     <script>
-        // Existing application state and default tools
         let appState = {
             tools: [],
             emails: [],
@@ -4201,14 +4180,16 @@
             locations: [],
             links: [],
             media: [], // Stores objects for images/videos
-            passwords: [], // New
-            keywords: [], // New
-            socials: [], // New
+            passwords: [],
+            keywords: [],
+            socials: [],
             selectedEntries: new Set(), // Now stores IDs of any selected entry type
-            currentTab: 'intelligence-vault', // Default to intelligence-vault for initial rendering check
-            currentIntelligenceVaultSubTab: 'tools', // Default sub-tab for intelligence vault
-            currentCustomVaultEntrySubTab: 'tools', // Default sub-tab for entries within custom vault
-            customTabs: [], // Array of { id: '...', name: '...', toolIds: [], icon: '...', color: '...' }
+            currentTab: 'intelligence-vault',
+            currentIntelligenceVaultParentTab: 'generalAndCore', // Ensure this is a valid default ID from intelligenceVaultTabStructure
+            currentIntelligenceVaultChildTab: 'tools', // Ensure this is a valid default ID from intelligenceVaultTabStructure
+            currentCustomVaultEntrySubTab: 'tools', // Default child tab for custom vault entries
+            currentCustomVaultParentTab: 'coreInvestigations', // NEW: Default parent tab for custom vault entries
+            customTabs: [],
             filters: {
                 category: '',
                 search: '',
@@ -4236,7 +4217,6 @@
             sharedTabId: null,
             sharedEntryIds: []
         };
-
         const availableIcons = [
             'fas fa-globe', 'fas fa-search', 'fas fa-fingerprint', 'fas fa-shield-alt',
             'fas fa-link', 'fas fa-network-wired', 'fas fa-envelope', 'fas fa-image',
@@ -4269,7 +4249,8 @@
                 favicon: 'https://www.google.com/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-01-15T10:00:00Z'),
-                customTabs: [] // Initialize customTabs array
+                customTabs: [], // Initialize customTabs array
+                origin: 'pre-added'
             },
             {
                 id: 'shodan',
@@ -4285,7 +4266,8 @@
                 favicon: 'https://www.shodan.io/static/img/favicon.png',
                 lastUsed: 0,
                 addedDate: new Date('2023-02-20T11:30:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'maltego',
@@ -4301,7 +4283,8 @@
                 favicon: 'https://www.maltego.com/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-03-01T14:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'have-i-been-pwned',
@@ -4317,7 +4300,8 @@
                 favicon: 'https://haveibeenpwned.com/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-04-10T09:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'virustotal',
@@ -4333,7 +4317,8 @@
                 favicon: 'https://www.virustotal.com/gui/images/favicon.png',
                 lastUsed: 0,
                 addedDate: new Date('2023-05-05T16:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'wayback-machine',
@@ -4349,7 +4334,8 @@
                 favicon: 'https://web.archive.org/static/images/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-06-01T08:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'whois-lookup',
@@ -4365,7 +4351,8 @@
                 favicon: 'https://whois.net/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-07-12T13:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
             },
             {
                 id: 'tineye',
@@ -4381,9 +4368,240 @@
                 favicon: 'https://tineye.com/favicon.ico',
                 lastUsed: 0,
                 addedDate: new Date('2023-08-20T10:00:00Z'),
-                customTabs: []
+                customTabs: [],
+                origin: 'pre-added'
+            },{
+                id: 'tor-browser',
+                type: 'tool',
+                name: 'Tor Browser',
+                url: 'https://www.torproject.org/',
+                category: 'anonymity',
+                intelligenceVaultCategories: ['darkWebTools'], // Assign to 'DarkWeb'
+                description: 'Free and open-source software for enabling anonymous communication.',
+                tags: ['anonymity', 'privacy', 'darkweb', 'browser'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://www.torproject.org/favicon.ico',
+                lastUsed: 0,
+                addedDate: new Date('2024-01-01T08:00:00Z'),
+                customTabs: [],
+                origin: 'pre-added'
+            },
+            {
+                id: 'nmap',
+                type: 'tool',
+                name: 'Nmap (Network Mapper)',
+                url: 'https://nmap.org/',
+                category: 'network scanning',
+                intelligenceVaultCategories: ['vulnerabilityTools'], // Assign to 'Vulnerability'
+                description: 'Free and open-source utility for network discovery and security auditing.',
+                tags: ['network', 'scanning', 'vulnerability', 'auditing'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://nmap.org/favicon.ico',
+                lastUsed: 0,
+                addedDate: new Date('2024-01-05T10:00:00Z'),
+                customTabs: [],
+                origin: 'pre-added'
+            },
+            {
+                id: 'any-run',
+                type: 'tool',
+                name: 'Any.Run',
+                url: 'https://any.run/',
+                category: 'malware analysis',
+                intelligenceVaultCategories: ['fileMalwareTools'], // Assign to 'File/Malware'
+                description: 'Interactive malware analysis service for dynamic investigation of threats.',
+                tags: ['malware', 'analysis', 'sandbox', 'threats'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://any.run/favicon.ico',
+                lastUsed: 0,
+                addedDate: new Date('2024-01-10T12:00:00Z'),
+                customTabs: [],
+                origin: 'pre-added'
+            },
+            {
+                id: 'splunk-phantom',
+                type: 'tool',
+                name: 'Splunk SOAR (Phantom)',
+                url: 'https://www.splunk.com/en_us/software/security-orchestration-automation-response-phantom.html',
+                category: 'security orchestration',
+                intelligenceVaultCategories: ['threatIntelligenceTools'], // Assign to 'Threat Intelligence'
+                description: 'Security Orchestration, Automation, and Response platform.',
+                tags: ['soar', 'automation', 'threat-intel', 'security'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://www.splunk.com/etc/designs/splunk-website/clientlibs-all/images/favicon.ico',
+                lastUsed: 0,
+                addedDate: new Date('2024-01-15T14:00:00Z'),
+                customTabs: [],
+                origin: 'pre-added'
+            },
+            {
+                id: 'openai-chatgpt',
+                type: 'tool',
+                name: 'OpenAI ChatGPT',
+                url: 'https://chat.openai.com/',
+                category: 'ai assistant',
+                intelligenceVaultCategories: ['aiTools'], // Assign to 'AI'
+                description: 'AI-powered chatbot for various tasks including data summarization and idea generation.',
+                tags: ['ai', 'chatbot', 'generative-ai', 'research'],
+                starred: false,
+                pinned: false,
+                favicon: 'https://chat.openai.com/favicon.ico',
+                lastUsed: 0,
+                addedDate: new Date('2024-01-20T16:00:00Z'),
+                customTabs: [],
+                origin: 'pre-added'
             }
         ];
+
+        const intelligenceVaultTabStructure = [
+        {
+            id: 'generalAndCore',
+            name: 'General & Core',
+            icon: 'fas fa-globe-americas',
+            children: [
+                { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+                { id: 'keywordTools', name: 'Keyword & Text Analysis', icon: 'fas fa-font' },
+                { id: 'aiTools', name: 'AI & Generative Tools', icon: 'fas fa-brain' },
+                { id: 'osintSearchEngines', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' }, // NEW
+                { id: 'archivingTools', name: 'Archiving & Cache', icon: 'fas fa-archive' }, // NEW
+            ]
+        },
+        {
+            id: 'identityAndSocial',
+            name: 'Identity & Social',
+            icon: 'fas fa-users',
+            children: [
+                { id: 'peopleSearchTools', name: 'People Search', icon: 'fas fa-id-card' },
+                { id: 'usernameTools', name: 'Usernames & Handles', icon: 'fas fa-at' },
+                { id: 'socialTools', name: 'Social Media Profiles', icon: 'fas fa-users' },
+                { id: 'emailTools', name: 'Email Investigations', icon: 'fas fa-envelope' },
+                { id: 'phoneTools', name: 'Phone Number Analysis', icon: 'fas fa-phone' },
+                { id: 'messagingApps', name: 'Messaging Apps & Comms', icon: 'fas fa-comment-dots' }, // NEW
+                { id: 'datingApps', name: 'Dating Apps', icon: 'fas fa-heart' }, // NEW
+            ]
+        },
+        {
+            id: 'technicalFootprints',
+            name: 'Technical Footprints',
+            icon: 'fas fa-fingerprint',
+            children: [
+                { id: 'domainIpUrlTools', name: 'Domain/IP/URL Analysis', icon: 'fas fa-link' }, // Name adjusted for clarity
+                { id: 'geoIntTools', name: 'GEOINT & Mapping', icon: 'fas fa-map-marker-alt' },
+                { id: 'cryptoTools', name: 'Crypto Wallets & Transactions', icon: 'fas fa-coins' }, // Name adjusted
+                { id: 'darkWebTools', name: 'DarkWeb & Hidden Services', icon: 'fas fa-mask' }, // Name adjusted
+                { id: 'metadataTools', name: 'Metadata Extractors', icon: 'fas fa-info' },
+                { id: 'networkAnalysis', name: 'Network & System Analysis', icon: 'fas fa-network-wired' }, // NEW
+                { id: 'documentAnalysis', name: 'Document Analysis', icon: 'fas fa-file-alt' }, // NEW
+            ]
+        },
+        {
+            id: 'cybersecurityIntel',
+            name: 'Cybersecurity Intel',
+            icon: 'fas fa-shield-alt',
+            children: [
+                { id: 'threatIntelligenceTools', name: 'Threat Intel Platforms', icon: 'fas fa-hand-fist' },
+                { id: 'vulnerabilityTools', name: 'Vulnerability Research', icon: 'fas fa-bug' },
+                { id: 'fileMalwareTools', name: 'File & Malware Analysis', icon: 'fas fa-file-code' },
+                { id: 'honeypotMonitoring', name: 'Honeypot Monitoring', icon: 'fas fa-honey-pot' }, // NEW (Font Awesome 6)
+                { id: 'reverseEngineering', name: 'Reverse Engineering', icon: 'fas fa-cogs' }, // NEW
+            ]
+        },
+        {
+            id: 'breachAndLeaks',
+            name: 'Breach & Leaks',
+            icon: 'fas fa-database',
+            children: [
+                { id: 'passwordLeakTools', name: 'Password Leaks', icon: 'fas fa-key' }, // Renamed from passwordTools
+                { id: 'credentialLeakTools', name: 'Credential Dumps', icon: 'fas fa-cloud-download-alt' },
+                { id: 'dataBreachTools', name: 'Breached Databases', icon: 'fas fa-shield-virus' },
+                { id: 'dumpSearchTools', name: 'General Data Dumps', icon: 'fas fa-dumpster' }, // Renamed from Dump Search Engines
+                { id: 'publicRecords', name: 'Public Records & Legal', icon: 'fas fa-scale-balanced' }, // NEW (Font Awesome 6)
+            ]
+        },
+        {
+            id: 'undergroundSources',
+            name: 'Underground Sources',
+            icon: 'fas fa-user-ninja',
+            children: [
+                { id: 'hackingForums', name: 'Hacking & Security Forums', icon: 'fas fa-user-secret' }, // Name adjusted
+                { id: 'exploitMarkets', name: 'Exploit & Malware Markets', icon: 'fas fa-store-alt' },
+                { id: 'vendorTracking', name: 'Underground Vendor Tracking', icon: 'fas fa-user-tag' },
+                { id: 'telegramChannels', name: 'Telegram Channels', icon: 'fab fa-telegram-plane' }, // NEW (Font Awesome Brands)
+                { id: 'pasteSites', name: 'Paste Sites', icon: 'fas fa-clipboard-list' }, // NEW
+            ]
+        },
+        // NEW PARENT CATEGORY: Media Analysis
+        {
+            id: 'mediaAnalysis',
+            name: 'Media Analysis',
+            icon: 'fas fa-image',
+            children: [
+                { id: 'imageAnalysis', name: 'Image Analysis & Forensics', icon: 'fas fa-camera' }, // Moved from Identity & Social
+                { id: 'videoAnalysis', name: 'Video Analysis', icon: 'fas fa-video' }, // NEW
+                { id: 'audioAnalysis', name: 'Audio Analysis', icon: 'fas fa-volume-up' }, // NEW
+                { id: 'facialRecognition', name: 'Facial Recognition', icon: 'fas fa-face-id-card' }, // NEW (Font Awesome 6)
+                { id: 'geolocationMedia', name: 'Geolocation from Media', icon: 'fas fa-map-pin' }, // NEW
+            ]
+        },
+        // NEW PARENT CATEGORY: Operational Security (OPSEC)
+        {
+            id: 'opsec',
+            name: 'Operational Security',
+            icon: 'fas fa-lock',
+            children: [
+                { id: 'anonymityTools', name: 'Anonymity & VPNs', icon: 'fas fa-mask' }, // Broadening DarkWebTools concept
+                { id: 'privacyTools', name: 'Privacy Enhancing Tools', icon: 'fas fa-user-shield' }, // NEW
+                { id: 'secureCommunication', name: 'Secure Communication', icon: 'fas fa-lock-open' }, // NEW
+                { id: 'personaManagement', name: 'Persona Management', icon: 'fas fa-id-badge' }, // NEW
+            ]
+        },
+        ];
+
+        const customVaultEntryStructure = [
+            {
+                id: 'coreInvestigations',
+                name: 'Core Investigations',
+                icon: 'fas fa-search',
+                children: [
+                    { id: 'tools', name: 'Tools', icon: 'fas fa-tools' },
+                    { id: 'keywords', name: 'Keywords', icon: 'fas fa-font' },
+                    { id: 'links', name: 'Domain/IP', icon: 'fas fa-globe' }
+                ]
+            },
+            {
+                id: 'identityCommunications',
+                name: 'Identity & Communications',
+                icon: 'fas fa-id-card',
+                children: [
+                    { id: 'emails', name: 'Emails', icon: 'fas fa-envelope' },
+                    { id: 'phones', name: 'Phones', icon: 'fas fa-phone' },
+                    { id: 'socials', name: 'Socials', icon: 'fas fa-users' }
+                ]
+            },
+            {
+                id: 'digitalTraces',
+                name: 'Digital Traces',
+                icon: 'fas fa-fingerprint',
+                children: [
+                    { id: 'media', name: 'Media', icon: 'fas fa-camera' },
+                    { id: 'crypto', name: 'Crypto', icon: 'fas fa-coins' },
+                    { id: 'locations', name: 'Locations', icon: 'fas fa-map-marker-alt' }
+                ]
+            },
+            {
+                id: 'sensitiveData',
+                name: 'Sensitive Data',
+                icon: 'fas fa-lock',
+                children: [
+                    { id: 'passwords', name: 'Passwords', icon: 'fas fa-key' }
+                ]
+            }
+        ];
+
 
 
         let notesState = {
@@ -4694,124 +4912,347 @@
         ]
         };
 
-
         // Initialize Application
         function initApp() {
             loadState();
             parseShareableLink();
             updateStats();
-            bindEvents();
+            // Bind events BEFORE calling switchTab to ensure listeners are ready
+            bindEvents(); 
             initTheme();
 
-            // NEW: Check and show desktop recommendation on app start
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['tools', 'analytics', 'threats', 'custom-tabs', 'intelligence-vault'];
+            const validTabs = ['intelligence-vault', 'custom-tabs', 'analytics', 'threats', 'handbook'];
             if (!validTabs.includes(appState.currentTab)) {
-                appState.currentTab = 'intelligence-vault';
+                appState.currentTab = 'intelligence-vault'; // Default to intelligence-vault if invalid
             }
+
+            // Call switchTab to set up the initial active tab and its content
             switchTab(appState.currentTab);
 
-            if (appState.currentTab === 'intelligence-vault') {
-                switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
-            } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
-                switchCustomVaultEntrySubTab(appState.currentCustomVaultEntrySubTab);
-            }
-
+            // Re-render all necessary parts that depend on the initial state
             showRandomDiscovery();
             populateCategoryFilter();
-            renderIntelligenceEntries();
-            updateAnalytics();
+            updateAnalytics(); // Ensure analytics are up to date
+            applyReadOnlyMode(); // Apply read-only mode if shared link is active
 
-            applyReadOnlyMode();
+            // Update view toggle buttons based on saved view mode
+            const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle');
+            viewToggleButtons.forEach(btn => {
+                if (appState.viewMode === 'grid') {
+                    btn.innerHTML = '<i class="fas fa-list"></i> List View';
+                    btn.title = 'Switch to List View';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    btn.title = 'Switch to Grid View';
+                }
+            });
+        }
 
-            const viewToggleButton = document.getElementById('viewToggle');
-            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
-            if (appState.viewMode === 'grid') {
-                viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                viewToggleButton.title = 'Switch to List View';
-                vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                vaultViewToggleButton.title = 'Switch to List View';
-            } else {
-                viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
-                viewToggleButton.title = 'Switch to Grid View';
-                vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
-                vaultViewToggleButton.title = 'Switch to Grid View';
+        // Switch main tabs
+        function switchTab(tabName) {
+            // Update main tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const targetTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (targetTabBtn) {
+                targetTabBtn.classList.add('active');
+            }
+
+            // Update tab content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            const targetTabContent = document.getElementById(`${tabName}Tab`);
+            if (targetTabContent) {
+                 targetTabContent.classList.add('active');
+            }
+
+            // Update appState and clear filters for new tab
+            appState.currentTab = tabName;
+            appState.filters.category = '';
+            document.getElementById('categoryFilter').value = '';
+            appState.filters.search = '';
+            document.getElementById('searchInput').value = '';
+
+            // Hide all potential sub-tab containers and add entry buttons by default
+            document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
+            document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
+            document.getElementById('customVaultEntryParentTabs').style.display = 'none';
+            document.getElementById('customVaultEntryChildTabs').style.display = 'none';
+            document.getElementById('addEntryBtnCustomVault').style.display = 'none';
+            document.getElementById('addToolBtnIntelligenceVault').style.display = 'none'; // Ensure this is handled too
+
+            // Specific logic for each main tab
+            if (tabName === 'intelligence-vault') {
+                document.getElementById('intelligenceVaultParentTabs').style.display = 'flex'; // Show parent tabs
+                renderIntelligenceVaultParentTabs(); // Render intelligence vault parent tabs
+
+                // Ensure a valid parent is selected, default if current one is invalid
+                const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
+                if (!currentIntelParent) {
+                    appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
+                }
+                // Now, switch to the determined parent and then its child
+                switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
+
+                // Show the "Add New Tool" button
+                if (!appState.readOnlyMode) {
+                    document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
+                }
+
+            } else if (tabName === 'custom-tabs') {
+                renderCustomTabs(); // Render main custom tabs (the list of custom vaults)
+
+                // Only proceed to render/switch parent/child entry tabs if custom vaults exist
+                if (appState.customTabs.length > 0) {
+                    document.getElementById('customVaultEntryParentTabs').style.display = 'flex'; // Show parent tabs for entries
+                    renderCustomVaultParentTabs(); // Render custom vault entry parent tabs
+
+                    // Ensure a valid parent is selected, default if current one is invalid
+                    const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
+                    if (!currentCustomParent) {
+                        appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
+                    }
+                    // Ensure a valid child is selected under the current parent, default if invalid
+                    const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
+                    if (!currentCustomChild) {
+                        appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
+                    }
+                    // Now, switch to the determined parent and then its child
+                    switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
+
+                    // Show the "Add New Entry" button for custom vaults
+                    if (!appState.readOnlyMode) {
+                        document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
+                    }
+                }
+
+            } else if (tabName === 'analytics') {
+                updateAnalytics();
+            } else if (tabName === 'threats') {
+                loadThreats();
+            } else if (tabName === 'handbook') {
+                initHandbookAndNotes(); // Ensure handbook and notes are initialized
+            }
+
+            renderIntelligenceEntries(); // Always re-render entries relevant to the currently active main tab
+            saveState(); // Save state after tab switch
+        }
+
+        // NEW: Render Intelligence Vault Parent Tabs
+        function renderIntelligenceVaultParentTabs() {
+            const parentTabsContainer = document.getElementById('intelligenceVaultParentTabs');
+            if (!parentTabsContainer) return;
+
+            // Clear previous content to ensure new buttons are rendered clean
+            parentTabsContainer.innerHTML = ''; 
+
+            intelligenceVaultTabStructure.map(parentTab => {
+                const button = document.createElement('button');
+                button.classList.add('nav-tab', 'intelligence-vault-parent-tab');
+                button.dataset.parentTab = parentTab.id;
+                button.innerHTML = `<i class="${parentTab.icon}"></i> ${parentTab.name}`;
+                parentTabsContainer.appendChild(button);
+            });
+
+            // Re-attach event listener using delegation to the container (if it exists, and not already done)
+            // This listener is now only set up once in bindEvents to avoid duplicates.
+            // When renderIntelligenceVaultParentTabs is called, it just re-populates the innerHTML.
+            // The event listener is attached to the parentTabsContainer, which persists.
+
+            // Activate the currently selected parent tab
+            const activeParentBtn = parentTabsContainer.querySelector(`.intelligence-vault-parent-tab[data-parent-tab="${appState.currentIntelligenceVaultParentTab}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
             }
         }
 
-    // Load application state from localStorage
-    function loadState() {
-        const savedState = localStorage.getItem('osintArsenalState');
-        if (savedState) {
-            const parsedState = JSON.parse(savedState);
-            appState.tools = (parsedState.tools || []).map(entry => ({
-                ...entry,
-                addedDate: new Date(entry.addedDate), // Convert string back to Date object
-                lastUsed: entry.lastUsed || 0, // Ensure lastUsed is a number, default to 0
-                customTabs: entry.customTabs || [], // Ensure customTabs array exists
-                intelligenceVaultCategories: entry.intelligenceVaultCategories || [] // NEW: Initialize new property
-            }));
-            // Load new entry types
-            appState.emails = parsedState.emails || [];
-            appState.phones = parsedState.phones || [];
-            appState.crypto = parsedState.crypto || [];
-            appState.locations = parsedState.locations || [];
-            appState.links = parsedState.links || [];
-            appState.media = parsedState.media || [];
-            appState.passwords = parsedState.passwords || [];
-            appState.keywords = parsedState.keywords || [];
-            appState.socials = parsedState.socials || [];
 
-            appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
-            appState.filters = parsedState.filters || {
-                category: '',
-                search: '',
-                sort: 'name',
-                searchScope: 'currentTab'
-            };
-            appState.theme = parsedState.theme || 'dark';
-            appState.viewMode = parsedState.viewMode || 'grid';
-            appState.usageStats = parsedState.usageStats || {
-                toolsUsedToday: 0
-            };
-            appState.customTabs = parsedState.customTabs || [];
-            appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
-            appState.currentIntelligenceVaultSubTab = parsedState.currentIntelligenceVaultSubTab || 'tools';
-            appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tools';
+        // NEW: Switch Intelligence Vault Parent Tab
+        function switchIntelligenceVaultParentTab(parentId) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
 
-        } else {
-            appState.tools = [...defaultTools];
-            // Initialize default custom tabs if no state is loaded
-            appState.customTabs = [
-                {
+            // Deactivate all parent tabs
+            document.querySelectorAll('#intelligenceVaultParentTabs .intelligence-vault-parent-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Activate the clicked parent tab
+            const activeParentBtn = document.querySelector(`#intelligenceVaultParentTabs .intelligence-vault-parent-tab[data-parent-tab="${parentId}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
+            }
+
+            appState.currentIntelligenceVaultParentTab = parentId;
+
+            // Find the selected parent tab's children
+            const selectedParent = intelligenceVaultTabStructure.find(p => p.id === parentId);
+            const childTabsContainer = document.getElementById('intelligenceVaultChildTabs'); // Get the direct reference
+
+            if (selectedParent && childTabsContainer) {
+                childTabsContainer.style.display = 'flex'; // Show the child tabs container
+                // Update the innerHTML of the existing container
+                childTabsContainer.innerHTML = selectedParent.children.map(childTab => `
+                    <button class="sub-nav-tab intelligence-vault-child-tab" data-child-tab="${childTab.id}">
+                        <i class="${childTab.icon}"></i> ${childTab.name}
+                    </button>
+                `).join('');
+
+                // The click listener for child tabs is already delegated to `intelligenceVaultChildTabsContainer`
+                // in `bindEvents()`, so no need to re-add it here.
+
+                // Automatically activate the first child tab or the previously selected child tab under this parent
+                let childToActivate = appState.currentIntelligenceVaultChildTab;
+                if (!selectedParent.children.some(c => c.id === childToActivate)) {
+                    childToActivate = selectedParent.children[0]?.id; // Default to first child if current is not in this parent
+                }
+                if (childToActivate) {
+                    switchIntelligenceVaultChildTab(childToActivate);
+                } else {
+                    // No child tabs for this parent, clear display
+                    appState.currentIntelligenceVaultChildTab = null;
+                    appState.filters.category = '';
+                    renderIntelligenceEntries();
+                }
+
+            } else {
+                childTabsContainer.style.display = 'none'; // Hide if no children or container not found
+                appState.currentIntelligenceVaultChildTab = null;
+                appState.filters.category = '';
+                renderIntelligenceEntries();
+            }
+
+            saveState(); // Save the parent tab state
+        }
+
+        // MODIFIED: Switch Intelligence Vault Child Sub-tabs (now show tools)
+        // This function now expects a 'childId' which maps directly to the `intelligenceVaultCategories` (tools, emailTools, etc.)
+        function switchIntelligenceVaultChildTab(childId) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
+
+            // Deactivate all child tabs
+            document.querySelectorAll('#intelligenceVaultChildTabs .intelligence-vault-child-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Activate the clicked child tab
+            const targetChildTabBtn = document.querySelector(`#intelligenceVaultChildTabs .intelligence-vault-child-tab[data-child-tab="${childId}"]`);
+            if (targetChildTabBtn) {
+                targetChildTabBtn.classList.add('active');
+            }
+
+            appState.currentIntelligenceVaultChildTab = childId;
+            appState.filters.category = ''; // Clear category filter when switching intel vault sub-tabs
+            document.getElementById('categoryFilter').value = '';
+            renderIntelligenceEntries(); // Rerender to show relevant tools
+            saveState(); // Save the child tab state
+        }
+
+        // Load application state from localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('osintArsenalState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                // Correctly parse dates and ensure all new properties exist
+                appState.tools = (parsedState.tools || []).map(entry => ({
+                    ...entry,
+                    addedDate: new Date(entry.addedDate), // Convert string back to Date object
+                    lastUsed: entry.lastUsed || 0, // Ensure lastUsed is a number, default to 0
+                    customTabs: entry.customTabs || [], // Ensure customTabs array exists
+                    intelligenceVaultCategories: entry.intelligenceVaultCategories || [], // NEW: Initialize new property
+                    origin: entry.origin || 'user-added' // <--- IMPORTANT: Default to 'user-added' for old saved data if origin is missing
+                }));
+                // Load new entry types
+                appState.emails = parsedState.emails || [];
+                appState.phones = parsedState.phones || [];
+                appState.crypto = parsedState.crypto || [];
+                appState.locations = parsedState.locations || [];
+                appState.links = parsedState.links || [];
+                appState.media = parsedState.media || [];
+                appState.passwords = parsedState.passwords || [];
+                appState.keywords = parsedState.keywords || [];
+                appState.socials = parsedState.socials || [];
+
+                appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
+                appState.filters = parsedState.filters || {
+                    category: '',
+                    search: '',
+                    sort: 'name',
+                    searchScope: 'currentTab'
+                };
+                appState.theme = parsedState.theme || 'dark';
+                appState.viewMode = parsedState.viewMode || 'grid';
+                appState.usageStats = parsedState.usageStats || {
+                    toolsUsedToday: 0
+                };
+                appState.customTabs = parsedState.customTabs || [];
+                appState.currentCustomTab = parsedState.currentCustomTab || (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+
+                // Ensure parent/child tabs exist and have valid defaults if needed
+                // IMPORTANT: Ensure these default IDs exist in your respective structures
+                appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
+                appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigations';
+                appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tools';
+
+
+                // *** CRUCIAL PART: Merge default tools after loading saved state ***
+                defaultTools.forEach(defaultTool => {
+                    // Check if a tool with this ID already exists in the loaded appState.tools
+                    const exists = appState.tools.some(tool => tool.id === defaultTool.id);
+                    if (!exists) {
+                        // If it doesn't exist, add it. Ensure origin is 'pre-added' and date is parsed.
+                        appState.tools.push({ ...defaultTool, addedDate: new Date(defaultTool.addedDate), origin: 'pre-added' });
+                    }
+                });
+
+            } else {
+                // If no saved state exists (first-time user), initialize with default tools
+                appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
+                appState.customTabs = [{
                     id: generateId(),
                     name: 'Crypto',
                     toolIds: [],
                     icon: 'fas fa-coins',
                     color: 'var(--tab-color-yellow)'
-                },
-                {
+                }, {
                     id: generateId(),
                     name: 'Social Media Analysis',
                     toolIds: [],
                     icon: 'fas fa-users',
                     color: 'var(--tab-color-blue)'
-                }
-            ];
-            appState.currentCustomTab = appState.customTabs[0]?.id || null;
-            // Initialize empty arrays for new types if starting fresh
-            appState.emails = [];
-            appState.phones = [];
-            appState.crypto = [];
-            appState.locations = [];
-            appState.links = [];
-            appState.media = [];
-            appState.passwords = [];
-            appState.keywords = [];
-            appState.socials = [];
+                }];
+                appState.currentCustomTab = appState.customTabs[0]?.id || null;
+
+                // Set initial default parent/child tabs for first-time users
+                appState.currentIntelligenceVaultParentTab = 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = 'tools';
+                appState.currentCustomVaultParentTab = 'coreInvestigations';
+                appState.currentCustomVaultEntrySubTab = 'tools';
+
+                // Initialize empty arrays for new types if starting fresh
+                appState.emails = [];
+                appState.phones = [];
+                appState.crypto = [];
+                appState.locations = [];
+                appState.links = [];
+                appState.media = [];
+                appState.passwords = [];
+                appState.keywords = [];
+                appState.socials = [];
+            }
         }
-    }
+
+        
 
         // Save application state to localStorage
         function saveState() {
@@ -4905,15 +5346,21 @@
             document.getElementById('sortFilter').value = appState.filters.sort;
         }
 
-        // Render intelligence entries (tools, emails, phones, etc.)
         function renderIntelligenceEntries() {
-            const toolsContainer = document.getElementById('toolsGrid'); 
+            const toolsContainer = document.getElementById('toolsGrid');
             const customTabToolsContainer = document.getElementById('customTabToolsGrid');
             const intelligenceVaultEntriesContainer = document.getElementById('intelligenceVaultEntries');
             const emptyState = document.getElementById('emptyState');
             const emptyCustomTabState = document.getElementById('emptyCustomTabState');
             const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState');
             const emptyIntelligenceVaultState = document.getElementById('emptyIntelligenceVaultState');
+
+            // References for parent/child tabs
+            const intelligenceVaultParentTabs = document.getElementById('intelligenceVaultParentTabs');
+            const intelligenceVaultChildTabs = document.getElementById('intelligenceVaultChildTabs');
+            const customVaultEntryParentTabs = document.getElementById('customVaultEntryParentTabs');
+            const customVaultEntryChildTabs = document.getElementById('customVaultEntryChildTabs');
+
 
             // Hide all empty states and containers initially
             toolsContainer.style.display = 'none';
@@ -4924,60 +5371,108 @@
             emptyCurrentCustomTabState.style.display = 'none';
             emptyIntelligenceVaultState.style.display = 'none';
 
-            let filteredEntries = filterEntries();
+            // Also hide all tab containers by default, they will be explicitly shown below
+            if (intelligenceVaultParentTabs) intelligenceVaultParentTabs.style.display = 'none';
+            if (intelligenceVaultChildTabs) intelligenceVaultChildTabs.style.display = 'none';
+            if (customVaultEntryParentTabs) customVaultEntryParentTabs.style.display = 'none';
+            if (customVaultEntryChildTabs) customVaultEntryChildTabs.style.display = 'none';
+
+
+            let filteredEntries = filterEntries(); 
+
             let targetContainer = null;
             let currentEmptyState = null;
 
-            if (appState.currentTab === 'custom-tabs') {
-                targetContainer = customTabToolsContainer;
-                // If there are no custom tabs created yet
-                if (appState.customTabs.length === 0) {
-                    emptyCustomTabState.style.display = 'block';
-                    // Hide the sub-tabs for entries when no custom vault is active
-                    document.getElementById('customVaultEntrySubTabs').style.display = 'none';
-                    return;
-                }
-                // If a custom tab is selected but has no tools
-                if (appState.currentCustomTab && filteredEntries.length === 0) {
-                    emptyCurrentCustomTabState.style.display = 'block';
-                }
-                 // If a custom tab is selected and has entries, show the grid
-                 if (appState.currentCustomTab && filteredEntries.length > 0) {
-                    targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
-                 }
-                 document.getElementById('customVaultEntrySubTabs').style.display = 'flex'; // Show custom vault entry sub-tabs
-            } else if (appState.currentTab === 'intelligence-vault') {
+            if (appState.currentTab === 'intelligence-vault') {
                 targetContainer = intelligenceVaultEntriesContainer;
                 currentEmptyState = emptyIntelligenceVaultState;
+
+                // Ensure intelligence vault parent and child tabs are visible
+                if (intelligenceVaultParentTabs) intelligenceVaultParentTabs.style.display = 'flex';
+                if (appState.currentIntelligenceVaultChildTab && intelligenceVaultChildTabs) {
+                     intelligenceVaultChildTabs.style.display = 'flex';
+                }
+
                 if (filteredEntries.length === 0) {
                     currentEmptyState.style.display = 'block';
                     targetContainer.style.display = 'none';
-                    return;
+                } else {
+                    currentEmptyState.style.display = 'none';
+                    targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
                 }
-                 targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
-            } else { // 'tools' tab (which is no longer a main tab, but still handled for backward compatibility or if structure changes)
-                targetContainer = toolsContainer; // This branch might not be hit with current tab structure
+
+            } else if (appState.currentTab === 'custom-tabs') {
+                targetContainer = customTabToolsContainer;
+
+                // Only show parent/child entry tabs if there's an active custom vault selected
+                if (appState.customTabs.length === 0) {
+                    emptyCustomTabState.style.display = 'block';
+                    document.getElementById('addEntryBtnCustomVault').style.display = 'none'; // Hide add entry button if no custom tabs
+                    return;
+                } else {
+                    emptyCustomTabState.style.display = 'none'; // Hide global empty state if custom tabs exist
+                }
+
+                if (appState.currentCustomTab) { // If a specific custom vault is selected
+                    if (customVaultEntryParentTabs) customVaultEntryParentTabs.style.display = 'flex';
+                    if (appState.currentCustomVaultEntrySubTab && customVaultEntryChildTabs) {
+                        customVaultEntryChildTabs.style.display = 'flex';
+                    }
+                     document.getElementById('addEntryBtnCustomVault').style.display = appState.readOnlyMode ? 'none' : 'inline-flex';
+
+
+                    if (filteredEntries.length === 0) {
+                        emptyCurrentCustomTabState.style.display = 'block'; // Show empty state for selected custom tab
+                        targetContainer.style.display = 'none';
+                    } else {
+                        emptyCurrentCustomTabState.style.display = 'none';
+                        targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+                    }
+                } else { // No specific custom vault selected, but custom tabs exist
+                    emptyCurrentCustomTabState.style.display = 'block'; // Show empty state for selected custom tab
+                    targetContainer.style.display = 'none';
+                }
+
+
+            } else if (appState.currentTab === 'tools') { // This `toolsTab` might be obsolete if `intelligence-vault` replaces it
+                targetContainer = toolsContainer;
                 currentEmptyState = emptyState;
                 if (filteredEntries.length === 0) {
                     currentEmptyState.style.display = 'block';
                     targetContainer.style.display = 'none';
-                    return;
+                } else {
+                    currentEmptyState.style.display = 'none';
+                    targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
                 }
-                 targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
             }
-            
+            // For other tabs (analytics, threats, handbook), no entries are rendered in this function.
+
             // Set the appropriate class based on viewMode
-            if (appState.viewMode === 'grid') {
-                targetContainer.classList.remove('tools-list');
-                targetContainer.classList.add('tools-grid');
-                document.getElementById('viewToggle').innerHTML = '<i class="fas fa-list"></i> List View';
-            } else {
-                targetContainer.classList.remove('tools-grid');
-                targetContainer.classList.add('tools-list');
-                document.getElementById('viewToggle').innerHTML = '<i class="fas fa-th"></i> Grid View';
+            if (targetContainer) { // Only apply if a container is actually being targeted
+                if (appState.viewMode === 'grid') {
+                    targetContainer.classList.remove('tools-list');
+                    targetContainer.classList.add('tools-grid');
+                } else {
+                    targetContainer.classList.remove('tools-grid');
+                    targetContainer.classList.add('tools-list');
+                }
+                targetContainer.innerHTML = filteredEntries.map(entry => createEntryCard(entry)).join('');
             }
-            
-            targetContainer.innerHTML = filteredEntries.map(entry => createEntryCard(entry)).join('');
+
+            // Update view toggle button text based on appState.viewMode
+            const viewToggleButton = document.getElementById('viewToggle');
+            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
+            const customVaultViewToggleButton = document.getElementById('customVaultViewToggle'); // This was fixed to exist
+
+            if (appState.viewMode === 'grid') {
+                if (viewToggleButton) viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                if (vaultViewToggleButton) vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                if (customVaultViewToggleButton) customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View'; // Use the correct ID here
+            } else {
+                if (viewToggleButton) viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                if (vaultViewToggleButton) vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                if (customVaultViewToggleButton) customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View'; // Use the correct ID here
+            }
             
             // New: Apply shared-highlight if in read-only mode and relevant entries are found
             if (appState.readOnlyMode && appState.sharedEntryIds.length > 0) {
@@ -4987,8 +5482,8 @@
                     shouldHighlight = true; // Always highlight all if allData/allVault shared
                 } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab === appState.sharedTabId) {
                     shouldHighlight = true; // Highlight if shared custom tab
-                } else if (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultSubTab === appState.sharedTabId) {
-                    shouldHighlight = true; // Highlight if shared intel vault sub-tab
+                } else if (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultChildTab === appState.sharedTabId) {
+                    shouldHighlight = true; // Highlight if shared intel vault child tab
                 }
 
                 if (shouldHighlight) {
@@ -5004,8 +5499,8 @@
             saveState(); // Save state after rendering entries
         }
 
-    // Filter entries based on current filters and active tab
-    function filterEntries() {
+
+        function filterEntries() {
         let entriesToSearch = [];
 
         // Determine the base set of entries based on searchScope and currentTab
@@ -5036,62 +5531,41 @@
                 ...appState.keywords,
                 ...appState.socials
             ];
-        } else { // 'currentTab' is default and also for 'custom-tabs' specifics
-            if (appState.currentTab === 'tools') { // This case might not be reached if 'intelligence-vault' is default
+        } else {
+            // For 'currentTab' scope
+            if (appState.currentTab === 'tools') { // This tab might be obsolete if intelligence-vault fully replaces it
                 entriesToSearch = [...appState.tools];
             } else if (appState.currentTab === 'intelligence-vault') {
-                // MODIFIED: Filter by `intelligenceVaultCategories` for tools within Intelligence Vault tabs
+                // Filter tools based on the active intelligence vault child tab
                 entriesToSearch = appState.tools.filter(tool =>
-                    (tool.intelligenceVaultCategories || []).includes(appState.currentIntelligenceVaultSubTab)
+                    (tool.intelligenceVaultCategories || []).includes(appState.currentIntelligenceVaultChildTab)
                 );
             } else if (appState.currentTab === 'custom-tabs' && appState.currentCustomTab) {
                 const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
                 if (activeCustomTab) {
+                    // Combine all entries from all types
                     const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
 
-                    // Filter entries that belong to the active custom tab
-                    let entriesInCustomTab = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(activeCustomTab.id));
+                    // First, filter entries that belong to the currently active custom tab
+                    let entriesInActiveCustomTab = allEntriesCombined.filter(entry =>
+                        (entry.customTabs || []).includes(activeCustomTab.id)
+                    );
 
-                    // Now filter these entries based on the active sub-tab within the custom vault
-                    switch (appState.currentCustomVaultEntrySubTab) {
-                        case 'tools':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'tool');
-                            break;
-                        case 'emails':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'email');
-                            break;
-                        case 'phones':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'phone');
-                            break;
-                        case 'crypto':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'crypto');
-                            break;
-                        case 'locations':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'location');
-                            break;
-                        case 'links':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'link');
-                            break;
-                        case 'media':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'media');
-                            break;
-                        case 'passwords':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'password');
-                            break;
-                        case 'keywords':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'keyword');
-                            break;
-                        case 'socials':
-                            entriesToSearch = entriesInCustomTab.filter(entry => entry.type === 'social');
-                            break;
-                        default:
-                            entriesToSearch = [];
-                            break;
+                    // Then, filter these entries based on the currently selected child sub-tab (Tools, Emails, etc.)
+                    // This is where appState.currentCustomVaultEntrySubTab is used
+                    if (appState.currentCustomVaultEntrySubTab) {
+                        entriesToSearch = entriesInActiveCustomTab.filter(entry =>
+                            entry.type === appState.currentCustomVaultEntrySubTab
+                        );
+                    } else {
+                        entriesToSearch = []; // No child sub-tab selected for custom vault entries
                     }
 
                 } else {
                     entriesToSearch = [];
                 }
+            } else {
+                entriesToSearch = []; // No specific entries to filter for other tabs like analytics, threats, handbook
             }
         }
 
@@ -5157,151 +5631,161 @@
         return filtered;
     }
 
-        // Create a generic entry card HTML
-        function createEntryCard(entry) {
-            const isSelected = appState.selectedEntries.has(entry.id);
-            let title, subtitle, description, icon, faviconHtml = '', extraContent = '';
+            // Create a generic entry card HTML
+            function createEntryCard(entry) {
+                const isSelected = appState.selectedEntries.has(entry.id);
+                let title, subtitle, description, icon, faviconHtml = '', extraContent = '';
 
-            switch (entry.type) {
-                case 'tool':
-                    title = entry.name;
-                    subtitle = entry.url;
-                    description = entry.description;
-                    icon = 'fas fa-tools';
-                    // CORRECTED: Ensure faviconHtml is built correctly with an actual img tag
-                    faviconHtml = `<img src="${entry.favicon}" alt="" class="tool-favicon" onerror="this.src='https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}'">`;
-                    break;
-                case 'email':
-                    title = entry.email;
-                    subtitle = entry.linkedPlatforms.join(', ') || 'No linked platforms';
-                    description = entry.notes;
-                    icon = 'fas fa-envelope';
-                    extraContent = entry.breachResults ? `<p style="color: var(--danger); font-size: 12px; margin-top: 5px;"><i class="fas fa-exclamation-triangle"></i> Breach: ${entry.breachResults}</p>` : '';
-                    break;
-                case 'phone':
-                    title = entry.number;
-                    subtitle = `Type: ${entry.phoneType}`;
-                    description = entry.notes;
-                    icon = 'fas fa-phone';
-                    extraContent = entry.location ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-map-marker-alt"></i> ${entry.location}</p>` : '';
-                    break;
-                case 'crypto':
-                    title = entry.address;
-                    subtitle = `TXID: ${entry.txid}`;
-                    description = `Amount: ${entry.amount} | Source: ${entry.source}`;
-                    icon = 'fas fa-coins';
-                    break;
-                case 'location':
-                    title = entry.name;
-                    subtitle = `Coordinates: ${entry.coordinates}`;
-                    description = entry.notes;
-                    icon = 'fas fa-map-marker-alt';
-                    extraContent = entry.mapLink ? `<p style="font-size: 12px; margin-top: 5px;"><a href="${entry.mapLink}" target="_blank" style="color: var(--primary); text-decoration: none;"><i class="fas fa-external-link-alt"></i> View Map</a></p>` : '';
-                    extraContent += entry.ipGeoIntel ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">IP/Geo: ${entry.ipGeoIntel}</p>` : '';
-                    break;
-                case 'link':
-                    title = entry.url;
-                    subtitle = entry.platform || 'General Link';
-                    description = entry.notes;
-                    icon = 'fas fa-link';
-                    try {
-                        faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
-                    } catch (e) {
-                        faviconHtml = '';
-                    }
-                    break;
-                case 'media':
-                    title = entry.title;
-                    subtitle = entry.mediaType === 'image' ? 'Image' : 'Video';
-                    description = entry.notes;
-                    icon = entry.mediaType === 'image' ? 'fas fa-image' : 'fas fa-video';
-                    extraContent = entry.base64Data ? (entry.mediaType === 'image' ? `<img src="${entry.base64Data}" alt="Media thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : `<video controls style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;"><source src="${entry.base64Data}" type="video/mp4"></video>`) : '';
-                    break;
-                case 'password':
-                    title = entry.service;
-                    subtitle = `Username: ${entry.username || 'N/A'}`;
-                    description = `Password: ${entry.password} | Strength: ${entry.strength || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
-                    icon = 'fas fa-key';
-                    break;
-                case 'keyword':
-                    title = entry.value;
-                    subtitle = `Context: ${entry.context || 'General'}`;
-                    description = entry.notes;
-                    icon = 'fas fa-font';
-                    break;
-                case 'social':
-                    title = entry.username;
-                    subtitle = `Platform: ${entry.platform}`;
-                    description = `URL: ${entry.url}\nFollowers/Following: ${entry.followCounts || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
-                    icon = 'fas fa-users';
-                    try {
-                        faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
-                    } catch (e) {
-                        faviconHtml = '';
-                    }
-                    break;
-                default:
-                    title = entry.name || 'Unknown Entry';
-                    subtitle = '';
-                    description = '';
-                    icon = 'fas fa-question-circle';
-            }
+                // Determine the origin tag HTML
+                let originTagHtml = '';
+                if (entry.origin === 'pre-added') {
+                    originTagHtml = `<span class="tag" style="background-color: var(--primary); color: white; margin-left: 10px;">Pre-added</span>`;
+                } else if (entry.origin === 'user-added') {
+                    originTagHtml = `<span class="tag" style="background-color: var(--accent); color: white; margin-left: 10px;">User-added</span>`;
+                }
 
-            // NEW: Add source and metadata to card if they exist
-            if (entry.source && entry.type !== 'tool') { // Only show source for non-tool entries
-                extraContent += `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-satellite-dish"></i> Source: ${entry.source}</p>`;
-            }
-            if (entry.metadata && entry.metadata.length > 0) {
-                extraContent += `<div style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><strong>Metadata:</strong>`;
-                entry.metadata.forEach(meta => {
-                    extraContent += `<p style="margin-left: 10px;">- ${meta.key}: ${meta.value}</p>`;
-                });
-                extraContent += `</div>`;
-            }
 
-            return `
-                <div class="tool-card ${entry.starred ? 'starred' : ''} ${entry.pinned ? 'pinned' : ''} ${isSelected ? 'selected' : ''}" 
-                data-entry-id="${entry.id}" data-entry-type="${entry.type}">
-                    <div class="tool-header">
-                        <div>
-                            <div class="tool-title">
-                                <input type="checkbox" class="bulk-checkbox" ${isSelected ? 'checked' : ''}>
-                                ${faviconHtml} <i class="${icon}" style="margin-right: 5px;"></i> <span>${title}</span> </div>
-                            <div class="tool-url">
-                                <span>${subtitle}</span> ${entry.url && entry.type === 'tool' ? '<i class="fas fa-external-link-alt external-link-icon"></i>' : ''}
+                switch (entry.type) {
+                    case 'tool':
+                        title = entry.name;
+                        subtitle = entry.url;
+                        description = entry.description;
+                        icon = 'fas fa-tools';
+                        // CORRECTED: Ensure faviconHtml is built correctly with an actual img tag
+                        faviconHtml = `<img src="${entry.favicon}" alt="" class="tool-favicon" onerror="this.src='https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}'">`;
+                        break;
+                    case 'email':
+                        title = entry.email;
+                        subtitle = entry.linkedPlatforms.join(', ') || 'No linked platforms';
+                        description = entry.notes;
+                        icon = 'fas fa-envelope';
+                        extraContent = entry.breachResults ? `<p style="color: var(--danger); font-size: 12px; margin-top: 5px;"><i class="fas fa-exclamation-triangle"></i> Breach: ${entry.breachResults}</p>` : '';
+                        break;
+                    case 'phone':
+                        title = entry.number;
+                        subtitle = `Type: ${entry.phoneType}`;
+                        description = entry.notes;
+                        icon = 'fas fa-phone';
+                        extraContent = entry.location ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-map-marker-alt"></i> ${entry.location}</p>` : '';
+                        break;
+                    case 'crypto':
+                        title = entry.address;
+                        subtitle = `TXID: ${entry.txid}`;
+                        description = `Amount: ${entry.amount} | Source: ${entry.source}`;
+                        icon = 'fas fa-coins';
+                        break;
+                    case 'location':
+                        title = entry.name;
+                        subtitle = `Coordinates: ${entry.coordinates}`;
+                        description = entry.notes;
+                        icon = 'fas fa-map-marker-alt';
+                        extraContent = entry.mapLink ? `<p style="font-size: 12px; margin-top: 5px;"><a href="${entry.mapLink}" target="_blank" style="color: var(--primary); text-decoration: none;"><i class="fas fa-external-link-alt"></i> View Map</a></p>` : '';
+                        extraContent += entry.ipGeoIntel ? `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">IP/Geo: ${entry.ipGeoIntel}</p>` : '';
+                        break;
+                    case 'link':
+                        title = entry.url;
+                        subtitle = entry.platform || 'General Link';
+                        description = entry.notes;
+                        icon = 'fas fa-link';
+                        try {
+                            faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
+                        } catch (e) {
+                            faviconHtml = '';
+                        }
+                        break;
+                    case 'media':
+                        title = entry.title;
+                        subtitle = entry.mediaType === 'image' ? 'Image' : 'Video';
+                        description = entry.notes;
+                        icon = entry.mediaType === 'image' ? 'fas fa-image' : 'fas fa-video';
+                        extraContent = entry.base64Data ? (entry.mediaType === 'image' ? `<img src="${entry.base64Data}" alt="Media thumbnail" style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;">` : `<video controls style="max-width: 100%; height: auto; border-radius: 8px; margin-top: 10px;"><source src="${entry.base64Data}" type="video/mp4"></video>`) : '';
+                        break;
+                    case 'password':
+                        title = entry.service;
+                        subtitle = `Username: ${entry.username || 'N/A'}`;
+                        description = `Password: ${entry.password} | Strength: ${entry.strength || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
+                        icon = 'fas fa-key';
+                        break;
+                    case 'keyword':
+                        title = entry.value;
+                        subtitle = `Context: ${entry.context || 'General'}`;
+                        description = entry.notes;
+                        icon = 'fas fa-font';
+                        break;
+                    case 'social':
+                        title = entry.username;
+                        subtitle = `Platform: ${entry.platform}`;
+                        description = `URL: ${entry.url}\nFollowers/Following: ${entry.followCounts || 'N/A'}\nNotes: ${entry.notes || 'N/A'}`;
+                        icon = 'fas fa-users';
+                        try {
+                            faviconHtml = `<img src="https://www.google.com/s2/favicons?domain=${new URL(entry.url).hostname}" alt="" class="tool-favicon">`;
+                        } catch (e) {
+                            faviconHtml = '';
+                        }
+                        break;
+                    default:
+                        title = entry.name || 'Unknown Entry';
+                        subtitle = '';
+                        description = '';
+                        icon = 'fas fa-question-circle';
+                }
+
+                // NEW: Add source and metadata to card if they exist
+                if (entry.source && entry.type !== 'tool') { // Only show source for non-tool entries
+                    extraContent += `<p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><i class="fas fa-satellite-dish"></i> Source: ${entry.source}</p>`;
+                }
+                if (entry.metadata && entry.metadata.length > 0) {
+                    extraContent += `<div style="font-size: 12px; color: var(--text-muted); margin-top: 5px;"><strong>Metadata:</strong>`;
+                    entry.metadata.forEach(meta => {
+                        extraContent += `<p style="margin-left: 10px;">- ${meta.key}: ${meta.value}</p>`;
+                    });
+                    extraContent += `</div>`;
+                }
+
+                return `
+                    <div class="tool-card ${entry.starred ? 'starred' : ''} ${entry.pinned ? 'pinned' : ''} ${isSelected ? 'selected' : ''}"
+                    data-entry-id="${entry.id}" data-entry-type="${entry.type}">
+                        <div class="tool-header">
+                            <div>
+                                <div class="tool-title">
+                                    <input type="checkbox" class="bulk-checkbox" ${isSelected ? 'checked' : ''}>
+                                    ${faviconHtml} <i class="${icon}" style="margin-right: 5px;"></i> <span>${title}</span>
+                                    ${originTagHtml} </div>
+                                <div class="tool-url">
+                                    <span>${subtitle}</span> ${entry.url && entry.type === 'tool' ? '<i class="fas fa-external-link-alt external-link-icon"></i>' : ''}
+                                </div>
+                            </div>
+                            <div class="tool-actions">
+                                <button class="action-btn" data-action="edit" title="Edit Entry">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn ${entry.starred ? 'starred' : ''}" data-action="star" title="Star Entry">
+                                    <i class="fas fa-star"></i>
+                                </button>
+                                <button class="action-btn ${entry.pinned ? 'pinned' : ''}" data-action="pin" title="Pin Entry">
+                                    <i class="fas fa-thumbtack"></i>
+                                </button>
+                                ${entry.url && entry.type === 'tool' ? `<button class="action-btn" data-action="visit" title="Visit Link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>` : ''}
+                                <button class="action-btn" data-action="delete" title="Delete Entry">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="tool-actions">
-                            <button class="action-btn" data-action="edit" title="Edit Entry">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn ${entry.starred ? 'starred' : ''}" data-action="star" title="Star Entry">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button class="action-btn ${entry.pinned ? 'pinned' : ''}" data-action="pin" title="Pin Entry">
-                                <i class="fas fa-thumbtack"></i>
-                            </button>
-                            ${entry.url && entry.type === 'tool' ? `<button class="action-btn" data-action="visit" title="Visit Link">
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>` : ''}
-                            <button class="action-btn" data-action="delete" title="Delete Entry">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">
+                            ${description}
+                        </p>
+                        ${extraContent}
+                        <div class="tool-tags">
+                            ${entry.tags ? entry.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
                         </div>
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">
-                        ${description}
-                    </p>
-                    ${extraContent}
-                    <div class="tool-tags">
-                        ${entry.tags ? entry.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-                    </div>
-                </div>
-            `;
-        }
+                `;
+            }
 
-        // Bind event listeners
-        function bindEvents() {
+// Bind event listeners
+function bindEvents() {
             // Search functionality
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 appState.filters.search = e.target.value;
@@ -5333,28 +5817,17 @@
                 appState.filters.sort = e.target.value;
                 renderIntelligenceEntries();
             });
-            // Main file to initialize and integrate the OSINT Handbook & Notes functionality
-
-            document.addEventListener('DOMContentLoaded', () => {
-            // When the DOM is loaded, check if we're on the Handbook tab
-            if (appState && appState.currentTab === 'handbook') {
-                initHandbookAndNotes();
-            }
             
-            // Add listener for tab changes
-            document.querySelectorAll('.nav-tab').forEach(tab => {
+            // Handbook and Notes subtab events (should be handled here if they exist)
+            document.querySelectorAll('.handbook-subtab').forEach(tab => {
                 tab.addEventListener('click', (e) => {
-                if (e.target.dataset.tab === 'handbook') {
-                    initHandbookAndNotes();
-                }
+                    const subtab = e.target.dataset.subtab;
+                    switchHandbookSubtab(subtab);
                 });
             });
-            });
-
 
             document.getElementById('addToolBtnEmptyState').addEventListener('click', () => {
-                document.getElementById('entryTypeSelect').value = 'tool';
-                showModal('addEntryModal');
+                openAddToolOnlyModal();
             });
 
             document.getElementById('addToolBtnIntelligenceVault').addEventListener('click', () => {
@@ -5378,29 +5851,62 @@
                 }
             });
 
-            // Tab navigation
+            // Main tab navigation (Delegated as they are always present)
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.addEventListener('click', (e) => {
                     switchTab(e.target.dataset.tab);
                 });
             });
 
-            // Intelligence Vault Sub-tabs
-            document.querySelectorAll('.intelligence-vault-sub-tab').forEach(subTab => {
-                subTab.addEventListener('click', (e) => {
-                    switchIntelligenceVaultSubTab(e.target.dataset.subTab);
-                });
-            });
 
-            // NEW: Custom Vault Entry Sub-tabs
-            document.querySelectorAll('.custom-vault-entry-sub-tab').forEach(subTab => {
-                subTab.addEventListener('click', (e) => {
-                    switchCustomVaultEntrySubTab(e.target.dataset.subTab);
+            // Custom Vault Entry Parent Tabs (Delegation)
+            const customVaultEntryParentTabsContainer = document.getElementById('customVaultEntryParentTabs');
+            if (customVaultEntryParentTabsContainer) {
+                customVaultEntryParentTabsContainer.addEventListener('click', (e) => {
+                    const tabBtn = e.target.closest('.custom-vault-entry-parent-tab');
+                    if (tabBtn && tabBtn.dataset.parentTab) {
+                        switchCustomVaultParentTab(tabBtn.dataset.parentTab);
+                    }
                 });
-            });
+            }
 
-            // Tool actions (now generic for all entries)
-            // Event delegation on the main content container to handle clicks on dynamically loaded tool cards
+            // Intelligence Vault Parent Tabs (Delegation)
+            const intelligenceVaultParentTabsContainer = document.getElementById('intelligenceVaultParentTabs');
+            if (intelligenceVaultParentTabsContainer) { // Ensure element exists
+                intelligenceVaultParentTabsContainer.addEventListener('click', (e) => {
+                    const tabBtn = e.target.closest('.intelligence-vault-parent-tab');
+                    if (tabBtn && tabBtn.dataset.parentTab) {
+                        switchIntelligenceVaultParentTab(tabBtn.dataset.parentTab);
+                    }
+                });
+            }
+
+            // --- ADD THIS MISSING BLOCK ---
+            // Intelligence Vault Child Tabs (Delegation - IMPORTANT!)
+            const intelligenceVaultChildTabsContainer = document.getElementById('intelligenceVaultChildTabs');
+            if (intelligenceVaultChildTabsContainer) { // Ensure element exists
+                intelligenceVaultChildTabsContainer.addEventListener('click', (e) => {
+                    const tabBtn = e.target.closest('.intelligence-vault-child-tab');
+                    if (tabBtn && tabBtn.dataset.childTab) {
+                        switchIntelligenceVaultChildTab(tabBtn.dataset.childTab);
+                    }
+                });
+            }
+            // --- END MISSING BLOCK ---
+
+            // Custom Vault Entry Child Tabs (Delegation)
+            const customVaultEntryChildTabsContainer = document.getElementById('customVaultEntryChildTabs');
+            if (customVaultEntryChildTabsContainer) { // Ensure element exists
+                customVaultEntryChildTabsContainer.addEventListener('click', (e) => {
+                    const tabBtn = e.target.closest('.custom-vault-entry-child-tab');
+                    if (tabBtn && tabBtn.dataset.childTab) {
+                        switchCustomVaultEntrySubTab(tabBtn.dataset.childTab);
+                    }
+                });
+            }
+
+
+            // Tool actions (now generic for all entries) - Event delegation on the main content containers
             document.getElementById('toolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('customTabToolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('intelligenceVaultEntries').addEventListener('click', handleEntryAction);
@@ -5410,12 +5916,10 @@
             document.getElementById('customTabToolsGrid').addEventListener('change', handleBulkSelection);
             document.getElementById('intelligenceVaultEntries').addEventListener('change', handleBulkSelection);
 
-
-            // Modal controls (Add New Entry)
-            // The addEntryBtn is now specific to Multi-Vault
+            // Modal controls (Add New Entry) - specific to Multi-Vault now
             document.getElementById('addEntryBtnCustomVault').addEventListener('click', () => {
-                // Default to 'email' or a relevant type for collected intelligence
-                document.getElementById('entryTypeSelect').value = 'email'; 
+                // Set the default entry type to 'tool' for the Multi-Vault "Add New Entry" modal
+                document.getElementById('entryTypeSelect').value = 'tool'; 
                 displayEntryForm();
                 showModal('addEntryModal');
             });
@@ -5436,6 +5940,29 @@
                     newCategoryInput.value = ''; // Clear input if not custom
                 }
             });
+            
+            // Intelligence Vault Category Search (for Add Tool modal)
+            const intelligenceVaultCategorySearchInputAdd = document.getElementById('intelligenceVaultCategorySearch');
+            if (intelligenceVaultCategorySearchInputAdd) {
+                intelligenceVaultCategorySearchInputAdd.addEventListener('input', (e) => {
+                    const currentSelections = Array.from(document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]:checked')).map(cb => cb.value);
+                    populateIntelligenceVaultCategoriesCheckboxesAddTool(currentSelections, e.target.value);
+                });
+            }
+
+            // Intelligence Vault Category Search (for EDIT Tool modal, using unique ID)
+            const intelligenceVaultCategorySearchInputEdit = document.getElementById('editIntelligenceVaultCategorySearch');
+            if (intelligenceVaultCategorySearchInputEdit) {
+                intelligenceVaultCategorySearchInputEdit.addEventListener('input', (e) => {
+                    // Get the tool ID from the hidden input in the edit modal
+                    const currentToolId = document.getElementById('editEntryId').value;
+                    const toolToEdit = appState.tools.find(t => t.id === currentToolId);
+                    if (toolToEdit) {
+                        // Pass the tool's original categories (before filtering) and the current search term
+                        populateIntelligenceVaultCategoriesCheckboxesEditTool(toolToEdit.intelligenceVaultCategories || [], e.target.value);
+                    }
+                });
+            }
 
             // Form submission (Add Entry)
             document.getElementById('addEntryForm').addEventListener('submit', handleAddEntry);
@@ -5471,7 +5998,6 @@
                 }
             });
 
-
             // Theme toggle
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
@@ -5496,6 +6022,8 @@
             document.getElementById('viewToggle').addEventListener('click', toggleViewMode);
             // Intelligence Vault View Toggle
             document.getElementById('vaultViewToggle').addEventListener('click', toggleViewMode); // Both can use the same toggle
+            //Multi Vault View Toggle
+            document.getElementById('customVaultViewToggle').addEventListener('click', toggleViewMode);
 
             // Refresh Threats button
             document.getElementById('refreshThreatsBtn').addEventListener('click', loadThreats);
@@ -5582,7 +6110,9 @@
 
         }
 
-        // NEW: Function to open the Add Tool Only Modal
+
+
+        // MODIFIED: Function to open the Add Tool Only Modal
         function openAddToolOnlyModal() {
             if (appState.readOnlyMode) {
                 showToast("Cannot add tools in read-only shared view.", "warning");
@@ -5590,11 +6120,20 @@
             }
             document.getElementById('addToolOnlyForm').reset();
             populateCategoryFilterForAddToolOnly();
-            populateIntelligenceVaultCategoriesCheckboxesAddTool();
 
-            document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]').forEach(checkbox => {
-                if (checkbox.value === appState.currentIntelligenceVaultSubTab) {
+            // Clear search input and populate with no search term
+            const intelligenceVaultCategorySearchInput = document.getElementById('intelligenceVaultCategorySearch');
+            if (intelligenceVaultCategorySearchInput) { // Safety check
+                intelligenceVaultCategorySearchInput.value = '';
+            }
+            populateIntelligenceVaultCategoriesCheckboxesAddTool([], ''); // Pass empty array for selections, empty string for search
+
+            // Pre-select the current Intelligence Vault child tab, if applicable
+            const checkboxes = document.querySelectorAll('#intelligenceVaultCategoriesCheckboxesAddTool input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.value === appState.currentIntelligenceVaultChildTab) {
                     checkbox.checked = true;
+                    // Manually add 'checked' class to the label for visual feedback
                     checkbox.closest('.custom-tab-checkbox').classList.add('checked');
                 } else {
                     checkbox.checked = false;
@@ -5639,183 +6178,225 @@
             toolCategorySelect.appendChild(customOptionAdd);
         }
 
-// NEW: Populate "Where to add" checkboxes for the Add Tool Only Modal
-    function populateIntelligenceVaultCategoriesCheckboxesAddTool(assignedCategories = []) {
-        const container = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
-        container.innerHTML = '';
+        // MODIFIED: Populate "Where to add" checkboxes for the Add Tool Only Modal
+        function populateIntelligenceVaultCategoriesCheckboxesAddTool(assignedCategories = [], searchTerm = '') {
+            // Correct ID for ADD modal's checkboxes container
+            const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
+            if (!checkboxesContainer) return; // Safety check
+            checkboxesContainer.innerHTML = '';
 
-        const intelligenceVaultCategories = [
-            {
-                id: 'tools',
-                name: 'General Tools',
-                icon: 'fas fa-tools'
-            },
-            {
-                id: 'emailTools',
-                name: 'Email Tools',
-                icon: 'fas fa-envelope'
-            },
-            {
-                id: 'phoneTools',
-                name: 'Phone Tools',
-                icon: 'fas fa-phone'
-            },
-            {
-                id: 'cryptoTools',
-                name: 'Crypto Tools',
-                icon: 'fas fa-coins'
-            },
-            {
-                id: 'locationTools',
-                name: 'Location Tools',
-                icon: 'fas fa-map-marker-alt'
-            },
-            {
-                id: 'linkTools',
-                name: 'Link Tools',
-                icon: 'fas fa-link'
-            },
-            {
-                id: 'mediaTools',
-                name: 'Media Tools',
-                icon: 'fas fa-camera'
-            },
-            {
-                id: 'passwordTools',
-                name: 'Password Tools',
-                icon: 'fas fa-key'
-            },
-            {
-                id: 'keywordTools',
-                name: 'Keyword Tools',
-                icon: 'fas fa-font'
-            },
-            {
-                id: 'socialTools',
-                name: 'Social Tools',
-                icon: 'fas fa-users'
-            },
-        ];
+            // IMPORTANT: This array must contain ALL child tabs from your intelligenceVaultTabStructure
+            const intelligenceVaultCategories = [
+                // From General & Core
+                { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+                { id: 'keywordTools', name: 'Keyword & Text Analysis', icon: 'fas fa-font' },
+                { id: 'aiTools', name: 'AI & Generative Tools', icon: 'fas fa-brain' },
+                { id: 'osintSearchEngines', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' },
+                { id: 'archivingTools', name: 'Archiving & Cache', icon: 'fas fa-archive' },
 
-        intelligenceVaultCategories.forEach(category => {
-            const isChecked = assignedCategories.includes(category.id);
-            const checkboxContainer = document.createElement('label');
-            checkboxContainer.classList.add('custom-tab-checkbox');
-            if (isChecked) checkboxContainer.classList.add('checked');
+                // From Identity & Social
+                { id: 'peopleSearchTools', name: 'People Search', icon: 'fas fa-id-card' },
+                { id: 'usernameTools', name: 'Usernames & Handles', icon: 'fas fa-at' },
+                { id: 'socialTools', name: 'Social Media Profiles', icon: 'fas fa-users' },
+                { id: 'emailTools', name: 'Email Investigations', icon: 'fas fa-envelope' },
+                { id: 'phoneTools', name: 'Phone Number Analysis', icon: 'fas fa-phone' },
+                { id: 'messagingApps', name: 'Messaging Apps & Comms', icon: 'fas fa-comment-dots' },
+                { id: 'datingApps', name: 'Dating Apps', icon: 'fas fa-heart' },
 
-            checkboxContainer.innerHTML = `
-                <input type="checkbox" class="intelligence-vault-category-checkbox-add-tool" value="${category.id}" ${isChecked ? 'checked' : ''}>
-                <i class="${category.icon}" style="margin-right: 5px;"></i>
-                <span>${category.name}</span>
-            `;
-            container.appendChild(checkboxContainer);
-        });
+                // From Technical Footprints
+                { id: 'domainIpUrlTools', name: 'Domain/IP/URL Analysis', icon: 'fas fa-link' },
+                { id: 'geoIntTools', name: 'GEOINT & Mapping', icon: 'fas fa-map-marker-alt' },
+                { id: 'cryptoTools', name: 'Crypto Wallets & Transactions', icon: 'fas fa-coins' },
+                { id: 'darkWebTools', name: 'DarkWeb & Hidden Services', icon: 'fas fa-mask' },
+                { id: 'metadataTools', name: 'Metadata Extractors', icon: 'fas fa-info' },
+                { id: 'networkAnalysis', name: 'Network & System Analysis', icon: 'fas fa-network-wired' },
+                { id: 'documentAnalysis', name: 'Document Analysis', icon: 'fas fa-file-alt' },
 
-        container.addEventListener('change', (e) => {
-            if (e.target.classList.contains('intelligence-vault-category-checkbox-add-tool')) {
-                const checkbox = e.target;
-                const label = checkbox.closest('.custom-tab-checkbox');
-                if (label) {
-                    label.classList.toggle('checked', checkbox.checked);
-                }
+                // From Cybersecurity Intel
+                { id: 'threatIntelligenceTools', name: 'Threat Intel Platforms', icon: 'fas fa-hand-fist' },
+                { id: 'vulnerabilityTools', name: 'Vulnerability Research', icon: 'fas fa-bug' },
+                { id: 'fileMalwareTools', name: 'File & Malware Analysis', icon: 'fas fa-file-code' },
+                { id: 'honeypotMonitoring', name: 'Honeypot Monitoring', icon: 'fas fa-honey-pot' },
+                { id: 'reverseEngineering', name: 'Reverse Engineering', icon: 'fas fa-cogs' },
+
+                // From Breach & Leaks
+                { id: 'passwordLeakTools', name: 'Password Leaks', icon: 'fas fa-key' },
+                { id: 'credentialLeakTools', name: 'Credential Dumps', icon: 'fas fa-cloud-download-alt' },
+                { id: 'dataBreachTools', name: 'Breached Databases', icon: 'fas fa-shield-virus' },
+                { id: 'dumpSearchTools', name: 'General Data Dumps', icon: 'fas fa-dumpster' },
+                { id: 'publicRecords', name: 'Public Records & Legal', icon: 'fas fa-scale-balanced' },
+
+                // From Underground Sources
+                { id: 'hackingForums', name: 'Hacking & Security Forums', icon: 'fas fa-user-secret' },
+                { id: 'exploitMarkets', name: 'Exploit & Malware Markets', icon: 'fas fa-store-alt' },
+                { id: 'vendorTracking', name: 'Underground Vendor Tracking', icon: 'fas fa-user-tag' },
+                { id: 'telegramChannels', name: 'Telegram Channels', icon: 'fab fa-telegram-plane' },
+                { id: 'pasteSites', name: 'Paste Sites', icon: 'fas fa-clipboard-list' },
+
+                // From Media Analysis
+                { id: 'imageAnalysis', name: 'Image Analysis & Forensics', icon: 'fas fa-camera' },
+                { id: 'videoAnalysis', name: 'Video Analysis', icon: 'fas fa-video' },
+                { id: 'audioAnalysis', name: 'Audio Analysis', icon: 'fas fa-volume-up' },
+                { id: 'facialRecognition', name: 'Facial Recognition', icon: 'fas fa-face-id-card' },
+                { id: 'geolocationMedia', name: 'Geolocation from Media', icon: 'fas fa-map-pin' },
+
+                // From Operational Security (OPSEC)
+                { id: 'anonymityTools', name: 'Anonymity & VPNs', icon: 'fas fa-mask' },
+                { id: 'privacyTools', name: 'Privacy Enhancing Tools', icon: 'fas fa-user-shield' },
+                { id: 'secureCommunication', name: 'Secure Communication', icon: 'fas fa-lock-open' },
+                { id: 'personaManagement', name: 'Persona Management', icon: 'fas fa-id-badge' },
+            ];
+
+            const filteredCategories = intelligenceVaultCategories.filter(category =>
+                category.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (filteredCategories.length === 0) {
+                checkboxesContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 10px;">No matching categories.</p>';
+                return;
             }
-        });
+
+            filteredCategories.forEach(category => {
+                const isChecked = assignedCategories.includes(category.id);
+                const checkboxContainer = document.createElement('label');
+                checkboxContainer.classList.add('custom-tab-checkbox');
+                if (isChecked) checkboxContainer.classList.add('checked');
+
+                checkboxContainer.innerHTML = `
+                    <input type="checkbox" class="intelligence-vault-category-checkbox-add-tool" value="${category.id}" ${isChecked ? 'checked' : ''}>
+                    <i class="${category.icon}" style="margin-right: 5px;"></i>
+                    <span>${category.name}</span>
+                `;
+                checkboxesContainer.appendChild(checkboxContainer);
+            });
+
+            // Add event listener only once, if it hasn't been added yet to the wrapper
+            const containerWrapper = document.getElementById('intelligenceVaultCategoriesAssignmentAddTool'); // Correct ID for ADD modal wrapper
+            if (containerWrapper && !containerWrapper.dataset.listenerAdded) {
+                containerWrapper.addEventListener('change', (e) => {
+                    if (e.target.classList.contains('intelligence-vault-category-checkbox-add-tool')) {
+                        const checkbox = e.target;
+                        const label = checkbox.closest('.custom-tab-checkbox');
+                        if (label) {
+                            label.classList.toggle('checked', checkbox.checked);
+                        }
+                    }
+                });
+                containerWrapper.dataset.listenerAdded = 'true'; // Mark as added
+            }
+        }
+// MODIFIED: populateIntelligenceVaultCategoriesCheckboxesEditTool (simplified listener attachment)
+function populateIntelligenceVaultCategoriesCheckboxesEditTool(assignedCategories = [], searchTerm = '') {
+    const container = document.getElementById('intelligenceVaultCategoriesAssignmentEditTool');
+    if (!container) return;
+    container.style.display = 'block';
+
+    const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesEditTool');
+    if (!checkboxesContainer) return;
+    checkboxesContainer.innerHTML = ''; // Clear previous checkboxes
+
+    // IMPORTANT: This array must contain ALL child tabs from your intelligenceVaultTabStructure
+    const intelligenceVaultCategories = [
+        // From General & Core
+        { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+        { id: 'keywordTools', name: 'Keyword & Text Analysis', icon: 'fas fa-font' },
+        { id: 'aiTools', name: 'AI & Generative Tools', icon: 'fas fa-brain' },
+        { id: 'osintSearchEngines', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' },
+        { id: 'archivingTools', name: 'Archiving & Cache', icon: 'fas fa-archive' },
+
+        // From Identity & Social
+        { id: 'peopleSearchTools', name: 'People Search', icon: 'fas fa-id-card' },
+        { id: 'usernameTools', name: 'Usernames & Handles', icon: 'fas fa-at' },
+        { id: 'socialTools', name: 'Social Media Profiles', icon: 'fas fa-users' },
+        { id: 'emailTools', name: 'Email Investigations', icon: 'fas fa-envelope' },
+        { id: 'phoneTools', name: 'Phone Number Analysis', icon: 'fas fa-phone' },
+        { id: 'messagingApps', name: 'Messaging Apps & Comms', icon: 'fas fa-comment-dots' },
+        { id: 'datingApps', name: 'Dating Apps', icon: 'fas fa-heart' },
+
+        // From Technical Footprints
+        { id: 'domainIpUrlTools', name: 'Domain/IP/URL Analysis', icon: 'fas fa-link' },
+        { id: 'geoIntTools', name: 'GEOINT & Mapping', icon: 'fas fa-map-marker-alt' },
+        { id: 'cryptoTools', name: 'Crypto Wallets & Transactions', icon: 'fas fa-coins' },
+        { id: 'darkWebTools', name: 'DarkWeb & Hidden Services', icon: 'fas fa-mask' },
+        { id: 'metadataTools', name: 'Metadata Extractors', icon: 'fas fa-info' },
+        { id: 'networkAnalysis', name: 'Network & System Analysis', icon: 'fas fa-network-wired' },
+        { id: 'documentAnalysis', name: 'Document Analysis', icon: 'fas fa-file-alt' },
+
+        // From Cybersecurity Intel
+        { id: 'threatIntelligenceTools', name: 'Threat Intel Platforms', icon: 'fas fa-hand-fist' },
+        { id: 'vulnerabilityTools', name: 'Vulnerability Research', icon: 'fas fa-bug' },
+        { id: 'fileMalwareTools', name: 'File & Malware Analysis', icon: 'fas fa-file-code' },
+        { id: 'honeypotMonitoring', name: 'Honeypot Monitoring', icon: 'fas fa-honey-pot' },
+        { id: 'reverseEngineering', name: 'Reverse Engineering', icon: 'fas fa-cogs' },
+
+        // From Breach & Leaks
+        { id: 'passwordLeakTools', name: 'Password Leaks', icon: 'fas fa-key' },
+        { id: 'credentialLeakTools', name: 'Credential Dumps', icon: 'fas fa-cloud-download-alt' },
+        { id: 'dataBreachTools', name: 'Breached Databases', icon: 'fas fa-shield-virus' },
+        { id: 'dumpSearchTools', name: 'General Data Dumps', icon: 'fas fa-dumpster' },
+        { id: 'publicRecords', name: 'Public Records & Legal', icon: 'fas fa-scale-balanced' },
+
+        // From Underground Sources
+        { id: 'hackingForums', name: 'Hacking & Security Forums', icon: 'fas fa-user-secret' },
+        { id: 'exploitMarkets', name: 'Exploit & Malware Markets', icon: 'fas fa-store-alt' },
+        { id: 'vendorTracking', name: 'Underground Vendor Tracking', icon: 'fas fa-user-tag' },
+        { id: 'telegramChannels', name: 'Telegram Channels', icon: 'fab fa-telegram-plane' },
+        { id: 'pasteSites', name: 'Paste Sites', icon: 'fas fa-clipboard-list' },
+
+        // From Media Analysis
+        { id: 'imageAnalysis', name: 'Image Analysis & Forensics', icon: 'fas fa-camera' },
+        { id: 'videoAnalysis', name: 'Video Analysis', icon: 'fas fa-video' },
+        { id: 'audioAnalysis', name: 'Audio Analysis', icon: 'fas fa-volume-up' },
+        { id: 'facialRecognition', name: 'Facial Recognition', icon: 'fas fa-face-id-card' },
+        { id: 'geolocationMedia', name: 'Geolocation from Media', icon: 'fas fa-map-pin' },
+
+        // From Operational Security (OPSEC)
+        { id: 'anonymityTools', name: 'Anonymity & VPNs', icon: 'fas fa-mask' },
+        { id: 'privacyTools', name: 'Privacy Enhancing Tools', icon: 'fas fa-user-shield' },
+        { id: 'secureCommunication', name: 'Secure Communication', icon: 'fas fa-lock-open' },
+        { id: 'personaManagement', name: 'Persona Management', icon: 'fas fa-id-badge' },
+    ];
+
+    const filteredCategories = intelligenceVaultCategories.filter(category =>
+        category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filteredCategories.length === 0) {
+        checkboxesContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 10px;">No matching categories.</p>';
+        return;
     }
 
-    // NEW: Function to populate Intelligence Vault Categories Checkboxes for Edit Tool Modal
-    function populateIntelligenceVaultCategoriesCheckboxesEditTool(assignedCategories) {
-        const container = document.getElementById('intelligenceVaultCategoriesAssignmentAddTool');
-        container.style.display = 'block'; // Ensure it's visible in the edit modal
+    filteredCategories.forEach(category => {
+        const isChecked = assignedCategories.includes(category.id);
+        const checkboxContainer = document.createElement('label');
+        checkboxContainer.classList.add('custom-tab-checkbox');
+        if (isChecked) checkboxContainer.classList.add('checked');
 
-        const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
-        checkboxesContainer.innerHTML = ''; // Clear previous checkboxes
+        checkboxContainer.innerHTML = `
+            <input
+                type="checkbox"
+                class="intelligence-vault-category-checkbox-edit-tool"
+                value="${category.id}"
+                ${isChecked ? 'checked' : ''}
+            >
+            <i class="${category.icon}" style="margin-right: 5px;"></i>
+            <span>${category.name}</span>
+        `;
+        checkboxesContainer.appendChild(checkboxContainer);
+    });
 
-        const intelligenceVaultCategories = [
-            {
-                id: 'tools',
-                name: 'General Tools',
-                icon: 'fas fa-tools'
-            },
-            {
-                id: 'emailTools',
-                name: 'Email Tools',
-                icon: 'fas fa-envelope'
-            },
-            {
-                id: 'phoneTools',
-                name: 'Phone Tools',
-                icon: 'fas fa-phone'
-            },
-            {
-                id: 'cryptoTools',
-                name: 'Crypto Tools',
-                icon: 'fas fa-coins'
-            },
-            {
-                id: 'locationTools',
-                name: 'Location Tools',
-                icon: 'fas fa-map-marker-alt'
-            },
-            {
-                id: 'linkTools',
-                name: 'Link Tools',
-                icon: 'fas fa-link'
-            },
-            {
-                id: 'mediaTools',
-                name: 'Media Tools',
-                icon: 'fas fa-camera'
-            },
-            {
-                id: 'passwordTools',
-                name: 'Password Tools',
-                icon: 'fas fa-key'
-            },
-            {
-                id: 'keywordTools',
-                name: 'Keyword Tools',
-                icon: 'fas fa-font'
-            },
-            {
-                id: 'socialTools',
-                name: 'Social Tools',
-                icon: 'fas fa-users'
-            },
-        ];
-
-        intelligenceVaultCategories.forEach(category => {
-            const isChecked = assignedCategories.includes(category.id);
-            const checkboxContainer = document.createElement('label');
-            checkboxContainer.classList.add('custom-tab-checkbox');
-            if (isChecked) checkboxContainer.classList.add('checked');
-
-            checkboxContainer.innerHTML = `
-                <input
-                    type="checkbox"
-                    class="intelligence-vault-category-checkbox-edit-tool"
-                    value="${category.id}"
-                    ${isChecked ? 'checked' : ''}
-                >
-                <i class="${category.icon}" style="margin-right: 5px;"></i>
-                <span>${category.name}</span>
-            `;
-            checkboxesContainer.appendChild(checkboxContainer);
-        });
-
-        // Avoid attaching multiple listeners
-        checkboxesContainer.addEventListener('change', (e) => {
-            if (e.target.classList.contains('intelligence-vault-category-checkbox-edit-tool')) {
-                const checkbox = e.target;
-                const label = checkbox.closest('.custom-tab-checkbox');
-                if (label) {
-                    label.classList.toggle('checked', checkbox.checked);
-                }
+    // Attach event listener directly to the checkboxesContainer.
+    // This will replace the existing elements, so the old listeners are implicitly removed.
+    checkboxesContainer.addEventListener('change', (e) => {
+        if (e.target.classList.contains('intelligence-vault-category-checkbox-edit-tool')) {
+            const checkbox = e.target;
+            const label = checkbox.closest('.custom-tab-checkbox');
+            if (label) {
+                label.classList.toggle('checked', checkbox.checked);
             }
-        }, {
-            once: true
-        }); // Ensures this listener is attached only once
-    }
-
+        }
+    });
+}
 // NEW: Handle adding a new tool from the dedicated Intelligence Vault modal
     async function handleAddToolOnly(e) {
         e.preventDefault();
@@ -6114,7 +6695,7 @@
 
         // Switch main tabs
         function switchTab(tabName) {
-            // Update tab buttons
+            // Update main tab buttons
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -6122,8 +6703,8 @@
             if (targetTabBtn) {
                 targetTabBtn.classList.add('active');
             }
-            
-            // Update tab content
+
+            // Update tab content visibility
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
@@ -6131,41 +6712,81 @@
             if (targetTabContent) {
                  targetTabContent.classList.add('active');
             }
-           
+
+            // Update appState and clear filters for new tab
             appState.currentTab = tabName;
-            appState.filters.category = ''; // Clear category filter when switching main tabs
+            appState.filters.category = '';
             document.getElementById('categoryFilter').value = '';
-            appState.filters.search = ''; // Clear search when switching main tabs
+            appState.filters.search = '';
             document.getElementById('searchInput').value = '';
 
-            // Handle specific tab initializations
-            if (tabName === 'threats') {
-                loadThreats();
+            // Hide all potential sub-tab containers and add entry buttons by default
+            // This ensures a clean slate before showing relevant ones
+            document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
+            document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
+            document.getElementById('customVaultEntryParentTabs').style.display = 'none';
+            document.getElementById('customVaultEntryChildTabs').style.display = 'none';
+            document.getElementById('addEntryBtnCustomVault').style.display = 'none';
+            document.getElementById('addToolBtnIntelligenceVault').style.display = 'none'; 
+
+            // Specific logic for each main tab
+            if (tabName === 'intelligence-vault') {
+                document.getElementById('intelligenceVaultParentTabs').style.display = 'flex'; // Show parent tabs
+                renderIntelligenceVaultParentTabs(); // This will populate parent tabs and activate current one
+
+                // This will then call switchIntelligenceVaultParentTab which will render and activate children
+                // and switchIntelligenceVaultChildTab will be called from there.
+                // Ensure a valid parent is selected, default if current one is invalid
+                const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
+                if (!currentIntelParent) {
+                    appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
+                }
+                // Call switchIntelligenceVaultParentTab to trigger child tab rendering and activation
+                switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
+
+
+                // Show the "Add New Tool" button
+                if (!appState.readOnlyMode) {
+                    document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
+                }
+
+            } else if (tabName === 'custom-tabs') {
+                renderCustomTabs(); // Render main custom tabs (the list of custom vaults)
+
+                // Only proceed to render/switch parent/child entry tabs if custom vaults exist
+                if (appState.customTabs.length > 0) {
+                    document.getElementById('customVaultEntryParentTabs').style.display = 'flex'; // Show parent tabs for entries
+                    renderCustomVaultParentTabs(); // Render custom vault entry parent tabs
+
+                    // Ensure a valid parent is selected, default if current one is invalid
+                    const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
+                    if (!currentCustomParent) {
+                        appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
+                    }
+                    // Ensure a valid child is selected under the current parent, default if invalid
+                    const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
+                    if (!currentCustomChild) {
+                        appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
+                    }
+                    // Now, switch to the determined parent and then its child
+                    switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
+
+                    // Show the "Add New Entry" button for custom vaults
+                    if (!appState.readOnlyMode) {
+                        document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
+                    }
+                }
+
             } else if (tabName === 'analytics') {
                 updateAnalytics();
-            } else if (tabName === 'custom-tabs') {
-                renderCustomTabs(); // Render sub-tabs when custom tab is active
-                // If there are custom tabs, activate the first one by default if none is selected
-                if (appState.customTabs.length > 0 && !appState.currentCustomTab) {
-                    appState.currentCustomTab = appState.customTabs[0].id;
-                }
-                switchCustomTab(appState.currentCustomTab); // Render tools for the active custom tab
-                // Show the nested entry sub-tabs for custom vaults
-                document.getElementById('customVaultEntrySubTabs').style.display = 'flex';
-                // Activate the default 'tools' sub-tab within custom vault entries
-                switchCustomVaultEntrySubTab('tools'); 
-                // Show the "Add New Entry" button for custom vaults
-                document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
-
-            } else if (tabName === 'intelligence-vault') {
-                 switchIntelligenceVaultSubTab(appState.currentIntelligenceVaultSubTab);
-                 // Hide the nested entry sub-tabs for custom vaults
-                 document.getElementById('customVaultEntrySubTabs').style.display = 'none';
-                 // Hide the "Add New Entry" button for intelligence vault (it's handled by Add New Tool)
-                 document.getElementById('addEntryBtnCustomVault').style.display = 'none';
+            } else if (tabName === 'threats') {
+                loadThreats();
+            } else if (tabName === 'handbook') {
+                initHandbookAndNotes(); // Ensure handbook and notes are initialized
             }
-            renderIntelligenceEntries(); // Re-render entries based on new tab context
-            saveState();
+
+            renderIntelligenceEntries(); // Always re-render entries relevant to the currently active main tab
+            saveState(); // Save state after tab switch
         }
 
         // Switch Intelligence Vault Sub-tabs (now show tools)
@@ -6184,16 +6805,25 @@
             saveState();
         }
 
-        // NEW: Switch Custom Vault Entry Sub-tabs (now show collected evidence)
-        function switchCustomVaultEntrySubTab(subTabName) {
-            document.querySelectorAll('.custom-vault-entry-sub-tab').forEach(tab => {
+        // MODIFIED: Switch Custom Vault Entry Child Sub-tabs (now show collected evidence)
+        function switchCustomVaultEntrySubTab(childTabName) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
+
+            // Deactivate all child tabs
+            document.querySelectorAll('.custom-vault-entry-child-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            const targetSubTabBtn = document.querySelector(`.custom-vault-entry-sub-tab[data-sub-tab="${subTabName}"]`);
-            if (targetSubTabBtn) {
-                targetSubTabBtn.classList.add('active');
+
+            // Activate the clicked child tab
+            const targetChildTabBtn = document.querySelector(`.custom-vault-entry-child-tab[data-child-tab="${childTabName}"]`);
+            if (targetChildTabBtn) {
+                targetChildTabBtn.classList.add('active');
             }
-            appState.currentCustomVaultEntrySubTab = subTabName;
+
+            appState.currentCustomVaultEntrySubTab = childTabName;
             // When switching entry sub-tabs in a custom vault, clear tool category filter as it's not applicable
             appState.filters.category = '';
             document.getElementById('categoryFilter').value = '';
@@ -6201,9 +6831,89 @@
             saveState();
         }
 
+        
+        // NEW: Render Custom Vault Parent Tabs
+        function renderCustomVaultParentTabs() {
+            const parentTabsContainer = document.getElementById('customVaultEntryParentTabs');
+            if (!parentTabsContainer) return;
+
+            parentTabsContainer.innerHTML = customVaultEntryStructure.map(parentTab => `
+                <button class="nav-tab custom-vault-entry-parent-tab" data-parent-tab="${parentTab.id}">
+                    <i class="${parentTab.icon}"></i>
+                    ${parentTab.name}
+                </button>
+            `).join('');
+
+            // Add event listeners for parent tabs (delegation handled in bindEvents)
+
+            // Activate the currently selected parent tab
+            const activeParentBtn = document.querySelector(`.custom-vault-entry-parent-tab[data-parent-tab="${appState.currentCustomVaultParentTab}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
+            }
+        }
+
+        // NEW: Switch Custom Vault Parent Tab
+        function switchCustomVaultParentTab(parentId) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot switch categories in read-only shared view.", "warning");
+                return;
+            }
+
+            // Deactivate all parent tabs
+            document.querySelectorAll('.custom-vault-entry-parent-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Activate the clicked parent tab
+            const activeParentBtn = document.querySelector(`.custom-vault-entry-parent-tab[data-parent-tab="${parentId}"]`);
+            if (activeParentBtn) {
+                activeParentBtn.classList.add('active');
+            }
+
+            appState.currentCustomVaultParentTab = parentId;
+
+            // Find the selected parent tab's children
+            const selectedParent = customVaultEntryStructure.find(p => p.id === parentId);
+            const childTabsContainer = document.getElementById('customVaultEntryChildTabs');
+
+            if (selectedParent && childTabsContainer) {
+                childTabsContainer.style.display = 'flex'; // Show the child tabs container
+                childTabsContainer.innerHTML = selectedParent.children.map(childTab => `
+                    <button class="sub-nav-tab custom-vault-entry-child-tab" data-child-tab="${childTab.id}">
+                        <i class="${childTab.icon}"></i> ${childTab.name}
+                    </button>
+                `).join('');
+
+                // Remove existing child tab listeners (already handled by bindEvents delegation)
+
+                // Automatically activate the first child tab or the previously selected child tab under this parent
+                let childToActivate = appState.currentCustomVaultEntrySubTab;
+                if (!selectedParent.children.some(c => c.id === childToActivate)) {
+                    childToActivate = selectedParent.children[0]?.id; // Default to first child if current is not in this parent
+                }
+                if (childToActivate) {
+                    switchCustomVaultEntrySubTab(childToActivate);
+                } else {
+                    // No child tabs for this parent, clear display
+                    appState.currentCustomVaultEntrySubTab = null;
+                    appState.filters.category = '';
+                    renderIntelligenceEntries();
+                }
+
+            } else {
+                childTabsContainer.style.display = 'none'; // Hide if no children or container not found
+                appState.currentCustomVaultEntrySubTab = null;
+                appState.filters.category = '';
+                renderIntelligenceEntries();
+            }
+
+            saveState(); // Save the parent tab state
+        }
+
 
         // Load threat intelligence
-function loadThreats() {
+        function loadThreats() {
             const threatsList = document.getElementById('threatsList');
             const mockThreats = [
                 {
@@ -6467,7 +7177,7 @@ function loadThreats() {
             }
         }
 
-// Handle adding a new entry (tool, email, etc.)
+    // Handle adding a new entry (tool, email, etc.)
     async function handleAddEntry(e) {
         e.preventDefault();
         if (appState.readOnlyMode) {
@@ -6483,7 +7193,8 @@ function loadThreats() {
             pinned: false,
             lastUsed: 0,
             addedDate: new Date(),
-            customTabs: [] // Initialize with empty array
+            customTabs: [], // Initialize with empty array
+            origin: 'user-added' // <--- Set this for user-added tools
         };
 
         // Collect custom metadata
@@ -6958,7 +7669,7 @@ function loadThreats() {
                 saveState();
             }
 
-        // Open the Edit Entry Modal and populate fields
+        // MODIFIED: Open the Edit Entry Modal and populate fields
         function openEditEntryModal(entry) {
             if (appState.readOnlyMode) {
                 showToast("Cannot edit entries in read-only shared view.", "warning");
@@ -6999,7 +7710,15 @@ function loadThreats() {
                     document.getElementById('editToolCategory').value = entry.category;
                     document.getElementById('editToolDescription').value = entry.description;
                     document.getElementById('editToolTags').value = entry.tags ? entry.tags.join(', ') : '';
-                    populateIntelligenceVaultCategoriesCheckboxesEditTool(entry.intelligenceVaultCategories || []);
+
+                    // NEW: Clear EDIT modal's search input and populate its checkboxes
+                    const editVaultCategorySearchInput = document.getElementById('editIntelligenceVaultCategorySearch');
+                    if (editVaultCategorySearchInput) { // Safety check
+                        editVaultCategorySearchInput.value = ''; // Clear search input
+                    }
+                    // Pass the tool's current assigned categories to populate the checkboxes
+                    populateIntelligenceVaultCategoriesCheckboxesEditTool(entry.intelligenceVaultCategories || [], '');
+
                     // Handle custom category selection
                     const editNewCategoryInput = document.getElementById('editNewCategoryInput');
                     if (!document.getElementById('editToolCategory').value) { // If category is not in dropdown, it's custom
@@ -7076,9 +7795,6 @@ function loadThreats() {
                     document.getElementById('editMediaBase64Data').value = entry.base64Data || ''; // Store existing base64
                     // Add required attributes for visible media fields
                     document.getElementById('editMediaTitle').setAttribute('required', 'required');
-                    // Note: File input itself usually doesn't need 'required' if base64Data might exist
-                    // If you want to force a file upload on *every* media edit, you'd add:
-                    // document.getElementById('editMediaFile').setAttribute('required', 'required');
                     break;
                 case 'password':
                     fieldsToShow = ['editPasswordFields', 'editEntrySourceGroup', 'editCustomMetadataGroup'];
@@ -7119,10 +7835,8 @@ function loadThreats() {
 
             // Ensure source field is marked required if it's visible and needs to be
             if (fieldsToShow.includes('editEntrySourceGroup')) {
-                // Determine if the source input itself *should* be required.
-                // In this context, it's not explicitly required in the original code,
-                // but if you wanted it to be for certain types, you'd add it here.
-                // Example: document.getElementById('editEntrySource').setAttribute('required', 'required');
+                // You can uncomment and adjust this if you want source to be required for specific types
+                // document.getElementById('editEntrySource').setAttribute('required', 'required');
             }
 
             // Ensure metadata fields are marked required if they are visible
@@ -7132,7 +7846,6 @@ function loadThreats() {
                     row.querySelector('.metadata-value').setAttribute('required', 'required');
                 });
             }
-
 
             // Populate custom tab assignment checkboxes
             populateCustomTabAssignmentCheckboxes(entry.customTabs || []);
@@ -7145,7 +7858,7 @@ function loadThreats() {
             const container = document.getElementById('intelligenceVaultCategoriesAssignmentAddTool');
             container.style.display = 'block'; // Ensure it's visible in the edit modal
 
-            const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesAddTool');
+            const checkboxesContainer = document.getElementById('intelligenceVaultCategoriesCheckboxesEditTool');
             checkboxesContainer.innerHTML = ''; // Clear previous checkboxes
 
             const intelligenceVaultCategories = [
@@ -7159,6 +7872,11 @@ function loadThreats() {
                 { id: 'passwordTools', name: 'Password Tools', icon: 'fas fa-key' },
                 { id: 'keywordTools', name: 'Keyword Tools', icon: 'fas fa-font' },
                 { id: 'socialTools', name: 'Social Tools', icon: 'fas fa-users' },
+                { id: 'darkWebTools', name: 'DarkWeb Tools', icon: 'fas fa-mask' },
+                { id: 'vulnerabilityTools', name: 'Vulnerability Tools', icon: 'fas fa-bug' },
+                { id: 'fileMalwareTools', name: 'File/Malware Tools', icon: 'fas fa-file-code' },
+                { id: 'threatIntelligenceTools', name: 'Threat Intelligence Tools', icon: 'fas fa-shield-alt' },
+                { id: 'aiTools', name: 'AI Tools', icon: 'fas fa-brain' }
             ];
 
             intelligenceVaultCategories.forEach(category => {
@@ -7189,7 +7907,8 @@ function loadThreats() {
                         label.classList.toggle('checked', checkbox.checked);
                     }
                 }
-            }, { once: true }); // Ensures this listener is attached only once
+            }, 
+        ); // Ensures this listener is attached only once
         }
 
 
@@ -7288,7 +8007,41 @@ function loadThreats() {
             }
             appState.viewMode = appState.viewMode === 'grid' ? 'list' : 'grid';
             localStorage.setItem('viewMode', appState.viewMode); // Save view mode preference
-            renderIntelligenceEntries();
+
+            // Update text and icon for both toggle buttons
+            const viewToggleButton = document.getElementById('viewToggle');
+            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
+            const customVaultViewToggleButton = document.getElementById('customVaultViewToggle'); // NEW
+
+            if (appState.viewMode === 'grid') {
+                if (viewToggleButton) {
+                    viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    viewToggleButton.title = 'Switch to List View';
+                }
+                if (vaultViewToggleButton) {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    vaultViewToggleButton.title = 'Switch to List View';
+                }
+                if (customVaultViewToggleButton) { // NEW
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    customVaultViewToggleButton.title = 'Switch to List View';
+                }
+            } else {
+                if (viewToggleButton) {
+                    viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    viewToggleButton.title = 'Switch to Grid View';
+                }
+                if (vaultViewToggleButton) {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    vaultViewToggleButton.title = 'Switch to Grid View';
+                }
+                if (customVaultViewToggleButton) { // NEW
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    customVaultViewToggleButton.title = 'Switch to Grid View';
+                }
+            }
+
+            renderIntelligenceEntries(); // This function will now apply the correct view to the active tab's grid/list.
             showToast(`Switched to ${appState.viewMode} view.`);
         }
 
@@ -9688,12 +10441,7 @@ function loadThreats() {
             const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return weekNo;
         }
-        
 
-        /////above is right handbook and notes functions////
-
-        
-        // Initialize the app when the DOM is fully loaded
         // Initialize handbook and notes functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize handbook functionality
@@ -9713,5 +10461,4 @@ function loadThreats() {
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
-</html>                          
-    
+</html>
