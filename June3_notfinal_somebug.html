@@ -4460,19 +4460,19 @@
         const intelligenceVaultTabStructure = [
         {
             id: 'generalAndCore',
-            name: 'General & Core',
+            name: 'General',
             icon: 'fas fa-globe-americas',
             children: [
                 { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
                 { id: 'keywordTools', name: 'Keyword & Text Analysis', icon: 'fas fa-font' },
-                { id: 'aiTools', name: 'AI & Generative Tools', icon: 'fas fa-brain' },
+                { id: 'aiTools', name: 'AI & Generative', icon: 'fas fa-brain' },
                 { id: 'osintSearchEngines', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' }, // NEW
                 { id: 'archivingTools', name: 'Archiving & Cache', icon: 'fas fa-archive' }, // NEW
             ]
         },
         {
             id: 'identityAndSocial',
-            name: 'Identity & Social',
+            name: 'Identity/Social',
             icon: 'fas fa-users',
             children: [
                 { id: 'peopleSearchTools', name: 'People Search', icon: 'fas fa-id-card' },
@@ -4486,7 +4486,7 @@
         },
         {
             id: 'technicalFootprints',
-            name: 'Technical Footprints',
+            name: 'Footprints',
             icon: 'fas fa-fingerprint',
             children: [
                 { id: 'domainIpUrlTools', name: 'Domain/IP/URL Analysis', icon: 'fas fa-link' }, // Name adjusted for clarity
@@ -4500,7 +4500,7 @@
         },
         {
             id: 'cybersecurityIntel',
-            name: 'Cybersecurity Intel',
+            name: 'Threat Intel',
             icon: 'fas fa-shield-alt',
             children: [
                 { id: 'threatIntelligenceTools', name: 'Threat Intel Platforms', icon: 'fas fa-hand-fist' },
@@ -4512,7 +4512,7 @@
         },
         {
             id: 'breachAndLeaks',
-            name: 'Breach & Leaks',
+            name: 'Breach/Leaks',
             icon: 'fas fa-database',
             children: [
                 { id: 'passwordLeakTools', name: 'Password Leaks', icon: 'fas fa-key' }, // Renamed from passwordTools
@@ -4524,7 +4524,7 @@
         },
         {
             id: 'undergroundSources',
-            name: 'Underground Sources',
+            name: 'Forums/Markets',
             icon: 'fas fa-user-ninja',
             children: [
                 { id: 'hackingForums', name: 'Hacking & Security Forums', icon: 'fas fa-user-secret' }, // Name adjusted
@@ -4537,7 +4537,7 @@
         // NEW PARENT CATEGORY: Media Analysis
         {
             id: 'mediaAnalysis',
-            name: 'Media Analysis',
+            name: 'Media',
             icon: 'fas fa-image',
             children: [
                 { id: 'imageAnalysis', name: 'Image Analysis & Forensics', icon: 'fas fa-camera' }, // Moved from Identity & Social
@@ -4550,7 +4550,7 @@
         // NEW PARENT CATEGORY: Operational Security (OPSEC)
         {
             id: 'opsec',
-            name: 'Operational Security',
+            name: 'OpSec',
             icon: 'fas fa-lock',
             children: [
                 { id: 'anonymityTools', name: 'Anonymity & VPNs', icon: 'fas fa-mask' }, // Broadening DarkWebTools concept
@@ -4563,43 +4563,106 @@
 
         const customVaultEntryStructure = [
             {
-                id: 'coreInvestigations',
-                name: 'Core Investigations',
-                icon: 'fas fa-search',
+                id: 'coreInvestigation',
+                name: 'General',
+                icon: 'fas fa-globe-americas',
                 children: [
-                    { id: 'tools', name: 'Tools', icon: 'fas fa-tools' },
-                    { id: 'keywords', name: 'Keywords', icon: 'fas fa-font' },
-                    { id: 'links', name: 'Domain/IP', icon: 'fas fa-globe' }
+                    { id: 'tools', name: 'General Tools', icon: 'fas fa-tools' },
+                    { id: 'keywords', name: 'Keyword & Text Analysis', icon: 'fas fa-font' },
+                    { id: 'ai', name: 'AI & Generative', icon: 'fas fa-brain' },
+                    { id: 'osintSearch', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' }, // NEW
+                    { id: 'archiving', name: 'Archiving & Cache', icon: 'fas fa-archive' }, // NEW
                 ]
             },
             {
-                id: 'identityCommunications',
-                name: 'Identity & Communications',
-                icon: 'fas fa-id-card',
+                id: 'identityCommunication',
+                name: 'Identity/Social',
+                icon: 'fas fa-users',
                 children: [
-                    { id: 'emails', name: 'Emails', icon: 'fas fa-envelope' },
-                    { id: 'phones', name: 'Phones', icon: 'fas fa-phone' },
-                    { id: 'socials', name: 'Socials', icon: 'fas fa-users' }
+                    { id: 'peopleSearch', name: 'People Search', icon: 'fas fa-id-card' },
+                    { id: 'username', name: 'Usernames & Handles', icon: 'fas fa-at' },
+                    { id: 'socials', name: 'Social Media Profiles', icon: 'fas fa-users' },
+                    { id: 'email', name: 'Email Investigations', icon: 'fas fa-envelope' },
+                    { id: 'phone', name: 'Phone Number Analysis', icon: 'fas fa-phone' },
+                    { id: 'messaging', name: 'Messaging Apps & Comms', icon: 'fas fa-comment-dots' }, // NEW
+                    { id: 'dating', name: 'Dating Apps', icon: 'fas fa-heart' }, // NEW
                 ]
             },
             {
-                id: 'digitalTraces',
-                name: 'Digital Traces',
+                id: 'digitalTrace',
+                name: 'Footprints',
                 icon: 'fas fa-fingerprint',
                 children: [
-                    { id: 'media', name: 'Media', icon: 'fas fa-camera' },
-                    { id: 'crypto', name: 'Crypto', icon: 'fas fa-coins' },
-                    { id: 'locations', name: 'Locations', icon: 'fas fa-map-marker-alt' }
+                    { id: 'domainIpUrl', name: 'Domain/IP/URL Analysis', icon: 'fas fa-link' }, // Name adjusted for clarity
+                    { id: 'geoInt', name: 'GEOINT & Mapping', icon: 'fas fa-map-marker-alt' },
+                    { id: 'crypto', name: 'Crypto Wallets & Transactions', icon: 'fas fa-coins' }, // Name adjusted
+                    { id: 'darkWeb', name: 'DarkWeb & Hidden Services', icon: 'fas fa-mask' }, // Name adjusted
+                    { id: 'metadata', name: 'Metadata Extractors', icon: 'fas fa-info' },
+                    { id: 'network', name: 'Network & System Analysis', icon: 'fas fa-network-wired' }, // NEW
+                    { id: 'document', name: 'Document Analysis', icon: 'fas fa-file-alt' }, // NEW
                 ]
             },
             {
-                id: 'sensitiveData',
-                name: 'Sensitive Data',
+                id: 'cyberIntel',
+                name: 'Threat Intel',
+                icon: 'fas fa-shield-alt',
+                children: [
+                    { id: 'threatIntelligence', name: 'Threat Intel Platforms', icon: 'fas fa-hand-fist' },
+                    { id: 'vulnerability', name: 'Vulnerability Research', icon: 'fas fa-bug' },
+                    { id: 'fileMalware', name: 'File & Malware Analysis', icon: 'fas fa-file-code' },
+                    { id: 'honeypotMonitor', name: 'Honeypot Monitoring', icon: 'fas fa-honey-pot' }, // NEW (Font Awesome 6)
+                    { id: 'reverseEngineer', name: 'Reverse Engineering', icon: 'fas fa-cogs' }, // NEW
+                ]
+            },
+            {
+                id: 'breachAndLeak',
+                name: 'Breach/Leaks',
+                icon: 'fas fa-database',
+                children: [
+                    { id: 'passwordLeak', name: 'Password Leaks', icon: 'fas fa-key' }, // Renamed from passwordTools
+                    { id: 'credentialLeak', name: 'Credential Dumps', icon: 'fas fa-cloud-download-alt' },
+                    { id: 'dataBreach', name: 'Breached Databases', icon: 'fas fa-shield-virus' },
+                    { id: 'dumpSearch', name: 'General Data Dumps', icon: 'fas fa-dumpster' }, // Renamed from Dump Search Engines
+                    { id: 'publicRecord', name: 'Public Records & Legal', icon: 'fas fa-scale-balanced' }, // NEW (Font Awesome 6)
+                ]
+            },
+            {
+                id: 'undergroundSource',
+                name: 'Forums/Markets',
+                icon: 'fas fa-user-ninja',
+                children: [
+                    { id: 'hackingForum', name: 'Hacking & Security Forums', icon: 'fas fa-user-secret' }, // Name adjusted
+                    { id: 'exploitMarket', name: 'Exploit & Malware Markets', icon: 'fas fa-store-alt' },
+                    { id: 'vendorTrack', name: 'Underground Vendor Tracking', icon: 'fas fa-user-tag' },
+                    { id: 'telegramChannel', name: 'Telegram Channels', icon: 'fab fa-telegram-plane' }, // NEW (Font Awesome Brands)
+                    { id: 'pasteSite', name: 'Paste Sites', icon: 'fas fa-clipboard-list' }, // NEW
+                ]
+            },
+            // NEW PARENT CATEGORY: Media Analysis
+            {
+                id: 'mediaAnalyse',
+                name: 'Media',
+                icon: 'fas fa-image',
+                children: [
+                    { id: 'imageAnalyse', name: 'Image Analysis & Forensics', icon: 'fas fa-camera' }, // Moved from Identity & Social
+                    { id: 'videoAnalyse', name: 'Video Analysis', icon: 'fas fa-video' }, // NEW
+                    { id: 'audioAnalyse', name: 'Audio Analysis', icon: 'fas fa-volume-up' }, // NEW
+                    { id: 'facialRecogn', name: 'Facial Recognition', icon: 'fas fa-face-id-card' }, // NEW (Font Awesome 6)
+                    { id: 'geolocate', name: 'Geolocation from Media', icon: 'fas fa-map-pin' }, // NEW
+                ]
+            },
+            // NEW PARENT CATEGORY: Operational Security (OPSEC)
+            {
+                id: 'opsecurity',
+                name: 'OpSec',
                 icon: 'fas fa-lock',
                 children: [
-                    { id: 'passwords', name: 'Passwords', icon: 'fas fa-key' }
+                    { id: 'anonymity', name: 'Anonymity & VPNs', icon: 'fas fa-mask' }, // Broadening DarkWebTools concept
+                    { id: 'privacy', name: 'Privacy Enhancing Tools', icon: 'fas fa-user-shield' }, // NEW
+                    { id: 'secureComm', name: 'Secure Communication', icon: 'fas fa-lock-open' }, // NEW
+                    { id: 'personaManage', name: 'Persona Management', icon: 'fas fa-id-badge' }, // NEW
                 ]
-            }
+            },
         ];
 
 
@@ -5181,6 +5244,40 @@
                 appState.passwords = parsedState.passwords || [];
                 appState.keywords = parsedState.keywords || [];
                 appState.socials = parsedState.socials || [];
+                appState.peopleSearch = parsedState.peopleSearch || [];
+                appState.username = parsedState.username || [];
+                appState.messaging = parsedState.messaging || [];
+                appState.dating = parsedState.dating || [];
+                appState.domainIpUrl = parsedState.domainIpUrl || [];
+                appState.geoInt = parsedState.geoInt || [];
+                appState.darkWeb = parsedState.darkWeb || [];
+                appState.metadata = parsedState.metadata || [];
+                appState.network = parsedState.network || [];
+                appState.threatIntelligence = parsedState.threatIntelligence || [];
+                appState.vulnerability = parsedState.vulnerability || [];
+                appState.fileMalware = parsedState.fileMalware || [];
+                appState.honeypotMonitor = parsedState.honeypotMonitor || [];
+                appState.reverseEngineer = parsedState.reverseEngineer || [];
+                appState.passwordLeak = parsedState.passwordLeak || [];
+                appState.credentialLeak = parsedState.credentialLeak || [];
+                appState.dataBreach = parsedState.dataBreach || [];
+                appState.dumpSearch = parsedState.dumpSearch || [];
+                appState.publicRecord = parsedState.publicRecord || [];
+                appState.hackingForum = parsedState.hackingForum || [];
+                appState.exploitMarket = parsedState.exploitMarket || [];
+                appState.vendorTrack = parsedState.vendorTrack || [];
+                appState.telegramChannel = parsedState.telegramChannel || [];
+                appState.pasteSite = parsedState.pasteSite || [];
+                appState.imageAnalyse = parsedState.imageAnalyse || [];
+                appState.videoAnalyse = parsedState.videoAnalyse || [];
+                appState.audioAnalyse = parsedState.audioAnalyse || [];
+                appState.facialRecogn = parsedState.facialRecogn || [];
+                appState.geolocate = parsedState.geolocate || [];
+                appState.anonymity = parsedState.anonymity || [];
+                appState.privacy = parsedState.privacy || [];
+                appState.secureComm = parsedState.secureComm || [];
+                appState.personaManage = parsedState.personaManage|| [];
+
 
                 appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
                 appState.filters = parsedState.filters || {
