@@ -17,7 +17,7 @@ OSINTVault is a powerful, lightweight, and responsive single-page web applicatio
 | Advanced Search & Filters | Multimedia Intelligence | Copyable Code Blocks |
 | Dork Playground | Metadata & Persona Logging | Editable Handbook Sections |
 | Usage Analytics | Cross-Linking Entries | Searchable Content |
-| Threat Intelligence Feed | Exportable Vaults | Local Storage Persistence |
+| Exportable Vaults | Local Storage Persistence |
 
 ---
 
@@ -70,15 +70,6 @@ Track how you work:
 - 🏆 Top 5 Most Used Tools
 - ❌ Tools Never Used
 - 📊 Weekly Growth Graph (Tools Added)
-
----
-
-## 🔥 Threat Intelligence Feed
-
-Stay updated (mock feed):
-
-- Live-style alerts with severity indicators
-- Title, description, tags, and a 🔁 Refresh button
 
 ---
 
