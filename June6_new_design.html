@@ -30,6 +30,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="./favicon.png" type="image/x-icon">
+
     <style>
         /* Refined Color Palette & Variables */
         :root {
@@ -2075,14 +2076,16 @@
                 font-size: 12px; /* Further reduce font size */
             }
 
-            /* NEW/MODIFIED: Toast Notifications for small screens */
+            #toast-container {
+                top: auto;
+                bottom: 20px; /* Appear from the bottom on mobile */
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                align-items: center; /* Center items for stacked appearance */
+            }
             .toast {
-                left: 50%; /* Center horizontally */
-                right: auto; /* Override existing 'right' property */
-                transform: translateX(-50%); /* Adjust for horizontal centering */
-                width: calc(100% - 40px); /* Take up most of the width with some padding */
-                max-width: 350px; /* Limit maximum width on slightly larger phones */
-                text-align: center; /* Center text within the toast */
+                text-align: center; /* Center text within the toast on mobile */
             }
         }
 
@@ -2195,11 +2198,23 @@
         }
 
 
-        /* Toast Notifications */
-        .toast {
+        /* Toast Notifications Container */
+        #toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
+            z-index: 1002; /* Ensure it's above individual toasts */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Space between toasts */
+            align-items: flex-end; /* Align toasts to the right */
+        }
+
+        /* Existing .toast styles remain the same, but remove fixed positioning, right, and top */
+        .toast {
+            /* position: fixed;  REMOVE THIS LINE */
+            /* top: 20px;       REMOVE THIS LINE */
+            /* right: 20px;     REMOVE THIS LINE */
             background: var(--success);
             color: white;
             padding: 15px 20px;
@@ -2210,6 +2225,11 @@
             opacity: 0;
             transform: translateX(100%);
             transition: all 0.3s ease;
+            /* NEW: Adjust width for better readability on smaller screens, keeping desktop reasonable */
+            max-width: 350px;
+            width: 100%; /* Take full width of max-width */
+            box-sizing: border-box; /* Include padding/border in width calculation */
+            text-align: left; /* Default text alignment */
         }
 
         .toast.show {
@@ -4117,69 +4137,68 @@
         }
     </style>
 </head>
-<body>
-    <header>
-        <div class="header-content">
-            <div class="logo-and-title-container">
-                <div class="header-logo">
-                    <img src="./favicon.png" alt="OSINTVault Logo" class="osintvault-logo-img">
-                </div>
-                <div class="header-text-group">
-                    <div class="header-title">
-                        OSINTVault
+    <body>
+        <header>
+            <div class="header-content">
+                <div class="logo-and-title-container">
+                    <div class="header-logo">
+                        <img src="./favicon.png" alt="OSINTVault Logo" class="osintvault-logo-img">
                     </div>
-                    <span class="header-tagline">Carry your investigations everywhere</span>
+                    <div class="header-text-group">
+                        <div class="header-title">
+                            OSINTVault
+                        </div>
+                        <span class="header-tagline">Carry your investigations everywhere</span>
+                    </div>
+                </div>
+                
+                <!-- ADD MOBILE MENU TOGGLE -->
+                <div class="mobile-menu-toggle">☰</div>
+                <div class="controls">
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search intelligence tools, techniques, indicators...">
+                        <i class="fas fa-search search-icon"></i>
+                        <select id="searchScopeSelect">
+                            <option value="currentTab">Current Tab</option>
+                            <option value="allVault">All Intelligence Vault</option>
+                            <option value="allData">All Data</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn btn-secondary" id="shareOptionsBtn">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                    <button class="btn btn-secondary" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
-            <!-- ADD THIS LINE -->
-            
-            <!-- ADD MOBILE MENU TOGGLE -->
-            <div class="mobile-menu-toggle">☰</div>
-            <div class="controls">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search intelligence tools, techniques, indicators...">
-                    <i class="fas fa-search search-icon"></i>
-                    <select id="searchScopeSelect">
-                        <option value="currentTab">Current Tab</option>
-                        <option value="allVault">All Intelligence Vault</option>
-                        <option value="allData">All Data</option>
-                    </select>
-                </div>
-                <button class="btn btn-secondary" id="exportBtn">
-                    <i class="fas fa-download"></i>
-                    Export
-                </button>
-                <button class="btn btn-secondary" id="shareOptionsBtn">
-                    <i class="fas fa-share-alt"></i>
-                    Share
-                </button>
-                <button class="btn btn-secondary" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+        </header>
 
         <div class="stats-bar">
             <div class="stat-item">
-                <i class="fas fa-tools"></i>
-                <span>Tools:</span>
-                <span class="stat-value" id="totalTools">0</span>
+                <i class="fas fa-database"></i>
+                <span>Total Entries:</span>
+                <span class="stat-value" id="totalEntriesStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-folder"></i>
-                <span>Categories:</span>
-                <span class="stat-value" id="totalCategories">0</span>
+                <i class="fas fa-layer-group"></i>
+                <span>Custom Vaults:</span>
+                <span class="stat-value" id="totalCustomVaultsStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-star"></i>
-                <span>Starred:</span>
-                <span class="stat-value" id="starredToolsCount">0</span>
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes:</span>
+                <span class="stat-value" id="totalNotesStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-thumbtack"></i>
-                <span>Pinned:</span>
-                <span class="stat-value" id="pinnedToolsCount">0</span>
+                <i class="fas fa-terminal"></i>
+                <span>Saved Dorks:</span>
+                <span class="stat-value" id="totalSavedDorksStat">0</span>
             </div>
         </div>
 
@@ -4244,17 +4263,16 @@
 
             <div class="main-content">
                 <div class="nav-tabs main-nav-tabs">
-                    <button class="nav-tab active" data-tab="intelligence-vault">
+                    <button class="nav-tab active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </button>
+                    <button class="nav-tab" data-tab="intelligence-vault">
                         <i class="fas fa-tools"></i>
                         Intelligence Vault
                     </button>
                     <button class="nav-tab" data-tab="custom-tabs">
                         <i class="fas fa-layer-group"></i>
                         Multi-Vault
-                    </button>
-                    <button class="nav-tab" data-tab="analytics">
-                        <i class="fas fa-chart-bar"></i>
-                        Analytics
                     </button>
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -4309,45 +4327,130 @@
                     </div>
                 </div>
 
-                <div class="tab-content" id="analyticsTab">
+                <div class="tab-content active" id="dashboardTab">
                     <div class="content-header">
-                        <h2 class="content-title">Usage Analytics</h2>
+                        <h2 class="content-title">Dashboard Overview</h2>
                     </div>
-                    
+                
                     <div class="analytics-grid">
                         <div class="analytics-card">
-                            <div class="analytics-value" id="toolsUsed">0</div>
-                            <div>Tools Used Today</div>
+                            <div class="analytics-value" id="totalToolsCount">0</div>
+                            <div>Total Entries</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="activeVaultsCount">0</div>
+                            <div>Active Custom Vaults</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="usedToolsTodayCount">0</div>
+                            <div>Entries Used Today</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="notesCount">0</div>
+                            <div>Total Notes</div>
                         </div>
                     </div>
-
-                    <div class="analytics-section">
-                        <h4>Top 5 Most Used Tools</h4>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Overall OSINT Metrics</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="entriesByTypeChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="usageTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Vault Content Distribution</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="topCategoriesChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="pinnedStarredDonutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Vault Growth & Health</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="entryGrowthOverTimeChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="taggingOverviewChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Starred & Pinned Breakdown by Type</h4>
+                        <ul class="analytics-list" id="starredPinnedBreakdownList">
+                            </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Intelligence Vault Summary (Tools)</h4>
+                        <ul class="analytics-list" id="intelligenceVaultSummaryList">
+                            <li><span>Total Tools:</span> <span class="stat-value" id="intelVaultTotalTools">0</span></li>
+                            <li><span>Starred Tools:</span> <span class="stat-value" id="intelVaultStarredTools">0</span></li>
+                            <li><span>Pinned Tools:</span> <span class="stat-value" id="intelVaultPinnedTools">0</span></li>
+                            <li><span>Tool Categories:</span> <span class="stat-value" id="intelVaultCategoriesCount">0</span></li>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Custom Vaults Summary</h4>
+                        <ul class="analytics-list" id="customVaultsSummaryList">
+                            <li><span>Total Custom Vaults:</span> <span class="stat-value" id="customVaultsTotal">0</span></li>
+                            <li><span>Total Entries in Custom Vaults:</span> <span class="stat-value" id="customVaultsTotalEntries">0</span></li>
+                            <li><span>Avg. Entries per Custom Vault:</span> <span class="stat-value" id="customVaultsAvgEntries">0</span></li>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px; margin-top: 20px;">
+                                <canvas id="entriesPerCustomVaultChart"></canvas>
+                            </div>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Notes & Dork Assistant Summary</h4>
+                        <ul class="analytics-list" id="notesDorkSummaryList">
+                            <li><span>Total Notes:</span> <span class="stat-value" id="notesSummaryTotal">0</span></li>
+                            <li><span>Pinned Notes:</span> <span class="stat-value" id="notesSummaryPinned">0</span></li>
+                            <li><span>Total Saved Dork Queries:</span> <span class="stat-value" id="dorksSummaryTotal">0</span></li>
+                            <li><span>Pre-Templates Available:</span> <span class="stat-value" id="dorksSummaryTemplates">0</span></li>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Top 5 Most Used Entries</h4>
                         <ul class="analytics-list" id="mostUsedToolsList">
                             </ul>
                         <div class="empty-state" id="noMostUsedTools" style="display:none; padding:20px;">
                             <p>No usage data available yet.</p>
                         </div>
                     </div>
-
+                
                     <div class="analytics-section">
-                        <h4>Tools Never Used</h4>
+                        <h4>Entries Never Used</h4>
                         <ul class="analytics-list" id="neverUsedToolsList">
                             </ul>
                         <div class="empty-state" id="noNeverUsedTools" style="display:none; padding:20px;">
-                            <p>All tools have been used at least once!</p>
+                            <p>All entries have been used at least once!</p>
                         </div>
                     </div>
-
-                     <div class="analytics-section">
-                        <h4>Tools Added Per Week</h4>
+                
+                    <div class="analytics-section">
+                        <h4>Entries Added Per Week</h4>
                         <ul class="analytics-list" id="toolsAddedPerWeekList">
                             </ul>
                         <div class="empty-state" id="noToolsAdded" style="display:none; padding:20px;">
-                            <p>No tools added recently.</p>
+                            <p>No entries added recently.</p>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="tab-content" id="threatsTab">
@@ -7559,7 +7662,7 @@
             exploits: [], // Added
             publicRecords: [], // Added
             selectedEntries: new Set(),
-            currentTab: 'intelligence-vault',
+            currentTab: 'dashboard',
             currentIntelligenceVaultParentTab: 'generalAndCore', // Ensure this is a valid default ID from intelligenceVaultTabStructure
             currentIntelligenceVaultChildTab: 'tools', // Ensure this is a valid default ID from intelligenceVaultTabStructure
             currentCustomVaultEntrySubTab: 'tool', // Changed to singular 'tool' for custom vault entry types
@@ -8349,9 +8452,9 @@
 
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['intelligence-vault', 'custom-tabs', 'analytics', 'threats', 'handbook'];
+            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'analytics', 'threats', 'handbook', 'dork-assistant'];
             if (!validTabs.includes(appState.currentTab)) {
-                appState.currentTab = 'intelligence-vault'; // Default to intelligence-vault if invalid
+                appState.currentTab = 'dashboard'; // Default to intelligence-vault if invalid
             }
 
             // Call switchTab to set up the initial active tab and its content
@@ -8360,7 +8463,7 @@
             // Re-render all necessary parts that depend on the initial state
             showRandomDiscovery();
             populateCategoryFilter();
-            updateAnalytics(); // Ensure analytics are up to date
+            updateDashboard(); // Ensure analytics are up to date
             applyReadOnlyMode(); // Apply read-only mode if shared link is active
 
             // Update view toggle buttons based on saved view mode
@@ -8457,7 +8560,7 @@
                 }
 
             } else if (tabName === 'analytics') {
-                updateAnalytics();
+                updateDashboard();
             } else if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'handbook') {
@@ -8583,140 +8686,140 @@
             saveState(); // Save the child tab state
         }
 
-// MODIFIED: loadState function to correctly parse all new entry types
-function loadState() {
-    const savedState = localStorage.getItem('osintArsenalState');
-    if (savedState) {
-        const parsedState = JSON.parse(savedState);
+        // MODIFIED: loadState function to correctly parse all new entry types
+        function loadState() {
+            const savedState = localStorage.getItem('osintArsenalState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
 
-        // Map and ensure Date objects and default values for all existing types
-        appState.tools = (parsedState.tools || []).map(entry => ({
-            ...entry,
-            addedDate: new Date(entry.addedDate),
-            lastUsed: entry.lastUsed || 0,
-            customTabs: entry.customTabs || [],
-            intelligenceVaultCategories: entry.intelligenceVaultCategories || [],
-            origin: entry.origin || 'user-added'
-        }));
-        appState.emails = (parsedState.emails || []).map(entry => ({ ...entry, linkedPlatforms: entry.linkedPlatforms || [] }));
-        appState.phones = parsedState.phones || [];
-        appState.crypto = (parsedState.crypto || []).map(entry => ({ ...entry, amount: parseFloat(entry.amount) || 0 }));
-        appState.locations = parsedState.locations || [];
-        appState.links = parsedState.links || [];
-        appState.media = (parsedState.media || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
-        appState.passwords = parsedState.passwords || [];
-        appState.keywords = parsedState.keywords || [];
-        appState.socials = parsedState.socials || [];
+                // Map and ensure Date objects and default values for all existing types
+                appState.tools = (parsedState.tools || []).map(entry => ({
+                    ...entry,
+                    addedDate: new Date(entry.addedDate),
+                    lastUsed: entry.lastUsed || 0,
+                    customTabs: entry.customTabs || [],
+                    intelligenceVaultCategories: entry.intelligenceVaultCategories || [],
+                    origin: entry.origin || 'user-added'
+                }));
+                appState.emails = (parsedState.emails || []).map(entry => ({ ...entry, linkedPlatforms: entry.linkedPlatforms || [] }));
+                appState.phones = parsedState.phones || [];
+                appState.crypto = (parsedState.crypto || []).map(entry => ({ ...entry, amount: parseFloat(entry.amount) || 0 }));
+                appState.locations = parsedState.locations || [];
+                appState.links = parsedState.links || [];
+                appState.media = (parsedState.media || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
+                appState.passwords = parsedState.passwords || [];
+                appState.keywords = parsedState.keywords || [];
+                appState.socials = parsedState.socials || [];
 
-        // Add all new entry types here, ensuring they are initialized as arrays and correctly parsed
-        appState.domains = parsedState.domains || [];
-        appState.usernames = parsedState.usernames || [];
-        appState.threats = parsedState.threats || [];
-        appState.vulnerabilities = (parsedState.vulnerabilities || []).map(entry => ({ ...entry, cvss: parseFloat(entry.cvss) || 0 }));
-        appState.malware = parsedState.malware || [];
-        appState.breaches = (parsedState.breaches || []).map(entry => ({ ...entry, records: parseInt(entry.records) || 0 }));
-        appState.credentials = parsedState.credentials || [];
-        appState.forums = parsedState.forums || [];
-        appState.vendors = parsedState.vendors || [];
-        appState.telegramChannels = (parsedState.telegramChannels || []).map(entry => ({ ...entry, subscribers: parseInt(entry.subscribers) || 0 }));
-        appState.pastes = parsedState.pastes || [];
-        appState.documents = parsedState.documents || [];
-        appState.networks = parsedState.networks || [];
-        appState.metadataEntries = parsedState.metadataEntries || [];
-        appState.archives = (parsedState.archives || []).map(entry => ({ ...entry, timestamp: entry.timestamp ? new Date(entry.timestamp).getTime() : null }));
-        appState.messagingApps = parsedState.messagingApps || [];
-        appState.datingProfiles = (parsedState.datingProfiles || []).map(entry => ({ ...entry, age: parseInt(entry.age) || null }));
-        appState.audioEntries = (parsedState.audioEntries || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
-        appState.facialRecognition = parsedState.facialRecognition || [];
-        appState.personas = parsedState.personas || [];
-        appState.vpns = parsedState.vpns || [];
-        appState.honeypots = parsedState.honeypots || [];
-        appState.exploits = parsedState.exploits || [];
-        appState.publicRecords = parsedState.publicRecords || [];
+                // Add all new entry types here, ensuring they are initialized as arrays and correctly parsed
+                appState.domains = parsedState.domains || [];
+                appState.usernames = parsedState.usernames || [];
+                appState.threats = parsedState.threats || [];
+                appState.vulnerabilities = (parsedState.vulnerabilities || []).map(entry => ({ ...entry, cvss: parseFloat(entry.cvss) || 0 }));
+                appState.malware = parsedState.malware || [];
+                appState.breaches = (parsedState.breaches || []).map(entry => ({ ...entry, records: parseInt(entry.records) || 0 }));
+                appState.credentials = parsedState.credentials || [];
+                appState.forums = parsedState.forums || [];
+                appState.vendors = parsedState.vendors || [];
+                appState.telegramChannels = (parsedState.telegramChannels || []).map(entry => ({ ...entry, subscribers: parseInt(entry.subscribers) || 0 }));
+                appState.pastes = parsedState.pastes || [];
+                appState.documents = parsedState.documents || [];
+                appState.networks = parsedState.networks || [];
+                appState.metadataEntries = parsedState.metadataEntries || [];
+                appState.archives = (parsedState.archives || []).map(entry => ({ ...entry, timestamp: entry.timestamp ? new Date(entry.timestamp).getTime() : null }));
+                appState.messagingApps = parsedState.messagingApps || [];
+                appState.datingProfiles = (parsedState.datingProfiles || []).map(entry => ({ ...entry, age: parseInt(entry.age) || null }));
+                appState.audioEntries = (parsedState.audioEntries || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
+                appState.facialRecognition = parsedState.facialRecognition || [];
+                appState.personas = parsedState.personas || [];
+                appState.vpns = parsedState.vpns || [];
+                appState.honeypots = parsedState.honeypots || [];
+                appState.exploits = parsedState.exploits || [];
+                appState.publicRecords = parsedState.publicRecords || [];
 
-        appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
-        appState.filters = parsedState.filters || {
-            category: '',
-            search: '',
-            sort: 'name',
-            searchScope: 'currentTab'
-        };
-        appState.theme = parsedState.theme || 'dark';
-        appState.viewMode = parsedState.viewMode || 'grid';
-        appState.usageStats = parsedState.usageStats || {
-            toolsUsedToday: 0
-        };
-        appState.customTabs = parsedState.customTabs || [];
-        // Ensure currentCustomTab points to a valid tab if customTabs exist
-        appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+                appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
+                appState.filters = parsedState.filters || {
+                    category: '',
+                    search: '',
+                    sort: 'name',
+                    searchScope: 'currentTab'
+                };
+                appState.theme = parsedState.theme || 'dark';
+                appState.viewMode = parsedState.viewMode || 'grid';
+                appState.usageStats = parsedState.usageStats || {
+                    toolsUsedToday: 0
+                };
+                appState.customTabs = parsedState.customTabs || [];
+                // Ensure currentCustomTab points to a valid tab if customTabs exist
+                appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
 
-        // Ensure parent/child tabs exist and have valid defaults if needed
-        appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
-        appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
-        appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
-        appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool'; // Changed to 'tool' (singular)
+                // Ensure parent/child tabs exist and have valid defaults if needed
+                appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
+                appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
+                appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool'; // Changed to 'tool' (singular)
 
-        // CRUCIAL PART: Merge default tools after loading saved state
-        defaultTools.forEach(defaultTool => {
-            const exists = appState.tools.some(tool => tool.id === defaultTool.id);
-            if (!exists) {
-                appState.tools.push({ ...defaultTool, addedDate: new Date(defaultTool.addedDate), origin: 'pre-added' });
+                // CRUCIAL PART: Merge default tools after loading saved state
+                defaultTools.forEach(defaultTool => {
+                    const exists = appState.tools.some(tool => tool.id === defaultTool.id);
+                    if (!exists) {
+                        appState.tools.push({ ...defaultTool, addedDate: new Date(defaultTool.addedDate), origin: 'pre-added' });
+                    }
+                });
+
+            } else {
+                // If no saved state exists (first-time user), initialize with default tools and empty new arrays
+                appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
+                appState.customTabs = [{
+                    id: generateId(),
+                    name: 'My First Vault',
+                    toolIds: [],
+                    icon: 'fas fa-folder',
+                    color: 'var(--tab-color-default)'
+                }];
+                appState.currentCustomTab = appState.customTabs[0]?.id || null;
+
+                appState.currentIntelligenceVaultParentTab = 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = 'tools';
+                appState.currentCustomVaultParentTab = 'coreInvestigation';
+                appState.currentCustomVaultEntrySubTab = 'tool';
+
+                // Initialize all new arrays as empty if no saved state
+                appState.emails = [];
+                appState.phones = [];
+                appState.crypto = [];
+                appState.locations = [];
+                appState.links = [];
+                appState.media = [];
+                appState.passwords = [];
+                appState.keywords = [];
+                appState.socials = [];
+                appState.domains = [];
+                appState.usernames = [];
+                appState.threats = [];
+                appState.vulnerabilities = [];
+                appState.malware = [];
+                appState.breaches = [];
+                appState.credentials = [];
+                appState.forums = [];
+                appState.vendors = [];
+                appState.telegramChannels = [];
+                appState.pastes = [];
+                appState.documents = [];
+                appState.networks = [];
+                appState.metadataEntries = [];
+                appState.archives = [];
+                appState.messagingApps = [];
+                appState.datingProfiles = [];
+                appState.audioEntries = [];
+                appState.facialRecognition = [];
+                appState.personas = [];
+                appState.vpns = [];
+                appState.honeypots = [];
+                appState.exploits = [];
+                appState.publicRecords = [];
             }
-        });
-
-    } else {
-        // If no saved state exists (first-time user), initialize with default tools and empty new arrays
-        appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
-        appState.customTabs = [{
-            id: generateId(),
-            name: 'My First Vault',
-            toolIds: [],
-            icon: 'fas fa-folder',
-            color: 'var(--tab-color-default)'
-        }];
-        appState.currentCustomTab = appState.customTabs[0]?.id || null;
-
-        appState.currentIntelligenceVaultParentTab = 'generalAndCore';
-        appState.currentIntelligenceVaultChildTab = 'tools';
-        appState.currentCustomVaultParentTab = 'coreInvestigation';
-        appState.currentCustomVaultEntrySubTab = 'tool';
-
-        // Initialize all new arrays as empty if no saved state
-        appState.emails = [];
-        appState.phones = [];
-        appState.crypto = [];
-        appState.locations = [];
-        appState.links = [];
-        appState.media = [];
-        appState.passwords = [];
-        appState.keywords = [];
-        appState.socials = [];
-        appState.domains = [];
-        appState.usernames = [];
-        appState.threats = [];
-        appState.vulnerabilities = [];
-        appState.malware = [];
-        appState.breaches = [];
-        appState.credentials = [];
-        appState.forums = [];
-        appState.vendors = [];
-        appState.telegramChannels = [];
-        appState.pastes = [];
-        appState.documents = [];
-        appState.networks = [];
-        appState.metadataEntries = [];
-        appState.archives = [];
-        appState.messagingApps = [];
-        appState.datingProfiles = [];
-        appState.audioEntries = [];
-        appState.facialRecognition = [];
-        appState.personas = [];
-        appState.vpns = [];
-        appState.honeypots = [];
-        appState.exploits = [];
-        appState.publicRecords = [];
-    }
-}
+        }
 
         
 
@@ -8725,15 +8828,25 @@ function loadState() {
             localStorage.setItem('osintArsenalState', JSON.stringify(appState));
         }
 
-        // Update statistics
         function updateStats() {
-            // Include new types in allEntries
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-            const categories = new Set(appState.tools.map(tool => tool.category)); // Only tools have categories for now
-            document.getElementById('totalTools').textContent = allEntries.length; // Count all entries, not just tools
-            document.getElementById('totalCategories').textContent = categories.size;
-            document.getElementById('starredToolsCount').textContent = allEntries.filter(entry => entry.starred).length;
-            document.getElementById('pinnedToolsCount').textContent = allEntries.filter(entry => entry.pinned).length;
+            // Combine all entries from all types for total entries
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // These IDs are for the top-level stats bar
+            document.getElementById('totalEntriesStat').textContent = allEntries.length;
+            document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
+            document.getElementById('totalNotesStat').textContent = notesState.notes.length;
+            document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
         }
 
         // Populate category filter and Add Tool modal
@@ -10267,7 +10380,7 @@ function handleEntryAction(e) {
             if (entry.url) { // Check for .url property instead of just entry.type === 'tool'
                 entry.lastUsed = Date.now(); // Update lastUsed timestamp
                 appState.usageStats.toolsUsedToday++; // Increment usage stat (generic for now)
-                updateAnalytics(); // Update analytics display
+                updateDashboard(); // Update analytics display
                 window.open(entry.url, '_blank');
                 showToast('Opening link...');
             } else {
@@ -10543,7 +10656,7 @@ function bulkAction(action) {
                 }
 
             } else if (tabName === 'analytics') {
-                updateAnalytics();
+                updateDashboard();
             } else if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'handbook') {
@@ -10739,14 +10852,573 @@ function bulkAction(action) {
 
         }
 
-        // Update analytics data (display)
-        function updateAnalytics() {
-            document.getElementById('toolsUsed').textContent = appState.usageStats.toolsUsedToday;
+        function updateDashboard() {
+            // Define allEntries at the start of the function, combining all relevant appState arrays
+            const allEntries = [
+                ...appState.tools,
+                ...appState.emails,
+                ...appState.phones,
+                ...appState.crypto,
+                ...appState.locations,
+                ...appState.links,
+                ...appState.media,
+                ...appState.passwords,
+                ...appState.keywords,
+                ...appState.socials,
+                ...appState.domains,
+                ...appState.usernames,
+                ...appState.threats,
+                ...appState.vulnerabilities,
+                ...appState.malware,
+                ...appState.breaches,
+                ...appState.credentials,
+                ...appState.forums,
+                ...appState.vendors,
+                ...appState.telegramChannels,
+                ...appState.pastes,
+                ...appState.documents,
+                ...appState.networks,
+                ...appState.metadataEntries,
+                ...appState.archives,
+                ...appState.messagingApps,
+                ...appState.datingProfiles,
+                ...appState.facialRecognition,
+                ...appState.personas,
+                ...appState.vpns,
+                ...appState.honeypots,
+                ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // --- Main Overview Stats (These are the big numbers at the top of the Dashboard tab) ---
+            document.getElementById('totalToolsCount').textContent = allEntries.length; // Still represents all entries
+            document.getElementById('activeVaultsCount').textContent = appState.customTabs.length;
+            document.getElementById('usedToolsTodayCount').textContent = appState.usageStats.toolsUsedToday;
+            document.getElementById('notesCount').textContent = notesState.notes.length;
+
+
+            // --- Detailed Starred & Pinned Breakdown by Type ---
+            const starredPinnedBreakdownList = document.getElementById('starredPinnedBreakdownList');
+            if (starredPinnedBreakdownList) {
+                let breakdownHtml = '';
+                const entryTypes = [
+                    'tool', 'email', 'phone', 'crypto', 'location', 'link', 'media', 'password',
+                    'keyword', 'social', 'domain', 'username', 'threat', 'vulnerability', 'malware',
+                    'breach', 'credential', 'forum', 'vendor', 'telegram', 'paste', 'document',
+                    'network', 'metadata', 'archive', 'messaging', 'dating', 'audio', 'facial',
+                    'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord'
+                ]; // Explicitly list all types
+
+                // Count for each type
+                const typeCounts = {};
+                allEntries.forEach(entry => {
+                    const typeKey = entry.type + 's'; // e.g., 'tools', 'emails'
+                    if (!typeCounts[typeKey]) {
+                        typeCounts[typeKey] = { starred: 0, pinned: 0 };
+                    }
+                    if (entry.starred) {
+                        typeCounts[typeKey].starred++;
+                    }
+                    if (entry.pinned) {
+                        typeCounts[typeKey].pinned++;
+                    }
+                });
+
+                // Add overall starred/pinned totals first for clarity
+                breakdownHtml += `<li><span>Total Starred Entries:</span> <span class="stat-value">${allEntries.filter(e => e.starred).length}</span></li>`;
+                breakdownHtml += `<li><span>Total Pinned Entries:</span> <span class="stat-value">${allEntries.filter(e => e.pinned).length}</span></li>`;
+                breakdownHtml += `<li><hr style="border: 0; height: 1px; background: var(--border-light); margin: 10px 0;"></li>`; // Divider
+
+                // Iterate through counts and build HTML
+                entryTypes.forEach(type => {
+                    const pluralType = type + 's';
+                    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+                    if (typeCounts[pluralType] && (typeCounts[pluralType].starred > 0 || typeCounts[pluralType].pinned > 0)) {
+                        if (typeCounts[pluralType].starred > 0) {
+                            breakdownHtml += `<li><span>Starred ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].starred}</span></li>`;
+                        }
+                        if (typeCounts[pluralType].pinned > 0) {
+                            breakdownHtml += `<li><span>Pinned ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].pinned}</span></li>`;
+                        }
+                    }
+                });
+                starredPinnedBreakdownList.innerHTML = breakdownHtml;
+            }
+
+
+            // --- Intelligence Vault Summary ---
+            const intelVaultCategories = new Set(appState.tools.map(tool => tool.category));
+            document.getElementById('intelVaultTotalTools').textContent = appState.tools.length;
+            document.getElementById('intelVaultStarredTools').textContent = appState.tools.filter(tool => tool.starred).length;
+            document.getElementById('intelVaultPinnedTools').textContent = appState.tools.filter(tool => tool.pinned).length;
+            document.getElementById('intelVaultCategoriesCount').textContent = intelVaultCategories.size;
+
+            // --- Custom Vaults Summary ---
+            let totalEntriesInCustomVaults = 0;
+            appState.customTabs.forEach(tab => {
+                totalEntriesInCustomVaults += tab.toolIds.length; // toolIds now holds all entry types in custom tabs
+            });
+            const totalCustomVaults = appState.customTabs.length; // Redefine here if needed for this section
+            document.getElementById('customVaultsTotal').textContent = totalCustomVaults;
+            document.getElementById('customVaultsTotalEntries').textContent = totalEntriesInCustomVaults;
+            document.getElementById('customVaultsAvgEntries').textContent = totalCustomVaults > 0 ? (totalEntriesInCustomVaults / totalCustomVaults).toFixed(1) : '0';
+
+            // Render chart for entries per custom vault
+            renderEntriesPerCustomVaultChart();
+
+
+            // --- Notes & Dork Assistant Summary ---
+            const totalTemplates = Object.values(dorkTemplates).flat().length; // Count all pre-templates
+            document.getElementById('notesSummaryTotal').textContent = notesState.notes.length;
+            document.getElementById('notesSummaryPinned').textContent = notesState.notes.filter(n => n.pinned).length;
+            document.getElementById('dorksSummaryTotal').textContent = dorkAssistantState.savedQueries.length;
+            document.getElementById('dorksSummaryTemplates').textContent = totalTemplates;
+
+
+            // --- Render lists ---
             renderMostUsedTools();
             renderNeverUsedTools();
             renderToolsAddedPerWeek();
 
-            saveState();
+            // --- Chart Rendering Calls ---
+            renderEntriesByTypeChart();
+            renderUsageTrendChart();
+            renderTopCategoriesChart();
+            renderPinnedStarredDonutChart();
+            renderEntryGrowthOverTimeChart();
+            renderTaggingOverviewChart();
+        }
+
+        function renderEntriesPerCustomVaultChart() {
+            const ctx = document.getElementById('entriesPerCustomVaultChart').getContext('2d');
+            
+            const customVaultNames = appState.customTabs.map(tab => tab.name);
+            const entriesPerVault = appState.customTabs.map(tab => tab.toolIds.length);
+
+            if (window.entriesPerCustomVaultChartInstance) {
+                window.entriesPerCustomVaultChartInstance.destroy();
+            }
+
+            window.entriesPerCustomVaultChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: customVaultNames,
+                    datasets: [{
+                        label: 'Entries per Custom Vault',
+                        data: entriesPerVault,
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)', // Using a purple shade from your theme
+                        borderColor: '#8b5cf6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entries in Custom Vaults',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim(),
+                                // Ensure ticks are integers
+                                callback: function(value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;
+                                    }
+                                }
+                            },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTaggingOverviewChart() {
+            const ctx = document.getElementById('taggingOverviewChart').getContext('2d');
+            
+            // Combine all entries to count tags across all types
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            let taggedEntriesCount = 0;
+            let untaggedEntriesCount = 0;
+
+            allEntries.forEach(entry => {
+                if (entry.tags && entry.tags.length > 0) {
+                    taggedEntriesCount++;
+                } else {
+                    untaggedEntriesCount++;
+                }
+            });
+
+            const data = [taggedEntriesCount, untaggedEntriesCount];
+            const labels = ['Tagged Entries', 'Untagged Entries'];
+
+            if (window.taggingOverviewChartInstance) {
+                window.taggingOverviewChartInstance.destroy();
+            }
+
+            window.taggingOverviewChartInstance = new Chart(ctx, {
+                type: 'doughnut', // Doughnut chart is good for parts of a whole
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#28a745', // Green for tagged
+                            '#dc3545'  // Red for untagged
+                        ],
+                        borderColor: 'var(--bg-primary)', // Border color from your theme variables
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entry Tagging Overview',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart rendering functions (these would be placed outside updateDashboard, in your main script)
+
+        function renderTopCategoriesChart() {
+            const ctx = document.getElementById('topCategoriesChart').getContext('2d');
+            const categoryCounts = {};
+            appState.tools.forEach(tool => { // Only tools have categories in your current setup
+                const category = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+                categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+            });
+
+            const labels = Object.keys(categoryCounts);
+            const data = Object.values(categoryCounts);
+
+            if (window.topCategoriesChartInstance) {
+                window.topCategoriesChartInstance.destroy();
+            }
+            window.topCategoriesChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tools per Category',
+                        data: data,
+                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Tools by Category', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                        x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderPinnedStarredDonutChart() {
+            const ctx = document.getElementById('pinnedStarredDonutChart').getContext('2d');
+            // Combine all entries to count pinned/starred across all types
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            const pinnedCount = allEntries.filter(entry => entry.pinned).length;
+            const starredCount = allEntries.filter(entry => entry.starred).length;
+
+            // Calculate overlaps correctly: sum pinned and starred, then subtract count of items that are both.
+            const bothCount = allEntries.filter(entry => entry.pinned && entry.starred).length;
+            const uniquePinnedOrStarredCount = pinnedCount + starredCount - bothCount;
+            const othersCount = allEntries.length - uniquePinnedOrStarredCount;
+
+            const data = [pinnedCount, starredCount, othersCount]; // Using pinnedCount and starredCount directly for slices
+            const labels = ['Pinned', 'Starred', 'Other Entries'];
+
+            if (window.pinnedStarredDonutChartInstance) {
+                window.pinnedStarredDonutChartInstance.destroy();
+            }
+            window.pinnedStarredDonutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#28a745', '#ffc107', '#6c757d'], // Green for pinned, yellow for starred, grey for others
+                        borderColor: 'var(--bg-primary)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Pinned & Starred Entries', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() } }
+                    }
+                }
+            });
+        }
+
+        function renderEntryGrowthOverTimeChart() {
+            const ctx = document.getElementById('entryGrowthOverTimeChart').getContext('2d');
+            const cumulativeData = {}; // { 'YYYY-MM-DD': cumulative_count }
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // Sort entries by addedDate to calculate cumulative count
+            allEntries.sort((a, b) => new Date(a.addedDate) - new Date(b.addedDate));
+
+            let count = 0;
+            allEntries.forEach(entry => {
+                if (entry.addedDate) {
+                    const date = new Date(entry.addedDate);
+                    const key = date.toISOString().slice(0, 10); // Use YYYY-MM-DD as key
+                    cumulativeData[key] = ++count; // Increment and assign cumulative count
+                }
+            });
+
+            const sortedDates = Object.keys(cumulativeData).sort();
+            
+            let fullLabels = [];
+            let fullData = [];
+
+            if (sortedDates.length > 0) {
+                let currentDate = new Date(sortedDates[0]);
+                let lastCount = 0;
+                // Ensure currentDate is initialized to start of first day
+                currentDate.setHours(0, 0, 0, 0);
+
+                const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+                lastDate.setHours(0, 0, 0, 0);
+
+                let dateIndex = 0; // To track position in sortedDates
+
+                while (currentDate.getTime() <= lastDate.getTime()) {
+                    const key = currentDate.toISOString().slice(0, 10);
+                    if (dateIndex < sortedDates.length && sortedDates[dateIndex] === key) {
+                        lastCount = cumulativeData[key];
+                        dateIndex++; // Move to the next available data point
+                    }
+                    fullLabels.push(currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                    fullData.push(lastCount);
+                    currentDate.setDate(currentDate.getDate() + 1); // Move to next day
+                }
+            }
+
+
+            if (window.entryGrowthOverTimeChartInstance) {
+                window.entryGrowthOverTimeChartInstance.destroy();
+            }
+            window.entryGrowthOverTimeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullLabels, // Use fullLabels for smoother line
+                    datasets: [{
+                        label: 'Total Entries Over Time',
+                        data: fullData, // Use fullData
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        fill: true,
+                        tension: 0.3 // Smooth line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Total Entries Growth', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                        x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function renderEntriesByTypeChart() {
+            const ctx = document.getElementById('entriesByTypeChart').getContext('2d');
+            const entryTypeCounts = {};
+            // Aggregate all entries into a single array for counting
+            const allEntries = [...appState.tools, /* ... all other appState arrays ... */]; // Ensure this array is comprehensive
+
+            allEntries.forEach(entry => {
+                const type = entry.type.charAt(0).toUpperCase() + entry.type.slice(1); // Capitalize first letter
+                entryTypeCounts[type] = (entryTypeCounts[type] || 0) + 1;
+            });
+
+            const labels = Object.keys(entryTypeCounts);
+            const data = Object.values(entryTypeCounts);
+
+            // Destroy existing chart if it exists to prevent redraw issues
+            if (window.entriesByTypeChartInstance) {
+                window.entriesByTypeChartInstance.destroy();
+            }
+
+            window.entriesByTypeChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d',
+                            '#17a2b8', '#6610f2', '#fd7e14', '#e83e8c', '#20c997',
+                            // Add more colors if you have many entry types
+                            '#6f42c1', '#e0f2f1', '#e3f2fd', '#fff3e0', '#fce4ec',
+                            '#e1f5fe', '#c8e6c9', '#ffe0b2', '#f8bbd0', '#bbdefb'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entries by Type',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(), // Dynamic text color
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() // Dynamic legend color
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderUsageTrendChart() {
+            const ctx = document.getElementById('usageTrendChart').getContext('2d');
+            const usageData = {}; // { 'YYYY-MM-DD': count } for week starts
+
+            // Aggregate usage over time (you'll need to track 'lastUsed' more granularly for this if not already)
+            // For now, let's just use 'addedDate' as a proxy for activity over time for demonstration
+            // A more accurate chart would need actual usage logs per entry over time.
+            const allEntries = [...appState.tools, /* ... all other appState arrays ... */]; // Comprehensive array
+
+            allEntries.forEach(entry => {
+                if (entry.addedDate) { // Or entry.lastUsed if you prefer
+                    const date = new Date(entry.addedDate);
+                    const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1)); // Monday of the week
+                    const key = weekStart.toISOString().slice(0, 10);
+                    usageData[key] = (usageData[key] || 0) + 1;
+                }
+            });
+
+            const sortedDates = Object.keys(usageData).sort();
+            const labels = sortedDates.map(date => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            const data = sortedDates.map(date => usageData[date]);
+
+            // Destroy existing chart if it exists
+            if (window.usageTrendChartInstance) {
+                window.usageTrendChartInstance.destroy();
+            }
+
+            window.usageTrendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Entries Added Over Time', // Change to 'Entries Used Over Time' for real usage
+                        data: data,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entry Activity Trend',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        }
+                    }
+                }
+            });
         }
 
         function renderMostUsedTools() {
@@ -12486,12 +13158,21 @@ function openEditEntryModal(entry) {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-        // Show toast notifications
-        function showToast(message, type = 'success', duration = 3000) { // Make sure it has 'duration' parameter
+        // Show toast notifications - MODIFIED TO STACK
+        function showToast(message, type = 'success', duration = 3000) {
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                document.body.appendChild(toastContainer);
+            }
+
             const toast = document.createElement('div');
-            toast.classList.add('toast', type); // Uses classList.add for 'type'
+            toast.classList.add('toast', type);
             toast.textContent = message;
-            document.body.appendChild(toast);
+
+            // Append to the container instead of body directly
+            toastContainer.appendChild(toast);
 
             // Trigger reflow to ensure animation plays
             void toast.offsetWidth;
@@ -12500,12 +13181,11 @@ function openEditEntryModal(entry) {
 
             setTimeout(() => {
                 toast.classList.remove('show');
-                toast.addEventListener('transitionend', () => toast.remove(), {
-                    once: true
-                });
-            }, duration); // Uses the duration parameter
+                // Remove toast from DOM after its exit animation
+                toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+            }, duration);
         }
-
+        
         // Clear all filters
         function clearFilters() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
@@ -16402,6 +17082,8 @@ function getEntryIcon(type) {
             }, 250);
         });
     </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 </html>
