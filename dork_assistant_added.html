@@ -14211,6 +14211,19 @@ function getEntryIcon(type) {
                     switchDorkSubTab(e.target.dataset.dorkSubtab);
                 });
             });
+            // Save Query Modal events
+            const cancelSaveDorkQueryBtn = document.getElementById('cancelSaveDorkQuery');
+            if (cancelSaveDorkQueryBtn) {
+                // Use 'onclick' for direct assignment, ensuring it's not duplicated or lost
+                cancelSaveDorkQueryBtn.onclick = () => {
+                    hideModal('saveDorkQueryModal');
+                };
+            }
+
+            const saveDorkQueryForm = document.getElementById('saveDorkQueryForm');
+            if (saveDorkQueryForm) {
+                saveDorkQueryForm.addEventListener('submit', handleSaveDorkQuery);
+            }
 
             // Warning Modal Events - Attach these directly via ID for clarity and robustness.
             // They are assumed to be present in the HTML from the start, though hidden.
@@ -15069,13 +15082,14 @@ function getEntryIcon(type) {
             showModal('saveDorkQueryModal');
         }
 
+        // MODIFIED: handleSaveDorkQuery (Add call to renderSavedQueries)
         function handleSaveDorkQuery(e) {
             e.preventDefault();
             const queryName = document.getElementById('savedQueryName').value.trim();
             const queryDescription = document.getElementById('savedQueryDescription').value.trim();
             const queryTags = document.getElementById('savedQueryTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
             const generatedQuery = document.getElementById('savedQueryGenerated').value;
-            const targetEngine = document.getElementById('savedQueryEngine').value.toLowerCase(); // Convert back to lower case for consistency
+            const targetEngine = document.getElementById('savedQueryEngine').value.toLowerCase();
 
             if (!queryName) {
                 showToast('Please enter a name for the query.', 'error');
@@ -15096,7 +15110,12 @@ function getEntryIcon(type) {
             saveSavedQueries();
             hideModal('saveDorkQueryModal');
             showToast('Query saved successfully!', 'success');
-            renderSavedQueries(); // Update the saved queries list
+
+            // NEW: Render the saved queries list to show the new entry
+            renderSavedQueries();
+
+            // Optional: Switch to the saved queries tab automatically
+            switchDorkSubTab('saved-queries');
         }
 
         function renderSavedQueries() {
