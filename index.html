@@ -2,11 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Primary Meta Tags -->
+    <title>OSINTVault - Your Personal OSINT Workspace</title>
+    <meta name="title" content="OSINTVault - Your Personal OSINT Workspace">
+    <meta name="description" content="OSINTVault is a free, browser-based OSINT workspace to manage tools, investigations, dorks, IOCs, and notes — no backend, fully private.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://w3bcooki3.github.io/osintvault/">
+    <meta property="og:title" content="OSINTVault - Your Personal OSINT Workspace">
+    <meta property="og:description" content="A free, privacy-respecting tool for managing OSINT tools, investigations, dork queries, and more — all in your browser.">
+    <meta property="og:image" content="https://w3bcooki3.github.io/osintvault/assets/preview-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://w3bcooki3.github.io/osintvault/">
+    <meta property="twitter:title" content="OSINTVault - Your Personal OSINT Workspace">
+    <meta property="twitter:description" content="A free, privacy-respecting tool for managing OSINT tools, investigations, dork queries, and more — all in your browser.">
+    <meta property="twitter:image" content="https://w3bcooki3.github.io/osintvault/assets/preview-image.png">
+
+    <!-- SEO -->
+    <meta name="keywords" content="OSINT, OSINT tools, cybersecurity, threat intelligence, investigation, dork builder, open source, local storage, incident response, malware analysis">
+    <meta name="author" content="w3bcooki3">
+    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINTVault - Carry your investigations everywhere</title>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="./favicon.png" type="image/x-icon">
+
     <style>
         /* Refined Color Palette & Variables */
         :root {
@@ -95,7 +119,55 @@
             --tab-color-yellow: #f39c12;
             --tab-color-purple: #8e44ad;
             --tab-color-orange: #d35400;
+
+
+            --nav-bg-primary: #f8fafc;
+            --nav-bg-secondary: #ffffff;
+            --nav-bg-tertiary: #f1f5f9;
+            --nav-bg-card: rgba(255, 255, 255, 0.9);
+            --nav-text-primary: #1e293b;
+            --nav-text-secondary: #64748b;
+            --nav-text-muted: #94a3b8;
+            --nav-accent-primary: #0ea5e9;
+            --nav-accent-secondary: #8b5cf6;
+            --nav-accent-success: #10b981;
+            --nav-accent-warning: #f59e0b;
+            --nav-accent-danger: #ef4444;
+            --nav-border-primary: #e2e8f0;
+            --nav-border-secondary: #cbd5e1;
+            --nav-shadow-light: rgba(0, 0, 0, 0.05);
+            --nav-shadow-medium: rgba(0, 0, 0, 0.1);
+            --nav-shadow-heavy: rgba(0, 0, 0, 0.25);
+            --nav-glow-primary: rgba(14, 165, 233, 0.3);
+            --nav-glow-secondary: rgba(139, 92, 246, 0.3);
+            --nav-grid-color: rgba(148, 163, 184, 0.1);
         }
+
+        [data-theme="dark"] {
+            /* Dark mode colors */
+            --nav-bg-primary: #0f172a;
+            --nav-bg-secondary: #1e293b;
+            --nav-bg-tertiary: #334155;
+            --nav-bg-card: rgba(30, 41, 59, 0.9);
+            --nav-text-primary: #f8fafc;
+            --nav-text-secondary: #cbd5e1;
+            --nav-text-muted: #64748b;
+            --nav-accent-primary: #06b6d4;
+            --nav-accent-secondary: #a855f7;
+            --nav-accent-success: #22c55e;
+            --nav-accent-warning: #fbbf24;
+            --nav-accent-danger: #f87171;
+            --nav-border-primary: #334155;
+            --nav-border-secondary: #475569;
+            --nav-shadow-light: rgba(0, 0, 0, 0.3);
+            --nav-shadow-medium: rgba(0, 0, 0, 0.5);
+            --nav-shadow-heavy: rgba(0, 0, 0, 0.8);
+            --nav-glow-primary: rgba(6, 182, 212, 0.4);
+            --nav-glow-secondary: rgba(168, 85, 247, 0.4);
+            --nav-grid-color: rgba(148, 163, 184, 0.05);
+        }
+
+
 
         * {
             margin: 0;
@@ -105,33 +177,88 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gradient-bg); /* Use the softened gradient */
+            background: var(--gradient-bg); 
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
-            /* Add transition for background-image as well, if the gradient is applied as such */
-            transition: background 0.5s ease, color 0.5s ease; /* Slightly longer transition for smoother theme change */
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         .container {
-            width: 100%; /* Make it full screen */
-            max-width: 100%; /* Ensure it spans fully */
-            padding: 0; /* Remove horizontal padding at container level */
-            margin: 0 auto; /* Center the container */
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0 auto; 
         }
 
-        /* Header Styles */
+        /* Header Styles - Redesigned with --nav- colors (Fixed Responsive) */
         header {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--nav-bg-card), var(--nav-bg-secondary));
+            backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid var(--nav-border-primary);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow);
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 
+                0 8px 32px var(--nav-shadow-light),
+                0 2px 16px var(--nav-shadow-medium),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background grid */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--nav-grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--nav-grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, 20px); }
+        }
+
+        /* Floating glow effect */
+        header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at 30% 50%, 
+                var(--nav-glow-primary) 0%, 
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 70% 30%, 
+                var(--nav-glow-secondary) 0%, 
+                transparent 25%
+            );
+            opacity: 0.1;
+            animation: floatGlow 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(-10px, -10px) rotate(0deg); }
+            33% { transform: translate(10px, -20px) rotate(120deg); }
+            66% { transform: translate(-20px, 10px) rotate(240deg); }
         }
 
         .header-content {
@@ -142,44 +269,74 @@
             gap: 20px;
             max-width: 1800px;
             margin: 0 auto;
-            padding: 20px 40px;
+            padding: 24px 40px;
             width: 100%;
             box-sizing: border-box;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Container for Logo and Title/Tagline Group */
+
+        /* Left section - Logo and Title */
         .logo-and-title-container {
             display: flex;
             align-items: center;
-            gap: 15px;
-            flex-shrink: 0; /* Prevents this group from shrinking */
+            gap: 16px;
+            flex-shrink: 0;
             min-width: 0;
-            /* FIXED: Ensure it stays at the left */
-            margin-right: auto; /* This pushes controls to the right */
+            margin-right: auto;
+            position: relative;
         }
 
-        /* Styles for the Logo */
+        /* Logo with enhanced effects */
         .header-logo {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 65px;
+            position: relative;
             flex-shrink: 0;
+        }
+
+        .header-logo::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--nav-accent-primary), var(--nav-accent-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .header-logo:hover::before {
+            opacity: 0.2;
         }
 
         .osintvault-logo-img {
             display: block;
             max-height: 100%;
             width: auto;
-            filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.4));
-            transition: filter 0.3s ease;
+            filter: 
+                drop-shadow(0 0 15px var(--nav-glow-primary))
+                drop-shadow(0 0 30px var(--nav-glow-secondary));
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: logoPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .osintvault-logo-img:hover {
-            filter: drop-shadow(0 0 15px rgba(0, 123, 255, 0.6));
+            filter: 
+                drop-shadow(0 0 25px var(--nav-glow-primary))
+                drop-shadow(0 0 45px var(--nav-glow-secondary));
+            transform: scale(1.1) rotate(5deg);
         }
 
-        /* Container for OSINTVault Title and Tagline */
+        /* Text group styling */
         .header-text-group {
             display: flex;
             flex-direction: column;
@@ -187,125 +344,99 @@
             justify-content: center;
             flex-grow: 1;
             min-width: 0;
+            position: relative;
         }
 
-        /* Style for OSINTVault Title */
         .header-title {
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--primary);
+            font-size: 2.4em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--nav-accent-primary), var(--nav-accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            position: relative;
+            animation: titleShimmer 3s ease-in-out infinite;
         }
 
-        /* Style for the single Tagline */
+        @keyframes titleShimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
         .header-tagline {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            color: var(--nav-text-secondary);
             font-family: 'Inter', sans-serif;
-            margin-top: 5px;
+            margin-top: 4px;
+            font-weight: 500;
+            opacity: 0.8;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-
-        /* Responsive adjustments for header-content padding */
-        @media (max-width: 1200px) {
-            .header-content {
-                padding: 20px; /* Adjust padding for medium screens */
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column; /* Stack logo/text group and controls vertically */
-                align-items: stretch; /* Stretch to full width */
-                padding: 15px; /* Further adjust padding for smaller screens */
-                gap: 15px; /* Space between stacked groups */
-            }
-            .logo-and-title-container {
-                justify-content: center; /* Center logo and text group when stacked */
-                width: 100%;
-                gap: 10px; /* Reduced gap */
-            }
-            .header-logo {
-                height: 55px; /* Smaller logo height on tablets */
-            }
-            .header-title {
-                font-size: 1.8em; /* Smaller title font on tablets */
-            }
-            .header-tagline {
-                font-size: 0.8rem; /* Smaller tagline font on tablets */
-            }
-            .controls {
-                width: 100%; /* Ensure controls take full width */
-                justify-content: center; /* Center buttons within controls */
-                margin-left: 0; /* Reset margin to avoid pushing controls to the right */;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-content {
-                padding: 10px; /* Minimal padding on very small screens */
-                gap: 10px; /* Reduced gap */
-            }
-            .header-logo {
-                height: 45px; /* Smallest logo height on phones */
-            }
-            .header-title {
-                font-size: 1.5em; /* Smallest title font on phones */
-            }
-            .header-tagline {
-                font-size: 0.7rem; /* Smallest tagline font on phones */
-            }
-            /* Ensure text truncation or wrapping for very small screens */
-            .header-title, .header-tagline {
-                white-space: normal; /* Allow text to wrap on very small screens */
-                overflow: visible; /* Make overflow visible as wrapping is enabled */
-                text-overflow: clip; /* No ellipsis needed if wrapping */
-            }
-        }
-
+        /* Right section - Controls */
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             align-items: center;
             flex-wrap: wrap;
-            flex-shrink: 0; /* Prevents controls from shrinking */
+            flex-shrink: 0;
             min-width: 0;
             justify-content: flex-end;
-            /* FIXED: Ensure it stays at the right */
-            margin-left: auto; /* This ensures controls stay at the right */
+            margin-left: auto;
         }
 
+        /* Enhanced search container */
         .search-container {
             position: relative;
             min-width: 350px;
             display: flex;
             align-items: center;
+            background: var(--nav-bg-tertiary);
+            border-radius: 16px;
+            padding: 4px;
+            box-shadow: 
+                0 4px 20px var(--nav-shadow-light),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--nav-border-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-container:hover {
+            box-shadow: 
+                0 8px 30px var(--nav-shadow-medium),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-color: var(--nav-accent-primary);
         }
 
         .search-input {
             width: 100%;
-            padding: 15px 50px 15px 20px;
-            border: 1px solid var(--border-light);
+            padding: 16px 50px 16px 20px;
+            border: none;
             border-radius: 12px;
             font-size: 14px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
+            background: transparent;
+            color: var(--nav-text-primary);
             transition: all 0.3s ease;
             flex-grow: 1;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--nav-text-muted);
+            opacity: 0.8;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: var(--glow), inset 0 1px 3px rgba(0,0,0,0.15);
+            background: var(--nav-bg-card);
+            box-shadow: 0 0 0 2px var(--nav-glow-primary);
         }
 
         .search-icon {
@@ -313,34 +444,178 @@
             right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            color: var(--nav-text-secondary);
+            transition: all 0.3s ease;
+            font-size: 16px;
         }
 
-        
-        /* New: Search Scope Select */
+        .search-container:hover .search-icon {
+            color: var(--nav-accent-primary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Enhanced search scope select */
         #searchScopeSelect {
-            margin-left: 10px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-light);
+            margin-left: 12px;
+            padding: 12px 32px 12px 16px;
+            border-radius: 12px;
+            background: var(--nav-bg-card);
+            color: var(--nav-text-primary);
+            border: 1px solid var(--nav-border-primary);
             transition: all 0.3s ease;
             cursor: pointer;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
-            -webkit-appearance: none; /* Remove default dropdown arrow for better styling consistency */
+            box-shadow: 0 2px 8px var(--nav-shadow-light);
+            font-weight: 500;
+            font-size: 13px;
+            -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%239BAEC8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H19a17.6%2017.6%200%200%200-13.6%206.4%2017.6%2017.6%200%200%200%200%2025.2l128%20128c6.9%206.9%2017.9%206.9%2024.7%200l128-128a17.6%2017.6%200%200%200%200-25.2z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%236A7F9D%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H19a17.6%2017.6%200%200%200-13.6%206.4%2017.6%2017.6%200%200%200%200%2025.2l128%20128c6.9%206.9%2017.9%206.9%2024.7%200l128-128a17.6%2017.6%200%200%200%200-25.2z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
-            background-position: right 10px top 50%;
+            background-position: right 12px top 50%;
             background-size: 12px auto;
-            padding-right: 30px; /* Make space for the custom arrow */
         }
+
         #searchScopeSelect:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: var(--glow), inset 0 1px 3px rgba(0,0,0,0.1);
+            border-color: var(--nav-accent-primary);
+            box-shadow: 0 0 0 3px var(--nav-glow-primary);
+        }
+
+        #searchScopeSelect:hover {
+            background: var(--nav-bg-tertiary);
+            border-color: var(--nav-accent-primary);
+        }
+
+                /* Mobile menu toggle (hidden by default) */
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--nav-bg-tertiary);
+            border: 1px solid var(--nav-border-primary);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--nav-text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--nav-bg-card);
+            box-shadow: 0 4px 15px var(--nav-shadow-light);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .header-content {
+                padding: 20px;
+                gap: 15px;
+            }
+            
+            .search-container {
+                min-width: 300px;
+            }
+            
+            .header-title {
+                font-size: 2.1em;
+            }
+        }
+
+        @media (max-width: 992px) {
+            
+            .search-container {
+                min-width: 280px;
+            }
+            
+            .header-title {
+                font-size: 1.9em;
+            }
+            
+            .controls {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .logo-and-title-container {
+                justify-content: center;
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+            }
+            
+            .search-container {
+                min-width: auto;
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .header-logo {
+                height: 55px;
+            }
+            
+            .header-title {
+                font-size: 1.8em;
+            }
+            
+            .header-tagline {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 580px) {
+            /* Mobile: Show only logo and hamburger menu */
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 15px;
+            }
+            
+            .logo-and-title-container {
+                justify-content: flex-start;
+                width: auto;
+            }
+            
+            /* Hide text group and center tagline */
+            .header-text-group {
+                display: none;
+            }
+            
+            /* Hide controls, show mobile menu toggle */
+            .controls {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .header-logo {
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                padding: 10px 15px;
+            }
+            
+            .header-logo {
+                height: 40px;
+            }
         }
 
         /* Stats Bar */
@@ -348,13 +623,13 @@
             display: flex;
             gap: 30px;
             align-items: center;
-            padding: 15px 40px; /* Match header padding */
+            padding: 15px 40px;
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
-            border-radius: 0; /* Remove rounded corners */
+            border-radius: 0;
             margin: 0;
             transition: background 0.3s ease, border-color 0.3s ease;
-            box-shadow: var(--shadow); /* Add shadow to stats bar */
+            box-shadow: var(--shadow);
         }
 
         .stat-item {
@@ -375,8 +650,64 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Button Styles */
+       /* Enhanced buttons */
         .btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--nav-border-primary);
+            background: linear-gradient(135deg, var(--nav-bg-card), var(--nav-bg-tertiary));
+            color: var(--nav-text-primary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--nav-shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--nav-bg-tertiary), var(--nav-bg-card));
+            box-shadow: 
+                0 8px 25px var(--nav-shadow-medium),
+                0 0 0 1px var(--nav-accent-primary);
+            transform: translateY(-2px);
+            border-color: var(--nav-accent-primary);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px var(--nav-shadow-light);
+        }
+
+        .btn i {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+
+        .btn2 {
             padding: 12px 20px;
             border: none;
             border-radius: 10px; /* Slightly more rounded */
@@ -386,6 +717,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            margin-top: 20px;
             transition: all 0.3s ease;
             text-decoration: none;
             position: relative;
@@ -393,7 +725,7 @@
             letter-spacing: 0.2px;
         }
 
-        .btn::before {
+        .btn2::before {
             content: '';
             position: absolute;
             top: 0;
@@ -404,9 +736,10 @@
             transition: left 0.5s;
         }
 
-        .btn:hover::before {
+        .btn2:hover::before {
             left: 100%;
         }
+
 
         .btn-primary {
             background: var(--gradient-primary);
@@ -452,83 +785,609 @@
             box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
         }
 
-        /* Navigation Tabs */
+        /*  Nav */
+
         .nav-tabs {
             display: flex;
             gap: 0;
-            margin: 20px 40px 0; /* Add horizontal padding for main tabs */
-            /* Replaced border-bottom with a more integrated look */
-            background: var(--bg-secondary);
-            border-radius: 12px; /* Rounded container for tabs */
-            padding: 8px; /* More padding around tabs */
-            transition: background 0.3s ease, border-color 0.3s ease;
-            flex-wrap: wrap;
-            box-shadow: var(--shadow); /* Add shadow to tab container */
+            background: var(--nav-bg-nav);
+            backdrop-filter: var(--nav-backdrop-blur);
+            -webkit-backdrop-filter: var(--nav-backdrop-blur);
+            border: 1px solid var(--nav-border-primary);
+            border-radius: 16px;
+            padding: 8px;
+            margin: 0 auto;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            box-shadow: 
+                0 20px 25px -5px var(--nav-shadow-light),
+                0 10px 10px -5px var(--nav-shadow-medium);
+            position: relative;
+        }
+
+        .nav-tabs::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
+            border-radius: 16px;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-tabs::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .nav-tabs::-webkit-scrollbar-thumb {
+            background: var(--nav-border-secondary);
+            border-radius: 2px;
         }
 
         .nav-tab {
-            padding: 14px 22px; /* Adjusted padding for a cleaner look */
+            position: relative;
+            padding: 14px 20px;
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--nav-text-secondary);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 10px; /* Match button border-radius */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
             font-weight: 600;
-            position: relative;
-            flex-grow: 1;
-            text-align: center;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1;
+            min-width: max-content;
+            overflow: hidden;
         }
 
-        .nav-tab.active {
-            background: var(--gradient-primary); /* Keep gradient for active */
-            color: white;
-            box-shadow: var(--shadow);
+        .nav-tab i {
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
+            opacity: 0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: var(--nav-bg-nav);
+            border-radius: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: -1;
         }
 
         .nav-tab:hover:not(.active) {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
+            color: var(--nav-text-primary);
+            transform: translateY(-2px);
         }
 
-        /* Sub-tabs styling */
+        .nav-tab:hover:not(.active)::before {
+            opacity: 0.1;
+        }
+
+        .nav-tab:hover:not(.active) i {
+            color: var(--nav-accent-primary);
+            transform: scale(1.1);
+        }
+
+        .nav-tab.active {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 15px -3px var(--nav-glow-primary),
+                0 4px 6px -2px var(--nav-shadow-medium);
+        }
+
+        .nav-tab.active::before {
+            opacity: 1;
+        }
+
+        .nav-tab.active::after {
+            opacity: 1;
+        }
+
+        .nav-tab.active i {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        /* Cybersecurity-specific tab colors */
+        .nav-tab[data-tab="intelligence-vault"].active::before {
+            background: linear-gradient(135deg, var(--nav-accent-primary), #0284c7);
+        }
+
+        .nav-tab[data-tab="custom-tabs"].active::before {
+            background: linear-gradient(135deg, var(--nav-accent-secondary), #7c3aed);
+        }
+
+        .nav-tab[data-tab="analytics"].active::before {
+            background: linear-gradient(135deg, var(--nav-accent-success), #059669);
+        }
+
+        .nav-tab[data-tab="threats"].active::before {
+            background: linear-gradient(135deg, var(--nav-accent-danger), #dc2626);
+        }
+
+        .nav-tab[data-tab="dork-assistant"].active::before {
+            background: linear-gradient(135deg, var(--nav-accent-warning), #d97706);
+        }
+
+        .nav-tab[data-tab="handbook"].active::before {
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .nav-tab {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                padding: 6px;
+                border-radius: 12px;
+                margin: 0 1rem;
+            }
+            
+            .nav-tab {
+                padding: 10px 12px;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+            
+            .nav-tab i {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .nav-tabs {
+                margin: 0;
+                padding: 4px;
+                border-radius: 10px;
+            }
+            
+            .nav-tab {
+                padding: 8px 10px;
+                font-size: 0.7rem;
+                gap: 4px;
+                flex-direction: column;
+                text-align: center;
+                min-width: 70px;
+            }
+            
+            .nav-tab i {
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+            }
+        }
+
+        /* Theme toggle for demo */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--nav-bg-secondary);
+            border: 1px solid var(--nav-border-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px var(--nav-shadow-light);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px var(--nav-shadow-medium);
+        }
+
+        /* Sub-navigation tabs styling */
         .sub-nav-tabs {
             display: flex;
-            gap: 0;
-            margin-top: 20px;
-            border: 1px solid var(--border-light); /* Lighter border */
-            background: var(--bg-tertiary); /* Slightly different background for sub-tabs */
-            border-radius: 8px; /* Slightly smaller radius than main tabs */
-            padding: 4px; /* Less padding */
+            gap: 2px;
+            margin-top: 16px;
+            background: var(--nav-bg-tertiary);
+            border: 1px solid var(--nav-border-secondary);
+            border-radius: 10px;
+            padding: 4px;
             flex-wrap: wrap;
-            box-shadow: var(--shadow); /* Add shadow to sub-tab container */
+            box-shadow: 
+                inset 0 1px 3px 0 var(--nav-shadow-light),
+                0 1px 2px 0 var(--nav-shadow-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sub-nav-tabs::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.02), 
+                transparent);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
         }
 
         .sub-nav-tab {
-            padding: 10px 15px; /* Adjusted padding */
+            position: relative;
+            padding: 8px 16px;
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--nav-text-muted);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 6px;
             font-weight: 500;
-            font-size: 0.85em; /* Slightly smaller font for sub-tabs */
+            font-size: 0.8rem;
             flex-grow: 1;
             text-align: center;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            letter-spacing: 0.025em;
+        }
+
+        .sub-nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .sub-nav-tab:hover::before {
+            left: 100%;
+        }
+
+        .sub-nav-tab:hover:not(.active) {
+            color: var(--nav-text-primary);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05), 
+                rgba(255, 255, 255, 0.02));
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--nav-shadow-light);
         }
 
         .sub-nav-tab.active {
             color: white;
-            background-color: var(--tab-color-default); /* Use default tab color */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for active sub-tab */
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                rgba(14, 165, 233, 0.8));
+            box-shadow: 
+                0 4px 8px rgba(14, 165, 233, 0.3),
+                0 2px 4px var(--nav-shadow-medium),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .sub-nav-tab:hover:not(.active) {
-            background: var(--border);
-            color: var(--text-primary);
+        .sub-nav-tab.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1), 
+                transparent, 
+                rgba(255, 255, 255, 0.05));
+            border-radius: 6px;
+            pointer-events: none;
         }
 
+        /* Different sub-tab categories with distinct styling */
+        .sub-nav-tab[data-category="tools"].active {
+            background: linear-gradient(135deg, var(--nav-accent-primary), #0369a1);
+            box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3), 0 2px 4px var(--nav-shadow-medium);
+        }
+
+        .sub-nav-tab[data-category="data"].active {
+            background: linear-gradient(135deg, var(--nav-accent-success), #047857);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3), 0 2px 4px var(--nav-shadow-medium);
+        }
+
+        .sub-nav-tab[data-category="analysis"].active {
+            background: linear-gradient(135deg, var(--nav-accent-secondary), #6d28d9);
+            box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3), 0 2px 4px var(--nav-shadow-medium);
+        }
+
+        .sub-nav-tab[data-category="config"].active {
+            background: linear-gradient(135deg, var(--nav-accent-warning), #b45309);
+            box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3), 0 2px 4px var(--nav-shadow-medium);
+        }
+
+        .sub-nav-tab[data-category="alert"].active {
+            background: linear-gradient(135deg, var(--nav-accent-danger), #b91c1c);
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3), 0 2px 4px var(--nav-shadow-medium);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Responsive sub-tabs */
+        @media (max-width: 768px) {
+            .sub-nav-tabs {
+                margin-top: 12px;
+                padding: 3px;
+                gap: 1px;
+            }
+            
+            .sub-nav-tab {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+                min-height: 32px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .sub-nav-tab {
+                padding: 5px 8px;
+                font-size: 0.7rem;
+                min-height: 28px;
+            }
+        }
+
+
+        /* Footer Styles - Center Tagline moved from Header */
+        footer {
+            background: linear-gradient(135deg, var(--nav-bg-card), var(--nav-bg-secondary));
+            backdrop-filter: blur(25px) saturate(180%);
+            border-top: 1px solid var(--nav-border-primary);
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+            width: 100%;
+            box-shadow: 
+                0 -8px 32px var(--nav-shadow-light),
+                0 -2px 16px var(--nav-shadow-medium),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animated background grid for footer */
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--nav-grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--nav-grid-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.2;
+            animation: gridMoveReverse 25s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMoveReverse {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-20px, -20px); }
+        }
+
+        /* Floating glow effect for footer */
+        footer::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at 70% 30%, 
+                var(--nav-glow-secondary) 0%, 
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 30% 70%, 
+                var(--nav-glow-primary) 0%, 
+                transparent 25%
+            );
+            opacity: 0.08;
+            animation: floatGlowReverse 18s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatGlowReverse {
+            0%, 100% { transform: translate(10px, 10px) rotate(0deg); }
+            33% { transform: translate(-10px, 20px) rotate(-120deg); }
+            66% { transform: translate(20px, -10px) rotate(-240deg); }
+        }
+
+        .footer-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+
+        @keyframes footerTaglinePulse {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 4px 20px var(--nav-shadow-light); 
+            }
+            50% { 
+                transform: scale(1.02); 
+                box-shadow: 0 6px 30px var(--nav-shadow-medium); 
+            }
+        }
+
+        /* Demo content styling - full width */
+        .demo-content {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Main heading styling */
+        .demo-content h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--nav-accent-primary), var(--nav-accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.5px;
+            margin: 0 0 20px 0;
+            animation: titleGlow 4s ease-in-out infinite;
+            padding: 10px 10px;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        /* Copyright text styling */
+        .demo-content p:first-of-type {
+            font-size: 1rem;
+            color: var(--nav-text-secondary) !important;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            margin-bottom: 1rem !important;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Features list styling */
+        .demo-content p:last-of-type {
+            color: var(--nav-text-muted) !important;
+            font-size: 0.875rem !important;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            opacity: 0.8;
+            margin: 0;
+            padding: 12px 0 0 0;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                padding: 30px 20px;
+            }
+            
+            .demo-content h1 {
+                font-size: 1.8rem;
+                margin-bottom: 16px;
+            }
+            
+            .demo-content p:first-of-type {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .demo-content p:last-of-type {
+                font-size: 0.8rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-content {
+                padding: 25px 15px;
+            }
+            
+            .demo-content h1 {
+                font-size: 1.6rem;
+                letter-spacing: -0.3px;
+            }
+            
+            .demo-content p:first-of-type {
+                font-size: 0.85rem;
+            }
+            
+            .demo-content p:last-of-type {
+                font-size: 0.75rem !important;
+                line-height: 1.3;
+            }
+        }
+
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--nav-accent-success);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
 
         /* Dashboard Layout */
         .dashboard {
@@ -1023,17 +1882,6 @@
             100% { opacity: 1; }
         }
 
-        /* Footer */
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
         /* Responsive Design */
         @media (max-width: 1200px) {
             .dashboard {
@@ -1046,13 +1894,10 @@
                 position: static;
             }
 
-            .header-content, .stats-bar, .nav-tabs, .footer-content {
+            .header-content, .stats-bar, .nav-tabs {
                 padding: 0 20px; /* Adjust padding for medium screens */
             }
 
-            .nav-tabs {
-                margin: 20px 20px 0;
-            }
 
             .main-content {
                 padding: 20px; /* Reduce padding for medium screens */
@@ -1108,17 +1953,7 @@
                 width: 100%; /* Take full width when stacked */
                 justify-content: flex-start; /* Align buttons to the left when stacked */
             }
-                    
-            .nav-tab {
-                flex-basis: calc(50% - 5px); /* Account for gap */
-                margin-bottom: 10px;
-                padding: 12px 15px; /* Slight adjustment if needed */
-                font-size: 13px; /* Ensure font is appropriate */
-            }
-            .nav-tabs {
-                padding: 6px; /* Reduce container padding */
-                margin: 15px 10px 0; /* Adjust margin too */
-            }
+
 
             .stats-bar {
                 flex-wrap: wrap;
@@ -1144,10 +1979,6 @@
 
             .analytics-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .footer {
-                padding: 40px 15px 20px;
             }
 
             .notes-header {
@@ -1219,15 +2050,6 @@
                 font-size: 13px;
             }
 
-            .nav-tab {
-                padding: 12px 15px;
-                font-size: 13px;
-            }
-            .sub-nav-tab {
-                padding: 8px 10px;
-                font-size: 12px;
-            }
-
             .tool-card {
                 padding: 15px;
             }
@@ -1254,14 +2076,16 @@
                 font-size: 12px; /* Further reduce font size */
             }
 
-            /* NEW/MODIFIED: Toast Notifications for small screens */
+            #toast-container {
+                top: auto;
+                bottom: 20px; /* Appear from the bottom on mobile */
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                align-items: center; /* Center items for stacked appearance */
+            }
             .toast {
-                left: 50%; /* Center horizontally */
-                right: auto; /* Override existing 'right' property */
-                transform: translateX(-50%); /* Adjust for horizontal centering */
-                width: calc(100% - 40px); /* Take up most of the width with some padding */
-                max-width: 350px; /* Limit maximum width on slightly larger phones */
-                text-align: center; /* Center text within the toast */
+                text-align: center; /* Center text within the toast on mobile */
             }
         }
 
@@ -1374,11 +2198,23 @@
         }
 
 
-        /* Toast Notifications */
-        .toast {
+        /* Toast Notifications Container */
+        #toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
+            z-index: 1002; /* Ensure it's above individual toasts */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Space between toasts */
+            align-items: flex-end; /* Align toasts to the right */
+        }
+
+        /* Existing .toast styles remain the same, but remove fixed positioning, right, and top */
+        .toast {
+            /* position: fixed;  REMOVE THIS LINE */
+            /* top: 20px;       REMOVE THIS LINE */
+            /* right: 20px;     REMOVE THIS LINE */
             background: var(--success);
             color: white;
             padding: 15px 20px;
@@ -1389,6 +2225,11 @@
             opacity: 0;
             transform: translateX(100%);
             transition: all 0.3s ease;
+            /* NEW: Adjust width for better readability on smaller screens, keeping desktop reasonable */
+            max-width: 350px;
+            width: 100%; /* Take full width of max-width */
+            box-sizing: border-box; /* Include padding/border in width calculation */
+            text-align: left; /* Default text alignment */
         }
 
         .toast.show {
@@ -1654,48 +2495,18 @@
             box-shadow: 0 0 0 3px var(--primary-dark); /* Thicker, slightly darker glow */
         }
 
-        /*calude_investigation  wall*/
+        /*---- Investigation Wall -------*/
         .investigation-wall {
-            min-height: 100vh;
-            width: 100vw;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-/*background Image
-        .investigation-wall {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            width: 100vw;
-            background: var(--gradient-bg); 
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        .investigation-wall::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
             height: 100%;
             width: 100%;
-            background: url('./wall.png') center center / cover no-repeat;
-            filter: blur(15px);
-            z-index: -1;
-            transform: scale(1.1); 
+            position: relative;
+            background: 
+                linear-gradient(135deg, var(--nav-bg-primary) 0%, var(--nav-bg-secondary) 100%);
+            overflow: hidden;
+            padding: 2rem 0;
         }
-*/
 
+        /* Animated grid background */
         .wall-texture {
             position: absolute;
             top: 0;
@@ -1703,107 +2514,294 @@
             right: 0;
             bottom: 0;
             background-image: 
-                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px),
-                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 50px 50px, 75px 75px;
-            animation: subtleShift 20s ease-in-out infinite;
+                linear-gradient(var(--nav-grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--nav-grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            opacity: 0.6;
         }
 
-        @keyframes subtleShift {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-2px, -2px); }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating particles */
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--nav-accent-primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                opacity: 0; 
+                transform: translateY(100vh) scale(0);
+            }
+            10% { 
+                opacity: 0.6; 
+                transform: translateY(90vh) scale(1);
+            }
+            90% { 
+                opacity: 0.6; 
+                transform: translateY(-10vh) scale(1);
+            }
+            100% { 
+                opacity: 0; 
+                transform: translateY(-20vh) scale(0);
+            }
+        }
+
+        /* Enhanced header section */
+        .wall-header {
+            position: relative;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            z-index: 10;
+        }
+
+        .wall-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary),
+                var(--nav-accent-success));
+            opacity: 0.05;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
+            border-radius: 2px;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { box-shadow: 0 0 10px var(--nav-glow-primary); }
+            100% { box-shadow: 0 0 30px var(--nav-glow-secondary); }
+        }
+
+        .section-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--nav-text-secondary);
+            font-weight: 500;
+            margin-top: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--nav-bg-card);
+            border: 1px solid var(--nav-border-primary);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--nav-accent-success);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--nav-accent-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
+        }
+
+        /* Evidence grid */
+        .evidence-container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            z-index: 5;
         }
 
         .evidence-grid {
-            position: relative;
-            max-width: 1600px;
-            width: 100%;
-            padding: 3rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 3rem;
-            z-index: 2;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            position: relative;
         }
 
         .evidence-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2.5rem;
+            background: var(--nav-bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border-primary);
+            border-radius: 20px;
+            padding: 2rem;
             position: relative;
-            transform: rotate(-1.5deg);
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .evidence-card:nth-child(even) {
-            transform: rotate(1.5deg);
-        }
-
-        .evidence-card:hover {
-            transform: rotate(0deg) scale(1.02);
-            background: var(--bg-tertiary);
-            box-shadow: var(--shadow-lg), var(--glow);
-            border-color: var(--border-light);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 10px 25px var(--nav-shadow-light),
+                0 20px 48px var(--nav-shadow-medium);
+            overflow: hidden;
         }
 
         .evidence-card::before {
             content: '';
             position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 24px;
-            background: var(--secondary);
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary),
+                var(--nav-accent-success));
+            border-radius: 20px 20px 0 0;
         }
 
         .evidence-card::after {
             content: '';
             position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px;
-            height: 12px;
-            background: var(--bg-primary);
-            border-radius: 2px;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.03), 
+                transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
         }
 
-        .card-header-wall {
+        .evidence-card:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateY(-10px);
+            box-shadow: 
+                0 20px 40px var(--nav-shadow-medium),
+                0 30px 60px var(--nav-shadow-heavy),
+                0 0 30px var(--nav-glow-primary);
+            border-color: var(--nav-accent-primary);
+        }
+
+        .evidence-card:hover::after {
+            opacity: 1;
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .card-header {
             display: flex;
             align-items: center;
             margin-bottom: 1.5rem;
-            color: var(--primary);
-            font-weight: 600;
+            position: relative;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin-right: 1rem;
+            padding: 12px;
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px var(--nav-glow-primary);
+            transition: all 0.3s ease;
+        }
+
+        .evidence-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 24px var(--nav-glow-secondary);
+        }
+
+        .card-title {
+            color: var(--nav-text-primary);
+            font-weight: 700;
             font-size: 1.1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
-        .card-icon-wall {
-            width: 24px;
-            height: 24px;
-            margin-right: 0.75rem;
-            fill: currentColor;
-        }
-
-        .card-content-wall {
-            color: var(--text-primary);
+        .card-content {
+            color: var(--nav-text-secondary);
             line-height: 1.7;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            position: relative;
         }
 
-        .highlight-wall {
-            background: var(--gradient-primary);
+        .highlight {
+            background: linear-gradient(135deg, 
+                var(--nav-accent-primary), 
+                var(--nav-accent-secondary));
             color: white;
-            padding: 3px 6px;
-            border-radius: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
             font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px var(--nav-glow-primary);
+            transition: all 0.3s ease;
         }
 
+        .highlight:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--nav-glow-secondary);
+        }
+
+        /* Connecting lines animation */
         .connecting-lines {
             position: absolute;
             top: 0;
@@ -1814,90 +2812,144 @@
             z-index: 1;
         }
 
-        .line {
+        .connection-line {
             position: absolute;
-            background: var(--gradient-primary);
             height: 2px;
-            transform-origin: left center;
-            animation: lineGlow 3s ease-in-out infinite alternate;
-            opacity: 0.6;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--nav-accent-primary), 
+                transparent);
+            animation: lineFlow 4s ease-in-out infinite;
+            opacity: 0.3;
         }
 
-        @keyframes lineGlow {
-            0% { opacity: 0.4; }
-            100% { opacity: 0.8; }
+        @keyframes lineFlow {
+            0%, 100% { opacity: 0.1; transform: scaleX(0); }
+            50% { opacity: 0.6; transform: scaleX(1); }
         }
 
-        .floating-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--primary);
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--nav-bg-card);
+            border: 1px solid var(--nav-border-primary);
             border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-            opacity: 0.6;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--nav-shadow-light);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 8px 24px var(--nav-shadow-medium);
         }
 
-        .section-title-wall {
-            position: absolute;
-            top: 3rem;
-            color: var(--primary);
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            z-index: 4;
-            text-shadow: var(--glow);
-            border-bottom: 2px solid var(--tab-color-blue);
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .evidence-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .wall-header {
+                padding: 2rem 1rem;
+            }
         }
 
         @media (max-width: 768px) {
+            .investigation-wall {
+                padding: 1rem 0;
+            }
+            
+            .evidence-container {
+                padding: 0 1rem;
+            }
+            
             .evidence-grid {
                 grid-template-columns: 1fr;
-                padding: 2rem;
-                gap: 2rem;
-            }
-            
-            .evidence-card {
-                padding: 2rem;
-            }
-            
-            .section-title-wall {
-                top: 2rem;
-                left: 2rem;
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .evidence-grid {
-                padding: 1.5rem;
                 gap: 1.5rem;
             }
             
             .evidence-card {
                 padding: 1.5rem;
+                border-radius: 16px;
             }
             
-            .section-title-wall {
-                top: 1.5rem;
-                left: 1.5rem;
-                font-size: 1.5rem;
+            .wall-header {
+                padding: 1.5rem 1rem;
+                margin-bottom: 1rem;
             }
+            
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .evidence-container {
+                padding: 0 0.5rem;
+            }
+            
+            .evidence-card {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+            
+            .card-header {
+                margin-bottom: 1rem;
+            }
+            
+            .card-icon {
+                width: 36px;
+                height: 36px;
+                padding: 8px;
+                margin-right: 0.75rem;
+            }
+            
+            .card-title {
+                font-size: 1rem;
+            }
+            
+            .card-content {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+        }
+
+        /* Special card categories */
+        .evidence-card[data-category="search"] .card-icon {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        }
+
+        .evidence-card[data-category="social"] .card-icon {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .evidence-card[data-category="documentation"] .card-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .evidence-card[data-category="digital"] .card-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .evidence-card[data-category="security"] .card-icon {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .evidence-card[data-category="verification"] .card-icon {
+            background: linear-gradient(135deg, #6366f1, #4338ca);
         }
         /*-------- End of Investigation Wall Styles --------*/
 
@@ -3085,8 +4137,7 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
+    <body>
         <header>
             <div class="header-content">
                 <div class="logo-and-title-container">
@@ -3097,9 +4148,12 @@
                         <div class="header-title">
                             OSINTVault
                         </div>
-                        <span class="header-tagline">Your OSINT tools, always with you.</span>
+                        <span class="header-tagline">Carry your investigations everywhere</span>
                     </div>
                 </div>
+                
+                <!-- ADD MOBILE MENU TOGGLE -->
+                <div class="mobile-menu-toggle">☰</div>
                 <div class="controls">
                     <div class="search-container">
                         <input type="text" class="search-input" id="searchInput" placeholder="Search intelligence tools, techniques, indicators...">
@@ -3127,24 +4181,24 @@
 
         <div class="stats-bar">
             <div class="stat-item">
-                <i class="fas fa-tools"></i>
-                <span>Tools:</span>
-                <span class="stat-value" id="totalTools">0</span>
+                <i class="fas fa-database"></i>
+                <span>Total Entries:</span>
+                <span class="stat-value" id="totalEntriesStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-folder"></i>
-                <span>Categories:</span>
-                <span class="stat-value" id="totalCategories">0</span>
+                <i class="fas fa-layer-group"></i>
+                <span>Custom Vaults:</span>
+                <span class="stat-value" id="totalCustomVaultsStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-star"></i>
-                <span>Starred:</span>
-                <span class="stat-value" id="starredToolsCount">0</span>
+                <i class="fas fa-sticky-note"></i>
+                <span>Notes:</span>
+                <span class="stat-value" id="totalNotesStat">0</span>
             </div>
             <div class="stat-item">
-                <i class="fas fa-thumbtack"></i>
-                <span>Pinned:</span>
-                <span class="stat-value" id="pinnedToolsCount">0</span>
+                <i class="fas fa-terminal"></i>
+                <span>Saved Dorks:</span>
+                <span class="stat-value" id="totalSavedDorksStat">0</span>
             </div>
         </div>
 
@@ -3208,18 +4262,17 @@
             </div>
 
             <div class="main-content">
-                <div class="nav-tabs">
-                    <button class="nav-tab active" data-tab="intelligence-vault">
+                <div class="nav-tabs main-nav-tabs">
+                    <button class="nav-tab active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </button>
+                    <button class="nav-tab" data-tab="intelligence-vault">
                         <i class="fas fa-tools"></i>
                         Intelligence Vault
                     </button>
                     <button class="nav-tab" data-tab="custom-tabs">
                         <i class="fas fa-layer-group"></i>
                         Multi-Vault
-                    </button>
-                    <button class="nav-tab" data-tab="analytics">
-                        <i class="fas fa-chart-bar"></i>
-                        Analytics
                     </button>
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -3274,45 +4327,130 @@
                     </div>
                 </div>
 
-                <div class="tab-content" id="analyticsTab">
+                <div class="tab-content active" id="dashboardTab">
                     <div class="content-header">
-                        <h2 class="content-title">Usage Analytics</h2>
+                        <h2 class="content-title">Dashboard Overview</h2>
                     </div>
-                    
+                
                     <div class="analytics-grid">
                         <div class="analytics-card">
-                            <div class="analytics-value" id="toolsUsed">0</div>
-                            <div>Tools Used Today</div>
+                            <div class="analytics-value" id="totalToolsCount">0</div>
+                            <div>Total Entries</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="activeVaultsCount">0</div>
+                            <div>Active Custom Vaults</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="usedToolsTodayCount">0</div>
+                            <div>Entries Used Today</div>
+                        </div>
+                        <div class="analytics-card">
+                            <div class="analytics-value" id="notesCount">0</div>
+                            <div>Total Notes</div>
                         </div>
                     </div>
-
-                    <div class="analytics-section">
-                        <h4>Top 5 Most Used Tools</h4>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Overall OSINT Metrics</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="entriesByTypeChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="usageTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Vault Content Distribution</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="topCategoriesChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="pinnedStarredDonutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 30px;">
+                        <h4 style="margin-bottom: 20px;">Vault Growth & Health</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="entryGrowthOverTimeChart"></canvas>
+                            </div>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px;">
+                                <canvas id="taggingOverviewChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Starred & Pinned Breakdown by Type</h4>
+                        <ul class="analytics-list" id="starredPinnedBreakdownList">
+                            </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Intelligence Vault Summary (Tools)</h4>
+                        <ul class="analytics-list" id="intelligenceVaultSummaryList">
+                            <li><span>Total Tools:</span> <span class="stat-value" id="intelVaultTotalTools">0</span></li>
+                            <li><span>Starred Tools:</span> <span class="stat-value" id="intelVaultStarredTools">0</span></li>
+                            <li><span>Pinned Tools:</span> <span class="stat-value" id="intelVaultPinnedTools">0</span></li>
+                            <li><span>Tool Categories:</span> <span class="stat-value" id="intelVaultCategoriesCount">0</span></li>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Custom Vaults Summary</h4>
+                        <ul class="analytics-list" id="customVaultsSummaryList">
+                            <li><span>Total Custom Vaults:</span> <span class="stat-value" id="customVaultsTotal">0</span></li>
+                            <li><span>Total Entries in Custom Vaults:</span> <span class="stat-value" id="customVaultsTotalEntries">0</span></li>
+                            <li><span>Avg. Entries per Custom Vault:</span> <span class="stat-value" id="customVaultsAvgEntries">0</span></li>
+                            <div class="analytics-card" style="flex: 1; min-width: 300px; height: 300px; margin-top: 20px;">
+                                <canvas id="entriesPerCustomVaultChart"></canvas>
+                            </div>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Notes & Dork Assistant Summary</h4>
+                        <ul class="analytics-list" id="notesDorkSummaryList">
+                            <li><span>Total Notes:</span> <span class="stat-value" id="notesSummaryTotal">0</span></li>
+                            <li><span>Pinned Notes:</span> <span class="stat-value" id="notesSummaryPinned">0</span></li>
+                            <li><span>Total Saved Dork Queries:</span> <span class="stat-value" id="dorksSummaryTotal">0</span></li>
+                            <li><span>Pre-Templates Available:</span> <span class="stat-value" id="dorksSummaryTemplates">0</span></li>
+                        </ul>
+                    </div>
+                
+                    <div class="analytics-section" style="margin-top: 20px;">
+                        <h4>Top 5 Most Used Entries</h4>
                         <ul class="analytics-list" id="mostUsedToolsList">
                             </ul>
                         <div class="empty-state" id="noMostUsedTools" style="display:none; padding:20px;">
                             <p>No usage data available yet.</p>
                         </div>
                     </div>
-
+                
                     <div class="analytics-section">
-                        <h4>Tools Never Used</h4>
+                        <h4>Entries Never Used</h4>
                         <ul class="analytics-list" id="neverUsedToolsList">
                             </ul>
                         <div class="empty-state" id="noNeverUsedTools" style="display:none; padding:20px;">
-                            <p>All tools have been used at least once!</p>
+                            <p>All entries have been used at least once!</p>
                         </div>
                     </div>
-
-                     <div class="analytics-section">
-                        <h4>Tools Added Per Week</h4>
+                
+                    <div class="analytics-section">
+                        <h4>Entries Added Per Week</h4>
                         <ul class="analytics-list" id="toolsAddedPerWeekList">
                             </ul>
                         <div class="empty-state" id="noToolsAdded" style="display:none; padding:20px;">
-                            <p>No tools added recently.</p>
+                            <p>No entries added recently.</p>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="tab-content" id="threatsTab">
@@ -3356,8 +4494,7 @@
                         <i class="fas fa-database"></i>
                         <h3>No Tools Found in This Category</h3>
                         <p>No OSINT tools match your current criteria in this category.</p>
-                        <button class="btn btn-primary" id="addToolBtnEmptyState">
-                            <i class="fas fa-plus-circle"></i>
+                        <button class="btn2 btn-primary" id="addToolBtnEmptyState">
                             Add New Tool
                         </button>
                     </div>
@@ -3395,7 +4532,7 @@
                             <i class="fas fa-plus-circle"></i>
                             Add New Entry
                         </button>
-                        <button class="btn btn-secondary" id="customVaultViewToggle" title="Switch to List View">
+                        <button class="btn btn-secondary" id="customVaultViewToggle" title="Switched to List View">
                             <i class="fas fa-list"></i>
                             List View
                         </button>
@@ -3414,8 +4551,7 @@
                         <i class="fas fa-folder-open"></i>
                         <h3>No Custom Vault Yet</h3>
                         <p>Create your first custom vault to organize your investigations!</p>
-                        <button class="btn btn-primary" id="createSubTabBtnEmptyState">
-                            <i class="fas fa-plus"></i>
+                        <button class="btn2 btn-primary" id="createSubTabBtnEmptyState">
                             Create Custom Vault
                         </button>
                     </div>
@@ -3437,7 +4573,6 @@
                         </button>
                     </div>
 
-                    <!-- Handbook Content -->
                     <div class="handbook-subtab-content" id="handbook-content" style="display: block;">
                         <div class="handbook-container">
                             <div class="handbook-sidebar" id="handbook-sidebar">
@@ -3445,8 +4580,7 @@
                                     <input type="text" id="handbook-search" class="handbook-search" placeholder="Search handbook...">
                                     <i class="fas fa-search handbook-search-icon"></i>
                                 </div>
-                                <!-- Sidebar content will be populated by JS -->
-                            </div>
+                                </div>
                             
                             <div class="handbook-content-container">
                                 <div class="handbook-content" id="handbook-article-area"> </div>
@@ -3458,10 +4592,8 @@
                         </button>
                     </div>
                     
-                    <!-- Notes Content -->
                     <div class="handbook-subtab-content" id="notes-content" style="display: none;">
                         <div class="notes-container">
-                            <!-- Notes List View -->
                             <div id="notes-list-view" class="notes-list-view">
                                 <div class="notes-header">
                                     <h2 class="notes-title">My Notes</h2>
@@ -3488,7 +4620,6 @@
                                 <div id="notes-list"></div>
                             </div>
                             
-                            <!-- Note Editor View -->
                             <div id="note-editor-view" class="note-editor-view" style="display: none;">
                                 <div class="note-editor-header">
                                     <h2 class="note-editor-title">Edit Note</h2>
@@ -3557,8 +4688,7 @@
                                 <div class="note-tags-section">
                                     <h3 class="note-tags-header">Tags</h3>
                                     <div id="note-tags-container" class="note-tags-container">
-                                        <!-- Tags will be populated by JS -->
-                                    </div>
+                                        </div>
                                     <div id="tag-input-container" class="tag-input-container">
                                         <input type="text" id="note-tags-input" class="note-tags-input" placeholder="Add a tag...">
                                         <button id="add-tag-btn" class="add-tag-btn">
@@ -3818,80 +4948,89 @@
         <section class="investigation-wall">
             <div class="wall-texture"></div>
             <div class="floating-particles" id="particles"></div>
-            <h2 class="section-title-wall"><i class="fas fa-clipboard-list"></i>Investigation Wall: OSINT Tips & Tricks</h2>
-            
             <div class="connecting-lines" id="connecting-lines"></div>
-            
-            <div class="evidence-grid">
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 13 15.5l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                        </svg>
-                        Search Techniques
+    
+            <div class="wall-header">
+                <h1 class="section-title">
+                    OSINT Investigation Hub
+                </h1>
+                <p class="section-subtitle">
+                    Intelligence Gathering & Analysis Techniques
+                </p>
+            </div>
+    
+            <div class="evidence-container">
+                <div class="evidence-grid">
+                    <div class="evidence-card" data-category="search">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="card-title">Advanced Search Techniques</div>
+                        </div>
+                        <div class="card-content">
+                            Master <span class="highlight">Google Dorks</span> with operators like site:, filetype:, and intitle:. Use <span class="highlight">Boolean logic</span> with AND, OR, NOT. Combine with quotation marks for exact phrase matching and minus operator for exclusions.
+                        </div>
                     </div>
-                    <div class="card-content-wall">
-                        Use <span class="highlight-wall">Google Dorks</span> for advanced searches. Try operators like site:, filetype:, and intitle: to narrow results. Remember: <span class="highlight-wall">"" for exact phrases</span> and - to exclude terms.
+    
+                    <div class="evidence-card" data-category="social">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-title">Social Media Intelligence</div>
+                        </div>
+                        <div class="card-content">
+                            Extract <span class="highlight">EXIF metadata</span> from images. Perform reverse image searches across platforms. Track <span class="highlight">username patterns</span> and cross-reference profile information for digital footprint mapping.
+                        </div>
                     </div>
-                </div>
-
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                        Social Media Intel
+    
+                    <div class="evidence-card" data-category="documentation">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-file-shield"></i>
+                            </div>
+                            <div class="card-title">Evidence Documentation</div>
+                        </div>
+                        <div class="card-content">
+                            Create <span class="highlight">timestamped screenshots</span> with metadata. Use archive.org for historical data. Maintain detailed <span class="highlight">chain of custody</span> documentation for legal admissibility.
+                        </div>
                     </div>
-                    <div class="card-content-wall">
-                        Check <span class="highlight-wall">metadata</span> in images and posts. Use reverse image searches. Look for <span class="highlight-wall">connected accounts</span> across platforms using same usernames or profile pics.
+    
+                    <div class="evidence-card" data-category="digital">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-fingerprint"></i>
+                            </div>
+                            <div class="card-title">Digital Footprint Analysis</div>
+                        </div>
+                        <div class="card-content">
+                            Analyze <span class="highlight">WHOIS records</span> and DNS data. Use Shodan for IoT device discovery. Examine <span class="highlight">SSL certificates</span> and email headers for routing intelligence and infrastructure mapping.
+                        </div>
                     </div>
-                </div>
-
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                        </svg>
-                        Documentation
+    
+                    <div class="evidence-card" data-category="security">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-user-secret"></i>
+                            </div>
+                            <div class="card-title">Operational Security</div>
+                        </div>
+                        <div class="card-content">
+                            Use <span class="highlight">VPN + Tor</span> for anonymity layers. Create isolated investigation personas. Always use <span class="highlight">burner accounts</span> and clean browser sessions for operational integrity.
+                        </div>
                     </div>
-                    <div class="card-content-wall">
-                        Always <span class="highlight-wall">screenshot evidence</span> before it disappears. Use timestamps and archive tools like Wayback Machine. Document your <span class="highlight-wall">methodology</span> for legal purposes.
-                    </div>
-                </div>
-
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
-                        Digital Footprints
-                    </div>
-                    <div class="card-content-wall">
-                        Check <span class="highlight-wall">WHOIS data</span> for domains. Look at DNS records, SSL certificates. Use tools like Shodan for IoT devices. Email headers reveal routing paths.
-                    </div>
-                </div>
-
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                        </svg>
-                        Privacy & Security
-                    </div>
-                    <div class="card-content-wall">
-                        Use <span class="highlight-wall">VPN and Tor</span> for anonymity. Create separate investigation personas. Never use personal accounts. Clear browser data and use <span class="highlight-wall">incognito mode</span>.
-                    </div>
-                </div>
-
-                <div class="evidence-card">
-                    <div class="card-header-wall">
-                        <svg class="card-icon-wall" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                        Verification
-                    </div>
-                    <div class="card-content-wall">
-                        <span class="highlight-wall">Cross-reference</span> information from multiple sources. Use fact-checking sites. Verify timestamps and locations. Look for <span class="highlight-wall">digital inconsistencies</span> in manipulated content.
+    
+                    <div class="evidence-card" data-category="verification">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-shield-check"></i>
+                            </div>
+                            <div class="card-title">Information Verification</div>
+                        </div>
+                        <div class="card-content">
+                            Implement <span class="highlight">multi-source verification</span> protocols. Use geolocation tools and timestamp analysis. Detect <span class="highlight">deepfakes</span> and manipulated media through technical analysis.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3968,12 +5107,18 @@
             </div>
         </div>
 
-        <footer class="footer-bottom">
-            <p>&copy; 2025 OSINTVault. Built for cybersecurity professionals and researchers.</p>
-            <p style="margin-top: 10px; font-size: 12px;">
-                <i class="fas fa-shield-alt" style="color: var(--primary);"></i>
-                Secure • Anonymous • Professional
-            </p>
+        <footer>
+            <div class="footer-content">
+                <div class="demo-content">
+                    <h1>Your OSINT tools, always with you.</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        &copy; 2025 OSINTVault. Designed for OSINT, cybersecurity analysts, cybersecurity professionals and researchers.
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">
+                        • Responsive design • Dark/Light mode • Modern aesthetics • Tactical feel
+                    </p>
+                </div>
+            </div>
         </footer>
     </div>
 
@@ -6456,21 +7601,21 @@
             </h3>
             <form id="shareForm">
                 <div class="form-group">
-                    <label>What would you like to share?</label>
+                    <label for="shareScopeSelect">What would you like to share?</label>
                     <select id="shareScopeSelect">
                         <option value="currentTab">Current Tab (Read-Only View)</option>
                         <option value="allVault">All Intelligence Vault (Read-Only View)</option>
                         <option value="allData">All Data (Read-Only View)</option>
-                        <option value="specificCustomTab" style="display:none;">Specific Custom Tab...</option>
+                        <option value="specificCustomTabPlaceholder">Specific Custom Vault...</option>
                         </select>
                 </div>
-
+    
                 <div id="specificCustomTabSelector" class="form-group" style="display:none;">
-                    <label>Select a Custom Tab to share:</label>
+                    <label for="selectCustomTabForSharing">Select a Custom Vault to share:</label>
                     <select id="selectCustomTabForSharing">
                         </select>
                 </div>
-
+    
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelShareOptions">Cancel</button>
                     <button type="submit" class="btn btn-primary">Generate Link</button>
@@ -6517,7 +7662,7 @@
             exploits: [], // Added
             publicRecords: [], // Added
             selectedEntries: new Set(),
-            currentTab: 'intelligence-vault',
+            currentTab: 'dashboard',
             currentIntelligenceVaultParentTab: 'generalAndCore', // Ensure this is a valid default ID from intelligenceVaultTabStructure
             currentIntelligenceVaultChildTab: 'tools', // Ensure this is a valid default ID from intelligenceVaultTabStructure
             currentCustomVaultEntrySubTab: 'tool', // Changed to singular 'tool' for custom vault entry types
@@ -7307,9 +8452,9 @@
 
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['intelligence-vault', 'custom-tabs', 'analytics', 'threats', 'handbook'];
+            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'analytics', 'threats', 'handbook', 'dork-assistant'];
             if (!validTabs.includes(appState.currentTab)) {
-                appState.currentTab = 'intelligence-vault'; // Default to intelligence-vault if invalid
+                appState.currentTab = 'dashboard'; // Default to intelligence-vault if invalid
             }
 
             // Call switchTab to set up the initial active tab and its content
@@ -7318,7 +8463,7 @@
             // Re-render all necessary parts that depend on the initial state
             showRandomDiscovery();
             populateCategoryFilter();
-            updateAnalytics(); // Ensure analytics are up to date
+            updateDashboard(); // Ensure analytics are up to date
             applyReadOnlyMode(); // Apply read-only mode if shared link is active
 
             // Update view toggle buttons based on saved view mode
@@ -7415,7 +8560,7 @@
                 }
 
             } else if (tabName === 'analytics') {
-                updateAnalytics();
+                updateDashboard();
             } else if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'handbook') {
@@ -7541,140 +8686,140 @@
             saveState(); // Save the child tab state
         }
 
-// MODIFIED: loadState function to correctly parse all new entry types
-function loadState() {
-    const savedState = localStorage.getItem('osintArsenalState');
-    if (savedState) {
-        const parsedState = JSON.parse(savedState);
+        // MODIFIED: loadState function to correctly parse all new entry types
+        function loadState() {
+            const savedState = localStorage.getItem('osintArsenalState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
 
-        // Map and ensure Date objects and default values for all existing types
-        appState.tools = (parsedState.tools || []).map(entry => ({
-            ...entry,
-            addedDate: new Date(entry.addedDate),
-            lastUsed: entry.lastUsed || 0,
-            customTabs: entry.customTabs || [],
-            intelligenceVaultCategories: entry.intelligenceVaultCategories || [],
-            origin: entry.origin || 'user-added'
-        }));
-        appState.emails = (parsedState.emails || []).map(entry => ({ ...entry, linkedPlatforms: entry.linkedPlatforms || [] }));
-        appState.phones = parsedState.phones || [];
-        appState.crypto = (parsedState.crypto || []).map(entry => ({ ...entry, amount: parseFloat(entry.amount) || 0 }));
-        appState.locations = parsedState.locations || [];
-        appState.links = parsedState.links || [];
-        appState.media = (parsedState.media || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
-        appState.passwords = parsedState.passwords || [];
-        appState.keywords = parsedState.keywords || [];
-        appState.socials = parsedState.socials || [];
+                // Map and ensure Date objects and default values for all existing types
+                appState.tools = (parsedState.tools || []).map(entry => ({
+                    ...entry,
+                    addedDate: new Date(entry.addedDate),
+                    lastUsed: entry.lastUsed || 0,
+                    customTabs: entry.customTabs || [],
+                    intelligenceVaultCategories: entry.intelligenceVaultCategories || [],
+                    origin: entry.origin || 'user-added'
+                }));
+                appState.emails = (parsedState.emails || []).map(entry => ({ ...entry, linkedPlatforms: entry.linkedPlatforms || [] }));
+                appState.phones = parsedState.phones || [];
+                appState.crypto = (parsedState.crypto || []).map(entry => ({ ...entry, amount: parseFloat(entry.amount) || 0 }));
+                appState.locations = parsedState.locations || [];
+                appState.links = parsedState.links || [];
+                appState.media = (parsedState.media || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
+                appState.passwords = parsedState.passwords || [];
+                appState.keywords = parsedState.keywords || [];
+                appState.socials = parsedState.socials || [];
 
-        // Add all new entry types here, ensuring they are initialized as arrays and correctly parsed
-        appState.domains = parsedState.domains || [];
-        appState.usernames = parsedState.usernames || [];
-        appState.threats = parsedState.threats || [];
-        appState.vulnerabilities = (parsedState.vulnerabilities || []).map(entry => ({ ...entry, cvss: parseFloat(entry.cvss) || 0 }));
-        appState.malware = parsedState.malware || [];
-        appState.breaches = (parsedState.breaches || []).map(entry => ({ ...entry, records: parseInt(entry.records) || 0 }));
-        appState.credentials = parsedState.credentials || [];
-        appState.forums = parsedState.forums || [];
-        appState.vendors = parsedState.vendors || [];
-        appState.telegramChannels = (parsedState.telegramChannels || []).map(entry => ({ ...entry, subscribers: parseInt(entry.subscribers) || 0 }));
-        appState.pastes = parsedState.pastes || [];
-        appState.documents = parsedState.documents || [];
-        appState.networks = parsedState.networks || [];
-        appState.metadataEntries = parsedState.metadataEntries || [];
-        appState.archives = (parsedState.archives || []).map(entry => ({ ...entry, timestamp: entry.timestamp ? new Date(entry.timestamp).getTime() : null }));
-        appState.messagingApps = parsedState.messagingApps || [];
-        appState.datingProfiles = (parsedState.datingProfiles || []).map(entry => ({ ...entry, age: parseInt(entry.age) || null }));
-        appState.audioEntries = (parsedState.audioEntries || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
-        appState.facialRecognition = parsedState.facialRecognition || [];
-        appState.personas = parsedState.personas || [];
-        appState.vpns = parsedState.vpns || [];
-        appState.honeypots = parsedState.honeypots || [];
-        appState.exploits = parsedState.exploits || [];
-        appState.publicRecords = parsedState.publicRecords || [];
+                // Add all new entry types here, ensuring they are initialized as arrays and correctly parsed
+                appState.domains = parsedState.domains || [];
+                appState.usernames = parsedState.usernames || [];
+                appState.threats = parsedState.threats || [];
+                appState.vulnerabilities = (parsedState.vulnerabilities || []).map(entry => ({ ...entry, cvss: parseFloat(entry.cvss) || 0 }));
+                appState.malware = parsedState.malware || [];
+                appState.breaches = (parsedState.breaches || []).map(entry => ({ ...entry, records: parseInt(entry.records) || 0 }));
+                appState.credentials = parsedState.credentials || [];
+                appState.forums = parsedState.forums || [];
+                appState.vendors = parsedState.vendors || [];
+                appState.telegramChannels = (parsedState.telegramChannels || []).map(entry => ({ ...entry, subscribers: parseInt(entry.subscribers) || 0 }));
+                appState.pastes = parsedState.pastes || [];
+                appState.documents = parsedState.documents || [];
+                appState.networks = parsedState.networks || [];
+                appState.metadataEntries = parsedState.metadataEntries || [];
+                appState.archives = (parsedState.archives || []).map(entry => ({ ...entry, timestamp: entry.timestamp ? new Date(entry.timestamp).getTime() : null }));
+                appState.messagingApps = parsedState.messagingApps || [];
+                appState.datingProfiles = (parsedState.datingProfiles || []).map(entry => ({ ...entry, age: parseInt(entry.age) || null }));
+                appState.audioEntries = (parsedState.audioEntries || []).map(entry => ({ ...entry, base64Data: entry.base64Data || '' }));
+                appState.facialRecognition = parsedState.facialRecognition || [];
+                appState.personas = parsedState.personas || [];
+                appState.vpns = parsedState.vpns || [];
+                appState.honeypots = parsedState.honeypots || [];
+                appState.exploits = parsedState.exploits || [];
+                appState.publicRecords = parsedState.publicRecords || [];
 
-        appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
-        appState.filters = parsedState.filters || {
-            category: '',
-            search: '',
-            sort: 'name',
-            searchScope: 'currentTab'
-        };
-        appState.theme = parsedState.theme || 'dark';
-        appState.viewMode = parsedState.viewMode || 'grid';
-        appState.usageStats = parsedState.usageStats || {
-            toolsUsedToday: 0
-        };
-        appState.customTabs = parsedState.customTabs || [];
-        // Ensure currentCustomTab points to a valid tab if customTabs exist
-        appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
+                appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
+                appState.filters = parsedState.filters || {
+                    category: '',
+                    search: '',
+                    sort: 'name',
+                    searchScope: 'currentTab'
+                };
+                appState.theme = parsedState.theme || 'dark';
+                appState.viewMode = parsedState.viewMode || 'grid';
+                appState.usageStats = parsedState.usageStats || {
+                    toolsUsedToday: 0
+                };
+                appState.customTabs = parsedState.customTabs || [];
+                // Ensure currentCustomTab points to a valid tab if customTabs exist
+                appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
 
-        // Ensure parent/child tabs exist and have valid defaults if needed
-        appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
-        appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
-        appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
-        appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool'; // Changed to 'tool' (singular)
+                // Ensure parent/child tabs exist and have valid defaults if needed
+                appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
+                appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
+                appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool'; // Changed to 'tool' (singular)
 
-        // CRUCIAL PART: Merge default tools after loading saved state
-        defaultTools.forEach(defaultTool => {
-            const exists = appState.tools.some(tool => tool.id === defaultTool.id);
-            if (!exists) {
-                appState.tools.push({ ...defaultTool, addedDate: new Date(defaultTool.addedDate), origin: 'pre-added' });
+                // CRUCIAL PART: Merge default tools after loading saved state
+                defaultTools.forEach(defaultTool => {
+                    const exists = appState.tools.some(tool => tool.id === defaultTool.id);
+                    if (!exists) {
+                        appState.tools.push({ ...defaultTool, addedDate: new Date(defaultTool.addedDate), origin: 'pre-added' });
+                    }
+                });
+
+            } else {
+                // If no saved state exists (first-time user), initialize with default tools and empty new arrays
+                appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
+                appState.customTabs = [{
+                    id: generateId(),
+                    name: 'My First Vault',
+                    toolIds: [],
+                    icon: 'fas fa-folder',
+                    color: 'var(--tab-color-default)'
+                }];
+                appState.currentCustomTab = appState.customTabs[0]?.id || null;
+
+                appState.currentIntelligenceVaultParentTab = 'generalAndCore';
+                appState.currentIntelligenceVaultChildTab = 'tools';
+                appState.currentCustomVaultParentTab = 'coreInvestigation';
+                appState.currentCustomVaultEntrySubTab = 'tool';
+
+                // Initialize all new arrays as empty if no saved state
+                appState.emails = [];
+                appState.phones = [];
+                appState.crypto = [];
+                appState.locations = [];
+                appState.links = [];
+                appState.media = [];
+                appState.passwords = [];
+                appState.keywords = [];
+                appState.socials = [];
+                appState.domains = [];
+                appState.usernames = [];
+                appState.threats = [];
+                appState.vulnerabilities = [];
+                appState.malware = [];
+                appState.breaches = [];
+                appState.credentials = [];
+                appState.forums = [];
+                appState.vendors = [];
+                appState.telegramChannels = [];
+                appState.pastes = [];
+                appState.documents = [];
+                appState.networks = [];
+                appState.metadataEntries = [];
+                appState.archives = [];
+                appState.messagingApps = [];
+                appState.datingProfiles = [];
+                appState.audioEntries = [];
+                appState.facialRecognition = [];
+                appState.personas = [];
+                appState.vpns = [];
+                appState.honeypots = [];
+                appState.exploits = [];
+                appState.publicRecords = [];
             }
-        });
-
-    } else {
-        // If no saved state exists (first-time user), initialize with default tools and empty new arrays
-        appState.tools = defaultTools.map(tool => ({ ...tool, origin: 'pre-added' }));
-        appState.customTabs = [{
-            id: generateId(),
-            name: 'My First Vault',
-            toolIds: [],
-            icon: 'fas fa-folder',
-            color: 'var(--tab-color-default)'
-        }];
-        appState.currentCustomTab = appState.customTabs[0]?.id || null;
-
-        appState.currentIntelligenceVaultParentTab = 'generalAndCore';
-        appState.currentIntelligenceVaultChildTab = 'tools';
-        appState.currentCustomVaultParentTab = 'coreInvestigation';
-        appState.currentCustomVaultEntrySubTab = 'tool';
-
-        // Initialize all new arrays as empty if no saved state
-        appState.emails = [];
-        appState.phones = [];
-        appState.crypto = [];
-        appState.locations = [];
-        appState.links = [];
-        appState.media = [];
-        appState.passwords = [];
-        appState.keywords = [];
-        appState.socials = [];
-        appState.domains = [];
-        appState.usernames = [];
-        appState.threats = [];
-        appState.vulnerabilities = [];
-        appState.malware = [];
-        appState.breaches = [];
-        appState.credentials = [];
-        appState.forums = [];
-        appState.vendors = [];
-        appState.telegramChannels = [];
-        appState.pastes = [];
-        appState.documents = [];
-        appState.networks = [];
-        appState.metadataEntries = [];
-        appState.archives = [];
-        appState.messagingApps = [];
-        appState.datingProfiles = [];
-        appState.audioEntries = [];
-        appState.facialRecognition = [];
-        appState.personas = [];
-        appState.vpns = [];
-        appState.honeypots = [];
-        appState.exploits = [];
-        appState.publicRecords = [];
-    }
-}
+        }
 
         
 
@@ -7683,15 +8828,25 @@ function loadState() {
             localStorage.setItem('osintArsenalState', JSON.stringify(appState));
         }
 
-        // Update statistics
         function updateStats() {
-            // Include new types in allEntries
-            const allEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-            const categories = new Set(appState.tools.map(tool => tool.category)); // Only tools have categories for now
-            document.getElementById('totalTools').textContent = allEntries.length; // Count all entries, not just tools
-            document.getElementById('totalCategories').textContent = categories.size;
-            document.getElementById('starredToolsCount').textContent = allEntries.filter(entry => entry.starred).length;
-            document.getElementById('pinnedToolsCount').textContent = allEntries.filter(entry => entry.pinned).length;
+            // Combine all entries from all types for total entries
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // These IDs are for the top-level stats bar
+            document.getElementById('totalEntriesStat').textContent = allEntries.length;
+            document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
+            document.getElementById('totalNotesStat').textContent = notesState.notes.length;
+            document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
         }
 
         // Populate category filter and Add Tool modal
@@ -9225,7 +10380,7 @@ function handleEntryAction(e) {
             if (entry.url) { // Check for .url property instead of just entry.type === 'tool'
                 entry.lastUsed = Date.now(); // Update lastUsed timestamp
                 appState.usageStats.toolsUsedToday++; // Increment usage stat (generic for now)
-                updateAnalytics(); // Update analytics display
+                updateDashboard(); // Update analytics display
                 window.open(entry.url, '_blank');
                 showToast('Opening link...');
             } else {
@@ -9501,7 +10656,7 @@ function bulkAction(action) {
                 }
 
             } else if (tabName === 'analytics') {
-                updateAnalytics();
+                updateDashboard();
             } else if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'handbook') {
@@ -9697,14 +10852,573 @@ function bulkAction(action) {
 
         }
 
-        // Update analytics data (display)
-        function updateAnalytics() {
-            document.getElementById('toolsUsed').textContent = appState.usageStats.toolsUsedToday;
+        function updateDashboard() {
+            // Define allEntries at the start of the function, combining all relevant appState arrays
+            const allEntries = [
+                ...appState.tools,
+                ...appState.emails,
+                ...appState.phones,
+                ...appState.crypto,
+                ...appState.locations,
+                ...appState.links,
+                ...appState.media,
+                ...appState.passwords,
+                ...appState.keywords,
+                ...appState.socials,
+                ...appState.domains,
+                ...appState.usernames,
+                ...appState.threats,
+                ...appState.vulnerabilities,
+                ...appState.malware,
+                ...appState.breaches,
+                ...appState.credentials,
+                ...appState.forums,
+                ...appState.vendors,
+                ...appState.telegramChannels,
+                ...appState.pastes,
+                ...appState.documents,
+                ...appState.networks,
+                ...appState.metadataEntries,
+                ...appState.archives,
+                ...appState.messagingApps,
+                ...appState.datingProfiles,
+                ...appState.facialRecognition,
+                ...appState.personas,
+                ...appState.vpns,
+                ...appState.honeypots,
+                ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // --- Main Overview Stats (These are the big numbers at the top of the Dashboard tab) ---
+            document.getElementById('totalToolsCount').textContent = allEntries.length; // Still represents all entries
+            document.getElementById('activeVaultsCount').textContent = appState.customTabs.length;
+            document.getElementById('usedToolsTodayCount').textContent = appState.usageStats.toolsUsedToday;
+            document.getElementById('notesCount').textContent = notesState.notes.length;
+
+
+            // --- Detailed Starred & Pinned Breakdown by Type ---
+            const starredPinnedBreakdownList = document.getElementById('starredPinnedBreakdownList');
+            if (starredPinnedBreakdownList) {
+                let breakdownHtml = '';
+                const entryTypes = [
+                    'tool', 'email', 'phone', 'crypto', 'location', 'link', 'media', 'password',
+                    'keyword', 'social', 'domain', 'username', 'threat', 'vulnerability', 'malware',
+                    'breach', 'credential', 'forum', 'vendor', 'telegram', 'paste', 'document',
+                    'network', 'metadata', 'archive', 'messaging', 'dating', 'audio', 'facial',
+                    'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord'
+                ]; // Explicitly list all types
+
+                // Count for each type
+                const typeCounts = {};
+                allEntries.forEach(entry => {
+                    const typeKey = entry.type + 's'; // e.g., 'tools', 'emails'
+                    if (!typeCounts[typeKey]) {
+                        typeCounts[typeKey] = { starred: 0, pinned: 0 };
+                    }
+                    if (entry.starred) {
+                        typeCounts[typeKey].starred++;
+                    }
+                    if (entry.pinned) {
+                        typeCounts[typeKey].pinned++;
+                    }
+                });
+
+                // Add overall starred/pinned totals first for clarity
+                breakdownHtml += `<li><span>Total Starred Entries:</span> <span class="stat-value">${allEntries.filter(e => e.starred).length}</span></li>`;
+                breakdownHtml += `<li><span>Total Pinned Entries:</span> <span class="stat-value">${allEntries.filter(e => e.pinned).length}</span></li>`;
+                breakdownHtml += `<li><hr style="border: 0; height: 1px; background: var(--border-light); margin: 10px 0;"></li>`; // Divider
+
+                // Iterate through counts and build HTML
+                entryTypes.forEach(type => {
+                    const pluralType = type + 's';
+                    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+                    if (typeCounts[pluralType] && (typeCounts[pluralType].starred > 0 || typeCounts[pluralType].pinned > 0)) {
+                        if (typeCounts[pluralType].starred > 0) {
+                            breakdownHtml += `<li><span>Starred ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].starred}</span></li>`;
+                        }
+                        if (typeCounts[pluralType].pinned > 0) {
+                            breakdownHtml += `<li><span>Pinned ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].pinned}</span></li>`;
+                        }
+                    }
+                });
+                starredPinnedBreakdownList.innerHTML = breakdownHtml;
+            }
+
+
+            // --- Intelligence Vault Summary ---
+            const intelVaultCategories = new Set(appState.tools.map(tool => tool.category));
+            document.getElementById('intelVaultTotalTools').textContent = appState.tools.length;
+            document.getElementById('intelVaultStarredTools').textContent = appState.tools.filter(tool => tool.starred).length;
+            document.getElementById('intelVaultPinnedTools').textContent = appState.tools.filter(tool => tool.pinned).length;
+            document.getElementById('intelVaultCategoriesCount').textContent = intelVaultCategories.size;
+
+            // --- Custom Vaults Summary ---
+            let totalEntriesInCustomVaults = 0;
+            appState.customTabs.forEach(tab => {
+                totalEntriesInCustomVaults += tab.toolIds.length; // toolIds now holds all entry types in custom tabs
+            });
+            const totalCustomVaults = appState.customTabs.length; // Redefine here if needed for this section
+            document.getElementById('customVaultsTotal').textContent = totalCustomVaults;
+            document.getElementById('customVaultsTotalEntries').textContent = totalEntriesInCustomVaults;
+            document.getElementById('customVaultsAvgEntries').textContent = totalCustomVaults > 0 ? (totalEntriesInCustomVaults / totalCustomVaults).toFixed(1) : '0';
+
+            // Render chart for entries per custom vault
+            renderEntriesPerCustomVaultChart();
+
+
+            // --- Notes & Dork Assistant Summary ---
+            const totalTemplates = Object.values(dorkTemplates).flat().length; // Count all pre-templates
+            document.getElementById('notesSummaryTotal').textContent = notesState.notes.length;
+            document.getElementById('notesSummaryPinned').textContent = notesState.notes.filter(n => n.pinned).length;
+            document.getElementById('dorksSummaryTotal').textContent = dorkAssistantState.savedQueries.length;
+            document.getElementById('dorksSummaryTemplates').textContent = totalTemplates;
+
+
+            // --- Render lists ---
             renderMostUsedTools();
             renderNeverUsedTools();
             renderToolsAddedPerWeek();
 
-            saveState();
+            // --- Chart Rendering Calls ---
+            renderEntriesByTypeChart();
+            renderUsageTrendChart();
+            renderTopCategoriesChart();
+            renderPinnedStarredDonutChart();
+            renderEntryGrowthOverTimeChart();
+            renderTaggingOverviewChart();
+        }
+
+        function renderEntriesPerCustomVaultChart() {
+            const ctx = document.getElementById('entriesPerCustomVaultChart').getContext('2d');
+            
+            const customVaultNames = appState.customTabs.map(tab => tab.name);
+            const entriesPerVault = appState.customTabs.map(tab => tab.toolIds.length);
+
+            if (window.entriesPerCustomVaultChartInstance) {
+                window.entriesPerCustomVaultChartInstance.destroy();
+            }
+
+            window.entriesPerCustomVaultChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: customVaultNames,
+                    datasets: [{
+                        label: 'Entries per Custom Vault',
+                        data: entriesPerVault,
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)', // Using a purple shade from your theme
+                        borderColor: '#8b5cf6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entries in Custom Vaults',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim(),
+                                // Ensure ticks are integers
+                                callback: function(value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;
+                                    }
+                                }
+                            },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTaggingOverviewChart() {
+            const ctx = document.getElementById('taggingOverviewChart').getContext('2d');
+            
+            // Combine all entries to count tags across all types
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            let taggedEntriesCount = 0;
+            let untaggedEntriesCount = 0;
+
+            allEntries.forEach(entry => {
+                if (entry.tags && entry.tags.length > 0) {
+                    taggedEntriesCount++;
+                } else {
+                    untaggedEntriesCount++;
+                }
+            });
+
+            const data = [taggedEntriesCount, untaggedEntriesCount];
+            const labels = ['Tagged Entries', 'Untagged Entries'];
+
+            if (window.taggingOverviewChartInstance) {
+                window.taggingOverviewChartInstance.destroy();
+            }
+
+            window.taggingOverviewChartInstance = new Chart(ctx, {
+                type: 'doughnut', // Doughnut chart is good for parts of a whole
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#28a745', // Green for tagged
+                            '#dc3545'  // Red for untagged
+                        ],
+                        borderColor: 'var(--bg-primary)', // Border color from your theme variables
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entry Tagging Overview',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart rendering functions (these would be placed outside updateDashboard, in your main script)
+
+        function renderTopCategoriesChart() {
+            const ctx = document.getElementById('topCategoriesChart').getContext('2d');
+            const categoryCounts = {};
+            appState.tools.forEach(tool => { // Only tools have categories in your current setup
+                const category = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+                categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+            });
+
+            const labels = Object.keys(categoryCounts);
+            const data = Object.values(categoryCounts);
+
+            if (window.topCategoriesChartInstance) {
+                window.topCategoriesChartInstance.destroy();
+            }
+            window.topCategoriesChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tools per Category',
+                        data: data,
+                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Tools by Category', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                        x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderPinnedStarredDonutChart() {
+            const ctx = document.getElementById('pinnedStarredDonutChart').getContext('2d');
+            // Combine all entries to count pinned/starred across all types
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            const pinnedCount = allEntries.filter(entry => entry.pinned).length;
+            const starredCount = allEntries.filter(entry => entry.starred).length;
+
+            // Calculate overlaps correctly: sum pinned and starred, then subtract count of items that are both.
+            const bothCount = allEntries.filter(entry => entry.pinned && entry.starred).length;
+            const uniquePinnedOrStarredCount = pinnedCount + starredCount - bothCount;
+            const othersCount = allEntries.length - uniquePinnedOrStarredCount;
+
+            const data = [pinnedCount, starredCount, othersCount]; // Using pinnedCount and starredCount directly for slices
+            const labels = ['Pinned', 'Starred', 'Other Entries'];
+
+            if (window.pinnedStarredDonutChartInstance) {
+                window.pinnedStarredDonutChartInstance.destroy();
+            }
+            window.pinnedStarredDonutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#28a745', '#ffc107', '#6c757d'], // Green for pinned, yellow for starred, grey for others
+                        borderColor: 'var(--bg-primary)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Pinned & Starred Entries', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() } }
+                    }
+                }
+            });
+        }
+
+        function renderEntryGrowthOverTimeChart() {
+            const ctx = document.getElementById('entryGrowthOverTimeChart').getContext('2d');
+            const cumulativeData = {}; // { 'YYYY-MM-DD': cumulative_count }
+            const allEntries = [
+                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                ...appState.publicRecords
+            ];
+
+            // Sort entries by addedDate to calculate cumulative count
+            allEntries.sort((a, b) => new Date(a.addedDate) - new Date(b.addedDate));
+
+            let count = 0;
+            allEntries.forEach(entry => {
+                if (entry.addedDate) {
+                    const date = new Date(entry.addedDate);
+                    const key = date.toISOString().slice(0, 10); // Use YYYY-MM-DD as key
+                    cumulativeData[key] = ++count; // Increment and assign cumulative count
+                }
+            });
+
+            const sortedDates = Object.keys(cumulativeData).sort();
+            
+            let fullLabels = [];
+            let fullData = [];
+
+            if (sortedDates.length > 0) {
+                let currentDate = new Date(sortedDates[0]);
+                let lastCount = 0;
+                // Ensure currentDate is initialized to start of first day
+                currentDate.setHours(0, 0, 0, 0);
+
+                const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+                lastDate.setHours(0, 0, 0, 0);
+
+                let dateIndex = 0; // To track position in sortedDates
+
+                while (currentDate.getTime() <= lastDate.getTime()) {
+                    const key = currentDate.toISOString().slice(0, 10);
+                    if (dateIndex < sortedDates.length && sortedDates[dateIndex] === key) {
+                        lastCount = cumulativeData[key];
+                        dateIndex++; // Move to the next available data point
+                    }
+                    fullLabels.push(currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                    fullData.push(lastCount);
+                    currentDate.setDate(currentDate.getDate() + 1); // Move to next day
+                }
+            }
+
+
+            if (window.entryGrowthOverTimeChartInstance) {
+                window.entryGrowthOverTimeChartInstance.destroy();
+            }
+            window.entryGrowthOverTimeChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fullLabels, // Use fullLabels for smoother line
+                    datasets: [{
+                        label: 'Total Entries Over Time',
+                        data: fullData, // Use fullData
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        fill: true,
+                        tension: 0.3 // Smooth line
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Total Entries Growth', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                        x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        function renderEntriesByTypeChart() {
+            const ctx = document.getElementById('entriesByTypeChart').getContext('2d');
+            const entryTypeCounts = {};
+            // Aggregate all entries into a single array for counting
+            const allEntries = [...appState.tools, /* ... all other appState arrays ... */]; // Ensure this array is comprehensive
+
+            allEntries.forEach(entry => {
+                const type = entry.type.charAt(0).toUpperCase() + entry.type.slice(1); // Capitalize first letter
+                entryTypeCounts[type] = (entryTypeCounts[type] || 0) + 1;
+            });
+
+            const labels = Object.keys(entryTypeCounts);
+            const data = Object.values(entryTypeCounts);
+
+            // Destroy existing chart if it exists to prevent redraw issues
+            if (window.entriesByTypeChartInstance) {
+                window.entriesByTypeChartInstance.destroy();
+            }
+
+            window.entriesByTypeChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d',
+                            '#17a2b8', '#6610f2', '#fd7e14', '#e83e8c', '#20c997',
+                            // Add more colors if you have many entry types
+                            '#6f42c1', '#e0f2f1', '#e3f2fd', '#fff3e0', '#fce4ec',
+                            '#e1f5fe', '#c8e6c9', '#ffe0b2', '#f8bbd0', '#bbdefb'
+                        ],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entries by Type',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(), // Dynamic text color
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() // Dynamic legend color
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderUsageTrendChart() {
+            const ctx = document.getElementById('usageTrendChart').getContext('2d');
+            const usageData = {}; // { 'YYYY-MM-DD': count } for week starts
+
+            // Aggregate usage over time (you'll need to track 'lastUsed' more granularly for this if not already)
+            // For now, let's just use 'addedDate' as a proxy for activity over time for demonstration
+            // A more accurate chart would need actual usage logs per entry over time.
+            const allEntries = [...appState.tools, /* ... all other appState arrays ... */]; // Comprehensive array
+
+            allEntries.forEach(entry => {
+                if (entry.addedDate) { // Or entry.lastUsed if you prefer
+                    const date = new Date(entry.addedDate);
+                    const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1)); // Monday of the week
+                    const key = weekStart.toISOString().slice(0, 10);
+                    usageData[key] = (usageData[key] || 0) + 1;
+                }
+            });
+
+            const sortedDates = Object.keys(usageData).sort();
+            const labels = sortedDates.map(date => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            const data = sortedDates.map(date => usageData[date]);
+
+            // Destroy existing chart if it exists
+            if (window.usageTrendChartInstance) {
+                window.usageTrendChartInstance.destroy();
+            }
+
+            window.usageTrendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Entries Added Over Time', // Change to 'Entries Used Over Time' for real usage
+                        data: data,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Entry Activity Trend',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                            grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                        }
+                    }
+                }
+            });
         }
 
         function renderMostUsedTools() {
@@ -11444,12 +13158,21 @@ function openEditEntryModal(entry) {
             return '_' + Math.random().toString(36).substr(2, 9);
         }
 
-        // Show toast notifications
-        function showToast(message, type = 'success', duration = 3000) { // Make sure it has 'duration' parameter
+        // Show toast notifications - MODIFIED TO STACK
+        function showToast(message, type = 'success', duration = 3000) {
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                document.body.appendChild(toastContainer);
+            }
+
             const toast = document.createElement('div');
-            toast.classList.add('toast', type); // Uses classList.add for 'type'
+            toast.classList.add('toast', type);
             toast.textContent = message;
-            document.body.appendChild(toast);
+
+            // Append to the container instead of body directly
+            toastContainer.appendChild(toast);
 
             // Trigger reflow to ensure animation plays
             void toast.offsetWidth;
@@ -11458,10 +13181,9 @@ function openEditEntryModal(entry) {
 
             setTimeout(() => {
                 toast.classList.remove('show');
-                toast.addEventListener('transitionend', () => toast.remove(), {
-                    once: true
-                });
-            }, duration); // Uses the duration parameter
+                // Remove toast from DOM after its exit animation
+                toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+            }, duration);
         }
 
         // Clear all filters
@@ -12275,55 +13997,61 @@ function getEntryIcon(type) {
 
         function updateShareScopeSelect() {
             const shareScopeSelect = document.getElementById('shareScopeSelect');
-            const specificCustomTabOption = shareScopeSelect.querySelector('option[value="specificCustomTab"]');
+            const selectCustomTabForSharing = document.getElementById('selectCustomTabForSharing'); // Secondary dropdown
 
-            // Remove existing custom tab options
-            Array.from(shareScopeSelect.options).forEach(option => {
+            // Clear *only* dynamically added custom vault options from the main dropdown
+            // The "Specific Custom Vault..." placeholder option should remain untouched in HTML
+            for (let i = shareScopeSelect.options.length - 1; i >= 0; i--) {
+                const option = shareScopeSelect.options[i];
+                // Only remove options that are actual custom vault IDs, not the hardcoded ones or the placeholder
                 if (option.value.startsWith('custom-')) {
-                    option.remove();
+                    shareScopeSelect.remove(i);
                 }
-            });
+            }
 
-            // Add custom tabs as options
+            // Populate the *secondary* dropdown (`selectCustomTabForSharing`)
+            selectCustomTabForSharing.innerHTML = ''; // Clear existing options in the secondary dropdown
+
             if (appState.customTabs.length > 0) {
-                specificCustomTabOption.style.display = 'block'; // Show the "Specific Custom Tab..." option
+                // Add actual custom vaults to the secondary dropdown
                 appState.customTabs.forEach(tab => {
                     const option = document.createElement('option');
                     option.value = tab.id;
                     option.textContent = `Custom Vault: ${tab.name}`;
-                    shareScopeSelect.appendChild(option);
+                    selectCustomTabForSharing.appendChild(option);
                 });
+                selectCustomTabForSharing.disabled = false; // Enable if vaults exist
             } else {
-                specificCustomTabOption.style.display = 'none'; // Hide if no custom tabs
+                // If no custom vaults, add a placeholder option and disable the secondary dropdown
+                const noVaultsOption = document.createElement('option');
+                noVaultsOption.value = '';
+                noVaultsOption.textContent = 'No custom vaults available';
+                selectCustomTabForSharing.appendChild(noVaultsOption);
+                selectCustomTabForSharing.disabled = true; // Disable if no vaults
             }
 
-            // Also populate the specific custom tab selector if needed
-            const selectCustomTabForSharing = document.getElementById('selectCustomTabForSharing');
-            selectCustomTabForSharing.innerHTML = '';
-            appState.customTabs.forEach(tab => {
-                const option = document.createElement('option');
-                option.value = tab.id;
-                option.textContent = tab.name;
-                selectCustomTabForSharing.appendChild(option);
-            });
-
-            // Ensure correct visibility of the specific custom tab selector
+            // Ensure initial visibility of the secondary dropdown based on the default selected option
             handleShareScopeChange();
         }
 
+
+
         function handleShareScopeChange() {
             const shareScopeSelect = document.getElementById('shareScopeSelect');
-            const specificCustomTabSelector = document.getElementById('specificCustomTabSelector');
-            if (shareScopeSelect.value === 'specificCustomTab') {
-                specificCustomTabSelector.style.display = 'block';
+            const specificCustomTabSelectorDiv = document.getElementById('specificCustomTabSelector'); // The div containing the secondary dropdown
+
+            // Only show the secondary dropdown if "Specific Custom Vault..." is selected
+            if (shareScopeSelect.value === 'specificCustomTabPlaceholder') {
+                specificCustomTabSelectorDiv.style.display = 'block';
             } else {
-                specificCustomTabSelector.style.display = 'none';
+                specificCustomTabSelectorDiv.style.display = 'none';
             }
         }
 
+        // Modify handleShareFormSubmit to correctly use the selected custom tab
         function handleShareFormSubmit(e) {
             e.preventDefault();
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+            if (appState.readOnlyMode) {
                 showToast("Cannot generate new shared links in read-only view.", "warning");
                 return;
             }
@@ -12332,58 +14060,75 @@ function getEntryIcon(type) {
             let targetTabId = '';
             let sharedEntries = [];
 
+            // This section needs to check the shareScopeSelect.value, NOT specificCustomTabPlaceholder
             if (shareScope === 'currentTab') {
                 targetTabId = appState.currentTab;
                 if (targetTabId === 'intelligence-vault') {
-                    targetTabId = appState.currentIntelligenceVaultSubTab; // Use sub-tab ID for intel vault
-                    sharedEntries = filterEntries(); // Filtered entries for current intel vault sub-tab
+                    targetTabId = appState.currentIntelligenceVaultChildTab;
+                    sharedEntries = filterEntries();
                 } else if (targetTabId === 'custom-tabs') {
                     if (!appState.currentCustomTab) {
-                        showToast('No custom vault selected to share.', 'error');
+                        showToast('No custom vault selected in Multi-Vault to share.', 'error'); // More specific message
                         return;
                     }
-                    targetTabId = appState.currentCustomTab; // Use custom tab ID
-                    sharedEntries = filterEntries(); // Filtered entries for current custom tab
-                } else {
-                    // For other tabs like analytics or threats, we might not have 'entries' in the same way
-                    // For now, let's assume 'currentTab' means the currently displayed entries.
-                    // If no specific entries are filtered, it will be empty.
+                    targetTabId = appState.currentCustomTab;
                     sharedEntries = filterEntries();
+                } else {
+                    sharedEntries = filterEntries(); // Fallback for other tabs
                 }
             } else if (shareScope === 'allVault') {
                 targetTabId = 'allVault';
-                sharedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+                // Collect all entries from Intelligence Vault
+                sharedEntries = [...appState.tools]; // Only tools are in Intelligence Vault
             } else if (shareScope === 'allData') {
                 targetTabId = 'allData';
-                sharedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-            } else if (shareScope === 'specificCustomTab') {
-                targetTabId = document.getElementById('selectCustomTabForSharing').value;
-                if (!targetTabId) {
-                    showToast('Please select a custom vault to share.', 'error');
+                // Collect ALL entries from all appState arrays
+                sharedEntries = [
+                    ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                    ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                    ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                    ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                    ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                    ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                    ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                    ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                    ...appState.publicRecords
+                ];
+            } else if (shareScope === 'specificCustomTabPlaceholder') { // This is the trigger option for the secondary dropdown
+                const selectedCustomVaultId = document.getElementById('selectCustomTabForSharing').value;
+                if (!selectedCustomVaultId) {
+                    showToast('Please select a specific custom vault to share.', 'error');
                     return;
                 }
+                targetTabId = selectedCustomVaultId;
                 const customTab = appState.customTabs.find(tab => tab.id === targetTabId);
                 if (customTab) {
-                    const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-                    sharedEntries = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(customTab.id));
-                }
-            } else { // A specific custom tab ID selected directly
-                targetTabId = shareScope;
-                const customTab = appState.customTabs.find(tab => tab.id === targetTabId);
-                if (customTab) {
-                    const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+                    // Collect all entries that belong to this specific custom tab
+                    const allEntriesCombined = [
+                        ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                        ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                        ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                        ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                        ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                        ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                        ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                        ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                        ...appState.publicRecords
+                    ];
                     sharedEntries = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(customTab.id));
                 }
             }
+            // No 'else' block needed here, as the previous `else if (shareScope === 'specificCustomTab')`
+            // was trying to directly use a custom tab ID as `shareScope`, which is not the intended flow.
 
             if (sharedEntries.length === 0) {
-                showToast('No entries found to share in the selected scope.', 'warning');
+                showToast('No entries found to share in the selected scope. Please add entries to your vault(s).', 'warning');
                 return;
             }
 
             const sharedIds = sharedEntries.map(entry => entry.id).join(',');
             const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('scope', shareScope);
+            currentUrl.searchParams.set('scope', shareScope === 'specificCustomTabPlaceholder' ? 'customTab' : shareScope); // Use 'customTab' as the scope type if the placeholder was selected
             currentUrl.searchParams.set('tab', targetTabId);
             currentUrl.searchParams.set('ids', sharedIds);
 
@@ -15246,5 +16991,122 @@ function getEntryIcon(type) {
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
+    <script>
+        // Auto-detect system theme preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+        // Tab functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Optional: Add haptic feedback on mobile
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            });
+        });
+    </script>
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 15 : 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create connecting lines
+        function createConnectingLines() {
+            const linesContainer = document.getElementById('connecting-lines');
+            const lineCount = window.innerWidth < 768 ? 3 : 6;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'connection-line';
+                line.style.top = Math.random() * 100 + '%';
+                line.style.left = Math.random() * 50 + '%';
+                line.style.width = Math.random() * 200 + 100 + 'px';
+                line.style.animationDelay = Math.random() * 4 + 's';
+                line.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                linesContainer.appendChild(line);
+            }
+        }
+
+        // Enhanced card hover effects
+        document.querySelectorAll('.evidence-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Auto-detect system theme preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            createConnectingLines();
+            
+            // Stagger card animations
+            const cards = document.querySelectorAll('.evidence-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+                card.style.animation = 'slideIn 0.8s ease forwards';
+            });
+        });
+
+        // Add slide in animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Resize handler for responsive particles
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                document.getElementById('particles').innerHTML = '';
+                document.getElementById('connecting-lines').innerHTML = '';
+                createParticles();
+                createConnectingLines();
+            }, 250);
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
