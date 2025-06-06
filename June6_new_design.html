@@ -7601,21 +7601,21 @@
             </h3>
             <form id="shareForm">
                 <div class="form-group">
-                    <label>What would you like to share?</label>
+                    <label for="shareScopeSelect">What would you like to share?</label>
                     <select id="shareScopeSelect">
                         <option value="currentTab">Current Tab (Read-Only View)</option>
                         <option value="allVault">All Intelligence Vault (Read-Only View)</option>
                         <option value="allData">All Data (Read-Only View)</option>
-                        <option value="specificCustomTab" style="display:none;">Specific Custom Tab...</option>
+                        <option value="specificCustomTabPlaceholder">Specific Custom Vault...</option>
                         </select>
                 </div>
-
+    
                 <div id="specificCustomTabSelector" class="form-group" style="display:none;">
-                    <label>Select a Custom Tab to share:</label>
+                    <label for="selectCustomTabForSharing">Select a Custom Vault to share:</label>
                     <select id="selectCustomTabForSharing">
                         </select>
                 </div>
-
+    
                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
                     <button type="button" class="btn btn-secondary" id="cancelShareOptions">Cancel</button>
                     <button type="submit" class="btn btn-primary">Generate Link</button>
@@ -13185,7 +13185,7 @@ function openEditEntryModal(entry) {
                 toast.addEventListener('transitionend', () => toast.remove(), { once: true });
             }, duration);
         }
-        
+
         // Clear all filters
         function clearFilters() {
             if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
@@ -13997,55 +13997,61 @@ function getEntryIcon(type) {
 
         function updateShareScopeSelect() {
             const shareScopeSelect = document.getElementById('shareScopeSelect');
-            const specificCustomTabOption = shareScopeSelect.querySelector('option[value="specificCustomTab"]');
+            const selectCustomTabForSharing = document.getElementById('selectCustomTabForSharing'); // Secondary dropdown
 
-            // Remove existing custom tab options
-            Array.from(shareScopeSelect.options).forEach(option => {
+            // Clear *only* dynamically added custom vault options from the main dropdown
+            // The "Specific Custom Vault..." placeholder option should remain untouched in HTML
+            for (let i = shareScopeSelect.options.length - 1; i >= 0; i--) {
+                const option = shareScopeSelect.options[i];
+                // Only remove options that are actual custom vault IDs, not the hardcoded ones or the placeholder
                 if (option.value.startsWith('custom-')) {
-                    option.remove();
+                    shareScopeSelect.remove(i);
                 }
-            });
+            }
 
-            // Add custom tabs as options
+            // Populate the *secondary* dropdown (`selectCustomTabForSharing`)
+            selectCustomTabForSharing.innerHTML = ''; // Clear existing options in the secondary dropdown
+
             if (appState.customTabs.length > 0) {
-                specificCustomTabOption.style.display = 'block'; // Show the "Specific Custom Tab..." option
+                // Add actual custom vaults to the secondary dropdown
                 appState.customTabs.forEach(tab => {
                     const option = document.createElement('option');
                     option.value = tab.id;
                     option.textContent = `Custom Vault: ${tab.name}`;
-                    shareScopeSelect.appendChild(option);
+                    selectCustomTabForSharing.appendChild(option);
                 });
+                selectCustomTabForSharing.disabled = false; // Enable if vaults exist
             } else {
-                specificCustomTabOption.style.display = 'none'; // Hide if no custom tabs
+                // If no custom vaults, add a placeholder option and disable the secondary dropdown
+                const noVaultsOption = document.createElement('option');
+                noVaultsOption.value = '';
+                noVaultsOption.textContent = 'No custom vaults available';
+                selectCustomTabForSharing.appendChild(noVaultsOption);
+                selectCustomTabForSharing.disabled = true; // Disable if no vaults
             }
 
-            // Also populate the specific custom tab selector if needed
-            const selectCustomTabForSharing = document.getElementById('selectCustomTabForSharing');
-            selectCustomTabForSharing.innerHTML = '';
-            appState.customTabs.forEach(tab => {
-                const option = document.createElement('option');
-                option.value = tab.id;
-                option.textContent = tab.name;
-                selectCustomTabForSharing.appendChild(option);
-            });
-
-            // Ensure correct visibility of the specific custom tab selector
+            // Ensure initial visibility of the secondary dropdown based on the default selected option
             handleShareScopeChange();
         }
 
+
+
         function handleShareScopeChange() {
             const shareScopeSelect = document.getElementById('shareScopeSelect');
-            const specificCustomTabSelector = document.getElementById('specificCustomTabSelector');
-            if (shareScopeSelect.value === 'specificCustomTab') {
-                specificCustomTabSelector.style.display = 'block';
+            const specificCustomTabSelectorDiv = document.getElementById('specificCustomTabSelector'); // The div containing the secondary dropdown
+
+            // Only show the secondary dropdown if "Specific Custom Vault..." is selected
+            if (shareScopeSelect.value === 'specificCustomTabPlaceholder') {
+                specificCustomTabSelectorDiv.style.display = 'block';
             } else {
-                specificCustomTabSelector.style.display = 'none';
+                specificCustomTabSelectorDiv.style.display = 'none';
             }
         }
 
+        // Modify handleShareFormSubmit to correctly use the selected custom tab
         function handleShareFormSubmit(e) {
             e.preventDefault();
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+            if (appState.readOnlyMode) {
                 showToast("Cannot generate new shared links in read-only view.", "warning");
                 return;
             }
@@ -14054,58 +14060,75 @@ function getEntryIcon(type) {
             let targetTabId = '';
             let sharedEntries = [];
 
+            // This section needs to check the shareScopeSelect.value, NOT specificCustomTabPlaceholder
             if (shareScope === 'currentTab') {
                 targetTabId = appState.currentTab;
                 if (targetTabId === 'intelligence-vault') {
-                    targetTabId = appState.currentIntelligenceVaultSubTab; // Use sub-tab ID for intel vault
-                    sharedEntries = filterEntries(); // Filtered entries for current intel vault sub-tab
+                    targetTabId = appState.currentIntelligenceVaultChildTab;
+                    sharedEntries = filterEntries();
                 } else if (targetTabId === 'custom-tabs') {
                     if (!appState.currentCustomTab) {
-                        showToast('No custom vault selected to share.', 'error');
+                        showToast('No custom vault selected in Multi-Vault to share.', 'error'); // More specific message
                         return;
                     }
-                    targetTabId = appState.currentCustomTab; // Use custom tab ID
-                    sharedEntries = filterEntries(); // Filtered entries for current custom tab
-                } else {
-                    // For other tabs like analytics or threats, we might not have 'entries' in the same way
-                    // For now, let's assume 'currentTab' means the currently displayed entries.
-                    // If no specific entries are filtered, it will be empty.
+                    targetTabId = appState.currentCustomTab;
                     sharedEntries = filterEntries();
+                } else {
+                    sharedEntries = filterEntries(); // Fallback for other tabs
                 }
             } else if (shareScope === 'allVault') {
                 targetTabId = 'allVault';
-                sharedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+                // Collect all entries from Intelligence Vault
+                sharedEntries = [...appState.tools]; // Only tools are in Intelligence Vault
             } else if (shareScope === 'allData') {
                 targetTabId = 'allData';
-                sharedEntries = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-            } else if (shareScope === 'specificCustomTab') {
-                targetTabId = document.getElementById('selectCustomTabForSharing').value;
-                if (!targetTabId) {
-                    showToast('Please select a custom vault to share.', 'error');
+                // Collect ALL entries from all appState arrays
+                sharedEntries = [
+                    ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                    ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                    ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                    ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                    ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                    ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                    ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                    ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                    ...appState.publicRecords
+                ];
+            } else if (shareScope === 'specificCustomTabPlaceholder') { // This is the trigger option for the secondary dropdown
+                const selectedCustomVaultId = document.getElementById('selectCustomTabForSharing').value;
+                if (!selectedCustomVaultId) {
+                    showToast('Please select a specific custom vault to share.', 'error');
                     return;
                 }
+                targetTabId = selectedCustomVaultId;
                 const customTab = appState.customTabs.find(tab => tab.id === targetTabId);
                 if (customTab) {
-                    const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
-                    sharedEntries = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(customTab.id));
-                }
-            } else { // A specific custom tab ID selected directly
-                targetTabId = shareScope;
-                const customTab = appState.customTabs.find(tab => tab.id === targetTabId);
-                if (customTab) {
-                    const allEntriesCombined = [...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto, ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords, ...appState.keywords, ...appState.socials];
+                    // Collect all entries that belong to this specific custom tab
+                    const allEntriesCombined = [
+                        ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
+                        ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
+                        ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
+                        ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
+                        ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
+                        ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
+                        ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
+                        ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
+                        ...appState.publicRecords
+                    ];
                     sharedEntries = allEntriesCombined.filter(entry => (entry.customTabs || []).includes(customTab.id));
                 }
             }
+            // No 'else' block needed here, as the previous `else if (shareScope === 'specificCustomTab')`
+            // was trying to directly use a custom tab ID as `shareScope`, which is not the intended flow.
 
             if (sharedEntries.length === 0) {
-                showToast('No entries found to share in the selected scope.', 'warning');
+                showToast('No entries found to share in the selected scope. Please add entries to your vault(s).', 'warning');
                 return;
             }
 
             const sharedIds = sharedEntries.map(entry => entry.id).join(',');
             const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('scope', shareScope);
+            currentUrl.searchParams.set('scope', shareScope === 'specificCustomTabPlaceholder' ? 'customTab' : shareScope); // Use 'customTab' as the scope type if the placeholder was selected
             currentUrl.searchParams.set('tab', targetTabId);
             currentUrl.searchParams.set('ids', sharedIds);
 
