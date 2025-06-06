@@ -3751,11 +3751,13 @@
                             </form>
                         </div>
                     </div>
+
                     <div class="modal" id="editExecuteTemplateModal">
                         <div class="modal-content">
                             <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-edit"></i> Edit & Execute Template</h3>
                             <form id="editExecuteTemplateForm">
                                 <input type="hidden" id="editExecuteTemplateId">
+
                                 <div class="form-group">
                                     <label for="editExecuteTemplateName">Template Name</label>
                                     <input type="text" id="editExecuteTemplateName" readonly style="background: var(--bg-tertiary); color: var(--text-primary);">
@@ -3776,10 +3778,12 @@
                                     </select>
                                 </div>
 
-                                <div id="editExecuteConversionSection" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light); display: none;">
-                                    <h4 style="color: var(--text-primary); margin-bottom: 15px;"><i class="fas fa-exchange-alt"></i> Convert Query to Target Engine</h4>
-                                    <button type="button" class="btn btn-warning" id="performEditExecuteConversionBtn" style="width: 100%;">
-                                        <i class="fas fa-magic"></i> Convert Query
+                                <div id="editExecuteConversionSection" style="display: none; margin-top: 15px; border: 1px solid var(--border); border-radius: 8px; padding: 15px; background: var(--bg-tertiary);">
+                                    <p style="margin-bottom: 10px; color: var(--text-primary);">
+                                        The selected engine is Shodan or Censys. Click below to convert your query to the appropriate syntax.
+                                    </p>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="performEditExecuteConversionBtn" style="width: 100%;">
+                                        <i class="fas fa-magic"></i> Convert Query to Shodan/Censys
                                     </button>
                                 </div>
                                 <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
@@ -3791,6 +3795,7 @@
                             </form>
                         </div>
                     </div>
+
                     <div class="modal" id="dorkWarningModal">
                         <div class="modal-content">
                             <h3 style="margin-bottom: 20px; color: var(--warning);"><i class="fas fa-exclamation-triangle"></i> Query Engine Mismatch Warning</h3>
@@ -14036,7 +14041,8 @@ function getEntryIcon(type) {
             savedQueries: [],
             savedQuerySearchTerm: '',
             currentTemplateCategory: 'All Templates', // New: Track active template category
-            preTemplateSearchTerm: '' // New: Search term for pre-templates
+            preTemplateSearchTerm: '',
+            conversionJustPerformed: false  // New: Search term for pre-templates
         };
 
         const dorkTemplates = {
@@ -14197,6 +14203,7 @@ function getEntryIcon(type) {
 
         }
 
+        // MODIFIED: bindDorkAssistantEvents
         function bindDorkAssistantEvents() {
             // Sub-tab navigation
             document.querySelectorAll('.dork-subtab').forEach(tab => {
@@ -14204,42 +14211,59 @@ function getEntryIcon(type) {
                     switchDorkSubTab(e.target.dataset.dorkSubtab);
                 });
             });
-            document.getElementById('convertAndGoToPlayground').addEventListener('click', () => {
-                const currentQuery = document.getElementById('dorkWarningModal').dataset.tempQuery;
-                const targetEngine = document.getElementById('dorkWarningModal').dataset.tempEngine; // This is the engine we want to convert TO
 
-                const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
+            // Warning Modal Events - Attach these directly via ID for clarity and robustness.
+            // They are assumed to be present in the HTML from the start, though hidden.
+            const convertAndGoToPlaygroundBtn = document.getElementById('convertAndGoToPlayground');
+            if (convertAndGoToPlaygroundBtn) {
+                convertAndGoToPlaygroundBtn.onclick = () => {
+                    const currentQuery = document.getElementById('dorkWarningModal').dataset.tempQuery;
+                    const targetEngine = document.getElementById('dorkWarningModal').dataset.tempEngine;
 
-                document.getElementById('editExecuteTemplateQuery').value = convertedQuery;
-                document.getElementById('editExecuteTemplateEngine').value = targetEngine;
+                    if (!currentQuery || !targetEngine) {
+                        showToast('Error: Missing query or engine for conversion.', 'error');
+                        return;
+                    }
 
-                hideModal('dorkWarningModal');
-                showToast(`Query converted to ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)} in the editor!`, 'info', 3000);
-            });
+                    const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
 
-            // Edit/Execute Template Modal - Perform Conversion Button
-            document.getElementById('performEditExecuteConversionBtn').addEventListener('click', () => {
-                const currentQueryInput = document.getElementById('editExecuteTemplateQuery');
-                const currentQuery = currentQueryInput.value.trim();
-                const targetEngine = document.getElementById('editExecuteTemplateEngine').value;
+                    document.getElementById('editExecuteTemplateQuery').value = convertedQuery;
+                    document.getElementById('editExecuteTemplateEngine').value = targetEngine;
 
-                if (!currentQuery) {
-                    showToast('No query to convert.', 'warning');
-                    return;
-                }
-                if (!(targetEngine === 'shodan' || targetEngine === 'censys')) {
-                    showToast('Select Shodan or Censys as the target engine to convert.', 'warning');
-                    return;
-                }
+                    // NEW: Set the flag when conversion is initiated from the warning modal
+                    dorkAssistantState.conversionJustPerformed = true;
+                    saveDorkAssistantState(); // Persist the flag
 
-                // Perform the conversion using the existing function
-                const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
-                currentQueryInput.value = convertedQuery; // Update the textarea with the converted query
-                showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success');
+                    hideModal('dorkWarningModal');
+                    showToast(`Query converted to ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)} in the editor!`, 'info', 3000);
+                };
+            }
 
-                // After conversion, hide the conversion section (optional, but clean)
-                document.getElementById('editExecuteConversionSection').style.display = 'none';
-            });
+            const cancelDorkWarningBtn = document.getElementById('cancelDorkWarning');
+            if (cancelDorkWarningBtn) {
+                cancelDorkWarningBtn.onclick = () => {
+                    hideModal('dorkWarningModal');
+                    showToast('Execution cancelled by user.', 'info');
+                    // Keep the edit modal open if user cancelled warning
+                };
+            }
+
+            const continueDorkExecutionBtn = document.getElementById('continueDorkExecution');
+            if (continueDorkExecutionBtn) {
+                continueDorkExecutionBtn.onclick = () => {
+                    const query = document.getElementById('dorkWarningModal').dataset.tempQuery;
+                    const engine = document.getElementById('dorkWarningModal').dataset.tempEngine;
+
+                    if (!query || !engine) {
+                        showToast('Error: Missing query or engine for execution.', 'error');
+                        return;
+                    }
+
+                    hideModal('dorkWarningModal');     // Hide warning modal
+                    hideModal('editExecuteTemplateModal'); // Hide edit modal (as we are now executing)
+                    executeDorkQuery(query, engine); // Execute with stored values
+                };
+            }
 
             // Query Playground events
             document.getElementById('dorkKeywords').addEventListener('input', updateDorkAssistantState);
@@ -14248,63 +14272,198 @@ function getEntryIcon(type) {
             document.querySelectorAll('.dork-operator-btn').forEach(button => {
                 button.addEventListener('click', handleOperatorButtonClick);
             });
-            document.getElementById('executeDorkBtn').addEventListener('click', () => executeDorkQuery()); // Corrected to call with no arguments
+            document.getElementById('executeDorkBtn').addEventListener('click', () => executeDorkQuery());
             document.getElementById('clearDorkBuilderBtn').addEventListener('click', clearDorkBuilder);
-            document.getElementById('convertDorkBtn').addEventListener('click', convertDorkQuery);
-            document.getElementById('executeConvertedDorkBtn').addEventListener('click', () => {
-                const convertedQuery = document.getElementById('convertedDorkPreview').value;
-                const targetEngine = document.getElementById('conversionTarget').value; // Get the engine selected for conversion
-                if (convertedQuery && targetEngine) {
-                    executeDorkQuery(convertedQuery, targetEngine);
-                } else {
-                    showToast('No converted query or target engine selected.', 'warning');
-                }
-            });
-            document.getElementById('conversionTarget').addEventListener('change', () => {
-                // When the target engine changes, clear the converted preview and hide the execute button.
-                // The convertDorkQuery function will handle showing it again if conversion is performed.
-                document.getElementById('convertedDorkPreview').value = ''; // Clear content
-                document.getElementById('convertedDorkPreview').style.display = 'none'; // Hide preview
-                document.getElementById('executeConvertedDorkBtn').style.display = 'none'; // Hide button
-            });
-            document.getElementById('executeConvertedDorkBtn').style.display = 'none';
-            document.getElementById('saveCurrentDorkBtn').addEventListener('click', openSaveDorkQueryModal);
+
+            const convertDorkBtn = document.getElementById('convertDorkBtn');
+            if (convertDorkBtn) {
+                convertDorkBtn.addEventListener('click', convertDorkQuery);
+            }
+
+            const executeConvertedDorkBtn = document.getElementById('executeConvertedDorkBtn');
+            if (executeConvertedDorkBtn) {
+                executeConvertedDorkBtn.addEventListener('click', () => {
+                    const convertedQuery = document.getElementById('convertedDorkPreview').value;
+                    const targetEngine = document.getElementById('conversionTarget').value;
+                    if (convertedQuery && targetEngine) {
+                        executeDorkQuery(convertedQuery, targetEngine);
+                    } else {
+                        showToast('No converted query or target engine selected.', 'warning');
+                    }
+                });
+            }
+
+            const conversionTargetSelect = document.getElementById('conversionTarget');
+            if (conversionTargetSelect) {
+                conversionTargetSelect.addEventListener('change', () => {
+                    const convertedDorkPreview = document.getElementById('convertedDorkPreview');
+                    const executeConvertedDorkBtn = document.getElementById('executeConvertedDorkBtn');
+
+                    if (convertedDorkPreview) convertedDorkPreview.value = ''; // Clear content
+                    if (convertedDorkPreview) convertedDorkPreview.style.display = 'none'; // Hide preview
+                    if (executeConvertedDorkBtn) executeConvertedDorkBtn.style.display = 'none'; // Hide button
+                });
+            }
+
+            const saveCurrentDorkBtn = document.getElementById('saveCurrentDorkBtn');
+            if (saveCurrentDorkBtn) {
+                saveCurrentDorkBtn.addEventListener('click', openSaveDorkQueryModal);
+            }
 
             // Pre-Templates events
-            // No specific events for dorkTemplateSelect and applyDorkTemplateBtn are needed in the playground tab anymore
-            // They are only used for the pre-templates list now.
+            const preTemplateCategoriesList = document.getElementById('preTemplateCategoriesList');
+            if (preTemplateCategoriesList) {
+                preTemplateCategoriesList.addEventListener('click', (e) => {
+                    const categoryItem = e.target.closest('.category-item');
+                    if (categoryItem) {
+                        dorkAssistantState.currentTemplateCategory = categoryItem.dataset.category;
+                        renderPreTemplates(); // Re-render templates for new category
+                    }
+                });
+            }
+
+
+            const preTemplateSearchInput = document.getElementById('preTemplateSearchInput');
+            if (preTemplateSearchInput) {
+                let preTemplateSearchTimeout; // Declare this here
+                preTemplateSearchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value;
+                    clearTimeout(preTemplateSearchTimeout);
+                    preTemplateSearchTimeout = setTimeout(() => {
+                        dorkAssistantState.preTemplateSearchTerm = searchTerm;
+                        renderPreTemplates();
+                    }, 300);
+                });
+            }
+
+
+            const clearPreTemplateSearchBtn = document.getElementById('clearPreTemplateSearch');
+            if (clearPreTemplateSearchBtn) {
+                clearPreTemplateSearchBtn.addEventListener('click', () => {
+                    dorkAssistantState.preTemplateSearchTerm = '';
+                    const preTemplateSearchInput = document.getElementById('preTemplateSearchInput');
+                    if (preTemplateSearchInput) preTemplateSearchInput.value = '';
+                    renderPreTemplates();
+                });
+            }
+
+            const dorkTemplatesList = document.getElementById('dorkTemplatesList');
+            if (dorkTemplatesList) {
+                dorkTemplatesList.addEventListener('click', (e) => {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+
+                    const templateId = btn.dataset.templateId;
+                    if (btn.classList.contains('apply-template-btn')) {
+                        applySelectedTemplate(templateId);
+                    } else if (btn.classList.contains('execute-template-btn')) {
+                        executeTemplateQuery(templateId);
+                    } else if (btn.classList.contains('edit-execute-template-btn')) {
+                        openEditExecuteTemplateModal(templateId);
+                    }
+                });
+            }
+
+
+            const cancelEditExecuteTemplateBtn = document.getElementById('cancelEditExecuteTemplate');
+            if (cancelEditExecuteTemplateBtn) {
+                cancelEditExecuteTemplateBtn.addEventListener('click', () => hideModal('editExecuteTemplateModal'));
+            }
+
+            const editExecuteTemplateForm = document.getElementById('editExecuteTemplateForm');
+            if (editExecuteTemplateForm) {
+                editExecuteTemplateForm.addEventListener('submit', handleEditExecuteTemplate);
+            }
+
+            const editExecuteTemplateEngineSelect = document.getElementById('editExecuteTemplateEngine');
+            if (editExecuteTemplateEngineSelect) {
+                editExecuteTemplateEngineSelect.addEventListener('change', () => {
+                    const selectedEngine = editExecuteTemplateEngineSelect.value;
+                    const conversionSection = document.getElementById('editExecuteConversionSection');
+                    const performConversionBtn = document.getElementById('performEditExecuteConversionBtn');
+
+                    if (conversionSection) { // Ensure element exists
+                        if (selectedEngine === 'shodan' || selectedEngine === 'censys') {
+                            conversionSection.style.display = 'block';
+                            if (performConversionBtn) { // Ensure button exists
+                                performConversionBtn.textContent = `Convert to ${selectedEngine.charAt(0).toUpperCase() + selectedEngine.slice(1)}`;
+                            }
+                        } else {
+                            conversionSection.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // MODIFIED: performEditExecuteConversionBtn (Set flag when conversion is initiated from editor)
+            const performEditExecuteConversionBtn = document.getElementById('performEditExecuteConversionBtn');
+            if (performEditExecuteConversionBtn) {
+                performEditExecuteConversionBtn.addEventListener('click', () => {
+                    const currentQueryInput = document.getElementById('editExecuteTemplateQuery');
+                    const currentQuery = currentQueryInput.value.trim();
+                    const targetEngine = document.getElementById('editExecuteTemplateEngine').value;
+
+                    if (!currentQuery) {
+                        showToast('No query to convert.', 'warning');
+                        return;
+                    }
+                    if (!(targetEngine === 'shodan' || targetEngine === 'censys')) {
+                        showToast('Select Shodan or Censys as the target engine to convert.', 'warning');
+                        return;
+                    }
+
+                    const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
+                    currentQueryInput.value = convertedQuery;
+                    showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success');
+
+                    // NEW: Set the flag here
+                    dorkAssistantState.conversionJustPerformed = true;
+                    saveDorkAssistantState(); // Persist the flag
+
+                    // Hide the conversion section after conversion
+                    const conversionSection = document.getElementById('editExecuteConversionSection');
+                    if (conversionSection) conversionSection.style.display = 'none';
+                });
+            }
+
 
             // Saved Queries events
-            document.getElementById('savedQueriesSearch').addEventListener('input', (e) => {
-                dorkAssistantState.savedQuerySearchTerm = e.target.value;
-                renderSavedQueries();
-            });
-            document.getElementById('clearSavedQueriesSearch').addEventListener('click', () => {
-                document.getElementById('savedQueriesSearch').value = '';
-                dorkAssistantState.savedQuerySearchTerm = '';
-                renderSavedQueries();
-            });
+            const savedQueriesSearchInput = document.getElementById('savedQueriesSearch');
+            if (savedQueriesSearchInput) {
+                savedQueriesSearchInput.addEventListener('input', (e) => {
+                    dorkAssistantState.savedQuerySearchTerm = e.target.value;
+                    renderSavedQueries();
+                });
+            }
 
-            // Save Query Modal events
-            document.getElementById('cancelSaveDorkQuery').addEventListener('click', () => hideModal('saveDorkQueryModal'));
-            document.getElementById('saveDorkQueryForm').addEventListener('submit', handleSaveDorkQuery);
-            // Dork Warning Modal events
-            document.getElementById('cancelDorkWarning').addEventListener('click', () => {
-                hideModal('dorkWarningModal');
-                showToast('Execution cancelled by user.', 'info');
-                // Keep the edit modal open if user cancelled warning
-            });
+            const clearSavedQueriesSearchBtn = document.getElementById('clearSavedQueriesSearch');
+            if (clearSavedQueriesSearchBtn) {
+                clearSavedQueriesSearchBtn.addEventListener('click', () => {
+                    document.getElementById('savedQueriesSearch').value = '';
+                    dorkAssistantState.savedQuerySearchTerm = '';
+                    renderSavedQueries();
+                });
+            }
 
-            document.getElementById('continueDorkExecution').addEventListener('click', () => {
-                const query = document.getElementById('dorkWarningModal').dataset.tempQuery;
-                const engine = document.getElementById('dorkWarningModal').dataset.tempEngine;
+            const savedQueriesList = document.getElementById('savedQueriesList');
+            if (savedQueriesList) {
+                savedQueriesList.addEventListener('click', (e) => {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
 
-                hideModal('dorkWarningModal');     // Hide warning modal
-                hideModal('editExecuteTemplateModal'); // Hide edit modal
-                executeDorkQuery(query, engine); // Execute with stored values
-            });
+                    const queryId = btn.dataset.queryId;
+                    if (btn.classList.contains('load-query-btn')) {
+                        loadSavedQueryToPlayground(queryId);
+                    } else if (btn.classList.contains('execute-saved-query-btn')) {
+                        executeSavedQuery(queryId);
+                    } else if (btn.classList.contains('delete-saved-query-btn')) {
+                        deleteSavedQuery(queryId);
+                    }
+                });
+            }
         }
 
+        // MODIFIED: switchDorkSubTab (Reset flag if navigating away from query playground)
         function switchDorkSubTab(subtabName) {
             dorkAssistantState.currentDorkSubTab = subtabName;
 
@@ -14322,6 +14481,12 @@ function getEntryIcon(type) {
             const targetContent = document.getElementById(`${subtabName}-content`);
             if (targetContent) {
                 targetContent.style.display = 'block';
+            }
+
+            // NEW: Reset conversion flag if leaving 'query-playground'
+            if (subtabName !== 'query-playground') {
+                dorkAssistantState.conversionJustPerformed = false;
+                saveDorkAssistantState();
             }
 
             // Render content specific to the sub-tab
@@ -14510,7 +14675,7 @@ function getEntryIcon(type) {
             return converted.replace(/\s+/g, ' ').trim();
         }
 
-        // --- Pre-Templates Logic ---
+        // MODIFIED: renderPreTemplates (to ensure event listeners are re-attached)
         function renderPreTemplates() {
             const templatesList = document.getElementById('dorkTemplatesList');
             const preTemplatesEmptyState = document.getElementById('preTemplatesEmptyState');
@@ -14632,7 +14797,7 @@ function getEntryIcon(type) {
                 });
             }
 
-            // Add event listeners for new elements
+            // NEW: Re-attach event listeners for dynamic buttons after rendering
             document.querySelectorAll('#preTemplateCategoriesList .category-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     dorkAssistantState.currentTemplateCategory = e.currentTarget.dataset.category;
@@ -14641,27 +14806,34 @@ function getEntryIcon(type) {
             });
 
             // Debounce for pre-template search input
-            let preTemplateSearchTimeout;
-            document.getElementById('preTemplateSearchInput').addEventListener('input', (e) => {
-                const searchTerm = e.target.value;
-                clearTimeout(preTemplateSearchTimeout); // Clear previous timeout
-                preTemplateSearchTimeout = setTimeout(() => {
-                    dorkAssistantState.preTemplateSearchTerm = searchTerm;
-                    renderPreTemplates(); // Only call render after a delay
-                }, 300); // 300ms delay after last keystroke
-            });
+            let preTemplateSearchTimeout; // Declare this
+            const preTemplateSearchInputElement = document.getElementById('preTemplateSearchInput'); // Get reference
+            if (preTemplateSearchInputElement) { // Safety check
+                preTemplateSearchInputElement.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value;
+                    clearTimeout(preTemplateSearchTimeout);
+                    preTemplateSearchTimeout = setTimeout(() => {
+                        dorkAssistantState.preTemplateSearchTerm = searchTerm;
+                        renderPreTemplates();
+                    }, 300);
+                });
+            }
 
-            let clearPreTemplateSearchTimeout; // Declare this outside the event listener but within the function
-            document.getElementById('clearPreTemplateSearch').addEventListener('click', () => {
-                clearTimeout(clearPreTemplateSearchTimeout); // Clear any previous timeout
-                clearPreTemplateSearchTimeout = setTimeout(() => {
+
+            const clearPreTemplateSearchButton = document.getElementById('clearPreTemplateSearch'); // Get reference
+            if (clearPreTemplateSearchButton) { // Safety check
+                clearPreTemplateSearchButton.addEventListener('click', () => {
                     dorkAssistantState.preTemplateSearchTerm = '';
-                    document.getElementById('preTemplateSearchInput').value = '';
-                    renderPreTemplates(); // Only call render after a delay
-                }, 100); // A shorter delay for a button click might be acceptable, or keep it at 300ms if desired.
-            });
+                    const preTemplateSearchInputElement = document.getElementById('preTemplateSearchInput');
+                    if (preTemplateSearchInputElement) { // Safety check
+                        preTemplateSearchInputElement.value = '';
+                    }
+                    renderPreTemplates();
+                });
+            }
 
-            // Re-attach event listeners for template buttons as they are re-rendered
+
+            // IMPORTANT: ATTACH LISTENERS TO THE NEWLY RENDERED BUTTONS
             document.querySelectorAll('.apply-template-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const templateId = e.target.dataset.templateId;
@@ -14674,7 +14846,6 @@ function getEntryIcon(type) {
                     executeTemplateQuery(templateId);
                 });
             });
-            // Add event listeners for new elements
             document.querySelectorAll('.edit-execute-template-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const templateId = e.target.dataset.templateId;
@@ -14685,19 +14856,49 @@ function getEntryIcon(type) {
             // Edit/Execute Template Modal events
             document.getElementById('cancelEditExecuteTemplate').addEventListener('click', () => hideModal('editExecuteTemplateModal'));
             document.getElementById('editExecuteTemplateForm').addEventListener('submit', handleEditExecuteTemplate);
-            // Edit/Execute Template Modal - Engine Change Listener
-            document.getElementById('editExecuteTemplateEngine').addEventListener('change', () => {
-                const selectedEngine = document.getElementById('editExecuteTemplateEngine').value;
-                const conversionSection = document.getElementById('editExecuteConversionSection');
 
-                if (selectedEngine === 'shodan' || selectedEngine === 'censys') {
-                    conversionSection.style.display = 'block';
-                } else {
-                    conversionSection.style.display = 'none';
-                    // Optionally, reset query here if you converted and switched back
-                    // document.getElementById('editExecuteTemplateQuery').value = originalTemplateQuery; // Need to store original
-                }
-            });
+            const editExecuteTemplateEngineElement = document.getElementById('editExecuteTemplateEngine');
+            if (editExecuteTemplateEngineElement) { // Safety check
+                editExecuteTemplateEngineElement.addEventListener('change', () => {
+                    const selectedEngine = editExecuteTemplateEngineElement.value;
+                    const conversionSection = document.getElementById('editExecuteConversionSection');
+
+                    if (conversionSection) { // Safety check for conversionSection
+                        if (selectedEngine === 'shodan' || selectedEngine === 'censys') {
+                            conversionSection.style.display = 'block';
+                        } else {
+                            conversionSection.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            const performEditExecuteConversionButton = document.getElementById('performEditExecuteConversionBtn');
+            if (performEditExecuteConversionButton) { // Safety check
+                performEditExecuteConversionButton.addEventListener('click', () => {
+                    const currentQueryInput = document.getElementById('editExecuteTemplateQuery');
+                    const currentQuery = currentQueryInput.value.trim();
+                    const targetEngine = document.getElementById('editExecuteTemplateEngine').value;
+
+                    if (!currentQuery) {
+                        showToast('No query to convert.', 'warning');
+                        return;
+                    }
+                    if (!(targetEngine === 'shodan' || targetEngine === 'censys')) {
+                        showToast('Select Shodan or Censys as the target engine to convert.', 'warning');
+                        return;
+                    }
+
+                    const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
+                    currentQueryInput.value = convertedQuery;
+                    showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success');
+
+                    const conversionSection = document.getElementById('editExecuteConversionSection');
+                    if (conversionSection) {
+                        conversionSection.style.display = 'none';
+                    }
+                });
+            }
         }
 
         function applySelectedTemplate(templateId) {
@@ -14736,6 +14937,7 @@ function getEntryIcon(type) {
             }
         }
 
+        // MODIFIED: openEditExecuteTemplateModal (Reset flag when modal is opened)
         function openEditExecuteTemplateModal(templateId) {
             let template = null;
             for (const category in dorkTemplates) {
@@ -14744,19 +14946,28 @@ function getEntryIcon(type) {
             }
 
             if (template) {
+                // NEW: Reset the conversion flag when opening the modal for a new editing session
+                dorkAssistantState.conversionJustPerformed = false;
+                saveDorkAssistantState(); // Persist the reset
+
                 document.getElementById('editExecuteTemplateId').value = template.id;
                 document.getElementById('editExecuteTemplateName').value = template.name;
                 const fullQuery = `${template.keywords ? template.keywords + ' ' : ''}${template.custom}`;
                 document.getElementById('editExecuteTemplateQuery').value = fullQuery.trim();
                 document.getElementById('editExecuteTemplateEngine').value = template.engine;
+
+                const conversionSection = document.getElementById('editExecuteConversionSection');
+                if (conversionSection) {
+                    conversionSection.style.display = 'none';
+                }
+
                 showModal('editExecuteTemplateModal');
             } else {
                 showToast('Template not found!', 'error');
             }
-            // NEW: Hide conversion section initially
-            document.getElementById('editExecuteConversionSection').style.display = 'none';
         }
 
+        // MODIFIED: handleEditExecuteTemplate (Main logic to conditionally show warning)
         function handleEditExecuteTemplate(e) {
             e.preventDefault();
             const query = document.getElementById('editExecuteTemplateQuery').value.trim();
@@ -14767,40 +14978,65 @@ function getEntryIcon(type) {
                 return;
             }
 
-            const templateId = document.getElementById('editExecuteTemplateId').value;
-            let originalTemplate = null;
-            for (const category in dorkTemplates) {
-                originalTemplate = dorkTemplates[category].find(t => t.id === templateId);
-                if (originalTemplate) break;
+            // NEW LOGIC START
+            // If a conversion was just performed and the current engine matches the converted one,
+            // or if the conversion was from the warning modal, bypass the warning.
+            if (dorkAssistantState.conversionJustPerformed) {
+                // Reset the flag immediately after checking to prevent it from affecting future executions.
+                dorkAssistantState.conversionJustPerformed = false;
+                saveDorkAssistantState(); // Persist the reset
+                hideModal('editExecuteTemplateModal');
+                executeDorkQuery(query, engine);
+                return; // Exit the function, no warning needed.
             }
+            // NEW LOGIC END
+
+
+            // Heuristics for checking if a query appears to be in a specific format
+            // These are still useful for general templates/saved queries that might start in a specific format.
+            const looksLikeShodan = (q) => {
+                const lowerQ = q.toLowerCase();
+                return lowerQ.includes('hostname:') || lowerQ.includes('product:') ||
+                    lowerQ.includes('http.html:') || lowerQ.includes('ssl.cert.issuer.cn:') ||
+                    lowerQ.includes('port:') || lowerQ.includes('org:') || lowerQ.includes('vuln:'); // Added vuln
+            };
+
+            const looksLikeCensys = (q) => {
+                const lowerQ = q.toLowerCase();
+                return lowerQ.includes('services.dns.names:') || lowerQ.includes('services.http.response.html.title:') ||
+                    lowerQ.includes('services.http.response.request.url:') || lowerQ.includes('services.http.response.html.body:') ||
+                    lowerQ.includes('services.tls.certificates.leaf_data.') || lowerQ.includes('services.http.tags:') ||
+                    lowerQ.includes('vulnerability.id:'); // Added vulnerability.id
+            };
 
             let showWarning = false;
             let warningMessage = '';
 
-            if (originalTemplate) {
-                const originalEngine = originalTemplate.engine;
-
-                if ((engine === 'shodan' || engine === 'censys') && !(originalEngine === 'shodan' || originalEngine === 'censys')) {
-                    const isLikelyConverted = query.includes('hostname:') || query.includes('product:') || query.includes('services.') || query.includes('http.html:') || query.includes('ssl.cert.');
-
-                    if (!isLikelyConverted) {
-                        showWarning = true;
-                        warningMessage = `This query was designed for '${originalEngine}' and the current query ` +
-                                         `does not appear to be in '${engine}' format. It might not work correctly. ` +
-                                         `You can choose to convert it to a '${engine}' query or continue execution anyway.`;
-                    }
-                }
+            // Case 1: Target engine is Shodan/Censys, but query doesn't look like it
+            if (engine === 'shodan' && !looksLikeShodan(query)) {
+                showWarning = true;
+                warningMessage = `The selected engine is Shodan, but the query does not appear to be in Shodan format. ` +
+                                `It might not work correctly. You can convert it now or continue execution anyway.`;
+            } else if (engine === 'censys' && !looksLikeCensys(query)) {
+                showWarning = true;
+                warningMessage = `The selected engine is Censys, but the query does not appear to be in Censys format. ` +
+                                `It might not work correctly. You can convert it now or continue execution anyway.`;
+            }
+            // Case 2: Target engine is a standard search engine, but query looks like Shodan/Censys
+            else if ((engine === 'google' || engine === 'duckduckgo' || engine === 'bing' || engine === 'yandex') &&
+                    (looksLikeShodan(query) || looksLikeCensys(query))) {
+                showWarning = true;
+                warningMessage = `This query appears to be in Shodan or Censys format, but the selected engine is '${engine}'. ` +
+                                `It might not work correctly. You can convert it to a general search query or continue execution anyway.`;
             }
 
             if (showWarning) {
                 document.getElementById('dorkWarningMessage').innerText = warningMessage;
-                // Store the current query and engine temporarily for the modal's buttons
                 document.getElementById('dorkWarningModal').dataset.tempQuery = query;
-                document.getElementById('dorkWarningModal').dataset.tempEngine = engine; // The selected target engine for execution
+                document.getElementById('dorkWarningModal').dataset.tempEngine = engine;
 
-                showModal('dorkWarningModal'); // Show the custom warning modal
+                showModal('dorkWarningModal');
             } else {
-                // No warning needed, proceed directly
                 hideModal('editExecuteTemplateModal');
                 executeDorkQuery(query, engine);
             }
