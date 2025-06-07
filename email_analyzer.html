@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DefenderBox - Enterprise Email Threat Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --critical-color: #dc2626;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle, .export-btn {
+            background: none;
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover, .export-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: var(--surface-color);
+        }
+
+        .tab-button:hover {
+            color: var(--primary-color);
+            background: var(--surface-color);
+        }
+
+        .module {
+            display: none;
+            background: var(--surface-color);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .module.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea {
+            min-height: 250px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .results {
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .score-critical { color: var(--critical-color); }
+        .score-high { color: var(--danger-color); }
+        .score-medium { color: var(--warning-color); }
+        .score-low { color: var(--accent-color); }
+
+        .section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .url-item, .ip-item {
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            word-break: break-all;
+            transition: all 0.3s ease;
+        }
+
+        .url-item:hover, .ip-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .risk-critical { background: #fee2e2; color: #991b1b; }
+        .risk-high { background: #fef2f2; color: #dc2626; }
+        .risk-medium { background: #fef3c7; color: #92400e; }
+        .risk-low { background: #dcfce7; color: #166534; }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left-color: #f59e0b;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left-color: #ef4444;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border-left-color: #10b981;
+        }
+
+        [data-theme="dark"] .alert-info {
+            background: rgba(30, 64, 175, 0.2);
+            color: #bfdbfe;
+        }
+
+        [data-theme="dark"] .alert-warning {
+            background: rgba(146, 64, 14, 0.2);
+            color: #fde68a;
+        }
+
+        [data-theme="dark"] .alert-danger {
+            background: rgba(153, 27, 27, 0.2);
+            color: #fecaca;
+        }
+
+        [data-theme="dark"] .alert-success {
+            background: rgba(22, 101, 52, 0.2);
+            color: #bbf7d0;
+        }
+
+        .threat-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .threat-category {
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .threat-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .metadata-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+        }
+
+        .metadata-key {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .metadata-value {
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .export-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--surface-color);
+            border-radius: 0.5rem;
+            border: 2px dashed var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .module {
+                padding: 1rem;
+            }
+            
+            .nav-tabs {
+                margin: 1rem 0;
+            }
+            
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    🛡️ DefenderBox
+                    <span style="font-size: 0.6em; color: var(--text-muted);">Enterprise Edition</span>
+                </div>
+                <div class="header-controls">
+                    <button class="export-btn" onclick="exportResults()" style="display: none;" id="exportBtn">📊 Export Report</button>
+                    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="nav-tabs">
+            <button class="tab-button active" onclick="showModule('email-analyzer')">📧 Email Threat Analyzer</button>
+            <button class="tab-button" onclick="showModule('batch-analyzer')">📁 Batch Analysis</button>
+            <button class="tab-button" onclick="showModule('threat-intel')">🔍 Threat Intelligence</button>
+        </nav>
+
+        <!-- Email Threat Analyzer Module -->
+        <div id="email-analyzer" class="module active">
+            <h2 class="module-title">📧 Advanced Email Threat Analyzer</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Raw Email Content (EML/MIME format):</label>
+                <textarea id="emailInput" class="form-textarea" placeholder="Paste your raw email content here...
+
+Example formats supported:
+- Complete EML files with headers
+- MIME messages
+- Outlook MSG exports
+- Thunderbird/Apple Mail exports
+
+Headers should include: From, To, Subject, Date, Message-ID, Received, etc."></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="analyzeEmail()">🔍 Analyze Email</button>
+                <button class="btn btn-danger" onclick="clearResults()">🗑️ Clear Results</button>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>🔍 Performing advanced threat analysis...</p>
+                <small>Analyzing headers, authentication, URLs, and content patterns</small>
+            </div>
+
+            <div id="results" class="results" style="display: none;">
+                <div class="threat-summary">
+                    <div class="threat-category">
+                        <span class="threat-count score-critical" id="criticalCount">0</span>
+                        <div>Critical Threats</div>
+                    </div>
+                    <div class="threat-category">
+                        <span class="threat-count score-high" id="highCount">0</span>
+                        <div>High Risk</div>
+                    </div>
+                    <div class="threat-category">
+                        <span class="threat-count score-medium" id="mediumCount">0</span>
+                        <div>Medium Risk</div>
+                    </div>
+                    <div class="threat-category">
+                        <span class="threat-count score-low" id="lowCount">0</span>
+                        <div>Low Risk</div>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Overall Threat Score</div>
+                        <div id="suspicionScore" class="metric-value">0/10</div>
+                        <div class="progress-bar">
+                            <div id="scoreProgress" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">URLs Detected</div>
+                        <div id="urlCount" class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">IP Addresses</div>
+                        <div id="ipCount" class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Authentication Score</div>
+                        <div id="authStatus" class="metric-value">-</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">📋 Email Metadata Analysis</h3>
+                    <div id="metadata" class="metadata-grid"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">🔗 URL Security Analysis</h3>
+                    <div id="urls"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">🌐 IP Address Intelligence</h3>
+                    <div id="ips"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">🔐 Authentication Results</h3>
+                    <div id="authentication"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">⚠️ Threat Analysis</h3>
+                    <div id="threats"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">📊 Advanced Security Metrics</h3>
+                    <div id="advancedMetrics"></div>
+                </div>
+
+                <div class="section">
+                    <h3 class="section-title">📝 Decoded Content Analysis</h3>
+                    <div id="decodedContent"></div>
+                </div>
+
+                <div class="export-section">
+                    <h4>📊 Export Analysis Report</h4>
+                    <p>Generate a comprehensive security report for documentation and incident response.</p>
+                    <button class="btn btn-primary" onclick="exportResults()">📄 Generate Report</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Analyzer Module -->
+        <div id="batch-analyzer" class="module">
+            <h2 class="module-title">📁 Batch Email Analysis</h2>
+            <div class="alert alert-info">
+                <strong>Batch Processing:</strong> Upload multiple email files for simultaneous analysis and comparison.
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>📁 Support for EML, MSG, and MBOX formats</li>
+                    <li>🔄 Parallel processing for faster analysis</li>
+                    <li>📊 Comparative threat scoring</li>
+                    <li>📈 Trend analysis across emails</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Threat Intelligence Module -->
+        <div id="threat-intel" class="module">
+            <h2 class="module-title">🔍 Threat Intelligence Integration</h2>
+            <div class="alert alert-info">
+                <strong>Intelligence Sources:</strong> Integration with threat intelligence feeds and reputation databases.
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>🌐 Real-time URL reputation checking</li>
+                    <li>🔍 Domain and IP intelligence</li>
+                    <li>📊 Historical threat data correlation</li>
+                    <li>🎯 IOC (Indicators of Compromise) matching</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global analysis results for export
+        let currentAnalysis = null;
+
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Module Navigation
+        function showModule(moduleId) {
+            const modules = document.querySelectorAll('.module');
+            modules.forEach(module => module.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab-button');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(moduleId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Email Analysis Functions
+        function analyzeEmail() {
+            const emailContent = document.getElementById('emailInput').value.trim();
+            
+            if (!emailContent) {
+                alert('Please paste an email to analyze');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('exportBtn').style.display = 'none';
+
+            // Simulate processing time with realistic delay
+            setTimeout(() => {
+                processEmail(emailContent);
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('exportBtn').style.display = 'inline-flex';
+            }, 2000);
+        }
+
+        function processEmail(emailContent) {
+            const analysis = {
+                metadata: extractMetadata(emailContent),
+                urls: extractURLs(emailContent),
+                ips: extractIPs(emailContent),
+                authentication: parseAuthentication(emailContent),
+                decodedContent: decodeContent(emailContent),
+                threats: [],
+                timestamp: new Date().toISOString()
+            };
+
+            // Calculate comprehensive threat score
+            const suspicionScore = calculateAdvancedSuspicionScore(analysis);
+            
+            // Store for export
+            currentAnalysis = { ...analysis, suspicionScore };
+
+            // Update UI with enhanced display
+            updateEnhancedResults(analysis, suspicionScore);
+        }
+
+        function extractMetadata(email) {
+            const metadata = {};
+            const lines = email.split('\n');
+            
+            for (const line of lines) {
+                if (line.trim() === '') break;
+                
+                const colonIndex = line.indexOf(':');
+                if (colonIndex === -1) continue;
+                
+                const key = line.substring(0, colonIndex).trim();
+                const value = line.substring(colonIndex + 1).trim();
+                
+                const lowerKey = key.toLowerCase();
+                
+                // Comprehensive header extraction
+                const importantHeaders = [
+                    'from', 'to', 'cc', 'bcc', 'subject', 'date', 'message-id', 
+                    'x-mailer', 'x-originating-ip', 'return-path', 'reply-to',
+                    'received', 'received-spf', 'authentication-results',
+                    'dkim-signature', 'content-type', 'content-transfer-encoding',
+                    'x-spam-score', 'x-spam-status', 'x-virus-scanned',
+                    'x-ms-exchange-organization-scl', 'x-forefront-antispam-report',
+                    'x-ms-exchange-organization-pcl', 'x-microsoft-antispam',
+                    'arc-seal', 'arc-message-signature', 'arc-authentication-results',
+                    'list-unsubscribe', 'precedence', 'auto-submitted',
+                    'x-priority', 'importance', 'sensitivity'
+                ];
+                
+                if (importantHeaders.includes(lowerKey)) {
+                    if (metadata[key]) {
+                        if (!Array.isArray(metadata[key])) {
+                            metadata[key] = [metadata[key]];
+                        }
+                        metadata[key].push(value);
+                    } else {
+                        metadata[key] = value;
+                    }
+                }
+            }
+            
+            return metadata;
+        }
+
+        function extractURLs(email) {
+            const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
+            const urls = email.match(urlRegex) || [];
+            return [...new Set(urls)];
+        }
+
+        function extractIPs(email) {
+            const ipRegex = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g;
+            const ips = email.match(ipRegex) || [];
+            return [...new Set(ips)].filter(ip => {
+                const parts = ip.split('.');
+                return parts.every(part => parseInt(part) >= 0 && parseInt(part) <= 255);
+            });
+        }
+
+        function parseAuthentication(email) {
+            const auth = {
+                spf: 'Not found',
+                dkim: 'Not found',
+                dmarc: 'Not found',
+                spfDetails: null,
+                dkimDetails: null,
+                dmarcDetails: null,
+                receivedSpf: null,
+                arcResults: [],
+                score: 0
+            };
+
+            const authResultsRegex = /Authentication-Results:(.+?)(?=\n[A-Za-z-]+:|$)/gs;
+            const matches = email.match(authResultsRegex);
+            
+            if (matches) {
+                for (const match of matches) {
+                    if (match.includes('spf=')) {
+                        const spfMatch = match.match(/spf=(\w+)(?:\s+\(([^)]+)\))?/);
+                        if (spfMatch) {
+                            auth.spf = spfMatch[1];
+                            auth.spfDetails = spfMatch[2] || null;
+                            if (spfMatch[1] === 'pass') auth.score += 1;
+                        }
+                    }
+                    
+                    if (match.includes('dkim=')) {
+                        const dkimMatch = match.match(/dkim=(\w+)(?:\s+\(([^)]+)\))?/);
+                        if (dkimMatch) {
+                            auth.dkim = dkimMatch[1];
+                            auth.dkimDetails = dkimMatch[2] || null;
+                            if (dkimMatch[1] === 'pass') auth.score += 1;
+                        }
+                    }
+                    
+                    if (match.includes('dmarc=')) {
+                        const dmarcMatch = match.match(/dmarc=(\w+)(?:\s+\(([^)]+)\))?/);
+                        if (dmarcMatch) {
+                            auth.dmarc = dmarcMatch[1];
+                            auth.dmarcDetails = dmarcMatch[2] || null;
+                            if (dmarcMatch[1] === 'pass') auth.score += 1;
+                        }
+                    }
+                }
+            }
+
+            // Check for ARC results
+            const arcRegex = /ARC-Authentication-Results:(.+?)(?=\n[A-Za-z-]+:|$)/gs;
+            const arcMatches = email.match(arcRegex);
+            if (arcMatches) {
+                auth.arcResults = arcMatches.map(match => match.trim());
+            }
+
+            // Check Received-SPF header
+            const receivedSpfMatch = email.match(/Received-SPF:\s*(.+)/);
+            if (receivedSpfMatch) {
+                auth.receivedSpf = receivedSpfMatch[1].trim();
+            }
+
+            return auth;
+        }
+
+        function decodeContent(email) {
+            const decoded = {
+                hasBase64: false,
+                hasQuotedPrintable: false,
+                suspiciousPatterns: [],
+                hiddenContent: [],
+                attachments: []
+            };
+
+            // Check for Base64 encoding
+            if (email.includes('Content-Transfer-Encoding: base64')) {
+                decoded.hasBase64 = true;
+                const base64Regex = /Content-Transfer-Encoding: base64[\s\S]*?\n\n([\s\S]*?)(?=\n--|\n\nContent-Type|\n$)/g;
+                let match;
+                while ((match = base64Regex.exec(email)) !== null) {
+                    try {
+                        const decodedText = atob(match[1].replace(/\s/g, ''));
+                        decoded.hiddenContent.push(decodedText);
+                    } catch (e) {
+                        // Invalid base64
+                    }
+                }
+            }
+
+            // Check for Quoted-Printable encoding
+            if (email.includes('Content-Transfer-Encoding: quoted-printable')) {
+                decoded.hasQuotedPrintable = true;
+            }
+
+            // Look for suspicious patterns
+            const suspiciousPatterns = [
+                /urgent.*action.*required/i,
+                /verify.*account.*immediately/i,
+                /suspend.*account/i,
+                /click.*here.*now/i,
+                /limited.*time.*offer/i,
+                /act.*now.*expires/i,
+                /congratulations.*winner/i,
+                /nigerian.*prince/i,
+                /inheritance.*million/i,
+                /bitcoin.*investment/i,
+                /covid.*vaccine.*free/i,
+                /tax.*refund.*pending/i
+            ];
+
+            suspiciousPatterns.forEach(pattern => {
+                if (pattern.test(email)) {
+                    decoded.suspiciousPatterns.push(pattern.toString());
+                }
+            });
+
+            // Detect potential attachments
+            const attachmentRegex = /Content-Disposition: attachment; filename="([^"]+)"/g;
+            let attachMatch;
+            while ((attachMatch = attachmentRegex.exec(email)) !== null) {
+                decoded.attachments.push(attachMatch[1]);
+            }
+
+            return decoded;
+        }
+
+        function calculateAdvancedSuspicionScore(analysis) {
+            let score = 0;
+            const reasons = [];
+
+            // Authentication scoring (0-3 points)
+            const authScore = analysis.authentication.score;
+            if (authScore === 0) {
+                score += 3;
+                reasons.push('No email authentication (SPF/DKIM/DMARC)');
+            } else if (authScore === 1) {
+                score += 2;
+                reasons.push('Partial email authentication');
+            } else if (authScore === 2) {
+                score += 1;
+                reasons.push('Incomplete authentication');
+            }
+
+            // URL analysis (0-2 points)
+            const suspiciousUrlCount = analysis.urls.filter(url => 
+                /bit\.ly|tinyurl|t\.co|goo\.gl|ow\.ly|short\.link|1drv\.ms|dropbox|mediafire/i.test(url) ||
+                url.includes('suspicious') || url.length > 150
+            ).length;
+            
+            if (suspiciousUrlCount > 3) {
+                score += 2;
+                reasons.push('Multiple suspicious URLs detected');
+            } else if (suspiciousUrlCount > 0) {
+                score += 1;
+                reasons.push('Suspicious URLs present');
+            }
+
+            // IP reputation (0-2 points)
+            const suspiciousIPs = analysis.ips.filter(ip => {
+                const parts = ip.split('.');
+                // Check for private/suspicious ranges
+                return (parts[0] === '10' || 
+                       (parts[0] === '172' && parseInt(parts[1]) >= 16 && parseInt(parts[1]) <= 31) ||
+                       (parts[0] === '192' && parts[1] === '168') ||
+                       parts[0] === '127');
+            });
+
+            if (suspiciousIPs.length > 2) {
+                score += 2;
+                reasons.push('Multiple suspicious IP addresses');
+            } else if (suspiciousIPs.length > 0) {
+                score += 1;
+                reasons.push('Suspicious IP addresses detected');
+            }
+
+            // Content analysis (0-3 points)
+            const suspiciousPatterns = analysis.decodedContent.suspiciousPatterns.length;
+            if (suspiciousPatterns > 3) {
+                score += 3;
+                reasons.push('Multiple suspicious content patterns');
+            } else if (suspiciousPatterns > 1) {
+                score += 2;
+                reasons.push('Suspicious content patterns detected');
+            } else if (suspiciousPatterns > 0) {
+                score += 1;
+                reasons.push('Some suspicious content detected');
+            }
+
+            return {
+                score: Math.min(score, 10),
+                reasons: reasons,
+                category: score >= 8 ? 'critical' : score >= 6 ? 'high' : score >= 3 ? 'medium' : 'low'
+            };
+        }
+
+        function updateEnhancedResults(analysis, suspicionScore) {
+            // Update threat counts
+            let critical = 0, high = 0, medium = 0, low = 0;
+            
+            if (suspicionScore.category === 'critical') critical++;
+            else if (suspicionScore.category === 'high') high++;
+            else if (suspicionScore.category === 'medium') medium++;
+            else low++;
+
+            document.getElementById('criticalCount').textContent = critical;
+            document.getElementById('highCount').textContent = high;
+            document.getElementById('mediumCount').textContent = medium;
+            document.getElementById('lowCount').textContent = low;
+
+            // Update metrics
+            const scoreElement = document.getElementById('suspicionScore');
+            const progressElement = document.getElementById('scoreProgress');
+            
+            scoreElement.textContent = `${suspicionScore.score}/10`;
+            scoreElement.className = `metric-value score-${suspicionScore.category}`;
+            
+            progressElement.style.width = `${(suspicionScore.score / 10) * 100}%`;
+            progressElement.style.backgroundColor = 
+                suspicionScore.category === 'critical' ? 'var(--critical-color)' :
+                suspicionScore.category === 'high' ? 'var(--danger-color)' :
+                suspicionScore.category === 'medium' ? 'var(--warning-color)' :
+                'var(--accent-color)';
+
+            document.getElementById('urlCount').textContent = analysis.urls.length;
+            document.getElementById('ipCount').textContent = analysis.ips.length;
+            
+            const authScore = analysis.authentication.score;
+            const authElement = document.getElementById('authStatus');
+            authElement.textContent = `${authScore}/3`;
+            authElement.className = `metric-value ${authScore >= 2 ? 'score-low' : authScore === 1 ? 'score-medium' : 'score-high'}`;
+
+            // Update metadata
+            updateMetadataDisplay(analysis.metadata);
+            
+            // Update URLs
+            updateURLDisplay(analysis.urls);
+            
+            // Update IPs
+            updateIPDisplay(analysis.ips);
+            
+            // Update authentication
+            updateAuthenticationDisplay(analysis.authentication);
+            
+            // Update threats
+            updateThreatsDisplay(suspicionScore);
+            
+            // Update advanced metrics
+            updateAdvancedMetrics(analysis);
+            
+            // Update decoded content
+            updateDecodedContentDisplay(analysis.decodedContent);
+        }
+
+        function updateMetadataDisplay(metadata) {
+            const container = document.getElementById('metadata');
+            container.innerHTML = '';
+            
+            for (const [key, value] of Object.entries(metadata)) {
+                const item = document.createElement('div');
+                item.className = 'metadata-item';
+                
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'metadata-key';
+                keyDiv.textContent = key;
+                
+                const valueDiv = document.createElement('div');
+                valueDiv.className = 'metadata-value';
+                valueDiv.textContent = Array.isArray(value) ? value.join(' | ') : value;
+                
+                item.appendChild(keyDiv);
+                item.appendChild(valueDiv);
+                container.appendChild(item);
+            }
+        }
+
+        function updateURLDisplay(urls) {
+            const container = document.getElementById('urls');
+            container.innerHTML = '';
+            
+            if (urls.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No URLs detected in email content.</div>';
+                return;
+            }
+            
+            urls.forEach(url => {
+                const item = document.createElement('div');
+                item.className = 'url-item';
+                
+                const risk = analyzeURLRisk(url);
+                const badge = document.createElement('span');
+                badge.className = `risk-badge risk-${risk.level}`;
+                badge.textContent = risk.level.toUpperCase();
+                
+                item.innerHTML = `${url} `;
+                item.appendChild(badge);
+                
+                if (risk.reasons.length > 0) {
+                    const reasons = document.createElement('div');
+                    reasons.style.fontSize = '0.8em';
+                    reasons.style.color = 'var(--text-muted)';
+                    reasons.style.marginTop = '0.5rem';
+                    reasons.textContent = 'Concerns: ' + risk.reasons.join(', ');
+                    item.appendChild(reasons);
+                }
+                
+                container.appendChild(item);
+            });
+        }
+
+        function updateIPDisplay(ips) {
+            const container = document.getElementById('ips');
+            container.innerHTML = '';
+            
+            if (ips.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No IP addresses detected in email headers.</div>';
+                return;
+            }
+            
+            ips.forEach(ip => {
+                const item = document.createElement('div');
+                item.className = 'ip-item';
+                
+                const risk = analyzeIPRisk(ip);
+                const badge = document.createElement('span');
+                badge.className = `risk-badge risk-${risk.level}`;
+                badge.textContent = risk.level.toUpperCase();
+                
+                item.innerHTML = `${ip} `;
+                item.appendChild(badge);
+                
+                if (risk.type) {
+                    const type = document.createElement('div');
+                    type.style.fontSize = '0.8em';
+                    type.style.color = 'var(--text-muted)';
+                    type.style.marginTop = '0.5rem';
+                    type.textContent = `Type: ${risk.type}`;
+                    item.appendChild(type);
+                }
+                
+                container.appendChild(item);
+            });
+        }
+
+        function updateAuthenticationDisplay(auth) {
+            const container = document.getElementById('authentication');
+            container.innerHTML = '';
+            
+            const authItems = [
+                { label: 'SPF (Sender Policy Framework)', value: auth.spf, details: auth.spfDetails },
+                { label: 'DKIM (DomainKeys Identified Mail)', value: auth.dkim, details: auth.dkimDetails },
+                { label: 'DMARC (Domain-based Message Authentication)', value: auth.dmarc, details: auth.dmarcDetails }
+            ];
+            
+            authItems.forEach(item => {
+                const authItem = document.createElement('div');
+                authItem.className = 'metadata-item';
+                
+                const status = item.value.toLowerCase();
+                const statusClass = status === 'pass' ? 'score-low' : 
+                                 status === 'fail' ? 'score-high' : 'score-medium';
+                
+                authItem.innerHTML = `
+                    <div class="metadata-key">${item.label}</div>
+                    <div class="metadata-value">
+                        <span class="${statusClass}" style="font-weight: bold;">${item.value.toUpperCase()}</span>
+                        ${item.details ? `<br><small>${item.details}</small>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(authItem);
+            });
+
+            // Add overall score
+            const scoreItem = document.createElement('div');
+            scoreItem.className = 'metadata-item';
+            scoreItem.innerHTML = `
+                <div class="metadata-key">Authentication Score</div>
+                <div class="metadata-value">
+                    <span class="${auth.score >= 2 ? 'score-low' : auth.score === 1 ? 'score-medium' : 'score-high'}" style="font-weight: bold;">
+                        ${auth.score}/3 protocols passed
+                    </span>
+                </div>
+            `;
+            container.appendChild(scoreItem);
+        }
+
+        function updateThreatsDisplay(suspicionScore) {
+            const container = document.getElementById('threats');
+            container.innerHTML = '';
+            
+            const alertClass = suspicionScore.category === 'critical' ? 'alert-danger' :
+                             suspicionScore.category === 'high' ? 'alert-warning' :
+                             suspicionScore.category === 'medium' ? 'alert-warning' : 'alert-success';
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass}`;
+            alertDiv.innerHTML = `
+                <strong>Threat Level: ${suspicionScore.category.toUpperCase()}</strong>
+                <br>Overall Risk Score: ${suspicionScore.score}/10
+            `;
+            container.appendChild(alertDiv);
+            
+            if (suspicionScore.reasons.length > 0) {
+                const reasonsList = document.createElement('div');
+                reasonsList.innerHTML = '<h4 style="margin: 1rem 0 0.5rem 0;">Risk Factors Identified:</h4>';
+                
+                const list = document.createElement('ul');
+                list.style.marginLeft = '1.5rem';
+                list.style.lineHeight = '1.6';
+                
+                suspicionScore.reasons.forEach(reason => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = reason;
+                    list.appendChild(listItem);
+                });
+                
+                reasonsList.appendChild(list);
+                container.appendChild(reasonsList);
+            }
+        }
+
+        function updateAdvancedMetrics(analysis) {
+            const container = document.getElementById('advancedMetrics');
+            container.innerHTML = '';
+            
+            const metrics = [
+                {
+                    label: 'Header Completeness',
+                    value: `${Object.keys(analysis.metadata).length} headers`,
+                    status: Object.keys(analysis.metadata).length > 10 ? 'good' : 'warning'
+                },
+                {
+                    label: 'Encoding Methods',
+                    value: [
+                        analysis.decodedContent.hasBase64 ? 'Base64' : null,
+                        analysis.decodedContent.hasQuotedPrintable ? 'Quoted-Printable' : null
+                    ].filter(Boolean).join(', ') || 'Plain text',
+                    status: analysis.decodedContent.hasBase64 ? 'warning' : 'good'
+                },
+                {
+                    label: 'Suspicious Patterns',
+                    value: `${analysis.decodedContent.suspiciousPatterns.length} detected`,
+                    status: analysis.decodedContent.suspiciousPatterns.length > 0 ? 'danger' : 'good'
+                },
+                {
+                    label: 'Attachments',
+                    value: `${analysis.decodedContent.attachments.length} files`,
+                    status: analysis.decodedContent.attachments.length > 3 ? 'warning' : 'good'
+                }
+            ];
+            
+            metrics.forEach(metric => {
+                const item = document.createElement('div');
+                item.className = 'metadata-item';
+                
+                const statusColor = metric.status === 'good' ? 'var(--accent-color)' :
+                                  metric.status === 'warning' ? 'var(--warning-color)' :
+                                  'var(--danger-color)';
+                
+                item.innerHTML = `
+                    <div class="metadata-key">${metric.label}</div>
+                    <div class="metadata-value" style="color: ${statusColor}; font-weight: bold;">
+                        ${metric.value}
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        function updateDecodedContentDisplay(decodedContent) {
+            const container = document.getElementById('decodedContent');
+            container.innerHTML = '';
+            
+            if (decodedContent.hiddenContent.length > 0) {
+                const hiddenDiv = document.createElement('div');
+                hiddenDiv.innerHTML = '<h4>Decoded Hidden Content:</h4>';
+                
+                decodedContent.hiddenContent.forEach((content, index) => {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'metadata-item';
+                    contentDiv.innerHTML = `
+                        <div class="metadata-key">Decoded Section ${index + 1}</div>
+                        <div class="metadata-value" style="max-height: 200px; overflow-y: auto;">
+                            ${content.substring(0, 500)}${content.length > 500 ? '...' : ''}
+                        </div>
+                    `;
+                    hiddenDiv.appendChild(contentDiv);
+                });
+                
+                container.appendChild(hiddenDiv);
+            }
+            
+            if (decodedContent.attachments.length > 0) {
+                const attachDiv = document.createElement('div');
+                attachDiv.innerHTML = '<h4>Detected Attachments:</h4>';
+                
+                const attachList = document.createElement('ul');
+                attachList.style.marginLeft = '1.5rem';
+                
+                decodedContent.attachments.forEach(filename => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = filename;
+                    
+                    // Add risk assessment for common dangerous extensions
+                    const dangerousExts = ['.exe', '.scr', '.bat', '.cmd', '.com', '.pif', '.vbs', '.js'];
+                    const isDangerous = dangerousExts.some(ext => filename.toLowerCase().endsWith(ext));
+                    
+                    if (isDangerous) {
+                        const badge = document.createElement('span');
+                        badge.className = 'risk-badge risk-high';
+                        badge.textContent = 'HIGH RISK';
+                        badge.style.marginLeft = '0.5rem';
+                        listItem.appendChild(badge);
+                    }
+                    
+                    attachList.appendChild(listItem);
+                });
+                
+                attachDiv.appendChild(attachList);
+                container.appendChild(attachDiv);
+            }
+            
+            if (decodedContent.hiddenContent.length === 0 && decodedContent.attachments.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No encoded content or attachments detected.</div>';
+            }
+        }
+
+        function analyzeURLRisk(url) {
+            const risk = { level: 'low', reasons: [] };
+            
+            // Check for URL shorteners
+            if (/bit\.ly|tinyurl|t\.co|goo\.gl|ow\.ly|short\.link/i.test(url)) {
+                risk.level = 'medium';
+                risk.reasons.push('URL shortener detected');
+            }
+            
+            // Check for suspicious domains
+            const suspiciousDomains = ['tempmail', 'guerrillamail', '10minutemail', 'mailinator'];
+            if (suspiciousDomains.some(domain => url.includes(domain))) {
+                risk.level = 'high';
+                risk.reasons.push('Suspicious domain');
+            }
+            
+            // Check for excessive length
+            if (url.length > 150) {
+                risk.level = risk.level === 'low' ? 'medium' : 'high';
+                risk.reasons.push('Unusually long URL');
+            }
+            
+            // Check for suspicious parameters
+            if (/[?&](redirect|forward|goto|url)=/i.test(url)) {
+                risk.level = 'medium';
+                risk.reasons.push('Redirect parameter detected');
+            }
+            
+            return risk;
+        }
+
+        function analyzeIPRisk(ip) {
+            const parts = ip.split('.').map(Number);
+            const risk = { level: 'low', type: 'Public IP' };
+            
+            // Check for private IP ranges
+            if (parts[0] === 10 ||
+                (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
+                (parts[0] === 192 && parts[1] === 168)) {
+                risk.level = 'medium';
+                risk.type = 'Private IP';
+            }
+            
+            // Check for localhost
+            if (parts[0] === 127) {
+                risk.level = 'high';
+                risk.type = 'Localhost';
+            }
+            
+            // Check for suspicious ranges (commonly used for malicious purposes)
+            if (parts[0] === 0 || parts[0] >= 224) {
+                risk.level = 'high';
+                risk.type = 'Reserved/Multicast IP';
+            }
+            
+            return risk;
+        }
+
+        function clearResults() {
+            document.getElementById('emailInput').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('exportBtn').style.display = 'none';
+            currentAnalysis = null;
+        }
+
+        function exportResults() {
+            if (!currentAnalysis) {
+                alert('No analysis results to export');
+                return;
+            }
+            
+            const report = generateReport(currentAnalysis);
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `email-threat-analysis-${new Date().toISOString().slice(0, 19)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function generateReport(analysis) {
+            const timestamp = new Date().toISOString();
+            
+            return `
+                DEFENDERBOX ENTERPRISE EMAIL THREAT ANALYSIS REPORT
+                Generated: ${timestamp}
+                ================================================================
+
+                EXECUTIVE SUMMARY
+                -----------------
+                Overall Threat Score: ${analysis.suspicionScore.score}/10
+                Risk Category: ${analysis.suspicionScore.category.toUpperCase()}
+                Authentication Score: ${analysis.authentication.score}/3
+
+                THREAT ASSESSMENT
+                -----------------
+                ${analysis.suspicionScore.reasons.map(reason => `• ${reason}`).join('\n')}
+
+                EMAIL METADATA
+                --------------
+                ${Object.entries(analysis.metadata).map(([key, value]) => 
+                    `${key}: ${Array.isArray(value) ? value.join(' | ') : value}`
+                ).join('\n')}
+
+                AUTHENTICATION RESULTS
+                ----------------------
+                SPF: ${analysis.authentication.spf}${analysis.authentication.spfDetails ? ` (${analysis.authentication.spfDetails})` : ''}
+                DKIM: ${analysis.authentication.dkim}${analysis.authentication.dkimDetails ? ` (${analysis.authentication.dkimDetails})` : ''}
+                DMARC: ${analysis.authentication.dmarc}${analysis.authentication.dmarcDetails ? ` (${analysis.authentication.dmarcDetails})` : ''}
+
+                URL ANALYSIS
+                ------------
+                Total URLs Detected: ${analysis.urls.length}
+                ${analysis.urls.map(url => {
+                    const risk = analyzeURLRisk(url);
+                    return `• ${url} [${risk.level.toUpperCase()}]${risk.reasons.length > 0 ? ` - ${risk.reasons.join(', ')}` : ''}`;
+                }).join('\n')}
+
+                IP ADDRESS ANALYSIS
+                -------------------
+                Total IPs Detected: ${analysis.ips.length}
+                ${analysis.ips.map(ip => {
+                    const risk = analyzeIPRisk(ip);
+                    return `• ${ip} [${risk.level.toUpperCase()}] - ${risk.type}`;
+                }).join('\n')}
+
+                CONTENT ANALYSIS
+                ----------------
+                Suspicious Patterns: ${analysis.decodedContent.suspiciousPatterns.length}
+                Base64 Encoding: ${analysis.decodedContent.hasBase64 ? 'YES' : 'NO'}
+                Quoted-Printable: ${analysis.decodedContent.hasQuotedPrintable ? 'YES' : 'NO'}
+                Attachments: ${analysis.decodedContent.attachments.length}
+                ${analysis.decodedContent.attachments.length > 0 ? 
+                    'Attachment Files:\n' + analysis.decodedContent.attachments.map(file => `• ${file}`).join('\n') : ''}
+
+                    RECOMMENDATIONS
+                    ---------------
+                    ${analysis.suspicionScore.category === 'critical' ? 
+                        '• IMMEDIATE ACTION REQUIRED - Block sender and quarantine email\n• Report to security team for further investigation\n• Do not click any links or download attachments' :
+                        analysis.suspicionScore.category === 'high' ?
+                        '• Exercise extreme caution with this email\n• Verify sender through alternative communication channel\n• Avoid clicking links or downloading attachments' :
+                        analysis.suspicionScore.category === 'medium' ?
+                        '• Review email carefully before taking action\n• Verify sender identity if requesting sensitive information\n• Scan any attachments before opening' :
+                        '• Email appears to have low risk indicators\n• Standard security practices still apply\n• Remain vigilant for social engineering attempts'
+                    }
+
+                    ================================================================
+                    Report generated by DefenderBox Enterprise Email Threat Analyzer
+            `.trim();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DefenderBox Email Threat Analyzer loaded successfully');
+            
+            // Add sample email for testing
+            const sampleButton = document.createElement('button');
+            sampleButton.className = 'btn btn-primary';
+            sampleButton.textContent = '📋 Load Sample Email';
+            sampleButton.style.marginLeft = '1rem';
+            sampleButton.onclick = loadSampleEmail;
+            
+            document.querySelector('.btn-group').appendChild(sampleButton);
+        });
+
+        function loadSampleEmail() {
+            const sampleEmail = `From: security@paypal-verification.com
+                To: user@company.com
+                Subject: Urgent: Verify Your Account to Avoid Suspension
+                Date: Wed, 15 Nov 2023 10:30:00 +0000
+                Message-ID: <12345@suspicious-server.com>
+                X-Mailer: BulkMailer Pro 3.0
+                Return-Path: <bounce@temp-domain.xyz>
+                Authentication-Results: mx.company.com; spf=fail (domain does not designate permitted senders); dkim=none; dmarc=fail
+                Received: from suspicious-server.com (192.168.1.100) by mx.company.com
+
+                Dear Valued Customer,
+
+                Your PayPal account requires immediate verification to prevent suspension. 
+                Failure to verify within 24 hours will result in permanent account closure.
+
+                Click here to verify now: http://bit.ly/verify-paypal-account-urgent
+
+                This is an automated message. Please do not reply to this email.
+
+                Best regards,
+                PayPal Security Team`;
+
+            document.getElementById('emailInput').value = sampleEmail;
+        }
+    </script>
+</body>
+</html>

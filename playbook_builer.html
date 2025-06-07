@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Playbook Builder + Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: #1e3c72;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: white;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .playbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .playbook-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .playbook-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        .playbook-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .playbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .playbook-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .alert-type {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .playbook-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .steps-list {
+            margin: 15px 0;
+        }
+
+        .step-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #2a5298;
+            font-size: 0.9rem;
+        }
+
+        .playbook-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .playbook-actions .btn {
+            font-size: 0.85rem;
+            padding: 8px 15px;
+            margin: 0;
+        }
+
+        .instance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .instance-card {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .instance-card.status-new::before {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+        }
+
+        .instance-card.status-in-progress::before {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+        }
+
+        .instance-card.status-escalated::before {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .instance-card.status-resolved::before {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-new { background: #fff3cd; color: #856404; }
+        .status-in-progress { background: #d1ecf1; color: #0c5460; }
+        .status-escalated { background: #f8d7da; color: #721c24; }
+        .status-resolved { background: #d4edda; color: #155724; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: scale(0.9) translateY(-50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .step-builder {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f8f9fa;
+        }
+
+        .step-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .step-input-group input {
+            flex: 1;
+        }
+
+        .step-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-list li {
+            background: white;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #2a5298;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step-list li button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 2rem; }
+            .playbook-grid, .instance-grid { grid-template-columns: 1fr; }
+            .main-nav { justify-content: center; }
+            .modal-content { margin: 10% auto; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SOC Playbook Builder + Tracker</h1>
+            <p>Enterprise-grade Security Operations Center playbook management and incident tracking system</p>
+        </div>
+
+        <nav class="main-nav">
+            <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+            <button class="nav-btn" onclick="showSection('playbooks')">Playbooks</button>
+            <button class="nav-btn" onclick="showSection('instances')">Active Instances</button>
+            <button class="nav-btn" onclick="showSection('reports')">Reports & Export</button>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <h2 style="margin-bottom: 25px; color: #1e3c72; font-size: 1.8rem;">SOC Operations Dashboard</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalPlaybooks">0</div>
+                    <div class="stat-label">Total Playbooks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeInstances">0</div>
+                    <div class="stat-label">Active Instances</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="resolvedToday">0</div>
+                    <div class="stat-label">Resolved Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="escalatedCount">0</div>
+                    <div class="stat-label">Escalated</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px;">
+                <div style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 25px; border-radius: 12px;">
+                    <h3 style="color: #1e3c72; margin-bottom: 15px;">Recent Activity</h3>
+                    <div id="recentActivity">
+                        <p style="color: #666; font-style: italic;">No recent activity</p>
+                    </div>
+                </div>
+                <div style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 25px; border-radius: 12px;">
+                    <h3 style="color: #1e3c72; margin-bottom: 15px;">Quick Actions</h3>
+                    <button class="btn" onclick="showSection('playbooks'); document.getElementById('createPlaybookBtn').click();">Create New Playbook</button>
+                    <button class="btn btn-secondary" onclick="showSection('instances')">View All Instances</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playbooks Section -->
+        <div id="playbooks" class="content-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="color: #1e3c72; font-size: 1.8rem;">Playbook Management</h2>
+                <button class="btn" id="createPlaybookBtn" onclick="showCreatePlaybookModal()">Create New Playbook</button>
+            </div>
+            
+            <div class="playbook-grid" id="playbookGrid">
+                <!-- Playbooks will be populated here -->
+            </div>
+        </div>
+
+        <!-- Instances Section -->
+        <div id="instances" class="content-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="color: #1e3c72; font-size: 1.8rem;">Active Incident Instances</h2>
+                <button class="btn" onclick="showCreateInstanceModal()">Create New Instance</button>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="statusFilter" style="margin-right: 10px; font-weight: 600;">Filter by Status:</label>
+                <select id="statusFilter" onchange="filterInstances()" style="padding: 8px 12px; border: 2px solid #e1e5e9; border-radius: 6px;">
+                    <option value="">All Statuses</option>
+                    <option value="new">New</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="escalated">Escalated</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            
+            <div class="instance-grid" id="instanceGrid">
+                <!-- Instances will be populated here -->
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="content-section">
+            <h2 style="margin-bottom: 25px; color: #1e3c72; font-size: 1.8rem;">Reports & Export</h2>
+            
+            <div class="export-section">
+                <h3 style="margin-bottom: 15px; color: #1e3c72;">Export Options</h3>
+                <p style="margin-bottom: 15px; color: #666;">Generate comprehensive reports for analysis and documentation.</p>
+                
+                <div class="export-options">
+                    <button class="btn" onclick="exportPlaybooks()">Export All Playbooks (PDF)</button>
+                    <button class="btn btn-secondary" onclick="exportInstances()">Export Active Instances (PDF)</button>
+                    <button class="btn btn-success" onclick="exportSummaryReport()">Generate Summary Report (PDF)</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px;">
+                <h3 style="margin-bottom: 20px; color: #1e3c72;">Performance Metrics</h3>
+                <div id="performanceMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #1e3c72;" id="avgResolutionTime">--</div>
+                        <div style="color: #666; font-size: 0.9rem;">Avg Resolution Time</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #1e3c72;" id="escalationRate">--</div>
+                        <div style="color: #666; font-size: 0.9rem;">Escalation Rate</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #1e3c72;" id="playbookUsage">--</div>
+                        <div style="color: #666; font-size: 0.9rem;">Most Used Playbook</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playbook Modal -->
+    <div id="createPlaybookModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('createPlaybookModal')">&times;</span>
+            <h2 style="margin-bottom: 25px; color: #1e3c72;">Create New Playbook</h2>
+            
+            <form id="createPlaybookForm">
+                <div class="form-group">
+                    <label for="playbookTitle">Playbook Title</label>
+                    <input type="text" id="playbookTitle" required placeholder="e.g., Malware Detection Response">
+                </div>
+                
+                <div class="form-group">
+                    <label for="alertType">Alert Type</label>
+                    <select id="alertType" required>
+                        <option value="">Select Alert Type</option>
+                        <option value="Malware">Malware</option>
+                        <option value="Phishing">Phishing</option>
+                        <option value="Data Breach">Data Breach</option>
+                        <option value="DDoS">DDoS Attack</option>
+                        <option value="Insider Threat">Insider Threat</option>
+                        <option value="Network Intrusion">Network Intrusion</option>
+                        <option value="Ransomware">Ransomware</option>
+                        <option value="Social Engineering">Social Engineering</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="severity">Severity Level</label>
+                    <select id="severity" required>
+                        <option value="">Select Severity</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Brief description of the playbook purpose and scope"></textarea>
+                </div>
+                
+                <div class="step-builder">
+                    <h4 style="margin-bottom: 15px; color: #1e3c72;">Playbook Steps</h4>
+                    <div class="step-input-group">
+                        <input type="text" id="newStepInput" placeholder="Enter a step description">
+                        <button type="button" class="btn" onclick="addStep()">Add Step</button>
+                    </div>
+                    <ul class="step-list" id="stepList">
+                        <!-- Steps will be added here -->
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <button type="submit" class="btn">Create Playbook</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('createPlaybookModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Instance Modal -->
+    <div id="createInstanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('createInstanceModal')">&times;</span>
+            <h2 style="margin-bottom: 25px; color: #1e3c72;">Create New Incident Instance</h2>
+            
+            <form id="createInstanceForm">
+                <div class="form-group">
+                    <label for="instancePlaybook">Select Playbook</label>
+                    <select id="instancePlaybook" required>
+                        <option value="">Select a Playbook</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="incidentTitle">Incident Title</label>
+                    <input type="text" id="incidentTitle" required placeholder="Brief description of the incident">
+                </div>
+                
+                <div class="form-group">
+                    <label for="assignedAnalyst">Assigned Analyst</label>
+                    <select id="assignedAnalyst" required>
+                        <option value="">Select Analyst</option>
+                        <option value="John Smith">John Smith</option>
+                        <option value="Sarah Johnson">Sarah Johnson</option>
+                        <option value="Mike Chen">Mike Chen</option>
+                        <option value="Emily Davis">Emily Davis</option>
+                        <option value="Robert Wilson">Robert Wilson</option>
+                        <option value="Lisa Anderson">Lisa Anderson</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" required>
+                        <option value="">Select Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="incidentNotes">Initial Notes</label>
+                    <textarea id="incidentNotes" placeholder="Initial observations, context, or relevant details"></textarea>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <button type="submit" class="btn">Create Instance</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('createInstanceModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Instance Modal -->
+    <div id="editInstanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editInstanceModal')">&times;</span>
+            <h2 style="margin-bottom: 25px; color: #1e3c72;">Update Incident Instance</h2>
+            
+            <form id="editInstanceForm">
+                <input type="hidden" id="editInstanceId">
+                
+                <div class="form-group">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" required>
+                        <option value="new">New</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="escalated">Escalated</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editAssignedAnalyst">Assigned Analyst</label>
+                    <select id="editAssignedAnalyst" required>
+                        <option value="John Smith">John Smith</option>
+                        <option value="Sarah Johnson">Sarah Johnson</option>
+                        <option value="Mike Chen">Mike Chen</option>
+                        <option value="Emily Davis">Emily Davis</option>
+                        <option value="Robert Wilson">Robert Wilson</option>
+                        <option value="Lisa Anderson">Lisa Anderson</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPriority">Priority</label>
+                    <select id="editPriority" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="progressNotes">Progress Notes</label>
+                    <textarea id="progressNotes" placeholder="Add notes about progress, findings, or next steps"></textarea>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <button type="submit" class="btn">Update Instance</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editInstanceModal')">Cancel</button>
+                </div>
+            </form>
