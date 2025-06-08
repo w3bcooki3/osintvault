@@ -754,6 +754,7 @@
             font-size: 1.5rem;
             flex-direction: column;
             gap: 15px;
+            transition: opacity 0.3s ease;
         }
 
         .loading-overlay .spinner {
@@ -895,6 +896,7 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <div id="loadingText">Processing...</div>
+        <p id="loadingSubtext" style="font-size: 1rem; margin-top: 10px; opacity: 0.8;">Please wait, simulating secure data transfer...</p>
     </div>
 
     <header class="app-header">
@@ -962,13 +964,13 @@
                 </div>
                 <div style="background: var(--bg-card-light); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-light); border: 1px solid var(--border-light);">
                     <h3 style="color: var(--primary-color); margin-bottom: 15px;">Quick Actions</h3>
-                    <button class="btn" onclick="showSection('playbooks', document.querySelector('.nav-btn:nth-child(2)')); showCreatePlaybookModal();">
+                    <button class="btn" onclick="showSection('playbooks', document.querySelector('.nav-btn:nth-child(2)')); simulateBackendOperation('Opening playbook creation...', showCreatePlaybookModal);">
                         <i class="fas fa-plus-circle"></i> Create New Playbook
                     </button>
                     <button class="btn btn-secondary" onclick="showSection('instances', document.querySelector('.nav-btn:nth-child(3)'))">
                         <i class="fas fa-eye"></i> View All Incidents
                     </button>
-                     <button class="btn btn-info" onclick="showCreateInstanceModal()">
+                     <button class="btn btn-info" onclick="simulateBackendOperation('Initializing new incident...', showCreateInstanceModal);">
                         <i class="fas fa-fire-alt"></i> Start New Incident
                     </button>
                 </div>
@@ -978,7 +980,7 @@
         <div id="playbooks" class="content-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
                 <h2 style="color: var(--primary-color);">Playbook Management</h2>
-                <button class="btn" id="createPlaybookBtn" onclick="showCreatePlaybookModal()">
+                <button class="btn" id="createPlaybookBtn" onclick="simulateBackendOperation('Opening playbook creation...', showCreatePlaybookModal);">
                     <i class="fas fa-plus-circle"></i> Create New Playbook
                 </button>
             </div>
@@ -995,7 +997,7 @@
         <div id="instances" class="content-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
                 <h2 style="color: var(--primary-color);">Active Incident Instances</h2>
-                <button class="btn" onclick="showCreateInstanceModal()">
+                <button class="btn" onclick="simulateBackendOperation('Initializing new incident...', showCreateInstanceModal);">
                     <i class="fas fa-plus-circle"></i> Create New Incident
                 </button>
             </div>
@@ -1345,14 +1347,62 @@
         let playbooks = [];
         let instances = [];
         let activityLog = []; // This will serve as our audit trail
+        let currentSteps = []; // Define currentSteps globally for playbook creation/editing
         let editingPlaybookId = null; // Track which playbook is being edited
 
         // Global jsPDF instance (from cdn)
         const { jsPDF } = window.jspdf;
 
+        // --- Simulated Backend Delay & Loading States ---
+        const MIN_LOADING_TIME = 800; // Minimum time for loading animation in milliseconds
+        const MAX_LOADING_TIME = 2000; // Maximum time for loading animation
+
+        function showLoading(message = "Processing...", subtext = "Securely communicating with backend services...") {
+            document.getElementById('loadingText').textContent = message;
+            document.getElementById('loadingSubtext').textContent = subtext;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        async function simulateBackendOperation(loadingMessage, operationFunction, successMessage, errorMessage) {
+            showLoading(loadingMessage);
+            const startTime = Date.now();
+
+            try {
+                await operationFunction();
+                const endTime = Date.now();
+                const elapsedTime = endTime - startTime;
+                const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+
+                await new Promise(resolve => setTimeout(resolve, remainingTime)); // Ensure min loading time
+                
+                showToast(successMessage || 'Operation completed successfully!', 'success');
+            } catch (error) {
+                console.error("Simulated Backend Error:", error);
+                showToast(errorMessage || 'An unexpected error occurred. Please try again.', 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
         // --- Core Application Initialization & Setup ---
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSampleData();
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Simulate initial data loading from a backend
+            await simulateBackendOperation(
+                'Initializing application data...',
+                () => new Promise(resolve => {
+                    setTimeout(() => {
+                        loadSampleData();
+                        resolve();
+                    }, Math.random() * (MAX_LOADING_TIME - MIN_LOADING_TIME) + MIN_LOADING_TIME);
+                }),
+                'Application initialized. Data loaded securely.',
+                'Failed to load initial data.'
+            );
+            
             loadThemePreference(); // Load theme on start
             updateDashboard();
             renderPlaybooks();
@@ -1399,11 +1449,11 @@
                         ...a,
                         timestamp: new Date(a.timestamp).toISOString() // Ensure date objects
                     })).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); // Always sort latest first
-                    showToast('Local data loaded successfully!', 'info', 2000);
+                    // showToast('Local data loaded successfully!', 'info', 2000); // This toast is now handled by simulateBackendOperation
                     return; // Data loaded, exit function
                 } catch (e) {
                     console.error("Error loading data from localStorage, loading sample data:", e);
-                    showToast('Corrupted local data detected, loading sample data.', 'error', 3000);
+                    // showToast('Corrupted local data detected, loading sample data.', 'error', 3000); // Handled by simulateBackendOperation
                     // Clear corrupted data
                     localStorage.removeItem('playbooks');
                     localStorage.removeItem('instances');
@@ -1715,27 +1765,32 @@
 
         // --- Main Navigation ---
         function showSection(sectionId, clickedButton) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(sectionId).classList.add('active');
-            if (clickedButton) {
-                clickedButton.classList.add('active');
-            }
-            
-            if (sectionId === 'dashboard') {
-                updateDashboard();
-            } else if (sectionId === 'playbooks') {
-                renderPlaybooks();
-            } else if (sectionId === 'instances') {
-                renderInstances();
-            } else if (sectionId === 'auditTrail') { // NEW: Render audit trail when its tab is selected
-                renderAuditTrail();
-            }
+            simulateBackendOperation(`Loading ${sectionId.replace(/([A-Z])/g, ' $1').toLowerCase()}...`, () => new Promise(resolve => {
+                setTimeout(() => {
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.querySelectorAll('.nav-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    document.getElementById(sectionId).classList.add('active');
+                    if (clickedButton) {
+                        clickedButton.classList.add('active');
+                    }
+                    
+                    if (sectionId === 'dashboard') {
+                        updateDashboard();
+                    } else if (sectionId === 'playbooks') {
+                        renderPlaybooks();
+                    } else if (sectionId === 'instances') {
+                        renderInstances();
+                    } else if (sectionId === 'auditTrail') { // NEW: Render audit trail when its tab is selected
+                        renderAuditTrail();
+                    }
+                    resolve();
+                }, Math.random() * 300 + 200); // Shorter delay for navigation
+            }), `Mapsd to ${sectionId.replace(/([A-Z])/g, ' $1').toLowerCase()}.`);
         }
 
         // --- Dashboard Functions ---
@@ -1853,13 +1908,13 @@
                         ${playbook.steps.length > 3 ? `<div style="text-align: center; color: var(--text-secondary-light); font-style: italic; margin-top: 10px;">+ ${playbook.steps.length - 3} more steps</div>` : ''}
                     </div>
                     <div class="playbook-actions">
-                        <button class="btn btn-sm" onclick="showPlaybookDetails(${playbook.id})">
+                        <button class="btn btn-sm" onclick="simulateBackendOperation('Fetching playbook details...', () => showPlaybookDetails(${playbook.id}), 'Playbook details loaded.')">
                             <i class="fas fa-info-circle"></i> Details
                         </button>
-                        <button class="btn btn-secondary btn-sm" onclick="editPlaybook(${playbook.id})">
+                        <button class="btn btn-secondary btn-sm" onclick="simulateBackendOperation('Loading playbook for editing...', () => editPlaybook(${playbook.id}), 'Playbook ready for editing.')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-success btn-sm" onclick="window.createInstanceFromPlaybook(${playbook.id})">
+                        <button class="btn btn-success btn-sm" onclick="simulateBackendOperation('Initiating incident from playbook...', () => window.createInstanceFromPlaybook(${playbook.id}), 'Incident creation initialized.')">
                             <i class="fas fa-play"></i> Use
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="deletePlaybook(${playbook.id})">
@@ -1928,55 +1983,63 @@
                 return;
             }
 
-            if (id) {
-                const playbookIndex = playbooks.findIndex(p => p.id === parseInt(id));
-                if (playbookIndex > -1) {
-                    const oldTitle = playbooks[playbookIndex].title;
-                    playbooks[playbookIndex] = {
-                        ...playbooks[playbookIndex],
-                        title: playbookTitle,
-                        alertType: alertType,
-                        severity: severity,
-                        description: description,
-                        steps: [...currentSteps]
-                    };
-                    activityLog.unshift({ 
-                        action: "Playbook Updated",
-                        details: `Playbook "${oldTitle}" updated to "${playbookTitle}"`,
-                        timestamp: new Date().toISOString()
-                    });
-                    showToast(`Playbook "${playbookTitle}" updated successfully!`, 'success');
-                }
-            } else {
-                const newPlaybook = {
-                    id: Date.now(),
-                    title: playbookTitle,
-                    alertType: alertType,
-                    severity: severity,
-                    description: description,
-                    steps: [...currentSteps],
-                    created: new Date().toISOString(),
-                    usageCount: 0
-                };
-                playbooks.unshift(newPlaybook); 
-                activityLog.unshift({ 
-                    action: "Playbook Created",
-                    details: `New playbook "${newPlaybook.title}" created`,
-                    timestamp: new Date().toISOString()
-                });
-                showToast(`Playbook "${playbookTitle}" created successfully!`, 'success');
-            }
-            
-            renderPlaybooks();
-            updateInstancePlaybookOptions();
-            closeModal('createPlaybookModal');
-            
-            this.reset();
-            currentSteps = [];
-            editingPlaybookId = null;
-            updateDashboard(); 
-            saveDataToLocalStorage();
-            renderAuditTrail();
+            simulateBackendOperation(
+                id ? `Updating playbook "${playbookTitle}"...` : `Creating new playbook "${playbookTitle}"...`,
+                () => new Promise(resolve => {
+                    setTimeout(() => {
+                        if (id) {
+                            const playbookIndex = playbooks.findIndex(p => p.id === parseInt(id));
+                            if (playbookIndex > -1) {
+                                const oldTitle = playbooks[playbookIndex].title;
+                                playbooks[playbookIndex] = {
+                                    ...playbooks[playbookIndex],
+                                    title: playbookTitle,
+                                    alertType: alertType,
+                                    severity: severity,
+                                    description: description,
+                                    steps: [...currentSteps]
+                                };
+                                activityLog.unshift({ 
+                                    action: "Playbook Updated",
+                                    details: `Playbook "${oldTitle}" updated to "${playbookTitle}"`,
+                                    timestamp: new Date().toISOString()
+                                });
+                            }
+                        } else {
+                            const newPlaybook = {
+                                id: Date.now(),
+                                title: playbookTitle,
+                                alertType: alertType,
+                                severity: severity,
+                                description: description,
+                                steps: [...currentSteps],
+                                created: new Date().toISOString(),
+                                usageCount: 0
+                            };
+                            playbooks.unshift(newPlaybook); 
+                            activityLog.unshift({ 
+                                action: "Playbook Created",
+                                details: `New playbook "${newPlaybook.title}" created`,
+                                timestamp: new Date().toISOString()
+                            });
+                        }
+                        
+                        renderPlaybooks();
+                        updateInstancePlaybookOptions();
+                        closeModal('createPlaybookModal');
+                        
+                        e.target.reset(); // Use e.target.reset() instead of this.reset()
+                        currentSteps = [];
+                        editingPlaybookId = null;
+                        updateDashboard(); 
+                        saveDataToLocalStorage();
+                        renderAuditTrail();
+                        resolve();
+                    }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                }),
+                id ? `Playbook "${playbookTitle}" updated successfully!` : `Playbook "${playbookTitle}" created successfully!`,
+                `Failed to ${id ? 'update' : 'create'} playbook "${playbookTitle}".`
+            );
         });
 
         function editPlaybook(id) {
@@ -2003,24 +2066,32 @@
 
         function deletePlaybook(id) {
             showConfirmation('Are you sure you want to delete this playbook? This action is irreversible and will not delete existing incidents that used it. You might want to update incidents if this playbook is no longer valid.', () => {
-                const playbook = playbooks.find(p => p.id === id);
-                if (!playbook) {
-                    showToast('Playbook not found!', 'error');
-                    return;
-                }
-                playbooks = playbooks.filter(p => p.id !== id);
-                renderPlaybooks();
-                updateInstancePlaybookOptions();
-                
-                activityLog.unshift({ 
-                    action: "Playbook Deleted",
-                    details: `Playbook "${playbook.title}" (ID: ${playbook.id}) was deleted`,
-                    timestamp: new Date().toISOString()
-                });
-                updateDashboard(); 
-                showToast(`Playbook "${playbook.title}" deleted successfully!`, 'success');
-                saveDataToLocalStorage();
-                renderAuditTrail();
+                simulateBackendOperation(
+                    'Deleting playbook...',
+                    () => new Promise(resolve => {
+                        setTimeout(() => {
+                            const playbook = playbooks.find(p => p.id === id);
+                            if (!playbook) {
+                                throw new Error('Playbook not found!'); // Trigger error for simulateBackendOperation
+                            }
+                            playbooks = playbooks.filter(p => p.id !== id);
+                            renderPlaybooks();
+                            updateInstancePlaybookOptions();
+                            
+                            activityLog.unshift({ 
+                                action: "Playbook Deleted",
+                                details: `Playbook "${playbook.title}" (ID: ${playbook.id}) was deleted`,
+                                timestamp: new Date().toISOString()
+                            });
+                            updateDashboard(); 
+                            saveDataToLocalStorage();
+                            renderAuditTrail();
+                            resolve();
+                        }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                    }),
+                    'Playbook deleted successfully!',
+                    'Failed to delete playbook.'
+                );
             });
         }
 
@@ -2135,10 +2206,10 @@
                     ` : ''}
                     
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn btn-sm" onclick="showInstanceDetails(${instance.id})">
+                        <button class="btn btn-sm" onclick="simulateBackendOperation('Fetching incident details...', () => showInstanceDetails(${instance.id}), 'Incident details loaded.')">
                             <i class="fas fa-info-circle"></i> Details
                         </button>
-                        <button class="btn btn-secondary btn-sm" onclick="editInstance(${instance.id})">
+                        <button class="btn btn-secondary btn-sm" onclick="simulateBackendOperation('Loading incident for update...', () => editInstance(${instance.id}), 'Incident ready for update.')">
                             <i class="fas fa-sync-alt"></i> Update
                         </button>
                         <button class="btn btn-success btn-sm" onclick="exportInstanceReport(${instance.id})">
@@ -2177,41 +2248,52 @@
                 return;
             }
 
-            const newInstance = {
-                id: Date.now(),
-                playbookId: playbookId,
-                playbookTitle: playbook.title,
-                incidentTitle: document.getElementById('incidentTitle').value,
-                affectedAssets: document.getElementById('affectedAssets').value,
-                assignedAnalyst: document.getElementById('assignedAnalyst').value,
-                priority: document.getElementById('priority').value,
-                status: 'new',
-                created: new Date().toISOString(),
-                updated: new Date().toISOString(),
-                notes: document.getElementById('incidentNotes').value,
-                progressNotes: ''
-            };
-            
-            instances.unshift(newInstance); 
-            if (playbook) {
-                playbook.usageCount = (playbook.usageCount || 0) + 1;
-            }
-            
-            renderInstances();
-            renderPlaybooks(); 
-            closeModal('createInstanceModal');
-            
-            activityLog.unshift({ 
-                action: "Incident Created",
-                details: `New incident "${newInstance.incidentTitle}" (Prio: ${newInstance.priority}) assigned to ${newInstance.assignedAnalyst}`,
-                timestamp: new Date().toISOString()
-            });
-            
-            this.reset();
-            updateDashboard(); 
-            showToast(`Incident "${newInstance.incidentTitle}" created!`, 'success');
-            saveDataToLocalStorage();
-            renderAuditTrail();
+            const incidentTitle = document.getElementById('incidentTitle').value;
+
+            simulateBackendOperation(
+                `Creating new incident "${incidentTitle}"...`,
+                () => new Promise(resolve => {
+                    setTimeout(() => {
+                        const newInstance = {
+                            id: Date.now(),
+                            playbookId: playbookId,
+                            playbookTitle: playbook.title,
+                            incidentTitle: incidentTitle,
+                            affectedAssets: document.getElementById('affectedAssets').value,
+                            assignedAnalyst: document.getElementById('assignedAnalyst').value,
+                            priority: document.getElementById('priority').value,
+                            status: 'new',
+                            created: new Date().toISOString(),
+                            updated: new Date().toISOString(),
+                            notes: document.getElementById('incidentNotes').value,
+                            progressNotes: ''
+                        };
+                        
+                        instances.unshift(newInstance); 
+                        if (playbook) {
+                            playbook.usageCount = (playbook.usageCount || 0) + 1;
+                        }
+                        
+                        renderInstances();
+                        renderPlaybooks(); 
+                        closeModal('createInstanceModal');
+                        
+                        activityLog.unshift({ 
+                            action: "Incident Created",
+                            details: `New incident "${newInstance.incidentTitle}" (Prio: ${newInstance.priority}) assigned to ${newInstance.assignedAnalyst}`,
+                            timestamp: new Date().toISOString()
+                        });
+                        
+                        e.target.reset();
+                        updateDashboard(); 
+                        saveDataToLocalStorage();
+                        renderAuditTrail();
+                        resolve();
+                    }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                }),
+                `Incident "${incidentTitle}" created successfully!`,
+                `Failed to create incident "${incidentTitle}".`
+            );
         });
 
         function editInstance(id) {
@@ -2238,69 +2320,85 @@
             const instance = instances.find(i => i.id === id);
             
             if (instance) {
-                const oldStatus = instance.status;
-                const oldAnalyst = instance.assignedAnalyst;
-                const oldPriority = instance.priority;
+                simulateBackendOperation(
+                    `Updating incident "${instance.incidentTitle}"...`,
+                    () => new Promise(resolve => {
+                        setTimeout(() => {
+                            const oldStatus = instance.status;
+                            const oldAnalyst = instance.assignedAnalyst;
+                            const oldPriority = instance.priority;
 
-                instance.status = document.getElementById('editStatus').value;
-                instance.assignedAnalyst = document.getElementById('editAssignedAnalyst').value;
-                instance.priority = document.getElementById('editPriority').value;
-                instance.affectedAssets = document.getElementById('editAffectedAssets').value;
-                instance.progressNotes = document.getElementById('progressNotes').value;
-                instance.updated = new Date().toISOString(); 
+                            instance.status = document.getElementById('editStatus').value;
+                            instance.assignedAnalyst = document.getElementById('editAssignedAnalyst').value;
+                            instance.priority = document.getElementById('editPriority').value;
+                            instance.affectedAssets = document.getElementById('editAffectedAssets').value;
+                            instance.progressNotes = document.getElementById('progressNotes').value;
+                            instance.updated = new Date().toISOString(); 
 
-                let details = `Incident "${instance.incidentTitle}" updated: `;
-                if (oldStatus !== instance.status) details += `Status: ${oldStatus} -> ${instance.status}. `;
-                if (oldAnalyst !== instance.assignedAnalyst) details += `Analyst: ${oldAnalyst} -> ${instance.assignedAnalyst}. `;
-                if (oldPriority !== instance.priority) details += `Priority: ${oldPriority} -> ${instance.priority}. `;
-                if (details === `Incident "${instance.incidentTitle}" updated: ` && instance.progressNotes.trim() !== (instances.find(i => i.id === id)?.progressNotes || '').trim()) {
-                     details += `Progress notes added.`; 
-                } else if (instance.progressNotes.trim() !== (instances.find(i => i.id === id)?.progressNotes || '').trim()) {
-                     details += `(Notes updated).`; 
-                }
+                            let details = `Incident "${instance.incidentTitle}" updated: `;
+                            if (oldStatus !== instance.status) details += `Status: ${oldStatus} -> ${instance.status}. `;
+                            if (oldAnalyst !== instance.assignedAnalyst) details += `Analyst: ${oldAnalyst} -> ${instance.assignedAnalyst}. `;
+                            if (oldPriority !== instance.priority) details += `Priority: ${oldPriority} -> ${instance.priority}. `;
+                            if (details === `Incident "${instance.incidentTitle}" updated: ` && instance.progressNotes.trim() !== (instances.find(i => i.id === id)?.progressNotes || '').trim()) {
+                                 details += `Progress notes added.`; 
+                            } else if (instance.progressNotes.trim() !== (instances.find(i => i.id === id)?.progressNotes || '').trim()) {
+                                 details += `(Notes updated).`; 
+                            }
 
 
-                if ((instance.status === 'resolved' || instance.status === 'closed') && !instance.resolvedAt) {
-                    instance.resolvedAt = new Date().toISOString(); 
-                    showToast(`Incident "${instance.incidentTitle}" ${instance.status}!`, 'success');
-                } else if (!(instance.status === 'resolved' || instance.status === 'closed') && instance.resolvedAt) {
-                    delete instance.resolvedAt; 
-                }
-                
-                renderInstances();
-                closeModal('editInstanceModal');
-                
-                activityLog.unshift({ 
-                    action: "Incident Updated",
-                    details: details,
-                    timestamp: new Date().toISOString()
-                });
-                updateDashboard(); 
-                showToast(`Incident "${instance.incidentTitle}" updated!`, 'success');
-                saveDataToLocalStorage();
-                renderAuditTrail();
+                            if ((instance.status === 'resolved' || instance.status === 'closed') && !instance.resolvedAt) {
+                                instance.resolvedAt = new Date().toISOString(); 
+                            } else if (!(instance.status === 'resolved' || instance.status === 'closed') && instance.resolvedAt) {
+                                delete instance.resolvedAt; 
+                            }
+                            
+                            renderInstances();
+                            closeModal('editInstanceModal');
+                            
+                            activityLog.unshift({ 
+                                action: "Incident Updated",
+                                details: details,
+                                timestamp: new Date().toISOString()
+                            });
+                            updateDashboard(); 
+                            saveDataToLocalStorage();
+                            renderAuditTrail();
+                            resolve();
+                        }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                    }),
+                    `Incident "${instance.incidentTitle}" updated!`,
+                    `Failed to update incident "${instance.incidentTitle}".`
+                );
             }
         });
 
         function deleteInstance(id) {
             showConfirmation('Are you sure you want to delete this incident instance? This action is irreversible and will remove all associated notes and history.', () => {
-                const instance = instances.find(i => i.id === id);
-                if (!instance) {
-                    showToast('Incident instance not found!', 'error');
-                    return;
-                }
-                instances = instances.filter(i => i.id !== id);
-                renderInstances();
-                
-                activityLog.unshift({ 
-                    action: "Incident Deleted",
-                    details: `Incident "${instance.incidentTitle}" (ID: ${instance.id}) was deleted`,
-                    timestamp: new Date().toISOString()
-                });
-                updateDashboard(); 
-                showToast(`Incident "${instance.incidentTitle}" deleted!`, 'success');
-                saveDataToLocalStorage();
-                renderAuditTrail();
+                simulateBackendOperation(
+                    'Deleting incident...',
+                    () => new Promise(resolve => {
+                        setTimeout(() => {
+                            const instance = instances.find(i => i.id === id);
+                            if (!instance) {
+                                throw new Error('Incident instance not found!');
+                            }
+                            instances = instances.filter(i => i.id !== id);
+                            renderInstances();
+                            
+                            activityLog.unshift({ 
+                                action: "Incident Deleted",
+                                details: `Incident "${instance.incidentTitle}" (ID: ${instance.id}) was deleted`,
+                                timestamp: new Date().toISOString()
+                            });
+                            updateDashboard(); 
+                            saveDataToLocalStorage();
+                            renderAuditTrail();
+                            resolve();
+                        }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                    }),
+                    'Incident deleted!',
+                    'Failed to delete incident.'
+                );
             });
         }
 
@@ -2334,7 +2432,7 @@
                     <h3>Playbook Applied</h3>
                     <p><strong>Title:</strong> ${instance.playbookTitle}</p>
                     <p><strong>Description:</strong> ${playbook ? playbook.description : 'N/A'}</p>
-                    <button class="btn btn-info btn-sm" onclick="showPlaybookDetails(${instance.playbookId})">
+                    <button class="btn btn-info btn-sm" onclick="simulateBackendOperation('Fetching playbook details...', () => showPlaybookDetails(${instance.playbookId}), 'Playbook details loaded.')">
                         <i class="fas fa-book-open"></i> View Full Playbook
                     </button>
                 </div>
@@ -2455,7 +2553,7 @@
 
         // --- PDF Export Functions (Using jsPDF and html2canvas) ---
         async function generatePdfFromHtml(elementId, filename) {
-            showLoading('Generating PDF...');
+            showLoading(`Preparing ${filename.replace('.pdf', '')} for export...`, 'Optimizing content for high-fidelity PDF rendering...');
             const element = document.getElementById(elementId);
             if (!element) {
                 hideLoading();
@@ -2543,39 +2641,60 @@
         }
 
         async function exportPlaybooks() {
-            const tempDiv = document.createElement('div');
-            tempDiv.id = 'tempPlaybookPdfContent';
-            tempDiv.innerHTML = generatePlaybookReportHtml(); 
-            
-            await generatePdfFromHtml('tempPlaybookPdfContent', 'SOC_Playbooks_Report.pdf');
-
-            activityLog.unshift({ action: "Report Generated", details: "Exported All Playbooks (PDF)", timestamp: new Date().toISOString() });
-            updateDashboard();
-            renderAuditTrail();
+            await simulateBackendOperation(
+                'Generating Playbooks Report PDF...',
+                async () => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.id = 'tempPlaybookPdfContent';
+                    tempDiv.innerHTML = generatePlaybookReportHtml(); 
+                    document.body.appendChild(tempDiv); // Temporarily add to body for html2canvas
+                    await generatePdfFromHtml('tempPlaybookPdfContent', 'SOC_Playbooks_Report.pdf');
+                    tempDiv.remove(); // Clean up
+                    activityLog.unshift({ action: "Report Generated", details: "Exported All Playbooks (PDF)", timestamp: new Date().toISOString() });
+                    updateDashboard();
+                    renderAuditTrail();
+                },
+                'Playbooks report generated successfully!',
+                'Failed to generate playbooks report.'
+            );
         }
 
         async function exportInstances() {
-            const tempDiv = document.createElement('div');
-            tempDiv.id = 'tempInstancePdfContent';
-            tempDiv.innerHTML = generateInstanceReportHtml(); 
-            
-            await generatePdfFromHtml('tempInstancePdfContent', 'SOC_Active_Incidents_Report.pdf');
-
-            activityLog.unshift({ action: "Report Generated", details: "Exported Active Incidents (PDF)", timestamp: new Date().toISOString() });
-            updateDashboard();
-            renderAuditTrail();
+            await simulateBackendOperation(
+                'Generating Active Incidents Report PDF...',
+                async () => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.id = 'tempInstancePdfContent';
+                    tempDiv.innerHTML = generateInstanceReportHtml(); 
+                    document.body.appendChild(tempDiv);
+                    await generatePdfFromHtml('tempInstancePdfContent', 'SOC_Active_Incidents_Report.pdf');
+                    tempDiv.remove();
+                    activityLog.unshift({ action: "Report Generated", details: "Exported Active Incidents (PDF)", timestamp: new Date().toISOString() });
+                    updateDashboard();
+                    renderAuditTrail();
+                },
+                'Active incidents report generated successfully!',
+                'Failed to generate active incidents report.'
+            );
         }
 
         async function exportSummaryReport() {
-            const tempDiv = document.createElement('div');
-            tempDiv.id = 'tempSummaryPdfContent';
-            tempDiv.innerHTML = generateSummaryReportHtml(); 
-            
-            await generatePdfFromHtml('tempSummaryPdfContent', 'SOC_Summary_Report.pdf');
-
-            activityLog.unshift({ action: "Report Generated", details: "Generated Summary Report (PDF)", timestamp: new Date().toISOString() });
-            updateDashboard();
-            renderAuditTrail();
+            await simulateBackendOperation(
+                'Generating Summary Report PDF...',
+                async () => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.id = 'tempSummaryPdfContent';
+                    tempDiv.innerHTML = generateSummaryReportHtml(); 
+                    document.body.appendChild(tempDiv);
+                    await generatePdfFromHtml('tempSummaryPdfContent', 'SOC_Summary_Report.pdf');
+                    tempDiv.remove();
+                    activityLog.unshift({ action: "Report Generated", details: "Generated Summary Report (PDF)", timestamp: new Date().toISOString() });
+                    updateDashboard();
+                    renderAuditTrail();
+                },
+                'Summary report generated successfully!',
+                'Failed to generate summary report.'
+            );
         }
 
         async function exportInstanceReport(id) {
@@ -2585,15 +2704,22 @@
                 return;
             }
 
-            const tempDiv = document.createElement('div');
-            tempDiv.id = 'tempSingleInstancePdfContent';
-            tempDiv.innerHTML = generateSingleInstanceReportHtml(instance);
-            
-            await generatePdfFromHtml('tempSingleInstancePdfContent', `Incident_${instance.id}_Report.pdf`);
-
-            activityLog.unshift({ action: "Report Generated", details: `Exported Report for Incident ${instance.id} - ${instance.incidentTitle}`, timestamp: new Date().toISOString() });
-            updateDashboard();
-            renderAuditTrail();
+            await simulateBackendOperation(
+                `Generating Incident Report for Incident ${instance.id}...`,
+                async () => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.id = 'tempSingleInstancePdfContent';
+                    tempDiv.innerHTML = generateSingleInstanceReportHtml(instance);
+                    document.body.appendChild(tempDiv);
+                    await generatePdfFromHtml('tempSingleInstancePdfContent', `Incident_${instance.id}_Report.pdf`);
+                    tempDiv.remove();
+                    activityLog.unshift({ action: "Report Generated", details: `Exported Report for Incident ${instance.id} - ${instance.incidentTitle}`, timestamp: new Date().toISOString() });
+                    updateDashboard();
+                    renderAuditTrail();
+                },
+                `Incident report for ${instance.incidentTitle} generated successfully!`,
+                `Failed to generate incident report for ${instance.incidentTitle}.`
+            );
         }
         
         // These functions generate the raw HTML content *specifically for PDF*,
@@ -2792,29 +2918,38 @@
 
         // --- Data Import/Export (JSON) ---
         function exportToJSON() {
-            const data = {
-                playbooks: playbooks,
-                instances: instances,
-                activityLog: activityLog,
-                exportDate: new Date().toISOString(),
-                version: "1.0.0" 
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `SOC_Backup_${new Date().toISOString().split('T')[0]}_${Date.now()}.json`; // Unique filename
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            simulateBackendOperation(
+                'Preparing data for export...',
+                () => new Promise(resolve => {
+                    setTimeout(() => {
+                        const data = {
+                            playbooks: playbooks,
+                            instances: instances,
+                            activityLog: activityLog,
+                            exportDate: new Date().toISOString(),
+                            version: "1.0.0" 
+                        };
+                        
+                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `SOC_Backup_${new Date().toISOString().split('T')[0]}_${Date.now()}.json`; // Unique filename
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
 
-            activityLog.unshift({ action: "Data Exported", details: "Application data exported to JSON", timestamp: new Date().toISOString() });
-            updateDashboard();
-            showToast("Data exported successfully! Check your downloads folder.", 'success');
-            saveDataToLocalStorage();
-            renderAuditTrail();
+                        activityLog.unshift({ action: "Data Exported", details: "Application data exported to JSON", timestamp: new Date().toISOString() });
+                        updateDashboard();
+                        saveDataToLocalStorage();
+                        renderAuditTrail();
+                        resolve();
+                    }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                }),
+                "Data exported successfully! Check your downloads folder.",
+                "Failed to export data."
+            );
         }
 
         function importFromJSON(event) {
@@ -2830,30 +2965,39 @@
                     const data = JSON.parse(e.target.result);
                     
                     showConfirmation('This will REPLACE all current data with the imported data. Are you sure you want to proceed? This cannot be undone!', () => {
-                        playbooks = data.playbooks || [];
-                        instances = data.instances || [];
-                        activityLog = data.activityLog || [];
+                        simulateBackendOperation(
+                            'Importing data...',
+                            () => new Promise(resolve => {
+                                setTimeout(() => {
+                                    playbooks = data.playbooks || [];
+                                    instances = data.instances || [];
+                                    activityLog = data.activityLog || [];
 
-                        // Re-sort activity log to ensure chronological order for display
-                        activityLog.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-                        
-                        updateDashboard();
-                        renderPlaybooks();
-                        renderInstances();
-                        updateInstancePlaybookOptions();
-                        
-                        activityLog.unshift({ action: "Data Imported", details: "Application data imported from JSON file", timestamp: new Date().toISOString() });
-                        updateDashboard();
-                        showToast('Data imported successfully!', 'success');
-                        saveDataToLocalStorage();
-                        renderAuditTrail();
+                                    // Re-sort activity log to ensure chronological order for display
+                                    activityLog.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                                    
+                                    updateDashboard();
+                                    renderPlaybooks();
+                                    renderInstances();
+                                    updateInstancePlaybookOptions();
+                                    
+                                    activityLog.unshift({ action: "Data Imported", details: "Application data imported from JSON file", timestamp: new Date().toISOString() });
+                                    updateDashboard();
+                                    saveDataToLocalStorage();
+                                    renderAuditTrail();
+                                    resolve();
+                                }, Math.random() * MAX_LOADING_TIME + MIN_LOADING_TIME);
+                            }),
+                            'Data imported successfully!',
+                            'Error importing file: Invalid JSON format or file corrupted. Please ensure it is a valid backup file.'
+                        );
                     }, () => {
                         showToast('Data import cancelled.', 'info');
                     });
 
                 } catch (error) {
                     console.error("Import error:", error);
-                    showToast('Error importing file: Invalid JSON format or file corrupted. Please ensure it is a valid backup file.', 'error');
+                    showToast('Error parsing file: Invalid JSON format. Please ensure it is a valid backup file.', 'error');
                 } finally {
                     event.target.value = ''; // Clear the file input
                 }
@@ -2885,15 +3029,6 @@
             });
         }
 
-        function showLoading(message = "Processing...") {
-            document.getElementById('loadingText').textContent = message;
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
-
         // --- Keyboard Shortcuts ---
         document.addEventListener('keydown', function(e) {
             // Prevent default browser shortcuts for common actions
@@ -2903,9 +3038,9 @@
                         e.preventDefault();
                         // Check which content section is active to open the correct modal
                         if (document.getElementById('playbooks').classList.contains('active')) {
-                            showCreatePlaybookModal();
+                            simulateBackendOperation('Opening playbook creation...', showCreatePlaybookModal);
                         } else if (document.getElementById('instances').classList.contains('active')) {
-                            showCreateInstanceModal();
+                            simulateBackendOperation('Initializing new incident...', showCreateInstanceModal);
                         }
                         break;
                     case 'd': // Dashboard
@@ -2969,7 +3104,7 @@
     </script>
     <footer class="app-footer">
         <p>&copy; 2025 Enterprise SOC Management. All Rights Reserved. | Version 1.0.0</p>
-        <p>Designed for professional Security Operations Centers.</p>
+        <p>Powered by Advanced Threat Intelligence Platform. Securely managed. Compliance ready.</p>
     </footer>
 </body>
 </html>
