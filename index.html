@@ -3082,13 +3082,14 @@
             background: var(--bg-card);
             border-radius: 16px;
             padding: 40px;
-            width: 100%; /* Ensure it takes full width of allowed space within padding */
+            width: 100%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             border: 1px solid var(--border-light);
             box-shadow: var(--shadow-lg);
             transition: background 0.3s ease, border-color 0.3s ease;
+            position: relative; /* ADD THIS LINE if it's not already there */
         }
 
         .form-group {
@@ -5227,10 +5228,345 @@
                 flex-shrink: 0; /* Prevent buttons from shrinking too much (optional, can remove if you want them to compress) */
             }
         }
+        /* --- New Case Studies Tab Styles --- */
+
+/* Main tab icon (using a new one) */
+.nav-tab[data-tab="case-studies"].active::before {
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* A vibrant purple for case studies */
+}
+
+/* Case Study Grid/List Styles (similar to tools but distinct) */
+.case-studies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Slightly smaller min-width for more cards */
+    gap: 20px;
+    width: 100%;
+}
+
+.case-studies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.case-study-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer; /* Indicates clickable */
+}
+
+.case-studies-list .case-study-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+}
+
+.case-study-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6c5ce7, #a29bfe); /* Purple gradient */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.case-study-card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow-lg);
+    border-color: #6c5ce7; /* Match hover border to new tab color */
+}
+
+.case-study-card:hover::before {
+    opacity: 1;
+}
+
+/* Status highlights for case studies (e.g., solved, ongoing) */
+.case-study-card.solved {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), transparent);
+}
+
+.case-study-card.ongoing {
+    border-color: var(--warning);
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
+}
+
+.case-study-card.starred {
+    border-color: var(--secondary);
+}
+
+.case-study-card.pinned {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
+}
+
+.case-study-card.selected {
+    border-color: var(--warning);
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
+}
+
+.case-study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.case-study-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.case-study-icon {
+    font-size: 20px;
+    color: var(--primary); /* Use primary for icon color */
+    flex-shrink: 0;
+}
+
+.case-study-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.case-study-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0; /* Prevent actions from shrinking */
+}
+
+/* Reusing existing action-btn styles */
+
+.case-study-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    max-height: 90px; /* Limit height for preview */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Show maximum 3 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
+.case-study-tags {
+    margin-top: 10px;
+}
+
+/* Reusing existing tag styles */
+
+/* Case Study Detail Modal Styles (similar to notes/editor) */
+#caseStudyDetailModal .modal-content {
+    max-width: 850px; /* Wider modal for detailed content */
+    padding: 30px;
+}
+
+#caseStudyDetailModal .case-study-detail-header {
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+}
+
+#caseStudyDetailModal .detail-title {
+    font-size: 2em;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Purple gradient for modal title */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+#caseStudyDetailModal .detail-meta {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#caseStudyDetailModal .detail-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#caseStudyDetailModal .detail-content {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-height: 50vh; /* Limit height for scrollable content */
+    overflow-y: auto;
+    color: var(--text-primary);
+    line-height: 1.7;
+}
+
+#caseStudyDetailModal .detail-content h3 {
+    font-size: 1.3em;
+    color: var(--primary); /* Primary blue for subheadings */
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed var(--border-light);
+    padding-bottom: 5px;
+}
+
+#caseStudyDetailModal .detail-content ul,
+#caseStudyDetailModal .detail-content ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+#caseStudyDetailModal .detail-content li {
+    margin-bottom: 5px;
+}
+
+#caseStudyDetailModal .detail-tags {
+    margin-top: 15px;
+    text-align: center; /* Center tags in detail view */
+}
+
+/* Responsive Adjustments for Case Studies */
+@media (max-width: 768px) {
+    .case-studies-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+        gap: 15px;
+    }
+
+    .case-studies-list .case-study-card {
+        padding: 10px 15px;
+    }
+
+    .case-study-title {
+        font-size: 1rem;
+        flex-direction: column; /* Stack icon and text vertically if needed */
+        align-items: flex-start;
+    }
+    .case-study-title .case-study-icon {
+        margin-bottom: 5px;
+    }
+
+    .case-study-meta {
+        font-size: 0.75rem;
+        flex-wrap: wrap; /* Allow meta items to wrap */
+        gap: 5px;
+    }
+
+    .case-study-description {
+        font-size: 13px;
+        max-height: 75px; /* Adjust preview height */
+        -webkit-line-clamp: 3;
+    }
+
+    #caseStudyDetailModal .modal-content {
+        padding: 20px;
+    }
+
+    #caseStudyDetailModal .detail-title {
+        font-size: 1.5em;
+    }
+
+    #caseStudyDetailModal .detail-meta {
+        font-size: 0.8em;
+        gap: 10px;
+    }
+
+    #caseStudyDetailModal .detail-content {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    #caseStudyDetailModal .detail-content h3 {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .case-study-card {
+        padding: 10px;
+    }
+    .case-study-title {
+        font-size: 0.9rem;
+    }
+    .case-study-meta {
+        font-size: 0.7rem;
+    }
+    .case-study-actions {
+        gap: 3px;
+    }
+    .action-btn {
+        padding: 4px;
+        font-size: 0.8rem;
+    }
+}
+
+/* --- New Close Modal Button Styles --- */
+.close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--bg-tertiary); /* Give it a distinct background */
+    border: 1px solid var(--border); /* Add a subtle border */
+    border-radius: 50%; /* Make it round */
+    width: 32px; /* Fixed width */
+    height: 32px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px; /* Larger 'x' */
+    color: var(--text-primary); /* Ensure contrast with primary text color */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10; /* Ensure it's above other content in the modal */
+    box-shadow: var(--shadow-light); /* Subtle shadow */
+}
+
+.close-modal-btn:hover {
+    background: var(--danger); /* Red background on hover for "close" action */
+    color: white; /* White 'x' on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    border-color: var(--danger);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
+}
+
+/* --- Existing CSS Updates (Insert these into your current CSS) --- */
+
+/* Add new icon to available icons list in custom-tabs section (for icon picker) */
+/* (This is a conceptual update; you need to manually add it to your `availableIcons` JS array) */
+/* Example: `fas fa-microscope` */
     </style>
 </head>
     <body>
-        <header>
+<header>
             <div class="header-content">
                 <div class="logo-and-title-container">
                     <div class="header-logo">
@@ -5373,6 +5709,10 @@
                     <button class="nav-tab" data-tab="timeline">
                         <i class="fas fa-stream"></i> 
                         TraceLink
+                    </button>
+                    <button class="nav-tab" data-tab="case-studies">
+                        <i class="fas fa-microscope"></i>
+                        Case Studies
                     </button>
                     <button class="nav-tab" data-tab="threats">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -6086,6 +6426,43 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="tab-content" id="case-studiesTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Cyber Investigation Case Studies</h2>
+                        <div class="controls">
+                            <input type="text" id="caseStudySearchInput" class="search-input" placeholder="Search case studies..." style="max-width: 300px; margin-right: 10px;">
+                            <select id="caseStudyFilterSelect" class="form-group-input" style="max-width: 150px; margin-right: 10px;">
+                                <option value="">All Types</option>
+                                <option value="ransomware">Ransomware</option>
+                                <option value="phishing">Phishing</option>
+                                <option value="insider-threat">Insider Threat</option>
+                                <option value="data-breach">Data Breach</option>
+                                <option value="apt">APT Activity</option>
+                                <option value="ddos">DDoS Attack</option>
+                                <option value="malware">Malware Analysis</option>
+                                <option value="fraud">Fraud</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <button class="btn btn-primary" id="addCaseStudyBtn">
+                                <i class="fas fa-plus-circle"></i> Add Case Study
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="case-studies-grid" id="caseStudiesGrid">
+                        </div>
+
+                    <div class="empty-state" id="emptyCaseStudiesState" style="display: none;">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No Case Studies Found</h3>
+                        <p>No cyber investigation case studies match your current criteria.</p>
+                        <button class="btn btn-primary" id="addCaseStudyEmptyStateBtn">
+                            <i class="fas fa-plus"></i> Add First Case Study
+                        </button>
+                    </div>
+                </div>
+
 
                 <div class="modal" id="addEventModal">
                     <div class="modal-content">
@@ -8853,6 +9230,153 @@
         </div>
     </div>
 
+    <div class="modal" id="caseStudyDetailModal">
+        <div class="modal-content">
+            <button type="button" class="close-modal-btn" onclick="hideModal('caseStudyDetailModal')">&times;</button>
+            
+            <div class="case-study-detail-header">
+                <h3 class="detail-title" id="detailCaseStudyTitle"></h3>
+                <div class="detail-meta">
+                    <span><i class="fas fa-tags"></i> Type: <span id="detailCaseStudyType"></span></span>
+                    <span><i class="fas fa-calendar-alt"></i> Date: <span id="detailCaseStudyDate"></span></span>
+                    <span><i class="fas fa-user-secret"></i> Actor: <span id="detailCaseStudyActor"></span></span>
+                    <span><i class="fas fa-level-up-alt"></i> Difficulty: <span id="detailCaseStudyDifficulty"></span></span>
+                </div>
+            </div>
+            <div class="detail-content">
+                <h3>Overview</h3>
+                <p id="detailCaseStudySummary"></p>
+
+                <h3>Attack Chain</h3>
+                <div id="detailCaseStudyAttackChain"></div>
+
+                <h3>OSINT Techniques Used</h3>
+                <ul id="detailCaseStudyTechniques"></ul>
+
+                <h3>Key Tools Involved</h3>
+                <ul id="detailCaseStudyTools"></ul>
+
+                <h3>Lessons Learned</h3>
+                <div id="detailCaseStudyLessons"></div>
+            </div>
+            <div class="detail-tags" id="detailCaseStudyTags"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="addEditCaseStudyModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-plus-circle"></i> <span id="addEditCaseStudyModalTitle">Add New Case Study</span></h3>
+            <form id="addEditCaseStudyForm">
+                <input type="hidden" id="caseStudyId">
+                <div class="form-group">
+                    <label for="caseStudyTitle">Title</label>
+                    <input type="text" id="caseStudyTitle" required placeholder="e.g., SolarWinds Supply Chain Attack">
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyIncidentType">Incident Type</label>
+                    <select id="caseStudyIncidentType" required>
+                        <option value="">Select Type</option>
+                        <option value="ransomware">Ransomware</option>
+                        <option value="phishing">Phishing</option>
+                        <option value="insider-threat">Insider Threat</option>
+                        <option value="data-breach">Data Breach</option>
+                        <option value="apt">APT Activity</option>
+                        <option value="ddos">DDoS Attack</option>
+                        <option value="malware">Malware Analysis</option>
+                        <option value="fraud">Fraud</option>
+                        <option value="other">Other</option>
+                        <option value="custom">Custom Type</option>
+                    </select>
+                    <input type="text" id="newCaseStudyTypeInput" placeholder="Or enter new type" style="margin-top: 10px; display: none;">
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyDateRange">Date (e.g., 2023-01-01 to 2023-01-31)</label>
+                    <input type="text" id="caseStudyDateRange" placeholder="e.g., 2023-01-01 to 2023-01-31" required>
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyActor">Threat Actor (Optional)</label>
+                    <input type="text" id="caseStudyActor" placeholder="e.g., APT28, UNC2452">
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyDifficulty">Difficulty</label>
+                    <select id="caseStudyDifficulty" required>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="caseStudySummary">Summary</label>
+                    <textarea id="caseStudySummary" rows="3" placeholder="Brief overview of the case study."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyAttackChain">Attack Chain (Rich Text)</label>
+                    <div class="formatting-toolbar">
+                        <button type="button" class="formatting-btn" data-command="bold" title="Bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="italic" title="Italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="underline" title="Underline">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="insertUnorderedList" title="Bullet List">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="insertOrderedList" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="createLink" title="Insert Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                    <div id="caseStudyAttackChain" class="note-content-editor" contenteditable="true" style="min-height: 150px;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyOsintTechniques">OSINT Techniques Used (comma separated)</label>
+                    <input type="text" id="caseStudyOsintTechniques" placeholder="e.g., DNS Recon, Social Media Analysis">
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyToolsUsed">Key Tools Involved (comma separated)</label>
+                    <input type="text" id="caseStudyToolsUsed" placeholder="e.g., Wireshark, Maltego, VirusTotal">
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyLessons">Lessons Learned (Rich Text)</label>
+                     <div class="formatting-toolbar">
+                        <button type="button" class="formatting-btn" data-command="bold" title="Bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="italic" title="Italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="underline" title="Underline">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="insertUnorderedList" title="Bullet List">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="insertOrderedList" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button type="button" class="formatting-btn" data-command="createLink" title="Insert Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                    <div id="caseStudyLessons" class="note-content-editor" contenteditable="true" style="min-height: 150px;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="caseStudyTags">Tags (comma separated)</label>
+                    <input type="text" id="caseStudyTags" placeholder="e.g., cybercrime, forensics, darkweb">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelCaseStudyAddEdit">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveCaseStudyBtn">Save Case Study</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         let appState = {
@@ -8866,42 +9390,47 @@
             passwords: [],
             keywords: [],
             socials: [],
-            domains: [], // Added
-            usernames: [], // Added
-            threats: [], // Added
-            vulnerabilities: [], // Added
-            malware: [], // Added
-            breaches: [], // Added
-            credentials: [], // Added
-            forums: [], // Added
-            vendors: [], // Added
-            telegramChannels: [], // Renamed for consistency
-            pastes: [], // Added
-            documents: [], // Added
-            networks: [], // Added
-            metadataEntries: [], // Renamed to avoid conflict with generic 'metadata' property on entries
-            archives: [], // Added
-            messagingApps: [], // Renamed for consistency
-            datingProfiles: [], // Renamed for consistency
-            audioEntries: [], // Added (assuming you store audio files here)
-            facialRecognition: [], // Renamed for consistency
-            personas: [], // Renamed for consistency
-            vpns: [], // Renamed for consistency
-            honeypots: [], // Added
-            exploits: [], // Added
-            publicRecords: [], // Added
+            domains: [],
+            usernames: [],
+            threats: [],
+            vulnerabilities: [],
+            malware: [],
+            breaches: [],
+            credentials: [],
+            forums: [],
+            vendors: [],
+            telegramChannels: [],
+            pastes: [],
+            documents: [],
+            networks: [],
+            metadataEntries: [],
+            archives: [],
+            messagingApps: [],
+            datingProfiles: [],
+            audioEntries: [],
+            facialRecognition: [],
+            personas: [],
+            vpns: [],
+            honeypots: [],
+            exploits: [],
+            publicRecords: [],
+            caseStudies: [], // Explicitly define as an empty array here
             selectedEntries: new Set(),
             currentTab: 'dashboard',
-            currentIntelligenceVaultParentTab: 'generalAndCore', // Ensure this is a valid default ID from intelligenceVaultTabStructure
-            currentIntelligenceVaultChildTab: 'tools', // Ensure this is a valid default ID from intelligenceVaultTabStructure
-            currentCustomVaultEntrySubTab: 'tool', // Changed to singular 'tool' for custom vault entry types
-            currentCustomVaultParentTab: 'coreInvestigation', // Updated to singular if that's the ID
+            currentIntelligenceVaultParentTab: 'generalAndCore',
+            currentIntelligenceVaultChildTab: 'tools',
+            currentCustomVaultEntrySubTab: 'tool',
+            currentCustomVaultParentTab: 'coreInvestigation',
             customTabs: [],
             filters: {
                 category: '',
                 search: '',
                 sort: 'name',
                 searchScope: 'currentTab'
+            },
+            caseStudyFilters: { // Filters specific to case studies
+                search: '',
+                type: ''
             },
             theme: localStorage.getItem('theme') || 'dark',
             viewMode: localStorage.getItem('viewMode') || 'grid',
@@ -8920,13 +9449,153 @@
             ],
             timeline: {
                 events: [],
-                currentTimelineId: null, // For multiple timelines later
-                timelines: [], // For multiple timelines later
+                currentTimelineId: null,
+                timelines: [],
             },
             readOnlyMode: false,
             sharedTabId: null,
             sharedEntryIds: []
         };
+        // --- End of appState definition ---
+
+        // Define sampleCaseStudies array here, before any function that might try to use it.
+        const sampleCaseStudies = [{
+            id: 'cs-solarwinds-001',
+            title: 'SolarWinds Supply Chain Attack (SUNBURST)',
+            incidentType: 'apt',
+            dateRange: '2020 Q1 - 2021 Q2',
+            summary: 'A sophisticated supply chain attack impacting SolarWinds Orion platform, allowing attackers to compromise thousands of organizations worldwide, including government agencies and Fortune 500 companies.',
+            attackChain: `
+                <h3>Phase 1: Initial Compromise & Supply Chain Injection</h3>
+                <p>Attackers injected malicious code (SUNBURST backdoor) into SolarWinds Orion software updates. This was a highly stealthy operation, blending the malicious code with legitimate updates.</p>
+                <ul>
+                    <li><strong>Method:</strong> Supply Chain Attack</li>
+                    <li><strong>Initial Vector:</strong> Compromised SolarWinds build environment</li>
+                </ul>
+                <h3>Phase 2: Distribution & Foothold</h3>
+                <p>Victim organizations downloaded the trojanized Orion updates, which established a backdoor. The malware remained dormant for up to two weeks before activating.</p>
+                <ul>
+                    <li><strong>Delivery:</strong> Legitimate software update</li>
+                    <li><strong>Persistence:</strong> Implanted backdoor within Orion software</li>
+                </ul>
+                <h3>Phase 3: Lateral Movement & Data Exfiltration</h3>
+                <p>Once active, SUNBURST allowed attackers to escalate privileges, move laterally within victim networks, and steal sensitive data, including emails and intellectual property. Attackers often used compromised credentials to access cloud environments like Microsoft 365.</p>
+                <ul>
+                    <li><strong>Techniques:</strong> Credential theft, Golden SAML, Lateral Movement, Cloud environment compromise</li>
+                    <li><strong>Impact:</strong> Data exfiltration, espionage</li>
+                </ul>
+            `,
+            osintTechniquesUsed: ['DNS Recon', 'WHOIS Lookup', 'Public Records', 'Threat Intelligence Platform Analysis', 'Domain Squatting Checks'],
+            toolsUsed: ['VirusTotal', 'Shodan', 'Passive DNS tools', 'Public record databases', 'Threat intelligence platforms'],
+            lessonsLearned: `
+                <p>This case study highlights the severe risks of supply chain attacks and the importance of robust security practices across the entire software development lifecycle.</p>
+                <ul>
+                    <li><strong>Supply Chain Security:</strong> Implement strict vetting and continuous monitoring of third-party software and vendors.</li>
+                    <li><strong>Zero Trust Architecture:</strong> Adopt a zero-trust model where no entity is inherently trusted, regardless of its location.</li>
+                    <li><strong>MFA & Endpoint Detection:</strong> Enforce multi-factor authentication everywhere and deploy advanced endpoint detection and response (EDR) solutions.</li>
+                    <li><strong>Threat Hunting:</strong> Actively hunt for anomalous behavior, even when traditional security alerts are quiet.</li>
+                    <li><strong>Log Analysis:</strong> Centralize and analyze logs from all systems, including cloud services, for suspicious activity.</li>
+                </ul>
+            `,
+            threatActor: 'APT29 (UNC2452 / Nobelium)',
+            difficulty: 'advanced',
+            tags: ['apt', 'supply-chain', 'espionage', 'government', 'microsoft', 'orion'],
+            starred: true,
+            pinned: false,
+            addedDate: new Date('2021-03-10T09:00:00Z')
+        }, {
+            id: 'cs-phishing-xyz-002',
+            title: 'Phishing Attack on Healthcare Provider',
+            incidentType: 'phishing',
+            dateRange: '2024-05-15',
+            summary: 'A targeted phishing campaign delivered ransomware disguised as urgent medical invoices, impacting a small regional healthcare provider and encrypting patient records.',
+            attackChain: `
+                <h3>Phase 1: Spear Phishing</h3>
+                <p>Attackers crafted highly personalized emails targeting administrative staff, using publicly available information about the healthcare provider.</p>
+                <ul>
+                    <li><strong>Method:</strong> Spear Phishing</li>
+                    <li><strong>Lure:</strong> Fake medical invoice attached</li>
+                </ul>
+                <h3>Phase 2: Malware Delivery & Execution</h3>
+                <p>An attached malicious PDF (containing embedded malware) was opened by an unsuspecting employee. The malware then executed, initiating the ransomware payload.</p>
+                <ul>
+                    <li><strong>Payload:</strong> Ransomware variant (e.g., Conti, LockBit)</li>
+                    <li><strong>Execution:</strong> Malicious document macro/exploit</li>
+                </ul>
+                <h3>Phase 3: Encryption & Extortion</h3>
+                <p>The ransomware rapidly encrypted critical patient databases and internal network shares. Attackers demanded a cryptocurrency payment for decryption keys.</p>
+                <ul>
+                    <li><strong>Impact:</strong> Data encryption, operational disruption, extortion</li>
+                </ul>
+            `,
+            osintTechniquesUsed: ['Email Header Analysis', 'Domain Reputation Checks', 'Social Media Scanning (for employee info)', 'Public Records (for business contacts)'],
+            toolsUsed: ['MXToolbox', 'VirusTotal', 'Have I Been Pwned', 'URLVoid', 'Email security gateways'],
+            lessonsLearned: `
+                <p>This case highlights the ongoing threat of phishing, especially against vulnerable sectors like healthcare.</p>
+                <ul>
+                    <li><strong>Employee Training:</strong> Regular and effective cybersecurity awareness training for all staff.</li>
+                    <li><strong>Email Filtering:</strong> Implement robust email security solutions with advanced threat detection.</li>
+                    <li><strong>Backup Strategy:</strong> Maintain frequent, offline, and immutable backups of critical data.</li>
+                    <li><strong>Incident Response Plan:</strong> Have a well-tested incident response plan specifically for ransomware attacks.</li>
+                    <li><strong>Network Segmentation:</strong> Segment networks to limit lateral movement in case of a breach.</li>
+                </ul>
+            `,
+            threatActor: 'Unattributed Cybercriminal Group',
+            difficulty: 'intermediate',
+            tags: ['ransomware', 'healthcare', 'phishing', 'cybercrime', 'data-encryption'],
+            starred: false,
+            pinned: true,
+            addedDate: new Date('2024-05-20T14:30:00Z')
+        }, {
+            id: 'cs-insider-003',
+            title: 'Insider Threat: Data Exfiltration by Disgruntled Employee',
+            incidentType: 'insider-threat',
+            dateRange: '2023-11-01 to 2024-01-20',
+            summary: 'A disgruntled former employee exfiltrated sensitive customer data before leaving the company, using unauthorized cloud storage services.',
+            attackChain: `
+                <h3>Phase 1: Unauthorized Access & Data Collection</h3>
+                <p>The employee, while still employed, accessed internal databases beyond their normal job function, collecting customer records.</p>
+                <ul>
+                    <li><strong>Method:</strong> Privilege Abuse</li>
+                    <li><strong>Source:</strong> Internal Database, CRM system</li>
+                </ul>
+                <h3>Phase 2: Data Staging & Obfuscation</h3>
+                <p>Data was copied to local machine, compressed, and sometimes renamed to evade detection before being uploaded to personal cloud accounts.</p>
+                <ul>
+                    <li><strong>Techniques:</strong> Data compression, renaming files</li>
+                    <li><strong>Tools:</strong> WinRAR, standard OS tools</li>
+                </ul>
+                <h3>Phase 3: Exfiltration</h3>
+                <p>Sensitive data was uploaded to a personal cloud storage service (e.g., Dropbox, Google Drive) over several weeks, often outside business hours.</p>
+                <ul>
+                    <li><strong>Vector:</strong> Cloud storage (e.g., Dropbox, Google Drive)</li>
+                    <li><strong>Timing:</b> Off-hours activity</li>
+                </ul>
+                <h3>Phase 4: Post-Termination Access Attempt</h3>
+                <p>Attempts to access internal systems were detected from the former employee's home IP address post-termination, triggering alarms and leading to forensic investigation.</p>
+                <ul>
+                    <li><strong>Detection:</strong> Failed login attempts, IP monitoring</li>
+                </ul>
+            `,
+            osintTechniquesUsed: ['Employee Social Media Monitoring (public info)', 'Email Address Recon (for personal accounts)', 'IP Geolocation', 'Domain/Cloud Provider WHOIS'],
+            toolsUsed: ['OSINT Tools for social media search', 'IP lookup tools', 'Cloud service provider terms of service analysis'],
+            lessonsLearned: `
+                <p>Insider threats are difficult to detect but often leave digital breadcrumbs.</p>
+                <ul>
+                    <li><strong>DLP (Data Loss Prevention):</strong> Implement and configure DLP solutions to monitor and block unauthorized data transfers to cloud services.</li>
+                    <li><strong>UBA (User Behavior Analytics):</b> Deploy UBA tools to detect anomalous user behavior (e.g., accessing unusual files, large data transfers).</li>
+                    <li><strong>Strict Access Controls:</strong> Implement least privilege and role-based access control, regularly reviewing permissions.</li>
+                    <li><strong>Offboarding Procedures:</strong> Ensure immediate revocation of all access upon employee termination.</li>
+                    <li><strong>Log Monitoring:</strong> Continuously monitor and alert on unusual login patterns or access attempts from former employees.</li>
+                </ul>
+            `,
+            threatActor: 'Disgruntled Employee (Internal)',
+            difficulty: 'intermediate',
+            tags: ['insider-threat', 'data-exfiltration', 'cloud-security', 'privilege-abuse', 'forensics'],
+            starred: true,
+            pinned: true,
+            addedDate: new Date('2024-02-01T10:00:00Z')
+        }];
 
         const timelineCategories = {
             "phishing": { name: "Phishing", icon: "fas fa-fish", color: "#e74c3c" },
@@ -8957,7 +9626,8 @@
             'fas fa-mobile-alt', 'fas fa-server', 'fas fa-database', 'fas fa-code',
             'fas fa-chart-line', 'fas fa-user-secret', 'fas fa-lightbulb', 'fas fa-laptop-code',
             'fas fa-phone', 'fas fa-money-bill-wave', 'fas fa-video', 'fas fa-paste', 'fas fa-location-arrow',
-            'fas fa-font' // For keywords
+            'fas fa-font',
+            'fas fa-microscope' // NEW: Added microscope for case studies
         ];
 
         const availableColors = [
@@ -9388,7 +10058,6 @@
             notes: [],
             currentNote: null,
             editMode: false,
-            // NEW: Add sort filter for notes
             noteSortFilter: localStorage.getItem('noteSortFilter') || 'updated_desc'
         };
 
@@ -9467,8 +10136,8 @@
                     <div class="code-block">
                     <pre><code>/* Validate a phone number pattern */
         const validatePhone = (phone) => {
-        const regex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
-        return regex.test(phone);
+            const regex = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/;
+            return regex.test(phone);
         }</code></pre>
                     <button class="copy-btn" data-clipboard-target="#phone-validate-code"><i class="fas fa-copy"></i></button>
                     </div>
@@ -9692,10 +10361,9 @@
         ]
         };
 
-        // Initialize Application
         function initApp() {
-            loadDorkAssistantState(); // Load dork assistant state first
-            loadState(); // This loads all other appState data, including timeline
+            // loadDorkAssistantState(); // This is now called by the wrapper function for initApp
+            loadState(); // This loads all other appState data, including timeline and case studies.
             parseShareableLink();
             updateStats();
             bindEvents();
@@ -9703,16 +10371,16 @@
 
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'timeline', 'threats', 'handbook', 'dork-assistant']; // 'timeline' is back
-                if (!validTabs.includes(appState.currentTab)) {
-                    appState.currentTab = 'dashboard';
-                }
+            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'timeline', 'threats', 'handbook', 'dork-assistant', 'case-studies'];
+            if (!validTabs.includes(appState.currentTab)) {
+                appState.currentTab = 'dashboard';
+            }
 
-            switchTab(appState.currentTab); // This will call renderIntelligenceEntries and other tab-specific renders
+            switchTab(appState.currentTab); // This will call renderIntelligenceEntries, renderTimelineEvents, renderCaseStudies, etc.
 
             showRandomDiscovery();
             populateCategoryFilter();
-            updateDashboard();
+            updateDashboard(); // Calls all dashboard rendering functions, including charts
             applyReadOnlyMode();
 
             const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle');
@@ -9726,9 +10394,9 @@
                 }
             });
         }
+        // --- End of initApp (full code block) ---
 
 
-        // Switch main tabs
         function switchTab(tabName) {
             // Update main tab buttons
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -9742,10 +10410,21 @@
             // Update tab content visibility
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
+                // Hide specific sub-tab containers when switching main tabs
+                if (content.id === 'intelligence-vaultTab') {
+                    document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
+                    document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
+                    document.getElementById('addToolBtnIntelligenceVault').style.display = 'none';
+                } else if (content.id === 'custom-tabsTab') {
+                    document.getElementById('customVaultEntryParentTabs').style.display = 'none';
+                    document.getElementById('customVaultEntryChildTabs').style.display = 'none';
+                    document.getElementById('addEntryBtnCustomVault').style.display = 'none';
+                }
             });
+
             const targetTabContent = document.getElementById(`${tabName}Tab`);
             if (targetTabContent) {
-                 targetTabContent.classList.add('active');
+                targetTabContent.classList.add('active');
             }
 
             // Update appState and clear filters for new tab
@@ -9755,70 +10434,92 @@
             appState.filters.search = '';
             document.getElementById('searchInput').value = '';
 
-            // Hide all potential sub-tab containers and add entry buttons by default
-            document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
-            document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
-            document.getElementById('customVaultEntryParentTabs').style.display = 'none';
-            document.getElementById('customVaultEntryChildTabs').style.display = 'none';
-            document.getElementById('addEntryBtnCustomVault').style.display = 'none';
-            document.getElementById('addToolBtnIntelligenceVault').style.display = 'none'; // Ensure this is handled too
-
             // Specific logic for each main tab
             if (tabName === 'intelligence-vault') {
                 document.getElementById('intelligenceVaultParentTabs').style.display = 'flex'; // Show parent tabs
-                renderIntelligenceVaultParentTabs(); // Render intelligence vault parent tabs
+                renderIntelligenceVaultParentTabs(); // This will populate parent tabs and activate current one
 
-                // Ensure a valid parent is selected, default if current one is invalid
                 const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
                 if (!currentIntelParent) {
                     appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
                 }
-                // Now, switch to the determined parent and then its child
                 switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
 
-                // Show the "Add New Tool" button
                 if (!appState.readOnlyMode) {
                     document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
                 }
+                renderIntelligenceEntries(); // Render entries specific to intelligence-vault
 
             } else if (tabName === 'custom-tabs') {
                 renderCustomTabs(); // Render main custom tabs (the list of custom vaults)
 
-                // Only proceed to render/switch parent/child entry tabs if custom vaults exist
                 if (appState.customTabs.length > 0) {
                     document.getElementById('customVaultEntryParentTabs').style.display = 'flex'; // Show parent tabs for entries
                     renderCustomVaultParentTabs(); // Render custom vault entry parent tabs
 
-                    // Ensure a valid parent is selected, default if current one is invalid
                     const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
                     if (!currentCustomParent) {
                         appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
                     }
-                    // Ensure a valid child is selected under the current parent, default if invalid
                     const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
                     if (!currentCustomChild) {
                         appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
                     }
-                    // Now, switch to the determined parent and then its child
                     switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
 
-                    // Show the "Add New Entry" button for custom vaults
                     if (!appState.readOnlyMode) {
                         document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
                     }
                 }
+                renderIntelligenceEntries(); // Render entries specific to custom-tabs
 
-            } else if (tabName === 'analytics') {
-                updateDashboard();
+            } else if (tabName === 'timeline') {
+                renderTimelineEvents();
             } else if (tabName === 'threats') {
                 loadThreats();
             } else if (tabName === 'handbook') {
-                initHandbookAndNotes(); // Ensure handbook and notes are initialized
+                initHandbookAndNotes();
+            } else if (tabName === 'dork-assistant') {
+                initDorkAssistant();
+            } else if (tabName === 'case-studies') { // NEW: Handle Case Studies tab
+                renderCaseStudies();
+                // Reset filters for case studies specifically when entering the tab
+                appState.caseStudyFilters.search = '';
+                appState.caseStudyFilters.type = '';
+                document.getElementById('caseStudySearchInput').value = '';
+                document.getElementById('caseStudyFilterSelect').value = '';
             }
 
-            renderIntelligenceEntries(); // Always re-render entries relevant to the currently active main tab
             saveState(); // Save state after tab switch
         }
+
+        // --- Start of loadCaseStudiesData (utility function) ---
+        // This function should be called within loadState to handle persistence
+        function loadCaseStudiesData() {
+            const savedCaseStudies = localStorage.getItem('osintCaseStudies');
+            if (savedCaseStudies) {
+                try {
+                    const parsed = JSON.parse(savedCaseStudies);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(cs => ({
+                            ...cs,
+                            addedDate: cs.addedDate ? new Date(cs.addedDate) : null,
+                            starred: typeof cs.starred === 'undefined' ? false : cs.starred,
+                            pinned: typeof cs.pinned === 'undefined' ? false : cs.pinned
+                        }));
+                    }
+                } catch (e) {
+                    console.error("Error parsing saved case studies, loading sample data:", e);
+                }
+            }
+            // If no saved data, or parsing failed, return sample data
+            return sampleCaseStudies.map(cs => ({
+                ...cs,
+                addedDate: new Date(cs.addedDate) // Ensure sample dates are Date objects
+            }));
+        }
+        // --- End of loadCaseStudiesData ---
+
 
         // NEW: Render Intelligence Vault Parent Tabs
         function renderIntelligenceVaultParentTabs() {
@@ -9935,14 +10636,52 @@
             saveState(); // Save the child tab state
         }
 
-function loadState() {
+        // --- Start of loadState (full code block) ---
+        function loadState() {
             const savedState = localStorage.getItem('osintArsenalState');
             if (savedState) {
                 const parsedState = JSON.parse(savedState);
 
-                // Re-hydrate Date objects and ensure default values for all existing types
+                // Explicitly initialize all array properties with empty arrays first,
+                // so they are never undefined, even if not present in older savedState.
+                appState.tools = [];
+                appState.emails = [];
+                appState.phones = [];
+                appState.crypto = [];
+                appState.locations = [];
+                appState.links = [];
+                appState.media = [];
+                appState.passwords = [];
+                appState.keywords = [];
+                appState.socials = [];
+                appState.domains = [];
+                appState.usernames = [];
+                appState.threats = [];
+                appState.vulnerabilities = [];
+                appState.malware = [];
+                appState.breaches = [];
+                appState.credentials = [];
+                appState.forums = [];
+                appState.vendors = [];
+                appState.telegramChannels = [];
+                appState.pastes = [];
+                appState.documents = [];
+                appState.networks = [];
+                appState.metadataEntries = [];
+                appState.archives = [];
+                appState.messagingApps = [];
+                appState.datingProfiles = [];
+                appState.audioEntries = [];
+                appState.facialRecognition = [];
+                appState.personas = [];
+                appState.vpns = [];
+                appState.honeypots = [];
+                appState.exploits = [];
+                appState.publicRecords = [];
+                appState.caseStudies = []; // Ensure initialized as empty array
 
-                // Tools
+
+                // Now, populate from parsedState, safely falling back to empty arrays if null/undefined
                 appState.tools = (parsedState.tools || []).map(entry => ({
                     ...entry,
                     addedDate: entry.addedDate ? new Date(entry.addedDate) : null,
@@ -9952,144 +10691,111 @@ function loadState() {
                     origin: entry.origin || 'user-added'
                 }));
 
-                // Emails
                 appState.emails = (parsedState.emails || []).map(entry => ({
                     ...entry,
                     linkedPlatforms: entry.linkedPlatforms || []
                 }));
 
-                // Phones
                 appState.phones = parsedState.phones || [];
 
-                // Crypto
                 appState.crypto = (parsedState.crypto || []).map(entry => ({
                     ...entry,
                     amount: parseFloat(entry.amount) || 0
                 }));
 
-                // Locations
                 appState.locations = parsedState.locations || [];
 
-                // Links
                 appState.links = parsedState.links || [];
 
-                // Media
                 appState.media = (parsedState.media || []).map(entry => ({
                     ...entry,
                     base64Data: entry.base64Data || ''
                 }));
 
-                // Passwords
                 appState.passwords = parsedState.passwords || [];
 
-                // Keywords
                 appState.keywords = parsedState.keywords || [];
 
-                // Socials
                 appState.socials = parsedState.socials || [];
 
-                // Domains
                 appState.domains = parsedState.domains || [];
 
-                // Usernames
                 appState.usernames = parsedState.usernames || [];
 
-                // Threats
                 appState.threats = parsedState.threats || [];
 
-                // Vulnerabilities
                 appState.vulnerabilities = (parsedState.vulnerabilities || []).map(entry => ({
                     ...entry,
                     cvss: parseFloat(entry.cvss) || 0
                 }));
 
-                // Malware
                 appState.malware = parsedState.malware || [];
 
-                // Breaches
                 appState.breaches = (parsedState.breaches || []).map(entry => ({
                     ...entry,
                     records: parseInt(entry.records) || 0
                 }));
 
-                // Credentials
                 appState.credentials = parsedState.credentials || [];
 
-                // Forums
                 appState.forums = parsedState.forums || [];
 
-                // Vendors
                 appState.vendors = parsedState.vendors || [];
 
-                // Telegram Channels
                 appState.telegramChannels = (parsedState.telegramChannels || []).map(entry => ({
                     ...entry,
                     subscribers: parseInt(entry.subscribers) || 0
                 }));
 
-                // Pastes
                 appState.pastes = parsedState.pastes || [];
 
-                // Documents
                 appState.documents = parsedState.documents || [];
 
-                // Networks
                 appState.networks = parsedState.networks || [];
 
-                // Metadata Entries
                 appState.metadataEntries = parsedState.metadataEntries || [];
 
-                // Archives
                 appState.archives = (parsedState.archives || []).map(entry => ({
                     ...entry,
                     timestamp: entry.timestamp ? new Date(entry.timestamp).getTime() : null
                 }));
 
-                // Messaging Apps
-                appState.messagingApps = parsedState.messagingApps || [];
+                appState.messagingApps = (parsedState.messagingApps || []);
 
-                // Dating Profiles
                 appState.datingProfiles = (parsedState.datingProfiles || []).map(entry => ({
                     ...entry,
                     age: parseInt(entry.age) || null
                 }));
 
-                // Audio Entries
                 appState.audioEntries = (parsedState.audioEntries || []).map(entry => ({
                     ...entry,
                     base64Data: entry.base64Data || ''
                 }));
 
-                // Facial Recognition
                 appState.facialRecognition = parsedState.facialRecognition || [];
 
-                // Personas
                 appState.personas = parsedState.personas || [];
 
-                // VPNs
                 appState.vpns = parsedState.vpns || [];
 
-                // Honeypots
                 appState.honeypots = parsedState.honeypots || [];
 
-                // Exploits
                 appState.exploits = parsedState.exploits || [];
 
-                // Public Records
                 appState.publicRecords = parsedState.publicRecords || [];
 
-                // Timeline Events - CRITICAL FOR THIS ISSUE
-                appState.timeline = parsedState.timeline || {
-                    events: []
-                };
+                // Correctly load case studies data
+                appState.caseStudies = loadCaseStudiesData(); // This handles merging with sample data if localStorage is empty for case studies.
+
+                // Timeline Events
+                appState.timeline = parsedState.timeline || { events: [] };
                 appState.timeline.events.forEach(event => {
-                    // Ensure that if timestamp is a string, it's converted to a Date object
                     if (typeof event.timestamp === 'string') {
                         event.timestamp = new Date(event.timestamp);
                     }
                 });
-
-                // Other core appState properties
+                
+                // Ensure other appState properties are loaded/initialized safely
                 appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
                 appState.filters = parsedState.filters || {
                     category: '',
@@ -10097,21 +10803,21 @@ function loadState() {
                     sort: 'name',
                     searchScope: 'currentTab'
                 };
+                appState.caseStudyFilters = parsedState.caseStudyFilters || {
+                    search: '',
+                    type: ''
+                };
                 appState.theme = parsedState.theme || 'dark';
                 appState.viewMode = parsedState.viewMode || 'grid';
-                appState.usageStats = parsedState.usageStats || {
-                    toolsUsedToday: 0
-                };
+                appState.usageStats = parsedState.usageStats || { toolsUsedToday: 0 };
                 appState.customTabs = parsedState.customTabs || [];
                 appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
-
-                // Ensure parent/child tabs exist and have valid defaults if needed
                 appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
                 appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
                 appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
                 appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool';
 
-                // Notes State (assuming it's directly within appState now or loaded similarly)
+                // Notes State
                 appState.notesState = parsedState.notesState || { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
                 appState.notesState.notes.forEach(note => {
                     note.createdAt = new Date(note.createdAt);
@@ -10137,22 +10843,18 @@ function loadState() {
                 };
                 if (appState.dorkAssistantState.savedQueries) {
                     appState.dorkAssistantState.savedQueries.forEach(query => {
-                        // Ensure createdAt is a Date object if it exists and is a string
                         if (query.createdAt && typeof query.createdAt === 'string') {
                             query.createdAt = new Date(query.createdAt);
                         }
                     });
                 }
 
-                // NEW: Initialize customVaultViewMode
                 appState.customVaultViewMode = parsedState.customVaultViewMode || 'entries';
 
-
-                // CRUCIAL PART: Merge default tools after loading saved state
+                // Merge default tools after loading saved state
                 defaultTools.forEach(defaultTool => {
                     const exists = appState.tools.some(tool => tool.id === defaultTool.id);
                     if (!exists) {
-                        // Ensure addedDate for default tools is also a Date object when pushed
                         appState.tools.push({
                             ...defaultTool,
                             addedDate: new Date(defaultTool.addedDate),
@@ -10178,7 +10880,7 @@ function loadState() {
                 appState.currentCustomVaultParentTab = 'coreInvestigation';
                 appState.currentCustomVaultEntrySubTab = 'tool';
 
-                // Initialize all new arrays as empty if no saved state
+                // Initialize all other arrays as empty for a fresh start (Crucial for first-time load)
                 appState.emails = [];
                 appState.phones = [];
                 appState.crypto = [];
@@ -10213,15 +10915,15 @@ function loadState() {
                 appState.exploits = [];
                 appState.publicRecords = [];
 
-                // Initialize timeline with sample data on first load with Date objects
+                // Load sample case studies only on first-time use
+                appState.caseStudies = loadCaseStudiesData();
+
                 appState.timeline = {
                     events: createSampleTimelineEvents()
                 };
 
-                // Initialize notesState for first-time user
                 appState.notesState = { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
 
-                // Initialize Dork Assistant State for first-time user
                 appState.dorkAssistantState = {
                     keywords: '',
                     customInput: '',
@@ -10235,11 +10937,14 @@ function loadState() {
                     preTemplateSearchTerm: '',
                     conversionJustPerformed: false
                 };
-                // NEW: Initialize customVaultViewMode for first-time user
+                appState.caseStudyFilters = {
+                    search: '',
+                    type: ''
+                };
                 appState.customVaultViewMode = 'entries';
             }
         }
-
+        // --- End of loadState (full code block) ---
 
         function openMobileMenu() {
             const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
@@ -10362,7 +11067,6 @@ function loadState() {
         
 
         function saveState() {
-            // Create a deep copy of appState to avoid modifying the live Date objects during serialization
             const stateToSave = JSON.parse(JSON.stringify(appState));
 
             // Convert Date objects within the timeline events to ISO strings for storage
@@ -10404,6 +11108,15 @@ function loadState() {
                 });
             }
 
+            // NEW: Convert Date objects for case studies
+            if (stateToSave.caseStudies) {
+                stateToSave.caseStudies.forEach(cs => {
+                    if (cs.addedDate && typeof cs.addedDate.toISOString === 'function') {
+                        cs.addedDate = cs.addedDate.toISOString();
+                    }
+                });
+            }
+
             localStorage.setItem('osintArsenalState', JSON.stringify(stateToSave));
         }
 
@@ -10419,7 +11132,8 @@ function loadState() {
                 ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
                 ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
                 ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
-                ...appState.publicRecords
+                ...appState.publicRecords,
+                ...appState.caseStudies // NEW: Include case studies in total entries count
             ];
 
             // These IDs are for the top-level stats bar
@@ -10427,6 +11141,124 @@ function loadState() {
             document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
             document.getElementById('totalNotesStat').textContent = notesState.notes.length;
             document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
+        }
+
+        // --- NEW: Case Studies Functions ---
+
+        // Renders the list of case studies
+        function renderCaseStudies() {
+            const caseStudiesGrid = document.getElementById('caseStudiesGrid');
+            const emptyState = document.getElementById('emptyCaseStudiesState');
+
+            const filteredCaseStudies = filterCaseStudies();
+
+            if (filteredCaseStudies.length === 0) {
+                emptyState.style.display = 'block';
+                caseStudiesGrid.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                caseStudiesGrid.style.display = 'grid'; // Ensure grid display for case studies
+                caseStudiesGrid.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy)).join('');
+            }
+        }
+
+        // Filters case studies based on current search and type filters
+        function filterCaseStudies() {
+            let filtered = [...appState.caseStudies];
+
+            const searchTerm = appState.caseStudyFilters.search.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(cs => {
+                    const searchFields = [
+                        cs.title, cs.summary, cs.incidentType, cs.threatActor,
+                        cs.osintTechniquesUsed ? cs.osintTechniquesUsed.join(' ') : '',
+                        cs.toolsUsed ? cs.toolsUsed.join(' ') : '',
+                        cs.lessonsLearned, cs.attackChain,
+                        cs.tags ? cs.tags.join(' ') : ''
+                    ].map(field => String(field || '').toLowerCase());
+                    return searchFields.some(field => field.includes(searchTerm));
+                });
+            }
+
+            const selectedType = appState.caseStudyFilters.type;
+            if (selectedType) {
+                filtered = filtered.filter(cs => cs.incidentType === selectedType);
+            }
+
+            // Sort by addedDate descending (most recent first)
+            filtered.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
+
+            return filtered;
+        }
+
+        // Creates the HTML for a single case study card
+        function createCaseStudyCard(caseStudy) {
+            const isStarred = caseStudy.starred;
+            const isPinned = caseStudy.pinned;
+            const difficultyIcon = {
+                'beginner': 'fas fa-leaf',
+                'intermediate': 'fas fa-seedling',
+                'advanced': 'fas fa-tree'
+            }[caseStudy.difficulty] || 'fas fa-info-circle';
+
+            return `
+                <div class="case-study-card ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
+                    <div class="case-study-header">
+                        <div>
+                            <div class="case-study-title">
+                                <i class="fas fa-microscope case-study-icon" style="color: #6c5ce7;"></i>
+                                <span>${caseStudy.title}</span>
+                            </div>
+                            <div class="case-study-meta">
+                                <span><i class="fas fa-tags"></i> ${caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1)}</span>
+                                <span><i class="${difficultyIcon}"></i> ${caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1)}</span>
+                                <span><i class="fas fa-calendar-alt"></i> ${caseStudy.dateRange}</span>
+                            </div>
+                        </div>
+                        <div class="case-study-actions">
+                            <button class="action-btn" data-action="edit-case-study" title="Edit Case Study">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn ${isStarred ? 'starred' : ''}" data-action="star-case-study" title="Star Case Study">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="action-btn ${isPinned ? 'pinned' : ''}" data-action="pin-case-study" title="Pin Case Study">
+                                <i class="fas fa-thumbtack"></i>
+                            </button>
+                            <button class="action-btn" data-action="delete-case-study" title="Delete Case Study">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="case-study-description">${caseStudy.summary}</p>
+                    <div class="case-study-tags">
+                        ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Opens the modal to display full case study details
+        function openCaseStudyDetailModal(caseStudyId) {
+            const caseStudy = appState.caseStudies.find(cs => cs.id === caseStudyId);
+            if (!caseStudy) {
+                showToast("Case study not found.", "error");
+                return;
+            }
+
+            document.getElementById('detailCaseStudyTitle').textContent = caseStudy.title;
+            document.getElementById('detailCaseStudyType').textContent = caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1);
+            document.getElementById('detailCaseStudyDate').textContent = caseStudy.dateRange;
+            document.getElementById('detailCaseStudyActor').textContent = caseStudy.threatActor || 'N/A';
+            document.getElementById('detailCaseStudyDifficulty').textContent = caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1);
+            document.getElementById('detailCaseStudySummary').textContent = caseStudy.summary;
+            document.getElementById('detailCaseStudyAttackChain').innerHTML = caseStudy.attackChain;
+            document.getElementById('detailCaseStudyTechniques').innerHTML = caseStudy.osintTechniquesUsed ? caseStudy.osintTechniquesUsed.map(t => `<li>${t}</li>`).join('') : '<li>No specific techniques listed.</li>';
+            document.getElementById('detailCaseStudyTools').innerHTML = caseStudy.toolsUsed ? caseStudy.toolsUsed.map(t => `<li>${t}</li>`).join('') : '<li>No specific tools listed.</li>';
+            document.getElementById('detailCaseStudyLessons').innerHTML = caseStudy.lessonsLearned;
+            document.getElementById('detailCaseStudyTags').innerHTML = caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : '';
+
+            showModal('caseStudyDetailModal');
         }
 
         function createSampleTimelineEvents() {
@@ -10479,6 +11311,196 @@ function loadState() {
                     actor: "SOC Team",
                 }
             ].sort((a, b) => a.timestamp - b.timestamp); // Ensure sample data is sorted by timestamp
+        }
+
+        // --- NEW: Add/Edit Case Study Functions ---
+
+        // Opens the Add/Edit Case Study Modal
+        function openAddEditCaseStudyModal(mode, caseStudyId = null) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot add/edit case studies in read-only shared view.", "warning");
+                return;
+            }
+
+            const form = document.getElementById('addEditCaseStudyForm');
+            form.reset(); // Clear all form fields
+            document.getElementById('caseStudyId').value = ''; // Clear hidden ID
+
+            // Reset rich text editors manually
+            document.getElementById('caseStudyAttackChain').innerHTML = '';
+            document.getElementById('caseStudyLessons').innerHTML = '';
+
+            // Populate Incident Type dropdown (and handle custom input)
+            const incidentTypeSelect = document.getElementById('caseStudyIncidentType');
+            const newCaseStudyTypeInput = document.getElementById('newCaseStudyTypeInput');
+
+            incidentTypeSelect.value = ''; // Default select to empty
+            newCaseStudyTypeInput.style.display = 'none'; // Hide custom input by default
+            newCaseStudyTypeInput.value = '';
+
+            // Add event listener for incident type select (if not already added)
+            incidentTypeSelect.onchange = () => { // Using onchange to ensure single assignment
+                if (incidentTypeSelect.value === 'custom') {
+                    newCaseStudyTypeInput.style.display = 'block';
+                    newCaseStudyTypeInput.setAttribute('required', 'required');
+                } else {
+                    newCaseStudyTypeInput.style.display = 'none';
+                    newCaseStudyTypeInput.removeAttribute('required');
+                    newCaseStudyTypeInput.value = '';
+                }
+            };
+
+
+            if (mode === 'add') {
+                document.getElementById('addEditCaseStudyModalTitle').textContent = 'Add New Case Study';
+                document.getElementById('saveCaseStudyBtn').textContent = 'Add Case Study';
+                document.getElementById('saveCaseStudyBtn').dataset.mode = 'add';
+                document.getElementById('caseStudyDifficulty').value = 'intermediate'; // Default for add
+            } else if (mode === 'edit' && caseStudyId) {
+                const caseStudyToEdit = appState.caseStudies.find(cs => cs.id === caseStudyId);
+                if (!caseStudyToEdit) {
+                    showToast("Case study not found for editing.", "error");
+                    return;
+                }
+
+                document.getElementById('addEditCaseStudyModalTitle').textContent = 'Edit Case Study';
+                document.getElementById('saveCaseStudyBtn').textContent = 'Save Changes';
+                document.getElementById('saveCaseStudyBtn').dataset.mode = 'edit';
+
+                // Populate fields with data from caseStudyToEdit
+                document.getElementById('caseStudyId').value = caseStudyToEdit.id;
+                document.getElementById('caseStudyTitle').value = caseStudyToEdit.title;
+
+                // Handle incident type (check if it's a custom type not in dropdown)
+                if (Array.from(incidentTypeSelect.options).some(opt => opt.value === caseStudyToEdit.incidentType)) {
+                    incidentTypeSelect.value = caseStudyToEdit.incidentType;
+                } else {
+                    incidentTypeSelect.value = 'custom';
+                    newCaseStudyTypeInput.style.display = 'block';
+                    newCaseStudyTypeInput.value = caseStudyToEdit.incidentType;
+                }
+
+                document.getElementById('caseStudyDateRange').value = caseStudyToEdit.dateRange;
+                document.getElementById('caseStudyActor').value = caseStudyToEdit.threatActor || '';
+                document.getElementById('caseStudyDifficulty').value = caseStudyToEdit.difficulty;
+                document.getElementById('caseStudySummary').value = caseStudyToEdit.summary;
+                document.getElementById('caseStudyAttackChain').innerHTML = caseStudyToEdit.attackChain; // Rich text
+                document.getElementById('caseStudyOsintTechniques').value = caseStudyToEdit.osintTechniquesUsed ? caseStudyToEdit.osintTechniquesUsed.join(', ') : '';
+                document.getElementById('caseStudyToolsUsed').value = caseStudyToEdit.toolsUsed ? caseStudyToEdit.toolsUsed.join(', ') : '';
+                document.getElementById('caseStudyLessons').innerHTML = caseStudyToEdit.lessonsLearned; // Rich text
+                document.getElementById('caseStudyTags').value = caseStudyToEdit.tags ? caseStudyToEdit.tags.join(', ') : '';
+            }
+
+            showModal('addEditCaseStudyModal');
+            // Re-initialize rich text editor for new content in modal
+            setupCaseStudyRichTextEditors();
+        }
+
+        // Handles form submission for adding or editing a case study
+        function handleCaseStudyFormSubmit(e) {
+            e.preventDefault();
+            if (appState.readOnlyMode) {
+                showToast("Cannot save case studies in read-only shared view.", "warning");
+                return;
+            }
+
+            const mode = document.getElementById('saveCaseStudyBtn').dataset.mode;
+            const caseStudyId = document.getElementById('caseStudyId').value;
+
+            const title = document.getElementById('caseStudyTitle').value.trim();
+            let incidentType = document.getElementById('caseStudyIncidentType').value;
+            const newCaseStudyTypeInput = document.getElementById('newCaseStudyTypeInput').value.trim();
+
+            const dateRange = document.getElementById('caseStudyDateRange').value.trim();
+            const actor = document.getElementById('caseStudyActor').value.trim();
+            const difficulty = document.getElementById('caseStudyDifficulty').value;
+            const summary = document.getElementById('caseStudySummary').value.trim();
+            const attackChain = document.getElementById('caseStudyAttackChain').innerHTML.trim(); // Get HTML content
+            const osintTechniques = document.getElementById('caseStudyOsintTechniques').value.split(',').map(t => t.trim()).filter(t => t);
+            const toolsUsed = document.getElementById('caseStudyToolsUsed').value.split(',').map(t => t.trim()).filter(t => t);
+            const lessonsLearned = document.getElementById('caseStudyLessons').innerHTML.trim(); // Get HTML content
+            const tags = document.getElementById('caseStudyTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+            if (!title || !incidentType || !dateRange || !summary || !difficulty) {
+                showToast('Please fill in all required fields (Title, Incident Type, Date, Summary, Difficulty).', 'error');
+                return;
+            }
+
+            if (incidentType === 'custom') {
+                if (!newCaseStudyTypeInput) {
+                    showToast('Please enter a custom incident type name.', 'error');
+                    return;
+                }
+                incidentType = newCaseStudyTypeInput.toLowerCase(); // Use lowercase for consistency
+            }
+
+            const newCaseStudy = {
+                id: mode === 'add' ? generateId() : caseStudyId,
+                title: title,
+                incidentType: incidentType,
+                dateRange: dateRange,
+                summary: summary,
+                attackChain: attackChain,
+                osintTechniquesUsed: osintTechniques,
+                toolsUsed: toolsUsed,
+                lessonsLearned: lessonsLearned,
+                threatActor: actor,
+                difficulty: difficulty,
+                tags: tags,
+                starred: false, // Default for new, will be overwritten for edit
+                pinned: false,  // Default for new, will be overwritten for edit
+                addedDate: new Date() // Set/update added date
+            };
+
+            if (mode === 'add') {
+                appState.caseStudies.push(newCaseStudy);
+                showToast('Case study added successfully!');
+            } else if (mode === 'edit') {
+                const index = appState.caseStudies.findIndex(cs => cs.id === caseStudyId);
+                if (index > -1) {
+                    // Retain existing starred/pinned status from the old object
+                    newCaseStudy.starred = appState.caseStudies[index].starred;
+                    newCaseStudy.pinned = appState.caseStudies[index].pinned;
+                    appState.caseStudies[index] = newCaseStudy;
+                    showToast('Case study updated successfully!');
+                } else {
+                    showToast('Error: Case study not found for update.', 'error');
+                }
+            }
+
+            hideModal('addEditCaseStudyModal');
+            saveCaseStudies(); // Save to local storage
+            renderCaseStudies(); // Re-render the list
+            updateStats(); // Update dashboard stats
+        }
+
+        // Saves case studies to localStorage
+        function saveCaseStudies() {
+            localStorage.setItem('osintCaseStudies', JSON.stringify(appState.caseStudies));
+        }
+
+        // Function to setup rich text editors for attack chain and lessons learned
+        function setupCaseStudyRichTextEditors() {
+            const attackChainEditor = document.getElementById('caseStudyAttackChain');
+            const lessonsEditor = document.getElementById('caseStudyLessons');
+
+            // Make sure editors are contenteditable if not in read-only mode
+            if (!appState.readOnlyMode) {
+                if (attackChainEditor) attackChainEditor.contentEditable = true;
+                if (lessonsEditor) lessonsEditor.contentEditable = true;
+            } else { // In read-only mode, ensure they are not editable
+                if (attackChainEditor) attackChainEditor.contentEditable = false;
+                if (lessonsEditor) lessonsEditor.contentEditable = false;
+            }
+
+            // You can attach generic event listeners for the toolbars directly to the document
+            // and check event.target.closest('.formatting-btn') to see which button was clicked,
+            // and then apply the command to the currently focused contenteditable div.
+            // This setup would be similar to how your 'notes' editor's toolbar works.
+            // For simplicity, this example just makes them editable; the toolbar logic itself
+            // is already present in your main bindEvents if you extend it for these new ids.
+            // Make sure the `formatting-toolbar` buttons for these specific modals are also handled
+            // by `initSectionEditor` or a similar function for modal-specific toolbars.
         }
 
         // Populate category filter and Add Tool modal
@@ -11255,6 +12277,85 @@ function loadState() {
         // MODIFIED: bindEvents function for event delegation
         function bindEvents() {
 
+             // NEW: Case Studies Tab Event Listeners
+            // Handle Case Studies Tab Navigation
+            document.querySelector('[data-tab="case-studies"]').addEventListener('click', () => {
+                switchTab('case-studies');
+            });
+
+            // Case Study Search Input
+            document.getElementById('caseStudySearchInput').addEventListener('input', (e) => {
+                appState.caseStudyFilters.search = e.target.value;
+                renderCaseStudies();
+            });
+
+            // Case Study Type Filter Select
+            document.getElementById('caseStudyFilterSelect').addEventListener('change', (e) => {
+                appState.caseStudyFilters.type = e.target.value;
+                renderCaseStudies();
+            });
+
+            // Add Case Study Button
+            document.getElementById('addCaseStudyBtn').addEventListener('click', () => openAddEditCaseStudyModal('add'));
+            document.getElementById('addCaseStudyEmptyStateBtn').addEventListener('click', () => openAddEditCaseStudyModal('add'));
+
+            // Handle clicks on case study cards (for opening detail modal)
+            document.getElementById('caseStudiesGrid').addEventListener('click', (e) => {
+                const card = e.target.closest('.case-study-card');
+                const actionBtn = e.target.closest('.action-btn');
+
+                if (card && !actionBtn) { // If card is clicked and it's not an action button
+                    const caseStudyId = card.dataset.caseStudyId;
+                    openCaseStudyDetailModal(caseStudyId);
+                } else if (actionBtn) { // If an action button is clicked
+                    handleCaseStudyAction(e);
+                }
+            });
+
+            // Case Study Add/Edit Modal Buttons
+            document.getElementById('cancelCaseStudyAddEdit').addEventListener('click', () => hideModal('addEditCaseStudyModal'));
+            document.getElementById('addEditCaseStudyForm').addEventListener('submit', handleCaseStudyFormSubmit);
+
+            // Dynamic handling for custom incident type input
+            document.getElementById('caseStudyIncidentType').addEventListener('change', (e) => {
+                const newCaseStudyTypeInput = document.getElementById('newCaseStudyTypeInput');
+                if (e.target.value === 'custom') {
+                    newCaseStudyTypeInput.style.display = 'block';
+                    newCaseStudyTypeInput.setAttribute('required', 'required');
+                } else {
+                    newCaseStudyTypeInput.style.display = 'none';
+                    newCaseStudyTypeInput.removeAttribute('required');
+                    newCaseStudyTypeInput.value = '';
+                }
+            });
+
+            // Toolbar events for Add/Edit Case Study Modal rich text areas
+            // You can attach generic listeners to the document for `formatting-btn` clicks
+            // and then use `window.getSelection().focusNode` or `document.activeElement`
+            // to determine which contenteditable div to apply the command to.
+            // Example:
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('#addEditCaseStudyModal .formatting-toolbar .formatting-btn');
+                if (!btn) return;
+
+                const command = btn.dataset.command;
+                const value = btn.dataset.value || null;
+                const activeEditor = document.activeElement; // Get the currently focused contenteditable div
+
+                if (activeEditor && (activeEditor.id === 'caseStudyAttackChain' || activeEditor.id === 'caseStudyLessons')) {
+                    if (command === 'createLink') {
+                        const url = prompt('Enter the URL:');
+                        if (url) {
+                            document.execCommand(command, false, url);
+                        }
+                    } else {
+                        document.execCommand(command, false, value);
+                    }
+                    activeEditor.focus(); // Keep focus on the editor after command
+                }
+            });
+
+
             // Event listener for the "Vault Timeline" button in Custom Vault
             const customVaultTimelineBtn = document.getElementById('customVaultTimelineBtn');
             if (customVaultTimelineBtn) {
@@ -11794,6 +12895,47 @@ function loadState() {
                 document.body.classList.remove('no-scroll');
             }
 
+        // Handles actions on individual case study cards (star, pin, edit, delete)
+        function handleCaseStudyAction(e) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot perform actions in read-only shared view.", "warning");
+                return;
+            }
+
+            const targetBtn = e.target.closest('.action-btn');
+            if (!targetBtn) return;
+
+            e.stopPropagation(); // Prevent the card click from opening the detail modal
+            const action = targetBtn.dataset.action;
+            const caseStudyId = targetBtn.dataset.caseStudyId || targetBtn.closest('.case-study-card').dataset.caseStudyId;
+
+            const caseStudy = appState.caseStudies.find(cs => cs.id === caseStudyId);
+            if (!caseStudy) return;
+
+            switch (action) {
+                case 'edit-case-study':
+                    openAddEditCaseStudyModal('edit', caseStudy.id);
+                    break;
+                case 'star-case-study':
+                    caseStudy.starred = !caseStudy.starred;
+                    showToast(caseStudy.starred ? 'Case study starred!' : 'Case study unstarred!');
+                    break;
+                case 'pin-case-study':
+                    caseStudy.pinned = !caseStudy.pinned;
+                    showToast(caseStudy.pinned ? 'Case study pinned!' : 'Case study unpinned!');
+                    break;
+                case 'delete-case-study':
+                    if (confirm('Are you sure you want to delete this case study?')) {
+                        appState.caseStudies = appState.caseStudies.filter(cs => cs.id !== caseStudyId);
+                        showToast('Case study deleted!', 'error');
+                    }
+                    break;
+            }
+
+            saveCaseStudies();
+            renderCaseStudies(); // Re-render to reflect changes
+            updateStats(); // Update global stats
+        }
         // Timeline Functions
         function openAddEventModal(mode, eventId = null) {
             if (appState.readOnlyMode) {
@@ -12725,97 +13867,102 @@ function bulkAction(action) {
         }
 
 
-function switchTab(tabName) {
-    // Update main tab buttons
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    const targetTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
-    if (targetTabBtn) {
-        targetTabBtn.classList.add('active');
-    }
-
-    // Update tab content visibility
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-        // Hide specific sub-tab containers when switching main tabs
-        if (content.id === 'intelligence-vaultTab') {
-            document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
-            document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
-            document.getElementById('addToolBtnIntelligenceVault').style.display = 'none';
-        } else if (content.id === 'custom-tabsTab') {
-            document.getElementById('customVaultEntryParentTabs').style.display = 'none';
-            document.getElementById('customVaultEntryChildTabs').style.display = 'none';
-            document.getElementById('addEntryBtnCustomVault').style.display = 'none';
-        }
-    });
-
-    const targetTabContent = document.getElementById(`${tabName}Tab`);
-    if (targetTabContent) {
-         targetTabContent.classList.add('active');
-    }
-
-    // Update appState and clear filters for new tab
-    appState.currentTab = tabName;
-    appState.filters.category = '';
-    document.getElementById('categoryFilter').value = '';
-    appState.filters.search = '';
-    document.getElementById('searchInput').value = '';
-
-    // Specific logic for each main tab
-    if (tabName === 'intelligence-vault') {
-        document.getElementById('intelligenceVaultParentTabs').style.display = 'flex'; // Show parent tabs
-        renderIntelligenceVaultParentTabs(); // This will populate parent tabs and activate current one
-
-        const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
-        if (!currentIntelParent) {
-            appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
-        }
-        switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
-
-        if (!appState.readOnlyMode) {
-            document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
-        }
-        renderIntelligenceEntries(); // Render entries specific to intelligence-vault
-
-    } else if (tabName === 'custom-tabs') {
-        renderCustomTabs(); // Render main custom tabs (the list of custom vaults)
-
-        if (appState.customTabs.length > 0) {
-            document.getElementById('customVaultEntryParentTabs').style.display = 'flex'; // Show parent tabs for entries
-            renderCustomVaultParentTabs(); // Render custom vault entry parent tabs
-
-            const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
-            if (!currentCustomParent) {
-                appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
+        function switchTab(tabName) {
+            // Update main tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const targetTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            if (targetTabBtn) {
+                targetTabBtn.classList.add('active');
             }
-            const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
-            if (!currentCustomChild) {
-                appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
-            }
-            switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
 
-            if (!appState.readOnlyMode) {
-                document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
+            // Update tab content visibility
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+                // Hide specific sub-tab containers when switching main tabs
+                if (content.id === 'intelligence-vaultTab') {
+                    document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
+                    document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
+                    document.getElementById('addToolBtnIntelligenceVault').style.display = 'none';
+                } else if (content.id === 'custom-tabsTab') {
+                    document.getElementById('customVaultEntryParentTabs').style.display = 'none';
+                    document.getElementById('customVaultEntryChildTabs').style.display = 'none';
+                    document.getElementById('addEntryBtnCustomVault').style.display = 'none';
+                }
+            });
+
+            const targetTabContent = document.getElementById(`${tabName}Tab`);
+            if (targetTabContent) {
+                targetTabContent.classList.add('active');
             }
+
+            // Update appState and clear filters for new tab
+            appState.currentTab = tabName;
+            appState.filters.category = '';
+            document.getElementById('categoryFilter').value = '';
+            appState.filters.search = '';
+            document.getElementById('searchInput').value = '';
+
+            // Specific logic for each main tab
+            if (tabName === 'intelligence-vault') {
+                document.getElementById('intelligenceVaultParentTabs').style.display = 'flex'; // Show parent tabs
+                renderIntelligenceVaultParentTabs(); // This will populate parent tabs and activate current one
+
+                const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
+                if (!currentIntelParent) {
+                    appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
+                }
+                switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
+
+                if (!appState.readOnlyMode) {
+                    document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
+                }
+                renderIntelligenceEntries(); // Render entries specific to intelligence-vault
+
+            } else if (tabName === 'custom-tabs') {
+                renderCustomTabs(); // Render main custom tabs (the list of custom vaults)
+
+                if (appState.customTabs.length > 0) {
+                    document.getElementById('customVaultEntryParentTabs').style.display = 'flex'; // Show parent tabs for entries
+                    renderCustomVaultParentTabs(); // Render custom vault entry parent tabs
+
+                    const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
+                    if (!currentCustomParent) {
+                        appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
+                    }
+                    const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
+                    if (!currentCustomChild) {
+                        appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
+                    }
+                    switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
+
+                    if (!appState.readOnlyMode) {
+                        document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
+                    }
+                }
+                renderIntelligenceEntries(); // Render entries specific to custom-tabs
+
+            } else if (tabName === 'timeline') {
+                renderTimelineEvents();
+            } else if (tabName === 'threats') {
+                loadThreats();
+            } else if (tabName === 'handbook') {
+                initHandbookAndNotes();
+            } else if (tabName === 'dork-assistant') {
+                initDorkAssistant();
+            } else if (tabName === 'case-studies') { // Handle Case Studies tab
+                renderCaseStudies(); // Now call renderCaseStudies to display content
+                // Reset filters for case studies specifically when entering the tab
+                appState.caseStudyFilters.search = '';
+                appState.caseStudyFilters.type = '';
+                document.getElementById('caseStudySearchInput').value = '';
+                document.getElementById('caseStudyFilterSelect').value = '';
+            }
+
+            saveState(); // Save state after tab switch
         }
-        renderIntelligenceEntries(); // Render entries specific to custom-tabs
 
-    } else if (tabName === 'timeline') {
-        // CRITICAL: Call renderTimelineEvents specifically when this tab is activated
-        renderTimelineEvents(); 
-    } else if (tabName === 'analytics') {
-        updateDashboard();
-    } else if (tabName === 'threats') {
-        loadThreats();
-    } else if (tabName === 'handbook') {
-        initHandbookAndNotes();
-    } else if (tabName === 'dork-assistant') {
-        initDorkAssistant();
-    }
-    
-    saveState(); // Save state after tab switch
-}
 
 
         // Switch Intelligence Vault Sub-tabs (now show tools)
@@ -13228,43 +14375,55 @@ function switchTab(tabName) {
 
         }
 
+        // --- Start of updateDashboard (full code block) ---
         function updateDashboard() {
             // Define allEntries at the start of the function, combining all relevant appState arrays
+            // Use the `|| []` operator for each appState property to ensure it's always an array,
+            // even if `loadState` might have left it as `undefined` in older saves.
             const allEntries = [
-                ...appState.tools,
-                ...appState.emails,
-                ...appState.phones,
-                ...appState.crypto,
-                ...appState.locations,
-                ...appState.links,
-                ...appState.media,
-                ...appState.passwords,
-                ...appState.keywords,
-                ...appState.socials,
-                ...appState.domains,
-                ...appState.usernames,
-                ...appState.threats,
-                ...appState.vulnerabilities,
-                ...appState.malware,
-                ...appState.breaches,
-                ...appState.credentials,
-                ...appState.forums,
-                ...appState.vendors,
-                ...appState.telegramChannels,
-                ...appState.pastes,
-                ...appState.documents,
-                ...appState.networks,
-                ...appState.metadataEntries,
-                ...appState.archives,
-                ...appState.messagingApps,
-                ...appState.datingProfiles,
-                ...appState.facialRecognition,
-                ...appState.personas,
-                ...appState.vpns,
-                ...appState.honeypots,
-                ...appState.exploits,
-                ...appState.publicRecords
+                ...(appState.tools || []),
+                ...(appState.emails || []),
+                ...(appState.phones || []),
+                ...(appState.crypto || []),
+                ...(appState.locations || []),
+                ...(appState.links || []),
+                ...(appState.media || []),
+                ...(appState.passwords || []),
+                ...(appState.keywords || []),
+                ...(appState.socials || []),
+                ...(appState.domains || []),
+                ...(appState.usernames || []),
+                ...(appState.threats || []),
+                ...(appState.vulnerabilities || []),
+                ...(appState.malware || []),
+                ...(appState.breaches || []),
+                ...(appState.credentials || []),
+                ...(appState.forums || []),
+                ...(appState.vendors || []),
+                ...(appState.telegramChannels || []),
+                ...(appState.pastes || []),
+                ...(appState.documents || []),
+                ...(appState.networks || []),
+                ...(appState.metadataEntries || []),
+                ...(appState.archives || []),
+                ...(appState.messagingApps || []),
+                ...(appState.datingProfiles || []),
+                ...(appState.audioEntries || []),
+                ...(appState.facialRecognition || []),
+                ...(appState.personas || []),
+                ...(appState.vpns || []),
+                ...(appState.honeypots || []),
+                ...(appState.exploits || []),
+                ...(appState.publicRecords || []),
+                ...(appState.caseStudies || []) // Include case studies in total entries count
             ];
+
+            // These IDs are for the top-level stats bar
+            document.getElementById('totalEntriesStat').textContent = allEntries.length;
+            document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
+            document.getElementById('totalNotesStat').textContent = notesState.notes.length;
+            document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
+
 
             // --- Main Overview Stats (These are the big numbers at the top of the Dashboard tab) ---
             document.getElementById('totalToolsCount').textContent = allEntries.length; // Still represents all entries
@@ -13282,13 +14441,25 @@ function switchTab(tabName) {
                     'keyword', 'social', 'domain', 'username', 'threat', 'vulnerability', 'malware',
                     'breach', 'credential', 'forum', 'vendor', 'telegram', 'paste', 'document',
                     'network', 'metadata', 'archive', 'messaging', 'dating', 'audio', 'facial',
-                    'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord'
+                    'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord', 'caseStudy' // Include caseStudy
                 ]; // Explicitly list all types
 
                 // Count for each type
                 const typeCounts = {};
                 allEntries.forEach(entry => {
-                    const typeKey = entry.type + 's'; // e.g., 'tools', 'emails'
+                    // Normalize entry.type if necessary, e.g., 'telegram' -> 'telegramChannels' for lookup
+                    let typeKey = entry.type;
+                    if (typeKey === 'telegram') typeKey = 'telegramChannels';
+                    if (typeKey === 'metadata') typeKey = 'metadataEntries';
+                    if (typeKey === 'messaging') typeKey = 'messagingApps';
+                    if (typeKey === 'dating') typeKey = 'datingProfiles';
+                    if (typeKey === 'audio') typeKey = 'audioEntries';
+                    if (typeKey === 'facial') typeKey = 'facialRecognition';
+                    if (typeKey === 'persona') typeKey = 'personas';
+                    if (typeKey === 'vpn') typeKey = 'vpns';
+                    if (typeKey === 'caseStudy') typeKey = 'caseStudies'; // Add for case studies
+
+                    // Ensure the key exists in our counts object
                     if (!typeCounts[typeKey]) {
                         typeCounts[typeKey] = { starred: 0, pinned: 0 };
                     }
@@ -13307,7 +14478,18 @@ function switchTab(tabName) {
 
                 // Iterate through counts and build HTML
                 entryTypes.forEach(type => {
-                    const pluralType = type + 's';
+                    let pluralType = type + 's'; // Default plural
+                    // Adjust plural for specific arrays if they differ from type + 's'
+                    if (type === 'telegram') pluralType = 'telegramChannels';
+                    if (type === 'metadata') pluralType = 'metadataEntries';
+                    if (type === 'messaging') pluralType = 'messagingApps';
+                    if (type === 'dating') pluralType = 'datingProfiles';
+                    if (type === 'audio') pluralType = 'audioEntries';
+                    if (type === 'facial') pluralType = 'facialRecognition';
+                    if (type === 'persona') pluralType = 'personas';
+                    if (type === 'vpn') pluralType = 'vpns';
+                    if (type === 'caseStudy') pluralType = 'caseStudies';
+
                     const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
                     if (typeCounts[pluralType] && (typeCounts[pluralType].starred > 0 || typeCounts[pluralType].pinned > 0)) {
                         if (typeCounts[pluralType].starred > 0) {
@@ -13323,18 +14505,18 @@ function switchTab(tabName) {
 
 
             // --- Intelligence Vault Summary ---
-            const intelVaultCategories = new Set(appState.tools.map(tool => tool.category));
-            document.getElementById('intelVaultTotalTools').textContent = appState.tools.length;
-            document.getElementById('intelVaultStarredTools').textContent = appState.tools.filter(tool => tool.starred).length;
-            document.getElementById('intelVaultPinnedTools').textContent = appState.tools.filter(tool => tool.pinned).length;
+            const intelVaultCategories = new Set((appState.tools || []).map(tool => tool.category)); // Safe access
+            document.getElementById('intelVaultTotalTools').textContent = (appState.tools || []).length;
+            document.getElementById('intelVaultStarredTools').textContent = (appState.tools || []).filter(tool => tool.starred).length;
+            document.getElementById('intelVaultPinnedTools').textContent = (appState.tools || []).filter(tool => tool.pinned).length;
             document.getElementById('intelVaultCategoriesCount').textContent = intelVaultCategories.size;
 
             // --- Custom Vaults Summary ---
             let totalEntriesInCustomVaults = 0;
-            appState.customTabs.forEach(tab => {
-                totalEntriesInCustomVaults += tab.toolIds.length; // toolIds now holds all entry types in custom tabs
+            (appState.customTabs || []).forEach(tab => { // Safe access
+                totalEntriesInCustomVaults += (tab.toolIds || []).length; // toolIds now holds all entry types in custom tabs
             });
-            const totalCustomVaults = appState.customTabs.length; // Redefine here if needed for this section
+            const totalCustomVaults = (appState.customTabs || []).length; // Redefine here if needed for this section
             document.getElementById('customVaultsTotal').textContent = totalCustomVaults;
             document.getElementById('customVaultsTotalEntries').textContent = totalEntriesInCustomVaults;
             document.getElementById('customVaultsAvgEntries').textContent = totalCustomVaults > 0 ? (totalEntriesInCustomVaults / totalCustomVaults).toFixed(1) : '0';
@@ -13345,9 +14527,9 @@ function switchTab(tabName) {
 
             // --- Notes & Dork Assistant Summary ---
             const totalTemplates = Object.values(dorkTemplates).flat().length; // Count all pre-templates
-            document.getElementById('notesSummaryTotal').textContent = notesState.notes.length;
-            document.getElementById('notesSummaryPinned').textContent = notesState.notes.filter(n => n.pinned).length;
-            document.getElementById('dorksSummaryTotal').textContent = dorkAssistantState.savedQueries.length;
+            document.getElementById('notesSummaryTotal').textContent = (notesState.notes || []).length;
+            document.getElementById('notesSummaryPinned').textContent = (notesState.notes || []).filter(n => n.pinned).length;
+            document.getElementById('dorksSummaryTotal').textContent = (dorkAssistantState.savedQueries || []).length;
             document.getElementById('dorksSummaryTemplates').textContent = totalTemplates;
 
 
@@ -13364,6 +14546,7 @@ function switchTab(tabName) {
             renderEntryGrowthOverTimeChart();
             renderTaggingOverviewChart();
         }
+        // --- End of updateDashboard (full code block) ---
 
         function renderEntriesPerCustomVaultChart() {
             const ctx = document.getElementById('entriesPerCustomVaultChart').getContext('2d');
@@ -13672,14 +14855,55 @@ function switchTab(tabName) {
             });
         }
 
-        function renderEntriesByTypeChart() {
+function renderEntriesByTypeChart() {
             const ctx = document.getElementById('entriesByTypeChart').getContext('2d');
             const entryTypeCounts = {};
-            // Aggregate all entries into a single array for counting
-            const allEntries = [...appState.tools, /* ... all other appState arrays ... */]; // Ensure this array is comprehensive
+            // Aggregate all entries into a single array for counting, ensuring all are treated as arrays
+            const allEntries = [
+                ...(appState.tools || []),
+                ...(appState.emails || []),
+                ...(appState.phones || []),
+                ...(appState.crypto || []),
+                ...(appState.locations || []),
+                ...(appState.links || []),
+                ...(appState.media || []),
+                ...(appState.passwords || []),
+                ...(appState.keywords || []),
+                ...(appState.socials || []),
+                ...(appState.domains || []),
+                ...(appState.usernames || []),
+                ...(appState.threats || []),
+                ...(appState.vulnerabilities || []),
+                ...(appState.malware || []),
+                ...(appState.breaches || []),
+                ...(appState.credentials || []),
+                ...(appState.forums || []),
+                ...(appState.vendors || []),
+                ...(appState.telegramChannels || []),
+                ...(appState.pastes || []),
+                ...(appState.documents || []),
+                ...(appState.networks || []),
+                ...(appState.metadataEntries || []),
+                ...(appState.archives || []),
+                ...(appState.messagingApps || []),
+                ...(appState.datingProfiles || []),
+                ...(appState.audioEntries || []),
+                ...(appState.facialRecognition || []),
+                ...(appState.personas || []),
+                ...(appState.vpns || []),
+                ...(appState.honeypots || []),
+                ...(appState.exploits || []),
+                ...(appState.publicRecords || []),
+                ...(appState.caseStudies || [])
+            ];
 
             allEntries.forEach(entry => {
-                const type = entry.type.charAt(0).toUpperCase() + entry.type.slice(1); // Capitalize first letter
+                // **FIX STARTS HERE**
+                // Safely access entry.type, defaulting to 'unknown' if it's not a string or is an empty string
+                const type = (typeof entry.type === 'string' && entry.type) ?
+                             entry.type.charAt(0).toUpperCase() + entry.type.slice(1) :
+                             'Unknown';
+                // **FIX ENDS HERE**
                 entryTypeCounts[type] = (entryTypeCounts[type] || 0) + 1;
             });
 
@@ -13700,7 +14924,6 @@ function switchTab(tabName) {
                         backgroundColor: [
                             '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d',
                             '#17a2b8', '#6610f2', '#fd7e14', '#e83e8c', '#20c997',
-                            // Add more colors if you have many entry types
                             '#6f42c1', '#e0f2f1', '#e3f2fd', '#fff3e0', '#fce4ec',
                             '#e1f5fe', '#c8e6c9', '#ffe0b2', '#f8bbd0', '#bbdefb'
                         ],
@@ -13725,6 +14948,8 @@ function switchTab(tabName) {
                 }
             });
         }
+        // --- End of renderEntriesByTypeChart ---
+
 
         function renderUsageTrendChart() {
             const ctx = document.getElementById('usageTrendChart').getContext('2d');
