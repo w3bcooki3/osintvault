@@ -5228,341 +5228,453 @@
                 flex-shrink: 0; /* Prevent buttons from shrinking too much (optional, can remove if you want them to compress) */
             }
         }
+
         /* --- New Case Studies Tab Styles --- */
+        /* Main tab icon (using a new one) */
+        .nav-tab[data-tab="case-studies"].active::before {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* A vibrant purple for case studies */
+        }
 
-/* Main tab icon (using a new one) */
-.nav-tab[data-tab="case-studies"].active::before {
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* A vibrant purple for case studies */
-}
+        /* Case Study Grid/List Styles (similar to tools but distinct) */
+        .case-studies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Slightly smaller min-width for more cards */
+            gap: 20px;
+            width: 100%;
+        }
 
-/* Case Study Grid/List Styles (similar to tools but distinct) */
-.case-studies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Slightly smaller min-width for more cards */
-    gap: 20px;
-    width: 100%;
-}
+        .case-studies-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.case-studies-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        .case-study-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer; /* Indicates clickable */
+        }
 
-.case-study-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 25px;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    cursor: pointer; /* Indicates clickable */
-}
+        .case-studies-list .case-study-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px 20px;
+        }
 
-.case-studies-list .case-study-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px 20px;
-}
+        .case-study-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe); /* Purple gradient */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-.case-study-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #6c5ce7, #a29bfe); /* Purple gradient */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+        .case-study-card:hover {
+            transform: translateY(-7px);
+            box-shadow: var(--shadow-lg);
+            border-color: #6c5ce7; /* Match hover border to new tab color */
+        }
 
-.case-study-card:hover {
-    transform: translateY(-7px);
-    box-shadow: var(--shadow-lg);
-    border-color: #6c5ce7; /* Match hover border to new tab color */
-}
+        .case-study-card:hover::before {
+            opacity: 1;
+        }
 
-.case-study-card:hover::before {
-    opacity: 1;
-}
+        /* Status highlights for case studies (e.g., solved, ongoing) */
+        .case-study-card.solved {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), transparent);
+        }
 
-/* Status highlights for case studies (e.g., solved, ongoing) */
-.case-study-card.solved {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), transparent);
-}
+        .case-study-card.ongoing {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
+        }
 
-.case-study-card.ongoing {
-    border-color: var(--warning);
-    background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
-}
+        .case-study-card.starred {
+            border-color: var(--secondary);
+        }
 
-.case-study-card.starred {
-    border-color: var(--secondary);
-}
+        .case-study-card.pinned {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
+        }
 
-.case-study-card.pinned {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
-}
+        .case-study-card.selected {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
+        }
 
-.case-study-card.selected {
-    border-color: var(--warning);
-    background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
-}
+        .case-study-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-.case-study-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+        .case-study-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-width: 0;
+            word-break: break-word;
+        }
 
-.case-study-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    min-width: 0;
-    word-break: break-word;
-}
+        .case-study-icon {
+            font-size: 20px;
+            color: var(--primary); /* Use primary for icon color */
+            flex-shrink: 0;
+        }
 
-.case-study-icon {
-    font-size: 20px;
-    color: var(--primary); /* Use primary for icon color */
-    flex-shrink: 0;
-}
+        .case-study-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-.case-study-meta {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-family: 'Inter', sans-serif;
-    word-break: break-all;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
+        .case-study-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0; /* Prevent actions from shrinking */
+        }
 
-.case-study-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0; /* Prevent actions from shrinking */
-}
+        /* Reusing existing action-btn styles */
 
-/* Reusing existing action-btn styles */
+        .case-study-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            max-height: 90px; /* Limit height for preview */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Show maximum 3 lines */
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+        }
 
-.case-study-description {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-bottom: 10px;
-    line-height: 1.5;
-    max-height: 90px; /* Limit height for preview */
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Show maximum 3 lines */
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-}
+        .case-study-tags {
+            margin-top: 10px;
+        }
 
-.case-study-tags {
-    margin-top: 10px;
-}
+        /* Reusing existing tag styles */
 
-/* Reusing existing tag styles */
+        /* Case Study Detail Modal Styles (similar to notes/editor) */
+        #caseStudyDetailModal .modal-content {
+            max-width: 850px; /* Wider modal for detailed content */
+            padding: 30px;
+        }
 
-/* Case Study Detail Modal Styles (similar to notes/editor) */
-#caseStudyDetailModal .modal-content {
-    max-width: 850px; /* Wider modal for detailed content */
-    padding: 30px;
-}
+        #caseStudyDetailModal .case-study-detail-header {
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+        }
 
-#caseStudyDetailModal .case-study-detail-header {
-    margin-bottom: 25px;
-    text-align: center;
-    position: relative;
-}
+        #caseStudyDetailModal .detail-title {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Purple gradient for modal title */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
 
-#caseStudyDetailModal .detail-title {
-    font-size: 2em;
-    font-weight: 800;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Purple gradient for modal title */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
-}
+        #caseStudyDetailModal .detail-meta {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
 
-#caseStudyDetailModal .detail-meta {
-    font-size: 0.9em;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
+        #caseStudyDetailModal .detail-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
-#caseStudyDetailModal .detail-meta span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
+        #caseStudyDetailModal .detail-content {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 50vh; /* Limit height for scrollable content */
+            overflow-y: auto;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
 
-#caseStudyDetailModal .detail-content {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    max-height: 50vh; /* Limit height for scrollable content */
-    overflow-y: auto;
-    color: var(--text-primary);
-    line-height: 1.7;
-}
+        #caseStudyDetailModal .detail-content h3 {
+            font-size: 1.3em;
+            color: var(--primary); /* Primary blue for subheadings */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-light);
+            padding-bottom: 5px;
+        }
 
-#caseStudyDetailModal .detail-content h3 {
-    font-size: 1.3em;
-    color: var(--primary); /* Primary blue for subheadings */
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-bottom: 1px dashed var(--border-light);
-    padding-bottom: 5px;
-}
+        #caseStudyDetailModal .detail-content ul,
+        #caseStudyDetailModal .detail-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
 
-#caseStudyDetailModal .detail-content ul,
-#caseStudyDetailModal .detail-content ol {
-    margin-left: 20px;
-    margin-bottom: 15px;
-}
+        #caseStudyDetailModal .detail-content li {
+            margin-bottom: 5px;
+        }
 
-#caseStudyDetailModal .detail-content li {
-    margin-bottom: 5px;
-}
+        #caseStudyDetailModal .detail-tags {
+            margin-top: 15px;
+            text-align: center; /* Center tags in detail view */
+        }
 
-#caseStudyDetailModal .detail-tags {
-    margin-top: 15px;
-    text-align: center; /* Center tags in detail view */
-}
+        /* Responsive Adjustments for Case Studies */
+        @media (max-width: 768px) {
+            .case-studies-grid {
+                grid-template-columns: 1fr; /* Single column on small screens */
+                gap: 15px;
+            }
 
-/* Responsive Adjustments for Case Studies */
-@media (max-width: 768px) {
-    .case-studies-grid {
-        grid-template-columns: 1fr; /* Single column on small screens */
-        gap: 15px;
-    }
+            .case-studies-list .case-study-card {
+                padding: 10px 15px;
+            }
 
-    .case-studies-list .case-study-card {
-        padding: 10px 15px;
-    }
+            .case-study-title {
+                font-size: 1rem;
+                flex-direction: column; /* Stack icon and text vertically if needed */
+                align-items: flex-start;
+            }
+            .case-study-title .case-study-icon {
+                margin-bottom: 5px;
+            }
 
-    .case-study-title {
-        font-size: 1rem;
-        flex-direction: column; /* Stack icon and text vertically if needed */
-        align-items: flex-start;
-    }
-    .case-study-title .case-study-icon {
-        margin-bottom: 5px;
-    }
+            .case-study-meta {
+                font-size: 0.75rem;
+                flex-wrap: wrap; /* Allow meta items to wrap */
+                gap: 5px;
+            }
 
-    .case-study-meta {
-        font-size: 0.75rem;
-        flex-wrap: wrap; /* Allow meta items to wrap */
-        gap: 5px;
-    }
+            .case-study-description {
+                font-size: 13px;
+                max-height: 75px; /* Adjust preview height */
+                -webkit-line-clamp: 3;
+            }
 
-    .case-study-description {
-        font-size: 13px;
-        max-height: 75px; /* Adjust preview height */
-        -webkit-line-clamp: 3;
-    }
+            #caseStudyDetailModal .modal-content {
+                padding: 20px;
+            }
 
-    #caseStudyDetailModal .modal-content {
-        padding: 20px;
-    }
+            #caseStudyDetailModal .detail-title {
+                font-size: 1.5em;
+            }
 
-    #caseStudyDetailModal .detail-title {
-        font-size: 1.5em;
-    }
+            #caseStudyDetailModal .detail-meta {
+                font-size: 0.8em;
+                gap: 10px;
+            }
 
-    #caseStudyDetailModal .detail-meta {
-        font-size: 0.8em;
-        gap: 10px;
-    }
+            #caseStudyDetailModal .detail-content {
+                padding: 15px;
+                font-size: 14px;
+            }
 
-    #caseStudyDetailModal .detail-content {
-        padding: 15px;
-        font-size: 14px;
-    }
+            #caseStudyDetailModal .detail-content h3 {
+                font-size: 1.1em;
+            }
+        }
 
-    #caseStudyDetailModal .detail-content h3 {
-        font-size: 1.1em;
-    }
-}
+        @media (max-width: 480px) {
+            .case-study-card {
+                padding: 10px;
+            }
+            .case-study-title {
+                font-size: 0.9rem;
+            }
+            .case-study-meta {
+                font-size: 0.7rem;
+            }
+            .case-study-actions {
+                gap: 3px;
+            }
+            .action-btn {
+                padding: 4px;
+                font-size: 0.8rem;
+            }
+        }
 
-@media (max-width: 480px) {
-    .case-study-card {
-        padding: 10px;
-    }
-    .case-study-title {
-        font-size: 0.9rem;
-    }
-    .case-study-meta {
-        font-size: 0.7rem;
-    }
-    .case-study-actions {
-        gap: 3px;
-    }
-    .action-btn {
-        padding: 4px;
-        font-size: 0.8rem;
-    }
-}
+        /* --- New Close Modal Button Styles --- */
+        .close-modal-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bg-tertiary); /* Give it a distinct background */
+            border: 1px solid var(--border); /* Add a subtle border */
+            border-radius: 50%; /* Make it round */
+            width: 32px; /* Fixed width */
+            height: 32px; /* Fixed height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px; /* Larger 'x' */
+            color: var(--text-primary); /* Ensure contrast with primary text color */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10; /* Ensure it's above other content in the modal */
+            box-shadow: var(--shadow-light); /* Subtle shadow */
+        }
 
-/* --- New Close Modal Button Styles --- */
-.close-modal-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--bg-tertiary); /* Give it a distinct background */
-    border: 1px solid var(--border); /* Add a subtle border */
-    border-radius: 50%; /* Make it round */
-    width: 32px; /* Fixed width */
-    height: 32px; /* Fixed height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px; /* Larger 'x' */
-    color: var(--text-primary); /* Ensure contrast with primary text color */
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 10; /* Ensure it's above other content in the modal */
-    box-shadow: var(--shadow-light); /* Subtle shadow */
-}
+        .close-modal-btn:hover {
+            background: var(--danger); /* Red background on hover for "close" action */
+            color: white; /* White 'x' on hover */
+            transform: scale(1.1); /* Slightly enlarge on hover */
+            border-color: var(--danger);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
+        }
 
-.close-modal-btn:hover {
-    background: var(--danger); /* Red background on hover for "close" action */
-    color: white; /* White 'x' on hover */
-    transform: scale(1.1); /* Slightly enlarge on hover */
-    border-color: var(--danger);
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
-}
+        /* Threat Hunting Tab Colors (New) */
+        .nav-tab[data-tab="threat-hunting"].active::before {
+            background: linear-gradient(135deg, #10b981, #059669); /* A vibrant green for threat hunting */
+        }
 
-/* --- Existing CSS Updates (Insert these into your current CSS) --- */
+        /* Threat Hunting Sub-tab Content */
+        .th-subtab-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            width: 100%;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
 
-/* Add new icon to available icons list in custom-tabs section (for icon picker) */
-/* (This is a conceptual update; you need to manually add it to your `availableIcons` JS array) */
-/* Example: `fas fa-microscope` */
+        /* Script Card Styles (Reusing .tool-card as base) */
+        .script-card { /* Can be used as a modifier if needed, or simply let .tool-card styles apply */
+            /* Many styles inherited from .tool-card, but define specific if needed */
+        }
+
+        .script-card .script-language {
+            font-size: 0.7em;
+            background: var(--accent); /* Green accent for language */
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            margin-left: auto; /* Push to right */
+            flex-shrink: 0;
+        }
+
+        /* Script Code Display Modal */
+        #scriptCodeDisplayModal .modal-content {
+            max-width: 800px;
+            padding: 30px;
+        }
+
+        #scriptCodeDisplayModal pre {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        #scriptCodeDisplayModal .copy-code-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        #scriptCodeDisplayModal .copy-code-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--primary-shadow-color-hover);
+        }
+
+        /* Responsive adjustments for Threat Hunting Toolkit */
+        @media (max-width: 768px) {
+            .th-subtab-content {
+                padding: 15px;
+            }
+            .script-card {
+                padding: 15px;
+            }
+            .script-card .tool-header { /* Reusing tool-header for consistency */
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .script-card .tool-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            .script-card .script-language {
+                margin-left: 0; /* Reset alignment */
+                margin-top: 5px; /* Add space below name/title */
+            }
+
+            /* Code preview in modal */
+            #scriptCodeDisplayModal pre {
+                font-size: 12px;
+                padding: 10px;
+            }
+            #scriptCodeDisplayModal .modal-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .th-subtab-content {
+                padding: 10px;
+            }
+            /* Hide some elements if necessary for very small screens */
+            .script-card .script-language {
+                font-size: 0.6em;
+                padding: 2px 6px;
+            }
+        }
     </style>
 </head>
     <body>
@@ -5706,25 +5818,29 @@
                         <i class="fas fa-layer-group"></i>
                         Multi-Vault
                     </button>
-                    <button class="nav-tab" data-tab="timeline">
-                        <i class="fas fa-stream"></i> 
-                        TraceLink
+                    <button class="nav-tab" data-tab="dork-assistant">
+                        <i class="fas fa-terminal"></i> 
+                        Dork Assistant
                     </button>
                     <button class="nav-tab" data-tab="case-studies">
                         <i class="fas fa-microscope"></i>
                         Case Studies
                     </button>
-                    <button class="nav-tab" data-tab="threats">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Threat Intel
-                    </button>
-                    <button class="nav-tab" data-tab="dork-assistant">
-                        <i class="fas fa-terminal"></i> 
-                        Dork Assistant
-                    </button>
                     <button class="nav-tab" data-tab="handbook">
                         <i class="fas fa-book"></i> 
                         OSINT Handbook & Notes
+                    </button>
+                    <button class="nav-tab" data-tab="threat-hunting">
+                        <i class="fas fa-crosshairs"></i>
+                        Threat Hunting
+                    </button>
+                    <button class="nav-tab" data-tab="timeline">
+                        <i class="fas fa-stream"></i> 
+                        TraceLink
+                    </button>
+                    <button class="nav-tab" data-tab="threats">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Threat Intel
                     </button>
                 </div>
 
@@ -6460,6 +6576,62 @@
                         <button class="btn btn-primary" id="addCaseStudyEmptyStateBtn">
                             <i class="fas fa-plus"></i> Add First Case Study
                         </button>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="threat-huntingTab">
+                    <div class="content-header">
+                        <h2 class="content-title">Cyber Threat Hunting Toolkit</h2>
+                        <div class="controls">
+                            <input type="text" id="scriptSearchInput" class="search-input" placeholder="Search scripts..." style="max-width: 300px; margin-right: 10px;">
+                            <select id="scriptLanguageFilter" class="form-group-input" style="max-width: 150px; margin-right: 10px;">
+                                <option value="">All Languages</option>
+                            </select>
+                            <button class="btn btn-primary" id="addScriptBtn">
+                                <i class="fas fa-plus-circle"></i> Add New Script
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sub-nav-tabs">
+                        <button class="sub-nav-tab th-subtab active" data-th-subtab="script-library">
+                            <i class="fas fa-code"></i> Script Library
+                        </button>
+                        <button class="sub-nav-tab th-subtab" data-th-subtab="dashboards">
+                            <i class="fas fa-chart-bar"></i> Dashboards
+                        </button>
+                        <button class="sub-nav-tab th-subtab" data-th-subtab="playbooks">
+                            <i class="fas fa-book-open"></i> Playbooks
+                        </button>
+                    </div>
+
+                    <div class="th-subtab-content" id="script-library-content" style="display: block; margin-top: 20px;">
+                        <div class="tools-grid" id="scriptLibraryGrid">
+                            </div>
+                        <div class="empty-state" id="emptyScriptLibraryState" style="display: none;">
+                            <i class="fas fa-code"></i>
+                            <h3>No Scripts Found</h3>
+                            <p>Add your first threat hunting script to get started!</p>
+                            <button class="btn btn-primary" id="addScriptEmptyStateBtn">
+                                <i class="fas fa-plus"></i> Add First Script
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="th-subtab-content" id="dashboards-content" style="display: none; margin-top: 20px;">
+                        <div class="empty-state">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Dashboards (Coming Soon)</h3>
+                            <p>This section will feature interactive dashboards for threat hunting, such as visualizing common attack patterns or network anomalies (requires external services or more complex client-side charting).</p>
+                        </div>
+                    </div>
+
+                    <div class="th-subtab-content" id="playbooks-content" style="display: none; margin-top: 20px;">
+                        <div class="empty-state">
+                            <i class="fas fa-book-open"></i>
+                            <h3>Hunting Playbooks (Coming Soon)</h3>
+                            <p>A collection of step-by-step guides for various threat hunting scenarios, outlining techniques, tools, and expected outcomes.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -9377,6 +9549,117 @@
         </div>
     </div>
 
+    <div class="modal" id="addEditScriptModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-plus-circle"></i> <span id="addEditScriptModalTitle">Add New Script</span></h3>
+            <form id="addEditScriptForm">
+                <input type="hidden" id="scriptId">
+                <div class="form-group">
+                    <label for="scriptName">Script Name</label>
+                    <input type="text" id="scriptName" required placeholder="e.g., Sysmon Event Parser, Firewall Log Analyzer">
+                </div>
+                <div class="form-group">
+                    <label for="scriptDescription">Description</label>
+                    <textarea id="scriptDescription" rows="3" placeholder="Brief explanation of what the script does and its purpose."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="scriptLanguage">Language</label>
+                    <select id="scriptLanguage" required>
+                        <option value="">Select Language</option>
+                        <option value="powershell">PowerShell</option>
+                        <option value="python">Python</option>
+                        <option value="bash">Bash/Shell</option>
+                        <option value="cmd">CMD Batch</option>
+                        <option value="c#">C#</option>
+                        <option value="go">Go</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="scriptCode">Script Code (or Command)</label>
+                    <textarea id="scriptCode" rows="10" placeholder="Paste your script code here, or a single command/snippet." style="font-family: 'JetBrains Mono', monospace;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="scriptTags">Tags (comma separated)</label>
+                    <input type="text" id="scriptTags" placeholder="e.g., endpoint, network, detection, forensics">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelScriptAddEdit">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveScriptBtn">Save Script</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="scriptCodeDisplayModal">
+        <div class="modal-content">
+            <button type="button" class="close-modal-btn" onclick="hideModal('scriptCodeDisplayModal')">&times;</button>
+            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-code"></i> Script Code: <span id="displayScriptName"></span></h3>
+            <pre id="displayScriptCode"></pre>
+            <div style="text-align: right;">
+                <button class="copy-code-btn" id="copyScriptCodeBtn">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="threat-huntingTab">
+        <div class="content-header">
+            <h2 class="content-title">Cyber Threat Hunting Toolkit</h2>
+            <div class="controls">
+                <button class="btn btn-primary" id="addScriptBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    Add New Script
+                </button>
+                <button class="btn btn-secondary" id="scriptViewToggle" title="Switch to List View">
+                    <i class="fas fa-list"></i>
+                    List View
+                </button>
+            </div>
+        </div>
+        <div class="sub-nav-tabs">
+            <button class="sub-nav-tab th-subtab active" data-th-subtab="script-library">
+                <i class="fas fa-code"></i> Script Library
+            </button>
+            <button class="sub-nav-tab th-subtab" data-th-subtab="dashboards">
+                <i class="fas fa-chart-bar"></i> Dashboards
+            </button>
+            <button class="sub-nav-tab th-subtab" data-th-subtab="playbooks">
+                <i class="fas fa-book-open"></i> Playbooks
+            </button>
+        </div>
+
+        <div class="th-subtab-content" id="script-library-content" style="display: block; margin-top: 20px;">
+            <div class="tools-grid" id="scriptLibraryGrid">
+                </div>
+            <div class="empty-state" id="emptyScriptLibraryState" style="display: none;">
+                <i class="fas fa-code"></i>
+                <h3>No Scripts Found</h3>
+                <p>Add your first threat hunting script to get started!</p>
+                <button class="btn btn-primary" id="addScriptEmptyStateBtn">
+                    <i class="fas fa-plus"></i> Add First Script
+                </button>
+            </div>
+        </div>
+
+        <div class="th-subtab-content" id="dashboards-content" style="display: none; margin-top: 20px;">
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>Dashboards (Coming Soon)</h3>
+                <p>This section will feature interactive dashboards for threat hunting.</p>
+            </div>
+        </div>
+
+        <div class="th-subtab-content" id="playbooks-content" style="display: none; margin-top: 20px;">
+            <div class="empty-state">
+                <i class="fas fa-book-open"></i>
+                <h3>Hunting Playbooks (Coming Soon)</h3>
+                <p>A collection of step-by-step guides for various threat hunting scenarios.</p>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         let appState = {
@@ -9447,6 +9730,13 @@
                 "Understand your target's OPSEC (Operational Security) to anticipate their moves.",
                 "Never compromise your own security for an investigation. Think OPSEC first."
             ],
+            threatHuntingScripts: [], // NEW: Array to store threat hunting scripts
+            selectedScripts: new Set(), // NEW: For bulk selection of scripts
+            currentThSubTab: 'script-library', // NEW: Default sub-tab for Threat Hunting
+            scriptFilters: { // NEW: Filters specific to scripts
+                search: '',
+                language: ''
+            },
             timeline: {
                 events: [],
                 currentTimelineId: null,
@@ -10061,6 +10351,183 @@
             noteSortFilter: localStorage.getItem('noteSortFilter') || 'updated_desc'
         };
 
+        const defaultThreatHuntingScripts = [
+    {
+        id: 'th-sysmon-proc-creation',
+        name: 'Sysmon Process Creation Anomalies',
+        description: 'PowerShell script to query Sysmon Event ID 1 (Process Creation) logs for suspicious executables launched from unusual directories (e.g., AppData, Temp) or by unusual parent processes.',
+        language: 'powershell',
+        code: `
+        # Requires Sysmon Event ID 1 logging enabled
+        # Searches for suspicious process creations
+
+        $logName = "Microsoft-Windows-Sysmon/Operational"
+        $eventName = 1 # Event ID for Process Create
+
+        $suspiciousPaths = @(
+            "\\AppData\\Local\\Temp\\",
+            "\\Windows\\Temp\\",
+            "\\ProgramData\\",
+            "\\Users\\Public\\",
+            "\\PerfLogs\\"
+        )
+
+        $suspiciousParents = @(
+            "mshta.exe",
+            "wscript.exe",
+            "cscript.exe",
+            "rundll32.exe",
+            "regsvr32.exe",
+            "cmd.exe",
+            "powershell.exe"
+        )
+
+        Write-Host "Searching for Sysmon Event ID 1 (Process Create) with suspicious characteristics..."
+        Write-Host "--------------------------------------------------------------------------------"
+
+        Get-WinEvent -LogName $logName -FilterXPath "*[System[(EventID=$eventName)]]" -MaxEvents 5000 | ForEach-Object {
+            $event = $_
+            $eventData = [xml]$event.ToXml()
+            $processName = $eventData.Event.EventData.Data | Where-Object {$_.Name -eq 'Image'} | Select-Object -ExpandProperty '#text'
+            $parentProcessName = $eventData.Event.EventData.Data | Where-Object {$_.Name -eq 'ParentImage'} | Select-Object -ExpandProperty '#text'
+            $commandLine = $eventData.Event.EventData.Data | Where-Object {$_.Name -eq 'CommandLine'} | Select-Object -ExpandProperty '#text'
+            $originalFileName = $eventData.Event.EventData.Data | Where-Object {$_.Name -eq 'OriginalFileName'} | Select-Object -ExpandProperty '#text'
+
+            $isSuspiciousPath = $false
+            foreach ($path in $suspiciousPaths) {
+                if ($processName -like "*$path*") {
+                    $isSuspiciousPath = $true
+                    break
+                }
+            }
+
+            $isSuspiciousParent = $false
+            foreach ($parent in $suspiciousParents) {
+                if ($parentProcessName -like "*$parent*") {
+                    $isSuspiciousParent = $true
+                    break
+                }
+            }
+            
+            if ($isSuspiciousPath -or $isSuspiciousParent) {
+                Write-Host "Timestamp: $($event.TimeCreated)" -ForegroundColor Cyan
+                Write-Host "Process:   $processName" -ForegroundColor Yellow
+                Write-Host "Parent:    $parentProcessName" -ForegroundColor Yellow
+                Write-Host "Command:   $commandLine" -ForegroundColor Green
+                Write-Host "Reason:    Possible execution from suspicious path or by suspicious parent." -ForegroundColor Red
+                Write-Host "---"
+            }
+        }
+        Write-Host "Search complete."
+                `,
+                tags: ['sysmon', 'powershell', 'endpoint', 'process', 'anomalies', 'detection'],
+                addedDate: new Date('2025-05-15T10:00:00Z'),
+                usageCount: 0
+            },
+            {
+                id: 'th-python-ip-reputation',
+                name: 'Python IP Reputation Checker',
+                description: 'Python script that takes a list of IP addresses and checks their reputation against a public API (e.g., ipinfo.io or VirusTotal, simplified example).',
+                language: 'python',
+                code: `
+        import requests
+        import json
+
+        # IMPORTANT: This is a simplified example.
+        # For a real-world script, you would use proper API keys
+        # and handle rate limiting, errors, and specific API responses.
+        # Example: Using ipinfo.io (free tier has limits)
+
+        API_TOKEN = "YOUR_IPINFO_API_TOKEN" # Replace with your actual token
+        IP_LIST = [
+            "1.1.1.1", # Cloudflare DNS
+            "8.8.8.8", # Google DNS
+            "185.199.108.153", # Example potentially malicious IP (replace with actual IOCs)
+            "92.204.148.169" # Example another IP
+        ]
+
+        print("Checking IP Reputation...")
+        print("-" * 30)
+
+        for ip in IP_LIST:
+            try:
+                response = requests.get(f"https://ipinfo.io/{ip}/json?token={API_TOKEN}")
+                response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
+                data = response.json()
+
+                print(f"IP: {ip}")
+                print(f"  Country: {data.get('country', 'N/A')}")
+                print(f"  Org:     {data.get('org', 'N/A')}")
+                print(f"  Hostname: {data.get('hostname', 'N/A')}")
+                print(f"  Location: {data.get('loc', 'N/A')}")
+
+                # Add more reputation checks here (e.g., against VirusTotal, AbuseIPDB if you have APIs)
+                # For demonstration, we'll just flag certain IPs
+                if ip == "185.199.108.153": # This is a placeholder for a known bad IP
+                    print("  Reputation: !!! SUSPICIOUS - Known Malicious (Example) !!!")
+                else:
+                    print("  Reputation: No immediate flag (Requires deeper analysis)")
+                
+                print("-" * 30)
+
+            except requests.exceptions.RequestException as e:
+                print(f"Error checking {ip}: {e}")
+            except json.JSONDecodeError:
+                print(f"Error decoding JSON response for {ip}")
+            except Exception as e:
+                print(f"An unexpected error occurred for {ip}: {e}")
+
+        print("IP reputation check complete.")
+                `,
+                tags: ['network', 'ip', 'reputation', 'python', 'api'],
+                addedDate: new Date('2025-05-20T14:30:00Z'),
+                usageCount: 0
+            },
+            {
+                id: 'th-bash-web-log-parser',
+                name: 'Bash Web Log Parser',
+                description: 'Bash script to quickly parse Apache/Nginx access logs for unusual HTTP status codes, suspicious user agents, or high request counts from a single IP.',
+                language: 'bash',
+                code: `
+        #!/bin/bash
+
+        LOG_FILE="/var/log/apache2/access.log" # Adjust path for your log file
+        THRESHOLD_REQUESTS=500 # IP requests over this threshold
+        SUSPICIOUS_STATUS_CODES="400|401|403|404|405|408|429|500|502|503|504" # Common error/client/server errors
+        SUSPICIOUS_USER_AGENTS="sqlmap|nmap|curl|wget|nessus|nikto|bot|scanner" # Common scanning tools
+
+        echo "Analyzing web server logs: \${LOG_FILE}"
+        echo "-------------------------------------"
+
+        if [[ ! -f "\${LOG_FILE}" ]]; then
+            echo "Error: Log file not found at \${LOG_FILE}"
+            exit 1
+        fi
+
+        echo "--- Top 10 IPs by Request Count ---"
+        awk '{print \$1}' "\${LOG_FILE}" | sort | uniq -c | sort -nr | head -n 10
+        echo ""
+
+        echo "--- Requests with Suspicious Status Codes ---"
+        grep -E "HTTP/1\\\.[01]\" (\${SUSPICIOUS_STATUS_CODES})" "\${LOG_FILE}" | head -n 20 # Show first 20 matches
+        echo ""
+
+        echo "--- Requests with Suspicious User Agents ---"
+        grep -iE "User-Agent:.*(\${SUSPICIOUS_USER_AGENTS})" "\${LOG_FILE}" | head -n 20 # Show first 20 matches
+        echo ""
+
+        echo "--- IPs with High Request Counts (over \${THRESHOLD_REQUESTS}) ---"
+        awk '{print \$1}' "\${LOG_FILE}" | sort | uniq -c | sort -nr | awk -v thresh="\$THRESHOLD_REQUESTS" '\$1 > thresh {print \$0}'
+        echo ""
+
+        echo "Log analysis complete."
+                `,
+                tags: ['logs', 'web', 'bash', 'network', 'detection'],
+                addedDate: new Date('2025-05-25T09:15:00Z'),
+                usageCount: 0
+            }
+        ];
+
         // OSINT Handbook main functionality
         const handbookData = {
         sections: [
@@ -10371,7 +10838,7 @@
 
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'timeline', 'threats', 'handbook', 'dork-assistant', 'case-studies'];
+            const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'timeline', 'threats', 'handbook', 'dork-assistant', 'case-studies', 'threat-hunting'];
             if (!validTabs.includes(appState.currentTab)) {
                 appState.currentTab = 'dashboard';
             }
@@ -10382,6 +10849,7 @@
             populateCategoryFilter();
             updateDashboard(); // Calls all dashboard rendering functions, including charts
             applyReadOnlyMode();
+            
 
             const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle');
             viewToggleButtons.forEach(btn => {
@@ -10488,8 +10956,9 @@
                 appState.caseStudyFilters.type = '';
                 document.getElementById('caseStudySearchInput').value = '';
                 document.getElementById('caseStudyFilterSelect').value = '';
+            } else if (tabName === 'threat-hunting') { // NEW: Handle Threat Hunting tab
+                initThreatHuntingToolkit();
             }
-
             saveState(); // Save state after tab switch
         }
 
@@ -10679,7 +11148,7 @@
                 appState.exploits = [];
                 appState.publicRecords = [];
                 appState.caseStudies = []; // Ensure initialized as empty array
-
+                appState.threatHuntingScripts = []; // NEW: Initialize threatHuntingScripts as empty array
 
                 // Now, populate from parsedState, safely falling back to empty arrays if null/undefined
                 appState.tools = (parsedState.tools || []).map(entry => ({
@@ -10784,6 +11253,12 @@
 
                 appState.publicRecords = parsedState.publicRecords || [];
 
+                appState.threatHuntingScripts = (parsedState.threatHuntingScripts || []).map(script => ({ // NEW
+                    ...script,
+                    addedDate: script.addedDate ? new Date(script.addedDate) : null,
+                    usageCount: script.usageCount || 0
+                }));
+
                 // Correctly load case studies data
                 appState.caseStudies = loadCaseStudiesData(); // This handles merging with sample data if localStorage is empty for case studies.
 
@@ -10794,7 +11269,7 @@
                         event.timestamp = new Date(event.timestamp);
                     }
                 });
-                
+
                 // Ensure other appState properties are loaded/initialized safely
                 appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
                 appState.filters = parsedState.filters || {
@@ -10807,6 +11282,10 @@
                     search: '',
                     type: ''
                 };
+                appState.scriptFilters = parsedState.scriptFilters || { // NEW
+                    search: '',
+                    language: ''
+                };
                 appState.theme = parsedState.theme || 'dark';
                 appState.viewMode = parsedState.viewMode || 'grid';
                 appState.usageStats = parsedState.usageStats || { toolsUsedToday: 0 };
@@ -10816,6 +11295,8 @@
                 appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
                 appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
                 appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool';
+                appState.currentThSubTab = parsedState.currentThSubTab || 'script-library'; // NEW
+
 
                 // Notes State
                 appState.notesState = parsedState.notesState || { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
@@ -10879,6 +11360,8 @@
                 appState.currentIntelligenceVaultChildTab = 'tools';
                 appState.currentCustomVaultParentTab = 'coreInvestigation';
                 appState.currentCustomVaultEntrySubTab = 'tool';
+                appState.currentThSubTab = 'script-library'; // NEW
+
 
                 // Initialize all other arrays as empty for a fresh start (Crucial for first-time load)
                 appState.emails = [];
@@ -10914,6 +11397,7 @@
                 appState.honeypots = [];
                 appState.exploits = [];
                 appState.publicRecords = [];
+                appState.threatHuntingScripts = []; // NEW
 
                 // Load sample case studies only on first-time use
                 appState.caseStudies = loadCaseStudiesData();
@@ -10940,6 +11424,10 @@
                 appState.caseStudyFilters = {
                     search: '',
                     type: ''
+                };
+                appState.scriptFilters = { // NEW
+                    search: '',
+                    language: ''
                 };
                 appState.customVaultViewMode = 'entries';
             }
@@ -11117,6 +11605,14 @@
                 });
             }
 
+            if (stateToSave.threatHuntingScripts) {
+                stateToSave.threatHuntingScripts.forEach(script => {
+                    if (script.addedDate && typeof script.addedDate.toISOString === 'function') {
+                        script.addedDate = script.addedDate.toISOString();
+                    }
+                });
+            }
+
             localStorage.setItem('osintArsenalState', JSON.stringify(stateToSave));
         }
 
@@ -11133,7 +11629,8 @@
                 ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
                 ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
                 ...appState.publicRecords,
-                ...appState.caseStudies // NEW: Include case studies in total entries count
+                ...appState.caseStudies, // NEW: Include case studies in total entries count
+                ...(appState.threatHuntingScripts || []) // NEW: Include threat hunting scripts
             ];
 
             // These IDs are for the top-level stats bar
@@ -12312,6 +12809,58 @@
                 }
             });
 
+            // Threat Hunting Tab Event Listeners
+            document.querySelector('[data-tab="threat-hunting"]').addEventListener('click', () => {
+                switchTab('threat-hunting');
+            });
+
+            // Threat Hunting Sub-tab navigation
+            document.querySelectorAll('.th-subtab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    switchThSubTab(e.target.dataset.thSubtab);
+                });
+            });
+
+            // Script Search Input
+            document.getElementById('scriptSearchInput').addEventListener('input', (e) => {
+                appState.scriptFilters.search = e.target.value;
+                renderThreatHuntingScripts();
+            });
+
+            // Script Language Filter Select
+            document.getElementById('scriptLanguageFilter').addEventListener('change', (e) => {
+                appState.scriptFilters.language = e.target.value;
+                renderThreatHuntingScripts();
+            });
+
+            // Add Script Button
+            document.getElementById('addScriptBtn').addEventListener('click', () => openAddEditScriptModal('add'));
+            document.getElementById('addScriptEmptyStateBtn').addEventListener('click', () => openAddEditScriptModal('add'));
+
+            // Add/Edit Script Modal Buttons
+            const cancelScriptAddEditBtn = document.getElementById('cancelScriptAddEdit');
+            if (cancelScriptAddEditBtn) {
+                cancelScriptAddEditBtn.onclick = () => hideModal('addEditScriptModal');
+            }
+            document.getElementById('addEditScriptForm').addEventListener('submit', handleAddEditScriptFormSubmit);
+
+            // Script Library Grid/List actions (using delegation)
+            const scriptLibraryGrid = document.getElementById('scriptLibraryGrid');
+            if (scriptLibraryGrid) {
+                scriptLibraryGrid.addEventListener('click', handleScriptAction);
+            }
+
+            // Script Code Display Modal (View Code) copy button
+            const copyScriptCodeBtn = document.getElementById('copyScriptCodeBtn');
+            if (copyScriptCodeBtn) {
+                copyScriptCodeBtn.addEventListener('click', () => {
+                    const codeToCopy = document.getElementById('displayScriptCode').textContent;
+                    copyToClipboard(codeToCopy);
+                    showToast('Script code copied to clipboard!');
+                    hideModal('scriptCodeDisplayModal');
+                });
+            }
+
             // Case Study Add/Edit Modal Buttons
             document.getElementById('cancelCaseStudyAddEdit').addEventListener('click', () => hideModal('addEditCaseStudyModal'));
             document.getElementById('addEditCaseStudyForm').addEventListener('submit', handleCaseStudyFormSubmit);
@@ -13241,7 +13790,302 @@
             reader.readAsText(file);
         }
 
+        /* -------------------------------------------------------------------------- */
+        /* Cyber Threat Hunting Toolkit JS                                            */
+        /* -------------------------------------------------------------------------- */
 
+        // Initializes the Threat Hunting Toolkit tab
+        function initThreatHuntingToolkit() {
+            populateScriptLanguageFilter(); // Populate language filter dropdown
+            renderThreatHuntingScripts();   // Render scripts for the active sub-tab
+            switchThSubTab(appState.currentThSubTab); // Ensure correct sub-tab is active
+        }
+
+        // Switches between Threat Hunting sub-tabs (Script Library, Dashboards, Playbooks)
+        function switchThSubTab(subtabName) {
+            appState.currentThSubTab = subtabName;
+
+            document.querySelectorAll('.th-subtab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const targetSubTabBtn = document.querySelector(`.th-subtab[data-th-subtab="${subtabName}"]`);
+            if (targetSubTabBtn) {
+                targetSubTabBtn.classList.add('active');
+            }
+
+            document.querySelectorAll('.th-subtab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            const targetContent = document.getElementById(`${subtabName}-content`);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            }
+
+            // Only render scripts if on the 'script-library' sub-tab
+            if (subtabName === 'script-library') {
+                renderThreatHuntingScripts();
+            }
+            // No specific rendering needed for 'dashboards' or 'playbooks' currently, as they are empty states
+            saveState();
+        }
+
+        // Populates the language filter dropdown for scripts
+        function populateScriptLanguageFilter() {
+            const languageFilterSelect = document.getElementById('scriptLanguageFilter');
+            const existingLanguages = new Set(appState.threatHuntingScripts.map(script => script.language.toLowerCase()));
+
+            const defaultLanguages = ['powershell', 'python', 'bash', 'cmd', 'c#', 'go', 'other'];
+
+            const allLanguages = new Set([...defaultLanguages.map(lang => lang.toLowerCase()), ...Array.from(existingLanguages)]);
+
+            languageFilterSelect.innerHTML = '<option value="">All Languages</option>';
+
+            Array.from(allLanguages)
+                .sort((a, b) => a.localeCompare(b))
+                .forEach(language => {
+                    const option = document.createElement('option');
+                    option.value = language;
+                    option.textContent = language.charAt(0).toUpperCase() + language.slice(1);
+                    languageFilterSelect.appendChild(option);
+                });
+
+            languageFilterSelect.value = appState.scriptFilters.language; // Set selected filter
+        }
+
+
+        // Renders the list of threat hunting scripts
+        function renderThreatHuntingScripts() {
+            const scriptLibraryGrid = document.getElementById('scriptLibraryGrid');
+            const emptyState = document.getElementById('emptyScriptLibraryState');
+
+            const filteredScripts = filterThreatHuntingScripts();
+
+            if (filteredScripts.length === 0) {
+                emptyState.style.display = 'block';
+                scriptLibraryGrid.style.display = 'none';
+                if (appState.scriptFilters.search || appState.scriptFilters.language) {
+                    emptyState.innerHTML = `<i class="fas fa-search"></i><h3>No matching scripts found</h3><p>Adjust your search or filters.</p>`;
+                } else {
+                    emptyState.innerHTML = `<i class="fas fa-code"></i><h3>No Scripts Found</h3><p>Add your first threat hunting script to get started!</p><button class="btn btn-primary" id="addScriptEmptyStateBtn"><i class="fas fa-plus"></i> Add First Script</button>`;
+                    document.getElementById('addScriptEmptyStateBtn').addEventListener('click', () => openAddEditScriptModal('add'));
+                }
+            } else {
+                emptyState.style.display = 'none';
+                scriptLibraryGrid.style.display = 'grid'; // Ensure grid display for scripts
+                scriptLibraryGrid.innerHTML = filteredScripts.map(script => createScriptCard(script)).join('');
+            }
+            saveState(); // Save state after rendering
+        }
+
+        // Filters scripts based on current search and language filters
+        function filterThreatHuntingScripts() {
+            let filtered = [...appState.threatHuntingScripts];
+
+            const searchTerm = appState.scriptFilters.search.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(script => {
+                    const searchFields = [
+                        script.name, script.description, script.language, script.code,
+                        script.tags ? script.tags.join(' ') : ''
+                    ].map(field => String(field || '').toLowerCase());
+                    return searchFields.some(field => field.includes(searchTerm));
+                });
+            }
+
+            const selectedLanguage = appState.scriptFilters.language;
+            if (selectedLanguage) {
+                filtered = filtered.filter(script => script.language.toLowerCase() === selectedLanguage.toLowerCase());
+            }
+
+            // Sort by addedDate descending (most recent first)
+            filtered.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
+
+            return filtered;
+        }
+
+        // Creates the HTML for a single script card
+        function createScriptCard(script) {
+            const languageIcon = {
+                'powershell': 'fab fa-windows', // Windows icon for PowerShell
+                'python': 'fab fa-python',
+                'bash': 'fas fa-terminal',
+                'cmd': 'fas fa-terminal',
+                'c#': 'fas fa-code',
+                'go': 'fab fa-gofore', // Go lang icon
+                'other': 'fas fa-file-code'
+            }[script.language.toLowerCase()] || 'fas fa-file-code'; // Default icon
+
+            return `
+                <div class="tool-card" data-script-id="${script.id}" data-script-language="${script.language}">
+                    <div class="tool-header">
+                        <div>
+                            <div class="tool-title">
+                                <i class="${languageIcon}" style="color: var(--accent); margin-right: 8px;"></i>
+                                <span>${script.name}</span>
+                                <span class="script-language">${script.language}</span>
+                            </div>
+                            <div class="tool-url" style="display: none;"></div>
+                        </div>
+                        <div class="tool-actions">
+                            <button class="action-btn" data-action="view-code" title="View Script Code">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn" data-action="edit-script" title="Edit Script">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn" data-action="copy-code" title="Copy Script Code">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="action-btn" data-action="delete-script" title="Delete Script">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">
+                        ${script.description || 'No description available.'}
+                    </p>
+                    <div class="tool-tags">
+                        ${script.tags ? script.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Opens the Add/Edit Script Modal
+        function openAddEditScriptModal(mode, scriptId = null) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot add/edit scripts in read-only shared view.", "warning");
+                return;
+            }
+
+            const form = document.getElementById('addEditScriptForm');
+            form.reset(); // Clear all form fields
+            document.getElementById('scriptId').value = ''; // Clear hidden ID
+
+            if (mode === 'add') {
+                document.getElementById('addEditScriptModalTitle').textContent = 'Add New Script';
+                document.getElementById('saveScriptBtn').textContent = 'Save Script';
+                document.getElementById('saveScriptBtn').dataset.mode = 'add';
+                document.getElementById('scriptLanguage').value = ''; // Reset language dropdown
+            } else if (mode === 'edit' && scriptId) {
+                const scriptToEdit = appState.threatHuntingScripts.find(s => s.id === scriptId);
+                if (!scriptToEdit) {
+                    showToast("Script not found for editing.", "error");
+                    return;
+                }
+
+                document.getElementById('addEditScriptModalTitle').textContent = 'Edit Script';
+                document.getElementById('saveScriptBtn').textContent = 'Save Changes';
+                document.getElementById('saveScriptBtn').dataset.mode = 'edit';
+
+                document.getElementById('scriptId').value = scriptToEdit.id;
+                document.getElementById('scriptName').value = scriptToEdit.name;
+                document.getElementById('scriptDescription').value = scriptToEdit.description;
+                document.getElementById('scriptLanguage').value = scriptToEdit.language;
+                document.getElementById('scriptCode').value = scriptToEdit.code;
+                document.getElementById('scriptTags').value = scriptToEdit.tags ? scriptToEdit.tags.join(', ') : '';
+            }
+            showModal('addEditScriptModal');
+        }
+
+        // Handles form submission for adding or editing a script
+        function handleAddEditScriptFormSubmit(e) {
+            e.preventDefault();
+            if (appState.readOnlyMode) {
+                showToast("Cannot save scripts in read-only shared view.", "warning");
+                return;
+            }
+
+            const mode = document.getElementById('saveScriptBtn').dataset.mode;
+            const scriptId = document.getElementById('scriptId').value;
+
+            const name = document.getElementById('scriptName').value.trim();
+            const description = document.getElementById('scriptDescription').value.trim();
+            const language = document.getElementById('scriptLanguage').value;
+            const code = document.getElementById('scriptCode').value.trim();
+            const tags = document.getElementById('scriptTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+            if (!name || !language || !code) {
+                showToast('Please fill in all required fields (Name, Language, Code).', 'error');
+                return;
+            }
+
+            const newScript = {
+                id: mode === 'add' ? generateId() : scriptId,
+                name: name,
+                description: description,
+                language: language,
+                code: code,
+                tags: tags,
+                addedDate: new Date(),
+                usageCount: 0 // Retain or set for new
+            };
+
+            if (mode === 'add') {
+                appState.threatHuntingScripts.push(newScript);
+                showToast('Script added successfully!');
+            } else if (mode === 'edit') {
+                const index = appState.threatHuntingScripts.findIndex(s => s.id === scriptId);
+                if (index > -1) {
+                    // Retain original usageCount if available
+                    newScript.usageCount = appState.threatHuntingScripts[index].usageCount;
+                    appState.threatHuntingScripts[index] = newScript;
+                    showToast('Script updated successfully!');
+                } else {
+                    showToast('Error: Script not found for update.', 'error');
+                }
+            }
+
+            hideModal('addEditScriptModal');
+            renderThreatHuntingScripts(); // Re-render the list
+            populateScriptLanguageFilter(); // Update language filter options
+            saveState(); // Save to local storage
+        }
+
+        // Handles actions on individual script cards (view, edit, copy, delete)
+        function handleScriptAction(e) {
+            if (appState.readOnlyMode) {
+                showToast("Cannot perform actions in read-only shared view.", "warning");
+                return;
+            }
+
+            const targetBtn = e.target.closest('.action-btn');
+            if (!targetBtn) return;
+
+            e.preventDefault();
+            const action = targetBtn.dataset.action;
+            const scriptCard = e.target.closest('.tool-card'); // Reusing .tool-card class
+            const scriptId = scriptCard.dataset.scriptId;
+
+            const script = appState.threatHuntingScripts.find(s => s.id === scriptId);
+            if (!script) return;
+
+            switch (action) {
+                case 'view-code':
+                    document.getElementById('displayScriptName').textContent = script.name;
+                    document.getElementById('displayScriptCode').textContent = script.code;
+                    showModal('scriptCodeDisplayModal');
+                    script.usageCount = (script.usageCount || 0) + 1; // Increment usage
+                    break;
+                case 'edit-script':
+                    openAddEditScriptModal('edit', script.id);
+                    break;
+                case 'copy-code':
+                    copyToClipboard(script.code);
+                    showToast('Script code copied to clipboard!');
+                    script.usageCount = (script.usageCount || 0) + 1; // Increment usage
+                    break;
+                case 'delete-script':
+                    if (confirm(`Are you sure you want to delete the script "${script.name}"?`)) {
+                        appState.threatHuntingScripts = appState.threatHuntingScripts.filter(s => s.id !== scriptId);
+                        showToast('Script deleted!', 'error');
+                        populateScriptLanguageFilter(); // Update filter options
+                    }
+                    break;
+            }
+            renderThreatHuntingScripts(); // Re-render to reflect changes (e.g., usage count update)
+            saveState(); // Save state after any action
+        }
 
 
         // MODIFIED: Function to open the Add Tool Only Modal
