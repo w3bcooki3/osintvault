@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11024,7 +11023,8 @@
             switchTab(appState.currentTab); // This will call renderIntelligenceEntries, renderTimelineEvents, renderCaseStudies, etc.
 
             // This is the correct place to call the enhanced random discovery
-            showRandomDiscovery(); 
+            showRandomDiscovery();
+            startRandomDiscoveryRotation();
             
             populateCategoryFilter();
             updateDashboard(); // Calls all dashboard rendering functions, including charts
@@ -21720,179 +21720,233 @@ function getEntryIcon(type) {
             }
         }
 
-// Function to get a random item from a given array (utility)
-function getRandomItem(array) {
-    if (!array || array.length === 0) {
-        return null;
-    }
-    return array[Math.floor(Math.random() * array.length)];
-}
+        // Function to get a random item from a given array (utility)
+        function getRandomItem(array) {
+            if (!array || array.length === 0) {
+                return null;
+            }
+            return array[Math.floor(Math.random() * array.length)];
+        }
 
-// Function to generate a single random content card HTML
-function generateRandomContentCard(item, type) {
-    let title, description, url, icon, faviconHtml = '', extraClass = '';
+        // Function to generate a single random content card HTML
+        function generateRandomContentCard(item, type) {
+            let title, description, url, icon, faviconHtml = '', extraClass = '';
 
-    if (!item) {
-        // Placeholder card for when no item is available or a slot needs filling
-        return `
-            <div class="random-content-card placeholder">
-                <i class="fas fa-question-circle"></i>
-                <h4 class="card-title">No Discovery Available</h4>
-                <p class="card-description">Add more tools, tips, or case studies to get a random discovery!</p>
-            </div>
-        `;
-    }
+            if (!item) {
+                // Placeholder card for when no item is available or a slot needs filling
+                return `
+                    <div class="random-content-card placeholder">
+                        <i class="fas fa-question-circle"></i>
+                        <h4 class="card-title">No Discovery Available</h4>
+                        <p class="card-description">Add more tools, tips, or case studies to get a random discovery!</p>
+                    </div>
+                `;
+            }
 
-    switch (type) {
-        case 'tool':
-            title = item.name;
-            description = item.description;
-            url = item.url;
-            icon = 'fas fa-tools';
-            // Attempt to get favicon, fallback to a generic image if error
-            faviconHtml = `<img src="${item.favicon}" alt="" class="tool-favicon" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${new URL(item.url).hostname}'; if (this.src.includes('google.com/s2/favicons')) this.onerror=function(){this.src='https://placehold.co/24x24/cccccc/000000?text=?';}">`;
-            extraClass = 'random-tool-card';
-            break;
-        case 'tip':
-            title = "OSINT Tip";
-            description = item; // item itself is the tip string
-            url = null;
-            icon = 'fas fa-lightbulb';
-            extraClass = 'random-tip-card';
-            break;
-        case 'case-study':
-            title = item.title;
-            description = item.summary;
-            url = null; // Case studies typically don't have a direct URL to open from here
-            icon = 'fas fa-microscope';
-            extraClass = 'random-case-study-card';
-            break;
-        default:
-            title = "Unknown Discovery";
-            description = "Could not load content.";
-            url = null;
-            icon = 'fas fa-question-circle';
-            break;
-    }
+            switch (type) {
+                case 'tool':
+                    title = item.name;
+                    description = item.description;
+                    url = item.url;
+                    icon = 'fas fa-tools';
+                    // Attempt to get favicon, fallback to a generic image if error
+                    faviconHtml = `<img src="${item.favicon}" alt="" class="tool-favicon" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${new URL(item.url).hostname}'">`;
+                    extraClass = 'random-tool-card';
+                    break;
+                case 'tip':
+                    title = "OSINT Tip";
+                    description = item; // item itself is the tip string
+                    url = null;
+                    icon = 'fas fa-lightbulb';
+                    extraClass = 'random-tip-card';
+                    break;
+                case 'case-study':
+                    title = item.title;
+                    description = item.summary;
+                    url = null; // Case studies typically don't have a direct URL to open from here
+                    icon = 'fas fa-microscope';
+                    extraClass = 'random-case-study-card';
+                    break;
+                default:
+                    title = "Unknown Discovery";
+                    description = "Could not load content.";
+                    url = null;
+                    icon = 'fas fa-question-circle';
+                    break;
+            }
 
-    return `
-        <div class="random-content-card ${extraClass}">
-            <div class="card-header">
-                ${faviconHtml || `<i class="${icon}"></i>`}
-                <h4 class="card-title">${title}</h4>
-            </div>
-            <p class="card-description">${description}</p>
-            ${url ? `<a href="${url}" target="_blank" class="card-link btn-sm btn-primary">Visit <i class="fas fa-external-link-alt"></i></a>` : ''}
-        </div>
-    `;
-}
-
-// Main function to show random discovery with dynamic layouts
-function showRandomDiscovery() {
-    // #randomDiscovery is the main container (the .random-display div)
-    const randomDiscoverySection = document.getElementById('randomDiscovery');
-    // #randomItemDisplay is the content wrapper inside it (the .random-content-wrapper div)
-    const randomItemDisplay = document.getElementById('randomItemDisplay');
-    const newRandomBtn = document.getElementById('newRandomBtn');
-
-    if (!randomDiscoverySection || !randomItemDisplay || !newRandomBtn) {
-        console.error("Random discovery elements not found. Ensure #randomDiscovery, #randomItemDisplay, and #newRandomBtn exist in HTML.");
-        return;
-    }
-
-    // Handle read-only mode first
-    if (appState.readOnlyMode) {
-        newRandomBtn.style.display = 'none';
-        randomItemDisplay.innerHTML = `
-            <div class="random-content-card placeholder">
-                <i class="fas fa-lock"></i>
-                <h4 class="card-title">Read-Only Mode</h4>
-                <p class="card-description">Discovery is disabled in shared view.</p>
-            </div>
-        `;
-        randomDiscoverySection.classList.remove('two-rows', 'two-columns', 'single-centered'); // Clear layout classes
-        randomDiscoverySection.classList.add('single-centered'); // Default to single view in read-only
-        return;
-    }
-
-    newRandomBtn.disabled = true; // Disable button during loading
-    // Display a loading spinner or message initially within the content area
-    randomItemDisplay.innerHTML = `
-        <div class="random-content-card placeholder">
-            <div class="loading" style="margin-bottom: 10px;"></div>
-            <p>Loading discovery...</p>
-        </div>
-    `;
-
-    // Clear existing layout classes from the main section to apply new ones consistently
-    randomDiscoverySection.classList.remove('single-centered', 'two-columns', 'two-rows');
-
-
-    // Simulate API call delay or complex content generation
-    setTimeout(() => {
-        const allTools = appState.tools.filter(tool => tool.url); // Ensure tools have a URL
-        const allTips = appState.osintTips;
-        const allCaseStudies = appState.caseStudies;
-
-        const availableContentTypes = [];
-        if (allTools.length > 0) availableContentTypes.push('tool');
-        if (allTips.length > 0) availableContentTypes.push('tip');
-        if (allCaseStudies.length > 0) availableContentTypes.push('case-study');
-
-        if (availableContentTypes.length === 0) {
-            randomItemDisplay.innerHTML = `
-                <div class="random-content-card placeholder">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <h4 class="card-title">No Content Available</h4>
-                    <p class="card-description">Add some tools, tips, or case studies to get amazing discoveries!</p>
+            return `
+                <div class="random-content-card ${extraClass}">
+                    <div class="card-header">
+                        ${faviconHtml || `<i class="${icon}"></i>`}
+                        <h4 class="card-title">${title}</h4>
+                    </div>
+                    <p class="card-description">${description}</p>
+                    ${url ? `<a href="${url}" target="_blank" class="card-link btn-sm btn-primary">Visit <i class="fas fa-external-link-alt"></i></a>` : ''}
                 </div>
             `;
-            // If no content, default to single column layout
-            randomDiscoverySection.classList.add('single-centered');
-            newRandomBtn.disabled = false;
-            return;
         }
 
-        // --- FIXED LAYOUT LOGIC: Always use 'two-rows' as requested ---
-        const selectedLayout = 'two-rows'; // Force the 2-rows layout
-        randomDiscoverySection.classList.add(selectedLayout); // Add layout class to the main #randomDiscovery container
+        // Global variable to hold the interval ID for auto-rotation
+        let randomDiscoveryInterval = null;
 
-        const numItems = 3; // Always generate 3 items for the 'two-rows' layout
+        // Main function to show random discovery with dynamic layouts
+        function showRandomDiscovery() {
+            // #randomDiscovery is the main container (the .random-display div)
+            const randomDiscoverySection = document.getElementById('randomDiscovery');
+            // #randomItemDisplay is the content wrapper inside it (the .random-content-wrapper div)
+            const randomItemDisplay = document.getElementById('randomItemDisplay');
+            const newRandomBtn = document.getElementById('newRandomBtn');
 
-        const generatedCards = [];
-        for (let i = 0; i < numItems; i++) {
-            const randomType = getRandomItem(availableContentTypes);
-            let item;
-            // Ensure we don't try to get an item from an empty array type
-            if (randomType === 'tool' && allTools.length > 0) {
-                item = getRandomItem(allTools);
-            } else if (randomType === 'tip' && allTips.length > 0) {
-                item = getRandomItem(allTips);
-            } else if (randomType === 'case-study' && allCaseStudies.length > 0) {
-                item = getRandomItem(allCaseStudies);
+            if (!randomDiscoverySection || !randomItemDisplay || !newRandomBtn) {
+                console.error("Random discovery elements not found. Ensure #randomDiscovery, #randomItemDisplay, and #newRandomBtn exist in HTML.");
+                return;
             }
-            // If item is still null (e.g., specific type array was empty), generate a generic placeholder
-            generatedCards.push(generateRandomContentCard(item, randomType));
+
+            // Handle read-only mode first
+            if (appState.readOnlyMode) {
+                newRandomBtn.style.display = 'none';
+                randomItemDisplay.innerHTML = `
+                    <div class="random-content-card placeholder">
+                        <i class="fas fa-lock"></i>
+                        <h4 class="card-title">Read-Only Mode</h4>
+                        <p class="card-description">Discovery is disabled in shared view.</p>
+                    </div>
+                `;
+                randomDiscoverySection.classList.remove('two-rows', 'two-columns', 'single-centered'); // Clear layout classes
+                randomDiscoverySection.classList.add('single-centered'); // Default to single view in read-only
+                
+                // Clear any existing auto-rotation if entering read-only mode
+                if (randomDiscoveryInterval) {
+                    clearInterval(randomDiscoveryInterval);
+                    randomDiscoveryInterval = null;
+                }
+                return;
+            }
+
+            newRandomBtn.disabled = true; // Disable button during loading
+            // Display a loading spinner or message initially within the content area
+            randomItemDisplay.innerHTML = `
+                <div class="random-content-card placeholder">
+                    <div class="loading" style="margin-bottom: 10px;"></div>
+                    <p>Loading discovery...</p>
+                </div>
+            `;
+
+            // Clear existing layout classes from the main section to apply new ones consistently
+            randomDiscoverySection.classList.remove('single-centered', 'two-columns', 'two-rows');
+
+
+            // Simulate API call delay or complex content generation
+            setTimeout(() => {
+                const allTools = appState.tools.filter(tool => tool.url); // Ensure tools have a URL
+                const allTips = appState.osintTips;
+                const allCaseStudies = appState.caseStudies;
+
+                // Check if there's *any* content available to display
+                if (allCaseStudies.length === 0 && allTools.length === 0 && allTips.length === 0) {
+                    randomItemDisplay.innerHTML = `
+                        <div class="random-content-card placeholder">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h4 class="card-title">No Content Available</h4>
+                            <p class="card-description">Add some tools, tips, or case studies to get amazing discoveries!</p>
+                        </div>
+                    `;
+                    randomDiscoverySection.classList.add('single-centered');
+                    newRandomBtn.disabled = false;
+                    return;
+                }
+
+                // --- FIXED LAYOUT LOGIC: Always use 'two-rows' as requested ---
+                const selectedLayout = 'two-rows'; // Force the 2-rows layout
+                randomDiscoverySection.classList.add(selectedLayout); // Add layout class to the main #randomDiscovery container
+
+                const generatedCards = [];
+
+                // 1. Generate the left column card (Always a Case Study if available, otherwise a fallback)
+                if (allCaseStudies.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allCaseStudies), 'case-study'));
+                } else {
+                    // Fallback if no case studies: pick a random tool or tip
+                    const fallbackTypes = [];
+                    if (allTools.length > 0) fallbackTypes.push('tool');
+                    if (allTips.length > 0) fallbackTypes.push('tip');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allTips), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder if no content at all
+                    }
+                }
+
+                // 2. Generate the right-top card (Always a Random Tool if available)
+                if (allTools.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allTools), 'tool'));
+                } else {
+                    // Fallback if no tools: pick a random tip or case study
+                    const fallbackTypes = [];
+                    if (allTips.length > 0) fallbackTypes.push('tip');
+                    if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tip' ? getRandomItem(allTips) : getRandomItem(allCaseStudies), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+                    }
+                }
+
+                // 3. Generate the right-bottom card (Always a Random Tip if available)
+                if (allTips.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allTips), 'tip'));
+                } else {
+                    // Fallback if no tips: pick a random tool or case study
+                    const fallbackTypes = [];
+                    if (allTools.length > 0) fallbackTypes.push('tool');
+                    if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allCaseStudies), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+                    }
+                }
+
+                // Construct the HTML for the content cards.
+                // The .layout-two-rows class should be applied to the .random-content-wrapper (which is #randomItemDisplay)
+                const contentCardsHtml = `
+                    ${generatedCards[0]}
+                    ${generatedCards[1]}
+                    ${generatedCards[2]}
+                `;
+
+                // Update the innerHTML of `randomItemDisplay` (the content wrapper) with the new cards
+                randomItemDisplay.innerHTML = contentCardsHtml;
+                
+                // This ensures the layout is applied to the direct parent of cards, which is randomItemDisplay
+                randomItemDisplay.classList.add(`layout-${selectedLayout}`);
+                randomItemDisplay.classList.remove('layout-single', 'layout-two-columns'); // Clear other layout classes
+
+                newRandomBtn.disabled = false; // Re-enable button
+            }, 500); // Simulate network delay
         }
 
-        // Construct the HTML for the content cards, explicitly placing the cards in their grid areas
-        // The .layout-two-rows class should be applied to the .random-content-wrapper (which is #randomItemDisplay)
-        const contentCardsHtml = `
-            ${generatedCards[0] || generateRandomContentCard(null)}
-            ${generatedCards[1] || generateRandomContentCard(null)}
-            ${generatedCards[2] || generateRandomContentCard(null)}
-        `;
+        // Function to start the automatic rotation
+        function startRandomDiscoveryRotation() {
+            // Clear any existing interval to prevent multiple rotations running simultaneously
+            if (randomDiscoveryInterval) {
+                clearInterval(randomDiscoveryInterval);
+            }
+            // Set a new interval to call showRandomDiscovery every 10 seconds (10000 milliseconds)
+            randomDiscoveryInterval = setInterval(showRandomDiscovery, 10000);
+        }
 
-        // Update the innerHTML of `randomItemDisplay` (the content wrapper) with the new cards
-        randomItemDisplay.innerHTML = contentCardsHtml;
-        
-        // This ensures the layout is applied to the direct parent of cards, which is randomItemDisplay
-        randomItemDisplay.classList.add(`layout-${selectedLayout}`);
-        randomItemDisplay.classList.remove('layout-single', 'layout-two-columns'); // Clear other layout classes
-
-        newRandomBtn.disabled = false; // Re-enable button
-    }, 500); // Simulate network delay
-}
+        // Function to stop the automatic rotation (useful if you want to add a pause button later)
+        function stopRandomDiscoveryRotation() {
+            if (randomDiscoveryInterval) {
+                clearInterval(randomDiscoveryInterval);
+                randomDiscoveryInterval = null;
+            }
+        }
 
 
 
