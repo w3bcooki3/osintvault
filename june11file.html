@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5143,7 +5144,91 @@
         .case-studies-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 10px; /* Space between list items */
+            width: 100%; /* Ensure it takes full width */
+        }
+
+        .case-study-card.list-view {
+            display: flex;
+            flex-direction: column; /* Content stacks vertically within the card */
+            align-items: flex-start; /* Align content to the left */
+            padding: 15px 20px; /* Adjust padding for list items */
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-secondary); /* Same background as grid view */
+            border: 1px solid var(--border); /* Same border as grid view */
+            box-shadow: var(--shadow); /* Same shadow as grid view */
+            width: 100%; /* Ensure it takes full width of the list container */
+        }
+
+        .case-study-card.list-view:hover {
+            transform: translateY(-5px); /* Less dramatic hover for list */
+            box-shadow: var(--shadow-lg);
+            border-color: #6c5ce7; /* Match hover border to tab color */
+        }
+
+        .case-study-card.list-view .case-study-header {
+            width: 100%; /* Header takes full width */
+            flex-direction: row; /* Keep title/meta and actions in a row */
+            justify-content: space-between;
+            align-items: center; /* Vertically align items in header */
+            margin-bottom: 10px; /* Reduce margin bottom for list view */
+            flex-wrap: wrap; /* Allow header content to wrap if needed */
+            gap: 10px; /* Space between title/meta and actions */
+        }
+
+        .case-study-card.list-view .case-study-title {
+            font-size: 1.05rem; /* Slightly smaller title for list */
+            margin-bottom: 5px; /* Reduce margin below title */
+            flex-grow: 1; /* Allow title to take available space */
+            word-break: break-all; /* Ensure long titles break */
+        }
+
+        .case-study-card.list-view .case-study-meta {
+            font-size: 0.75rem; /* Smaller meta info */
+            flex-shrink: 0; /* Prevent meta from shrinking */
+            gap: 8px;
+        }
+
+        .case-study-card.list-view .case-study-actions {
+            margin-left: auto; /* Push actions to the right */
+            flex-shrink: 0;
+        }
+
+        .case-study-card.list-view .case-study-description {
+            font-size: 0.85rem; /* Smaller description for list */
+            max-height: 50px; /* Limit height even more for a compact list */
+            -webkit-line-clamp: 2; /* Show max 2 lines for list preview */
+        }
+
+        .case-study-card.list-view .case-study-tags {
+            margin-top: 5px; /* Adjust tag margin for list */
+        }
+
+        .case-study-card.list-view .tag {
+            font-size: 0.65rem; /* Smaller tags for list */
+            padding: 2px 6px;
+        }
+
+        /* Ensure grid view specific styles for cards are applied when in grid mode */
+        .case-study-card.grid-view {
+            display: flex; /* Re-apply flex properties for grid cards */
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 25px; /* Original padding for grid cards */
+            width: 100%; /* Occupy full grid cell */
+        }
+        .case-study-card.grid-view .case-study-header {
+            margin-bottom: 15px; /* Original margin for grid cards */
+        }
+        .case-study-card.grid-view .case-study-title {
+            font-size: 1.15rem; /* Original font size for grid cards */
+        }
+        .case-study-card.grid-view .case-study-description {
+            max-height: 90px; /* Original max height for grid cards */
+            -webkit-line-clamp: 3; /* Original line clamp for grid cards */
         }
 
         .case-study-card {
@@ -5352,14 +5437,14 @@
             text-align: center; /* Center tags in detail view */
         }
 
-        /* Responsive Adjustments for Case Studies */
+        /* Responsive adjustments for Case Studies View (already present, just verifying) */
         @media (max-width: 768px) {
             .case-studies-grid {
                 grid-template-columns: 1fr; /* Single column on small screens */
                 gap: 15px;
             }
 
-            .case-studies-list .case-study-card {
+            .case-studies-list .case-study-card { /* Ensure consistency for list on smaller screens */
                 padding: 10px 15px;
             }
 
@@ -5381,29 +5466,24 @@
             .case-study-description {
                 font-size: 13px;
                 max-height: 75px; /* Adjust preview height */
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 3; /* Adjust line clamp for unified mobile view */
             }
 
-            #caseStudyDetailModal .modal-content {
-                padding: 20px;
+            /* Ensure the controls for case studies also stack/adjust */
+            #case-studiesTab .content-header .controls {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
             }
-
-            #caseStudyDetailModal .detail-title {
-                font-size: 1.5em;
+            #case-studiesTab .content-header .controls input,
+            #case-studiesTab .content-header .controls select,
+            #case-studiesTab .content-header .controls button {
+                width: 100%;
+                margin-right: 0 !important; /* Override inline style */
+                margin-bottom: 10px; /* Add spacing between stacked controls */
             }
-
-            #caseStudyDetailModal .detail-meta {
-                font-size: 0.8em;
-                gap: 10px;
-            }
-
-            #caseStudyDetailModal .detail-content {
-                padding: 15px;
-                font-size: 14px;
-            }
-
-            #caseStudyDetailModal .detail-content h3 {
-                font-size: 1.1em;
+            #case-studiesTab .content-header .controls button:last-child {
+                margin-bottom: 0; /* No margin on the last button */
             }
         }
 
@@ -6714,16 +6794,22 @@
                                 <option value="malware">Malware Analysis</option>
                                 <option value="fraud">Fraud</option>
                                 <option value="other">Other</option>
+                                <option value="custom">Custom Type</option>
                             </select>
+                            <button class="btn btn-secondary" id="caseStudyViewToggle" title="Switch to List View">
+                                <i class="fas fa-list"></i> List View
+                            </button>
                             <button class="btn btn-primary" id="addCaseStudyBtn">
                                 <i class="fas fa-plus-circle"></i> Add Case Study
                             </button>
                         </div>
                     </div>
-
+                
                     <div class="case-studies-grid" id="caseStudiesGrid">
+                    </div>
+                    <div class="case-studies-list" id="caseStudiesList" style="display: none;">
                         </div>
-
+                
                     <div class="empty-state" id="emptyCaseStudiesState" style="display: none;">
                         <i class="fas fa-book-open"></i>
                         <h3>No Case Studies Found</h3>
@@ -9890,6 +9976,7 @@
                 search: '',
                 type: ''
             },
+            caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid', // NEW: Add view mode for case studies
             theme: localStorage.getItem('theme') || 'dark',
             viewMode: localStorage.getItem('viewMode') || 'grid',
             usageStats: {
@@ -11470,6 +11557,7 @@
                 };
                 appState.theme = parsedState.theme || 'dark';
                 appState.viewMode = parsedState.viewMode || 'grid';
+                appState.caseStudyViewMode = parsedState.caseStudyViewMode || 'grid'; // NEW
                 appState.usageStats = parsedState.usageStats || { toolsUsedToday: 0 };
                 appState.customTabs = parsedState.customTabs || [];
                 appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
@@ -11607,6 +11695,7 @@
                     search: '',
                     type: ''
                 };
+                appState.caseStudyViewMode = 'grid'; // NEW
                 appState.scriptFilters = { // NEW
                     search: '',
                     language: ''
@@ -11944,24 +12033,45 @@
         }
 
         // --- NEW: Case Studies Functions ---
-
         // Renders the list of case studies
         function renderCaseStudies() {
             const caseStudiesGrid = document.getElementById('caseStudiesGrid');
+            const caseStudiesList = document.getElementById('caseStudiesList'); // NEW
             const emptyState = document.getElementById('emptyCaseStudiesState');
+            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle'); // NEW
 
             const filteredCaseStudies = filterCaseStudies();
+
+            // First, update the view toggle button text
+            if (caseStudyViewToggleButton) {
+                if (appState.caseStudyViewMode === 'grid') {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    caseStudyViewToggleButton.title = 'Switch to List View';
+                } else {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    caseStudyViewToggleButton.title = 'Switch to Grid View';
+                }
+            }
+
 
             if (filteredCaseStudies.length === 0) {
                 emptyState.style.display = 'block';
                 caseStudiesGrid.style.display = 'none';
+                caseStudiesList.style.display = 'none'; // Ensure list is hidden too
             } else {
                 emptyState.style.display = 'none';
-                caseStudiesGrid.style.display = 'grid'; // Ensure grid display for case studies
-                caseStudiesGrid.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy)).join('');
+
+                if (appState.caseStudyViewMode === 'grid') {
+                    caseStudiesGrid.style.display = 'grid';
+                    caseStudiesList.style.display = 'none';
+                    caseStudiesGrid.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy, 'grid')).join(''); // Pass view type
+                } else { // list view
+                    caseStudiesGrid.style.display = 'none';
+                    caseStudiesList.style.display = 'flex'; // Use flex for list layout
+                    caseStudiesList.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy, 'list')).join(''); // Pass view type
+                }
             }
         }
-
         // Filters case studies based on current search and type filters
         function filterCaseStudies() {
             let filtered = [...appState.caseStudies];
@@ -11992,7 +12102,7 @@
         }
 
         // Creates the HTML for a single case study card
-        function createCaseStudyCard(caseStudy) {
+        function createCaseStudyCard(caseStudy, viewMode) { // NEW: Add viewMode parameter
             const isStarred = caseStudy.starred;
             const isPinned = caseStudy.pinned;
             const difficultyIcon = {
@@ -12001,41 +12111,61 @@
                 'advanced': 'fas fa-tree'
             }[caseStudy.difficulty] || 'fas fa-info-circle';
 
-            return `
-                <div class="case-study-card ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
-                    <div class="case-study-header">
-                        <div>
-                            <div class="case-study-title">
-                                <i class="fas fa-microscope case-study-icon" style="color: #6c5ce7;"></i>
-                                <span>${caseStudy.title}</span>
-                            </div>
-                            <div class="case-study-meta">
-                                <span><i class="fas fa-tags"></i> ${caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1)}</span>
-                                <span><i class="${difficultyIcon}"></i> ${caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1)}</span>
-                                <span><i class="fas fa-calendar-alt"></i> ${caseStudy.dateRange}</span>
-                            </div>
-                        </div>
-                        <div class="case-study-actions">
-                            <button class="action-btn" data-action="edit-case-study" title="Edit Case Study">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn ${isStarred ? 'starred' : ''}" data-action="star-case-study" title="Star Case Study">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button class="action-btn ${isPinned ? 'pinned' : ''}" data-action="pin-case-study" title="Pin Case Study">
-                                <i class="fas fa-thumbtack"></i>
-                            </button>
-                            <button class="action-btn" data-action="delete-case-study" title="Delete Case Study">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+            // Common header for both views
+            const headerHtml = `
+                <div>
+                    <div class="case-study-title">
+                        <i class="fas fa-microscope case-study-icon" style="color: #6c5ce7;"></i>
+                        <span>${caseStudy.title}</span>
                     </div>
-                    <p class="case-study-description">${caseStudy.summary}</p>
-                    <div class="case-study-tags">
-                        ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    <div class="case-study-meta">
+                        <span><i class="fas fa-tags"></i> ${caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1)}</span>
+                        <span><i class="${difficultyIcon}"></i> ${caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1)}</span>
+                        <span><i class="fas fa-calendar-alt"></i> ${caseStudy.dateRange}</span>
                     </div>
                 </div>
+                <div class="case-study-actions">
+                    <button class="action-btn" data-action="edit-case-study" title="Edit Case Study">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn ${isStarred ? 'starred' : ''}" data-action="star-case-study" title="Star Case Study">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button class="action-btn ${isPinned ? 'pinned' : ''}" data-action="pin-case-study" title="Pin Case Study">
+                        <i class="fas fa-thumbtack"></i>
+                    </button>
+                    <button class="action-btn" data-action="delete-case-study" title="Delete Case Study">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             `;
+
+            // Different card structure based on view mode
+            if (viewMode === 'list') {
+                return `
+                    <div class="case-study-card list-view ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
+                        <div class="case-study-header">
+                            ${headerHtml}
+                        </div>
+                        <p class="case-study-description">${caseStudy.summary}</p>
+                        <div class="case-study-tags">
+                            ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+            } else { // default to grid view
+                return `
+                    <div class="case-study-card grid-view ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
+                        <div class="case-study-header">
+                            ${headerHtml}
+                        </div>
+                        <p class="case-study-description">${caseStudy.summary}</p>
+                        <div class="case-study-tags">
+                            ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         // Opens the modal to display full case study details
@@ -13076,6 +13206,21 @@
 
         // MODIFIED: bindEvents function for event delegation
         function bindEvents() {
+            // NEW: Case Study View Toggle
+            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle');
+            if (caseStudyViewToggleButton) {
+                caseStudyViewToggleButton.addEventListener('click', () => {
+                    if (appState.readOnlyMode) {
+                        showToast("Cannot change view mode in read-only shared view.", "warning");
+                        return;
+                    }
+                    appState.caseStudyViewMode = appState.caseStudyViewMode === 'grid' ? 'list' : 'grid';
+                    localStorage.setItem('caseStudyViewMode', appState.caseStudyViewMode); // Save preference
+                    renderCaseStudies(); // Re-render case studies with new view
+                    showToast(`Switched Case Studies to ${appState.caseStudyViewMode} view.`);
+                });
+            }
+            
 
              // NEW: Case Studies Tab Event Listeners
             // Handle Case Studies Tab Navigation
@@ -13100,17 +13245,22 @@
             document.getElementById('addCaseStudyEmptyStateBtn').addEventListener('click', () => openAddEditCaseStudyModal('add'));
 
             // Handle clicks on case study cards (for opening detail modal)
-            document.getElementById('caseStudiesGrid').addEventListener('click', (e) => {
-                const card = e.target.closest('.case-study-card');
-                const actionBtn = e.target.closest('.action-btn');
+            // NEW: Delegate the listener to the main case-studiesTab content area
+            const caseStudiesTabContent = document.getElementById('case-studiesTab');
+            if (caseStudiesTabContent) {
+                caseStudiesTabContent.addEventListener('click', (e) => {
+                    const card = e.target.closest('.case-study-card');
+                    const actionBtn = e.target.closest('.action-btn');
 
-                if (card && !actionBtn) { // If card is clicked and it's not an action button
-                    const caseStudyId = card.dataset.caseStudyId;
-                    openCaseStudyDetailModal(caseStudyId);
-                } else if (actionBtn) { // If an action button is clicked
-                    handleCaseStudyAction(e);
-                }
-            });
+                    // If a case study card is clicked AND it's not an action button (like edit, star, pin, delete)
+                    if (card && !actionBtn) {
+                        const caseStudyId = card.dataset.caseStudyId;
+                        openCaseStudyDetailModal(caseStudyId);
+                    } else if (actionBtn) { // If an action button is clicked
+                        handleCaseStudyAction(e);
+                    }
+                });
+            }
 
             // Threat Hunting Tab Event Listeners
             document.querySelector('[data-tab="threat-hunting"]').addEventListener('click', () => {
