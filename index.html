@@ -9658,8 +9658,8 @@ function openEditEntryModal(entry) {
 
             // Fetch default tools and case studies concurrently (as done in initial initApp)
             const [fetchedDefaultTools, fetchedDefaultCaseStudies] = await Promise.all([
-                fetchJsonData('./data/tools.json'),
-                fetchJsonData('./data/caseStudies.json') // Directly fetch default case studies
+                fetchJsonData('tools.json'),
+                fetchJsonData('caseStudies.json') // Directly fetch default case studies
             ]);
 
             // Re-initialize appState with default data
@@ -9801,7 +9801,7 @@ function openEditEntryModal(entry) {
                 }
             }
             // If no saved data, or parsing failed, load from file
-            const fetchedCaseStudies = await fetchJsonData('./data/caseStudies.json');
+            const fetchedCaseStudies = await fetchJsonData('caseStudies.json');
             return fetchedCaseStudies.map(cs => ({
                 ...cs,
                 addedDate: new Date(cs.addedDate)
@@ -9816,9 +9816,9 @@ async function initApp() {
 
     // Fetch default tools, case studies, AND HANDBOOK DATA concurrently
     const [fetchedDefaultTools, fetchedCaseStudies, fetchedHandbookData] = await Promise.all([
-        fetchJsonData('./data/tools.json'), // This correctly fetches your tools from tools.json
+        fetchJsonData('tools.json'), // This correctly fetches your tools from tools.json
         loadCaseStudiesData(), // This will handle its own localStorage and JSON fetch
-        fetchJsonData('./data/handbookData.json') // Directly fetch handbook default data
+        fetchJsonData('handbookData.json') // Directly fetch handbook default data
     ]);
 
     const savedState = localStorage.getItem('osintArsenalState');
