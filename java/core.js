@@ -86,7 +86,31 @@ let appState = {
     sharedEntryIds: []
 };
 
-// --- Default Data & Structures ---
+// --- GLOBAL STATE OBJECTS (explicitly initialized) ---
+// These are separate from appState but need to be globally accessible.
+let notesState = { 
+    notes: [], 
+    currentNote: null, 
+    editMode: false, 
+    noteSortFilter: localStorage.getItem('noteSortFilter') || 'updated_desc' 
+};
+
+let dorkAssistantState = { 
+    keywords: '', 
+    customInput: '', 
+    engine: 'google', 
+    previewQuery: '', 
+    convertedQuery: '', 
+    currentDorkSubTab: 'query-playground', 
+    savedQueries: [], 
+    savedQuerySearchTerm: '', 
+    currentTemplateCategory: 'All Templates', 
+    preTemplateSearchTerm: '', 
+    conversionJustPerformed: false 
+};
+
+
+// --- Default Data & Structures (all constants moved to core.js for early access) ---
 const defaultTools = [
     {
         id: 'google-advanced-search',
@@ -381,7 +405,7 @@ const sampleCaseStudies = [{
     `,
     osintTechniquesUsed: ['Email Header Analysis', 'Domain Reputation Checks', 'Social Media Scanning (for employee info)', 'Public Records (for business contacts)'],
     toolsUsed: ['MXToolbox', 'VirusTotal', 'Have I Been Pwned', 'URLVoid', 'Email security gateways'],
-    lessonsLearned: `
+    lessonsLearled: `
         <p>This case highlights the ongoing threat of phishing, especially against vulnerable sectors like healthcare.</p>
         <ul>
             <li><strong>Employee Training:</strong> Regular and effective cybersecurity awareness training for all staff.</li>
@@ -414,7 +438,7 @@ const sampleCaseStudies = [{
         <p>Data was copied to local machine, compressed, and sometimes renamed to evade detection before being uploaded to personal cloud accounts.</p>
         <ul>
             <li><strong>Techniques:</strong> Data compression, renaming files</li>
-            <li><strong>Tools:</b> WinRAR, standard OS tools</li>
+            <li><strong>Tools:</strong> WinRAR, standard OS tools</li>
         </ul>
         <h3>Phase 3: Exfiltration</h3>
         <p>Sensitive data was uploaded to a personal cloud storage service (e.g., Dropbox, Google Drive) over several weeks, often outside business hours.</p>
@@ -682,14 +706,7 @@ const customVaultEntryStructure = [{
     ]
 }, ];
 
-let notesState = {
-    notes: [],
-    currentNote: null,
-    editMode: false,
-    noteSortFilter: localStorage.getItem('noteSortFilter') || 'updated_desc'
-};
-
-const defaultThreatHuntingScripts = [
+const defaultThreatHuntingScripts = [ // Global constant, accessed by threat-intel-and-hunting.js
     {
         id: 'th-sysmon-proc-creation',
         name: 'Sysmon Process Creation Anomalies',
@@ -734,15 +751,15 @@ const defaultThreatHuntingScripts = [
             $isSuspiciousPath = $false
             foreach ($path in $suspiciousPaths) {
                 if ($processName -like "*$path*") {
-                    $isSuspiciousPath = $true
+                    $isSuspiciousPath = true
                     break
                 }
             }
 
-            $isSuspiciousParent = $false
+            $isSuspiciousParent = false
             foreach ($parent in $suspiciousParents) {
                 if ($parentProcessName -like "*$parent*") {
-                    $isSuspiciousParent = $true
+                    $isSuspiciousParent = true
                     break
                 }
             }
@@ -866,7 +883,7 @@ const defaultThreatHuntingScripts = [
     }
 ];
 
-// OSINT Handbook main functionality
+// OSINT Handbook main functionality data (global constant, accessed by handbook-and-notes.js)
 const handbookData = {
     sections: [
         {
@@ -1166,21 +1183,8 @@ const handbookData = {
     ]
 };
 
-const dorkAssistantState = {
-    keywords: '',
-    customInput: '',
-    engine: 'google',
-    previewQuery: '',
-    convertedQuery: '',
-    currentDorkSubTab: 'query-playground',
-    savedQueries: [],
-    savedQuerySearchTerm: '',
-    currentTemplateCategory: 'All Templates',
-    preTemplateSearchTerm: '',
-    conversionJustPerformed: false
-};
-
-const dorkTemplates = {
+// dorkTemplates are global, no need to re-declare in each file using them.
+const dorkTemplates = { // Global constant, accessed by dork-assistant.js
     "General OSINT": [{
         id: 'exposed_docs',
         name: 'Exposed Documents',
@@ -1329,6 +1333,7 @@ const dorkTemplates = {
         engine: 'censys'
     }]
 };
+
 
 // --- Core Utility Functions ---
 
@@ -1596,6 +1601,8 @@ function loadState() {
             usageCount: script.usageCount || 0
         }));
 
+        // Load case studies data (from case-studies.js)
+        // Assumes loadCaseStudiesData is globally available (e.g., loaded before core.js or defined directly in core.js)
         appState.caseStudies = loadCaseStudiesData();
 
         // Timeline Events
@@ -1628,41 +1635,33 @@ function loadState() {
         appState.customTabs = parsedState.customTabs || [];
         appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
         appState.currentIntelligenceVaultParentTab = parsedState.currentIntelligenceVaultParentTab || 'generalAndCore';
-        appState.currentIntelligenceVaultChildTab = parsedState.currentIntelligenceVaultChildTab || 'tools';
+        appState.currentIntelligenceVaultChildTab = parsedState.dorkAssistantState?.currentIntelligenceVaultChildTab || 'tools'; // Fixed to use dorkAssistantState
         appState.currentCustomVaultParentTab = parsedState.currentCustomVaultParentTab || 'coreInvestigation';
         appState.currentCustomVaultEntrySubTab = parsedState.currentCustomVaultEntrySubTab || 'tool';
         appState.currentThSubTab = parsedState.currentThSubTab || 'script-library';
 
-
-        // Notes State
-        notesState = parsedState.notesState || { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
-        notesState.notes.forEach(note => {
-            note.createdAt = new Date(note.createdAt);
-            note.updatedAt = new Date(note.updatedAt);
-            if (typeof note.pinned === 'undefined') {
-                note.pinned = false;
-            }
-        });
-
-        // Dork Assistant State
-        dorkAssistantState.keywords = parsedState.dorkAssistantState?.keywords || '';
-        dorkAssistantState.customInput = parsedState.dorkAssistantState?.customInput || '';
-        dorkAssistantState.engine = parsedState.dorkAssistantState?.engine || 'google';
-        dorkAssistantState.previewQuery = parsedState.dorkAssistantState?.previewQuery || '';
-        dorkAssistantState.convertedQuery = parsedState.dorkAssistantState?.convertedQuery || '';
-        dorkAssistantState.currentDorkSubTab = parsedState.dorkAssistantState?.currentDorkSubTab || 'query-playground';
-        dorkAssistantState.savedQueries = parsedState.dorkAssistantState?.savedQueries || [];
-        dorkAssistantState.savedQuerySearchTerm = parsedState.dorkAssistantState?.savedQuerySearchTerm || '';
-        dorkAssistantState.currentTemplateCategory = parsedState.dorkAssistantState?.currentTemplateCategory || 'All Templates';
-        dorkAssistantState.preTemplateSearchTerm = parsedState.dorkAssistantState?.preTemplateSearchTerm || '';
-        dorkAssistantState.conversionJustPerformed = parsedState.dorkAssistantState?.conversionJustPerformed || false;
-
-        if (dorkAssistantState.savedQueries) {
-            dorkAssistantState.savedQueries.forEach(query => {
-                if (query.createdAt && typeof query.createdAt === 'string') {
-                    query.createdAt = new Date(query.createdAt);
+        // Load notesState (from handbook-and-notes.js data structure)
+        if (parsedState.notesState) {
+            Object.assign(notesState, parsedState.notesState);
+            notesState.notes.forEach(note => {
+                note.createdAt = new Date(note.createdAt);
+                note.updatedAt = new Date(note.updatedAt);
+                if (typeof note.pinned === 'undefined') {
+                    note.pinned = false;
                 }
             });
+        }
+
+        // Load dorkAssistantState (from dork-assistant.js data structure)
+        if (parsedState.dorkAssistantState) {
+            Object.assign(dorkAssistantState, parsedState.dorkAssistantState);
+            if (dorkAssistantState.savedQueries) {
+                dorkAssistantState.savedQueries.forEach(query => {
+                    if (query.createdAt && typeof query.createdAt === 'string') {
+                        query.createdAt = new Date(query.createdAt);
+                    }
+                });
+            }
         }
 
         appState.customVaultViewMode = parsedState.customVaultViewMode || 'entries';
@@ -1696,7 +1695,6 @@ function loadState() {
         appState.currentCustomVaultParentTab = 'coreInvestigation';
         appState.currentCustomVaultEntrySubTab = 'tool';
         appState.currentThSubTab = 'script-library';
-
 
         // Initialize all other arrays as empty for a fresh start (Crucial for first-time load)
         appState.emails = [];
@@ -1735,34 +1733,33 @@ function loadState() {
         appState.threatHuntingScripts = [];
 
         // Load sample case studies only on first-time use
+        // Assumes loadCaseStudiesData is globally available (e.g., loaded before core.js or defined directly in core.js)
         appState.caseStudies = loadCaseStudiesData();
 
+        // Assumes createSampleTimelineEvents is globally available (e.g., loaded before core.js or defined directly in core.js)
         appState.timeline = {
             events: createSampleTimelineEvents()
         };
 
-        notesState = { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
+        // Initialize global state objects if no saved state
+        Object.assign(notesState, { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' });
+        Object.assign(dorkAssistantState, {
+            keywords: '',
+            customInput: '',
+            engine: 'google',
+            previewQuery: '',
+            convertedQuery: '',
+            currentDorkSubTab: 'query-playground',
+            savedQueries: [],
+            properties: parsedState.dorkAssistantState?.properties || {}, // Preserve properties if they exist
+            savedQuerySearchTerm: '',
+            currentTemplateCategory: 'All Templates',
+            preTemplateSearchTerm: '',
+            conversionJustPerformed: false
+        });
 
-        dorkAssistantState.keywords = '';
-        dorkAssistantState.customInput = '';
-        dorkAssistantState.engine = 'google';
-        dorkAssistantState.previewQuery = '';
-        dorkAssistantState.convertedQuery = '';
-        dorkAssistantState.currentDorkSubTab = 'query-playground';
-        dorkAssistantState.savedQueries = [];
-        dorkAssistantState.savedQuerySearchTerm = '';
-        dorkAssistantState.currentTemplateCategory = 'All Templates';
-        dorkAssistantState.preTemplateSearchTerm = '';
-        dorkAssistantState.conversionJustPerformed = false;
-        
-        appState.caseStudyFilters = {
-            search: '',
-            type: ''
-        };
-        appState.scriptFilters = {
-            search: '',
-            language: ''
-        };
+        appState.caseStudyFilters = { search: '', type: '' };
+        appState.scriptFilters = { search: '', language: '' };
         appState.customVaultViewMode = 'entries';
     }
 }
@@ -1791,9 +1788,10 @@ function saveState() {
         });
     }
 
-    // Convert Date objects for notes
-    if (notesState.notes) { // Use notesState directly here
-        stateToSave.notesState = JSON.parse(JSON.stringify(notesState)); // Deep copy notesState
+    // Attach the *current* state of the global notesState and dorkAssistantState objects
+    // directly to the `stateToSave` object before stringifying.
+    stateToSave.notesState = JSON.parse(JSON.stringify(notesState));
+    if (stateToSave.notesState.notes) {
         stateToSave.notesState.notes.forEach(note => {
             if (note.createdAt && typeof note.createdAt.toISOString === 'function') {
                 note.createdAt = note.createdAt.toISOString();
@@ -1804,9 +1802,8 @@ function saveState() {
         });
     }
 
-    // Convert Date objects for dork saved queries
-    if (dorkAssistantState.savedQueries) { // Use dorkAssistantState directly here
-        stateToSave.dorkAssistantState = JSON.parse(JSON.stringify(dorkAssistantState)); // Deep copy dorkAssistantState
+    stateToSave.dorkAssistantState = JSON.parse(JSON.stringify(dorkAssistantState));
+    if (stateToSave.dorkAssistantState.savedQueries) {
         stateToSave.dorkAssistantState.savedQueries.forEach(query => {
             if (query.createdAt && typeof query.createdAt.toISOString === 'function') {
                 query.createdAt = query.createdAt.toISOString();
@@ -1874,14 +1871,12 @@ function parseShareableLink() {
 
         showToast("You are viewing a shared, read-only version of OSINTVault. Functionality is limited.", "info", 10000);
 
-        // Ensure default elements are accessible for read-only view
         disableAllInputsAndButtons();
     }
 }
 
 function disableAllInputsAndButtons() {
     document.querySelectorAll('input, select, textarea, button').forEach(element => {
-        // Allow theme toggle, main search input, search scope select, and main nav tabs
         if (element.id !== 'themeToggle' && element.id !== 'continueAnywayBtn' &&
             element.id !== 'searchInput' && element.id !== 'searchScopeSelect' &&
             !element.classList.contains('nav-tab') && !element.classList.contains('mobile-menu-toggle') &&
@@ -1894,7 +1889,6 @@ function disableAllInputsAndButtons() {
         }
     });
 
-    // Explicitly re-enable core navigation and search elements if they were disabled by the loop
     const mainSearchInput = document.getElementById('searchInput');
     if (mainSearchInput) {
         mainSearchInput.disabled = false;
@@ -1915,19 +1909,18 @@ function disableAllInputsAndButtons() {
         tab.style.opacity = '1';
     });
 
-    // Hide specific buttons and UI elements that enable modification/creation
     const elementsToHideInReadOnly = [
         'addToolBtnIntelligenceVault', 'addEntryBtnCustomVault', 'createSubTabBtn', 'editSubTabBtn',
         'deleteSubTabBtn', 'exportSubTabBtn', 'bulkActions', 'reportBtn', 'exportBtn',
         'refreshThreatsBtn', 'newRandomBtn', 'clearFiltersBtn', 'pinAllBtn', 'starAllBtn',
-        'viewToggle', 'vaultViewToggle', 'customVaultViewToggle', // Also disable view toggles
+        'viewToggle', 'vaultViewToggle', 'customVaultViewToggle',
         'new-note-btn', 'noteSortFilter', 'search-notes', 'edit-note-btn', 'save-note-btn',
         'cancel-edit-note-btn', 'back-to-notes-btn', 'formatting-toolbar', 'tag-input-container',
-        'add-section-btn', 'edit-section-btn', 'delete-section-btn', // Handbook controls
-        'addCaseStudyBtn', 'addCaseStudyEmptyStateBtn', // Case Study add
-        'addScriptBtn', 'addScriptEmptyStateBtn', // Threat Hunting add script
-        'addTimelineEventBtn', 'exportTimelineBtn', 'importTimelineBtn', 'addEventBtnEmptyState', // Timeline controls
-        'saveCurrentDorkBtn' // Dork Assistant save
+        'add-section-btn', 'edit-section-btn', 'delete-section-btn',
+        'addCaseStudyBtn', 'addCaseStudyEmptyStateBtn',
+        'addScriptBtn', 'addScriptEmptyStateBtn',
+        'addTimelineEventBtn', 'exportTimelineBtn', 'importTimelineBtn', 'addEventBtnEmptyState',
+        'saveCurrentDorkBtn'
     ];
 
     elementsToHideInReadOnly.forEach(id => {
@@ -1937,12 +1930,10 @@ function disableAllInputsAndButtons() {
         }
     });
 
-    // Hide action buttons on individual cards
     document.querySelectorAll('.tool-card .tool-actions .action-btn, .note-card .note-actions .note-action-btn, .timeline-event-actions .action-btn').forEach(btn => {
         btn.style.display = 'none';
     });
 
-    // Ensure notes editor and title input are read-only
     const noteContentEditor = document.getElementById('note-content-editor');
     if (noteContentEditor) {
         noteContentEditor.setAttribute('contenteditable', 'false');
@@ -1954,13 +1945,11 @@ function disableAllInputsAndButtons() {
         noteTitleInput.style.cursor = 'default';
     }
 
-    // Hide editExecuteConversionSection in Dork Assistant if present
     const conversionSection = document.getElementById('editExecuteConversionSection');
     if (conversionSection) {
         conversionSection.style.display = 'none';
     }
 
-    // Disable the save button in Dork Assistant Save modal, even if it's not present at page load
     const saveDorkQueryBtnInModal = document.querySelector('#saveDorkQueryModal button[type="submit"]');
     if (saveDorkQueryBtnInModal) {
         saveDorkQueryBtnInModal.disabled = true;
@@ -1976,32 +1965,1105 @@ function applyReadOnlyMode() {
     }
 }
 
+// --- Dashboard Functions (MOVED HERE from dashboard.js) ---
+
+/**
+ * Updates all statistics, charts, and lists displayed on the Dashboard tab.
+ */
+function updateDashboard() {
+    const allEntries = [
+        ...(appState.tools || []),
+        ...(appState.emails || []),
+        ...(appState.phones || []),
+        ...(appState.crypto || []),
+        ...(appState.locations || []),
+        ...(appState.links || []),
+        ...(appState.media || []),
+        ...(appState.passwords || []),
+        ...(appState.keywords || []),
+        ...(appState.socials || []),
+        ...(appState.domains || []),
+        ...(appState.usernames || []),
+        ...(appState.threats || []),
+        ...(appState.vulnerabilities || []),
+        ...(appState.malware || []),
+        ...(appState.breaches || []),
+        ...(appState.credentials || []),
+        ...(appState.forums || []),
+        ...(appState.vendors || []),
+        ...(appState.telegramChannels || []),
+        ...(appState.pastes || []),
+        ...(appState.documents || []),
+        ...(appState.networks || []),
+        ...(appState.metadataEntries || []),
+        ...(appState.archives || []),
+        ...(appState.messagingApps || []),
+        ...(appState.datingProfiles || []),
+        ...(appState.audioEntries || []),
+        ...(appState.facialRecognition || []),
+        ...(appState.personas || []),
+        ...(appState.vpns || []),
+        ...(appState.honeypots || []),
+        ...(appState.exploits || []),
+        ...(appState.publicRecords || []),
+        ...(appState.caseStudies || [])
+    ];
+
+    document.getElementById('totalToolsCount').textContent = allEntries.length;
+    document.getElementById('activeVaultsCount').textContent = appState.customTabs.length;
+    document.getElementById('usedToolsTodayCount').textContent = appState.usageStats.toolsUsedToday;
+    document.getElementById('notesCount').textContent = notesState.notes.length;
+
+
+    const starredPinnedBreakdownList = document.getElementById('starredPinnedBreakdownList');
+    if (starredPinnedBreakdownList) {
+        let breakdownHtml = '';
+        const entryTypes = [
+            'tool', 'email', 'phone', 'crypto', 'location', 'link', 'media', 'password',
+            'keyword', 'social', 'domain', 'username', 'threat', 'vulnerability', 'malware',
+            'breach', 'credential', 'forum', 'vendor', 'telegram', 'paste', 'document',
+            'network', 'metadata', 'archive', 'messaging', 'dating', 'audio', 'facial',
+            'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord', 'caseStudy'
+        ];
+
+        const typeCounts = {};
+        allEntries.forEach(entry => {
+            let typeKey = entry.type;
+            if (typeKey === 'telegram') typeKey = 'telegramChannels';
+            if (typeKey === 'metadata') typeKey = 'metadataEntries';
+            if (typeKey === 'messaging') typeKey = 'messagingApps';
+            if (typeKey === 'dating') typeKey = 'datingProfiles';
+            if (typeKey === 'audio') typeKey = 'audioEntries';
+            if (typeKey === 'facial') typeKey = 'facialRecognition';
+            if (typeKey === 'persona') typeKey = 'personas';
+            if (typeKey === 'vpn') typeKey = 'vpns';
+            if (typeKey === 'caseStudy') typeKey = 'caseStudies';
+
+            if (!typeCounts[typeKey]) {
+                typeCounts[typeKey] = {
+                    starred: 0,
+                    pinned: 0
+                };
+            }
+            if (entry.starred) {
+                typeCounts[typeKey].starred++;
+            }
+            if (entry.pinned) {
+                typeCounts[typeKey].pinned++;
+            }
+        });
+
+        breakdownHtml += `<li><span>Total Starred Entries:</span> <span class="stat-value">${allEntries.filter(e => e.starred).length}</span></li>`;
+        breakdownHtml += `<li><span>Total Pinned Entries:</span> <span class="stat-value">${allEntries.filter(e => e.pinned).length}</span></li>`;
+        breakdownHtml += `<li><hr style="border: 0; height: 1px; background: var(--border-light); margin: 10px 0;"></li>`;
+
+        entryTypes.forEach(type => {
+            let pluralType = type + 's';
+            if (type === 'telegram') pluralType = 'telegramChannels';
+            if (type === 'metadata') pluralType = 'metadataEntries';
+            if (type === 'messaging') pluralType = 'messagingApps';
+            if (type === 'dating') pluralType = 'datingProfiles';
+            if (type === 'audio') pluralType = 'audioEntries';
+            if (type === 'facial') pluralType = 'facialRecognition';
+            if (type === 'persona') pluralType = 'personas';
+            if (type === 'vpn') pluralType = 'vpns';
+            if (type === 'caseStudy') pluralType = 'caseStudies';
+
+            const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+            if (typeCounts[pluralType] && (typeCounts[pluralType].starred > 0 || typeCounts[pluralType].pinned > 0)) {
+                if (typeCounts[pluralType].starred > 0) {
+                    breakdownHtml += `<li><span>Starred ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].starred}</span></li>`;
+                }
+                if (typeCounts[pluralType].pinned > 0) {
+                    breakdownHtml += `<li><span>Pinned ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].pinned}</span></li>`;
+                }
+            }
+        });
+        starredPinnedBreakdownList.innerHTML = breakdownHtml;
+    }
+
+
+    const intelVaultCategories = new Set((appState.tools || []).map(tool => tool.category));
+    document.getElementById('intelVaultTotalTools').textContent = (appState.tools || []).length;
+    document.getElementById('intelVaultStarredTools').textContent = (appState.tools || []).filter(tool => tool.starred).length;
+    document.getElementById('intelVaultPinnedTools').textContent = (appState.tools || []).filter(tool => tool.pinned).length;
+    document.getElementById('intelVaultCategoriesCount').textContent = intelVaultCategories.size;
+
+    let totalEntriesInCustomVaults = 0;
+    (appState.customTabs || []).forEach(tab => {
+        totalEntriesInCustomVaults += (tab.toolIds || []).length;
+    });
+    const totalCustomVaults = (appState.customTabs || []).length;
+    document.getElementById('customVaultsTotal').textContent = totalCustomVaults;
+    document.getElementById('customVaultsTotalEntries').textContent = totalEntriesInCustomVaults;
+    document.getElementById('customVaultsAvgEntries').textContent = totalCustomVaults > 0 ? (totalEntriesInCustomVaults / totalCustomVaults).toFixed(1) : '0';
+
+    renderEntriesPerCustomVaultChart();
+
+
+    const totalTemplates = Object.values(dorkTemplates).flat().length;
+    document.getElementById('notesSummaryTotal').textContent = (notesState.notes || []).length;
+    document.getElementById('notesSummaryPinned').textContent = (notesState.notes || []).filter(n => n.pinned).length;
+    document.getElementById('dorksSummaryTotal').textContent = (dorkAssistantState.savedQueries || []).length;
+    document.getElementById('dorksSummaryTemplates').textContent = totalTemplates;
+
+
+    renderMostUsedTools();
+    renderNeverUsedTools();
+    renderToolsAddedPerWeek();
+
+    renderEntriesByTypeChart();
+    renderUsageTrendChart();
+    renderTopCategoriesChart();
+    renderPinnedStarredDonutChart();
+    renderEntryGrowthOverTimeChart();
+    renderTaggingOverviewChart();
+}
+
+/**
+ * Renders a bar chart showing the number of entries per custom vault.
+ */
+function renderEntriesPerCustomVaultChart() {
+    const ctx = document.getElementById('entriesPerCustomVaultChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+    
+    const customVaultNames = appState.customTabs.map(tab => tab.name);
+    const entriesPerVault = appState.customTabs.map(tab => tab.toolIds.length);
+
+    if (window.entriesPerCustomVaultChartInstance) {
+        window.entriesPerCustomVaultChartInstance.destroy();
+    }
+
+    window.entriesPerCustomVaultChartInstance = new Chart(canvasContext, {
+        type: 'bar',
+        data: {
+            labels: customVaultNames,
+            datasets: [{
+                label: 'Entries per Custom Vault',
+                data: entriesPerVault,
+                backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                borderColor: '#8b5cf6',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Entries in Custom Vaults',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                    font: { size: 16 }
+                },
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim(),
+                        callback: function(value) {
+                            if (Number.isInteger(value)) {
+                                return value;
+                            }
+                        }
+                    },
+                    grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                },
+                x: {
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a doughnut chart showing the proportion of tagged vs. untagged entries.
+ */
+function renderTaggingOverviewChart() {
+    const ctx = document.getElementById('taggingOverviewChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+    
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || []), ...(appState.domains || []), ...(appState.usernames || []),
+        ...(appState.threats || []), ...(appState.vulnerabilities || []), ...(appState.malware || []), ...(appState.breaches || []),
+        ...(appState.credentials || []), ...(appState.forums || []), ...(appState.vendors || []), ...(appState.telegramChannels || []),
+        ...(appState.pastes || []), ...(appState.documents || []), ...(appState.networks || []), ...(appState.metadataEntries || []),
+        ...(appState.archives || []), ...(appState.messagingApps || []), ...(appState.datingProfiles || []), ...(appState.facialRecognition || []),
+        ...(appState.personas || []), ...(appState.vpns || []), ...(appState.honeypots || []), ...(appState.exploits || []),
+        ...(appState.publicRecords || [])
+    ];
+
+    let taggedEntriesCount = 0;
+    let untaggedEntriesCount = 0;
+
+    allEntries.forEach(entry => {
+        if (entry.tags && entry.tags.length > 0) {
+            taggedEntriesCount++;
+        } else {
+            untaggedEntriesCount++;
+        }
+    });
+
+    const data = [taggedEntriesCount, untaggedEntriesCount];
+    const labels = ['Tagged Entries', 'Untagged Entries'];
+
+    if (window.taggingOverviewChartInstance) {
+        window.taggingOverviewChartInstance.destroy();
+    }
+
+    window.taggingOverviewChartInstance = new Chart(canvasContext, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#28a745',
+                    '#dc3545'
+                ],
+                borderColor: 'var(--bg-primary)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Entry Tagging Overview',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                    font: { size: 16 }
+                },
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                    }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a bar chart showing the distribution of tools by category.
+ */
+function renderTopCategoriesChart() {
+    const ctx = document.getElementById('topCategoriesChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+
+    const categoryCounts = {};
+    appState.tools.forEach(tool => {
+        const category = tool.category.charAt(0).toUpperCase() + tool.category.slice(1);
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+    });
+
+    const labels = Object.keys(categoryCounts);
+    const data = Object.values(categoryCounts);
+
+    if (window.topCategoriesChartInstance) {
+        window.topCategoriesChartInstance.destroy();
+    }
+    window.topCategoriesChartInstance = new Chart(canvasContext, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Tools per Category',
+                data: data,
+                backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                borderColor: '#007bff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Tools by Category', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a doughnut chart showing the proportion of pinned, starred, and other entries.
+ */
+function renderPinnedStarredDonutChart() {
+    const ctx = document.getElementById('pinnedStarredDonutChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || []), ...(appState.domains || []), ...(appState.usernames || []),
+        ...(appState.threats || []), ...(appState.vulnerabilities || []), ...(appState.malware || []), ...(appState.breaches || []),
+        ...(appState.credentials || []), ...(appState.forums || []), ...(appState.vendors || []), ...(appState.telegramChannels || []),
+        ...(appState.pastes || []), ...(appState.documents || []), ...(appState.networks || []), ...(appState.metadataEntries || []),
+        ...(appState.archives || []), ...(appState.messagingApps || []), ...(appState.datingProfiles || []), ...(appState.facialRecognition || []),
+        ...(appState.personas || []), ...(appState.vpns || []), ...(appState.honeypots || []), ...(appState.exploits || []),
+        ...(appState.publicRecords || [])
+    ];
+
+    const pinnedCount = allEntries.filter(entry => entry.pinned).length;
+    const starredCount = allEntries.filter(entry => entry.starred).length;
+
+    const bothCount = allEntries.filter(entry => entry.pinned && entry.starred).length;
+    const uniquePinnedOrStarredCount = pinnedCount + starredCount - bothCount;
+    const othersCount = allEntries.length - uniquePinnedOrStarredCount;
+
+    const data = [pinnedCount, starredCount, othersCount];
+    const labels = ['Pinned', 'Starred', 'Other Entries'];
+
+    if (window.pinnedStarredDonutChartInstance) {
+        window.pinnedStarredDonutChartInstance.destroy();
+    }
+    window.pinnedStarredDonutChartInstance = new Chart(canvasContext, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: ['#28a745', '#ffc107', '#6c757d'],
+                borderColor: 'var(--bg-primary)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Pinned & Starred Entries', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() } }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a line chart showing the cumulative growth of entries over time.
+ */
+function renderEntryGrowthOverTimeChart() {
+    const ctx = document.getElementById('entryGrowthOverTimeChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+    const cumulativeData = {};
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || []), ...(appState.domains || []), ...(appState.usernames || []),
+        ...(appState.threats || []), ...(appState.vulnerabilities || []), ...(appState.malware || []), ...(appState.breaches || []),
+        ...(appState.credentials || []), ...(appState.forums || []), ...(appState.vendors || []), ...(appState.telegramChannels || []),
+        ...(appState.pastes || []), ...(appState.documents || []), ...(appState.networks || []), ...(appState.metadataEntries || []),
+        ...(appState.archives || []), ...(appState.messagingApps || []), ...(appState.datingProfiles || []), ...(appState.facialRecognition || []),
+        ...(appState.personas || []), ...(appState.vpns || []), ...(appState.honeypots || []), ...(appState.exploits || []),
+        ...(appState.publicRecords || [])
+    ];
+
+    allEntries.sort((a, b) => new Date(a.addedDate) - new Date(b.addedDate));
+
+    let count = 0;
+    allEntries.forEach(entry => {
+        if (entry.addedDate) {
+            const date = new Date(entry.addedDate);
+            const key = date.toISOString().slice(0, 10);
+            cumulativeData[key] = ++count;
+        }
+    });
+
+    const sortedDates = Object.keys(cumulativeData).sort();
+    
+    let fullLabels = [];
+    let fullData = [];
+
+    if (sortedDates.length > 0) {
+        let currentDate = new Date(sortedDates[0]);
+        let lastCount = 0;
+        currentDate.setHours(0, 0, 0, 0);
+
+        const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+        lastDate.setHours(0, 0, 0, 0);
+
+        let dateIndex = 0;
+
+        while (currentDate.getTime() <= lastDate.getTime()) {
+            const key = currentDate.toISOString().slice(0, 10);
+            if (dateIndex < sortedDates.length && sortedDates[dateIndex] === key) {
+                lastCount = cumulativeData[key];
+                dateIndex++;
+            }
+            fullLabels.push(currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            fullData.push(lastCount);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+    }
+
+
+    if (window.entryGrowthOverTimeChartInstance) {
+        window.entryGrowthOverTimeChartInstance.destroy();
+    }
+    window.entryGrowthOverTimeChartInstance = new Chart(canvasContext, {
+        type: 'line',
+        data: {
+            labels: fullLabels,
+            datasets: [{
+                label: 'Total Entries Over Time',
+                data: fullData,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Total Entries Growth', color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() },
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } },
+                x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() }, grid: { color: 'rgba(128, 128, 128, 0.1)' } }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a pie chart showing the distribution of entries by type.
+ */
+function renderEntriesByTypeChart() {
+    const ctx = document.getElementById('entriesByTypeChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+
+    const entryTypeCounts = {};
+    const allEntries = [
+        ...(appState.tools || []),
+        ...(appState.emails || []),
+        ...(appState.phones || []),
+        ...(appState.crypto || []),
+        ...(appState.locations || []),
+        ...(appState.links || []),
+        ...(appState.media || []),
+        ...(appState.passwords || []),
+        ...(appState.keywords || []),
+        ...(appState.socials || []),
+        ...(appState.domains || []),
+        ...(appState.usernames || []),
+        ...(appState.threats || []),
+        ...(appState.vulnerabilities || []),
+        ...(appState.malware || []),
+        ...(appState.breaches || []),
+        ...(appState.credentials || []),
+        ...(appState.forums || []),
+        ...(appState.vendors || []),
+        ...(appState.telegramChannels || []),
+        ...(appState.pastes || []),
+        ...(appState.documents || []),
+        ...(appState.networks || []),
+        ...(appState.metadataEntries || []),
+        ...(appState.archives || []),
+        ...(appState.messagingApps || []),
+        ...(appState.datingProfiles || []),
+        ...(appState.audioEntries || []),
+        ...(appState.facialRecognition || []),
+        ...(appState.personas || []),
+        ...(appState.vpns || []),
+        ...(appState.honeypots || []),
+        ...(appState.exploits || []),
+        ...(appState.publicRecords || []),
+        ...(appState.caseStudies || [])
+    ];
+
+    allEntries.forEach(entry => {
+        const type = (typeof entry.type === 'string' && entry.type) ?
+                     entry.type.charAt(0).toUpperCase() + entry.type.slice(1) :
+                     'Unknown';
+        entryTypeCounts[type] = (entryTypeCounts[type] || 0) + 1;
+    });
+
+    const labels = Object.keys(entryTypeCounts);
+    const data = Object.values(entryTypeCounts);
+
+    if (window.entriesByTypeChartInstance) {
+        window.entriesByTypeChartInstance.destroy();
+    }
+
+    window.entriesByTypeChartInstance = new Chart(canvasContext, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d',
+                    '#17a2b8', '#6610f2', '#fd7e14', '#e83e8c', '#20c997',
+                    '#6f42c1', '#e0f2f1', '#e3f2fd', '#fff3e0', '#fce4ec',
+                    '#e1f5fe', '#c8e6c9', '#ffe0b2', '#f8bbd0', '#bbdefb'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Entries by Type',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                    font: { size: 16 }
+                },
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                    }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a line chart showing entry activity or additions over time.
+ * Currently uses `addedDate` as a proxy for activity.
+ */
+function renderUsageTrendChart() {
+    const ctx = document.getElementById('usageTrendChart');
+    if (!ctx) return;
+    const canvasContext = ctx.getContext('2d');
+    const usageData = {};
+
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || []), ...(appState.domains || []), ...(appState.usernames || []),
+        ...(appState.threats || []), ...(appState.vulnerabilities || []), ...(appState.malware || []), ...(appState.breaches || []),
+        ...(appState.credentials || []), ...(appState.forums || []), ...(appState.vendors || []), ...(appState.telegramChannels || []),
+        ...(appState.pastes || []), ...(appState.documents || []), ...(appState.networks || []), ...(appState.metadataEntries || []),
+        ...(appState.archives || []), ...(appState.messagingApps || []), ...(appState.datingProfiles || []), ...(appState.facialRecognition || []),
+        ...(appState.personas || []), ...(appState.vpns || []), ...(appState.honeypots || []), ...(appState.exploits || []),
+        ...(appState.publicRecords || [])
+    ];
+
+    allEntries.forEach(entry => {
+        if (entry.addedDate) {
+            const date = new Date(entry.addedDate);
+            const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1));
+            const key = weekStart.toISOString().slice(0, 10);
+            usageData[key] = (usageData[key] || 0) + 1;
+        }
+    });
+
+    const sortedDates = Object.keys(usageData).sort();
+    const labels = sortedDates.map(date => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    const data = sortedDates.map(date => usageData[date]);
+
+    if (window.usageTrendChartInstance) {
+        window.usageTrendChartInstance.destroy();
+    }
+
+    window.usageTrendChartInstance = new Chart(canvasContext, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Entries Added Over Time',
+                data: data,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Entry Activity Trend',
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim(),
+                    font: { size: 16 }
+                },
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim()
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                    grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() },
+                    grid: { color: 'rgba(128, 128, 128, 0.1)' }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Renders a list of the 5 most recently used entries.
+ */
+function renderMostUsedTools() {
+    const mostUsedToolsList = document.getElementById('mostUsedToolsList');
+    const noMostUsedTools = document.getElementById('noMostUsedTools');
+    
+    if (!mostUsedToolsList || !noMostUsedTools) return;
+
+    const allUsedEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || [])
+    ].filter(entry => entry.lastUsed > 0);
+
+    const usedTools = allUsedEntries.sort((a, b) => b.lastUsed - a.lastUsed)
+                                    .slice(0, 5);
+    mostUsedToolsList.innerHTML = '';
+    if (usedTools.length === 0) {
+        noMostUsedTools.style.display = 'block';
+    } else {
+        noMostUsedTools.style.display = 'none';
+        usedTools.forEach(entry => {
+            const listItem = document.createElement('li');
+            let name = getEntryName(entry);
+            listItem.innerHTML = `<span>${name}</span><span>${formatTime(entry.lastUsed)}</span>`;
+            mostUsedToolsList.appendChild(listItem);
+        });
+    }
+}
+
+/**
+ * Renders a list of entries that have never been used.
+ */
+function renderNeverUsedTools() {
+    const neverUsedToolsList = document.getElementById('neverUsedToolsList');
+    const noNeverUsedTools = document.getElementById('noNeverUsedTools');
+
+    if (!neverUsedToolsList || !noNeverUsedTools) return;
+
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || [])
+    ];
+
+    const neverUsed = allEntries.filter(entry => !entry.lastUsed || entry.lastUsed === 0)
+                                .sort((a, b) => {
+                                    const nameA = getEntryName(a);
+                                    const nameB = getEntryName(b);
+                                    return nameA.localeCompare(nameB);
+                                });
+
+    neverUsedToolsList.innerHTML = '';
+    if (neverUsed.length === 0) {
+        noNeverUsedTools.style.display = 'block';
+    } else {
+        noNeverUsedTools.style.display = 'none';
+        neverUsed.forEach(entry => {
+            const listItem = document.createElement('li');
+            let name = getEntryName(entry);
+            listItem.innerHTML = `<span>${name}</span><span>Never Used</span>`;
+            neverUsedToolsList.appendChild(listItem);
+        });
+    }
+}
+
+/**
+ * Renders a list of entries added per week.
+ */
+function renderToolsAddedPerWeek() {
+    const toolsAddedPerWeekList = document.getElementById('toolsAddedPerWeekList');
+    const noToolsAdded = document.getElementById('noToolsAdded');
+
+    if (!toolsAddedPerWeekList || !noToolsAdded) return;
+
+    const allEntries = [
+        ...(appState.tools || []), ...(appState.emails || []), ...(appState.phones || []), ...(appState.crypto || []),
+        ...(appState.locations || []), ...(appState.links || []), ...(appState.media || []), ...(appState.passwords || []),
+        ...(appState.keywords || []), ...(appState.socials || [])
+    ];
+
+    const weeklyStats = {};
+    allEntries.forEach(entry => {
+        if (entry.addedDate) {
+            const date = new Date(entry.addedDate);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+            const startOfWeek = new Date(date.setDate(diff));
+            startOfWeek.setHours(0, 0, 0, 0);
+
+            const weekKey = startOfWeek.toISOString().split('T')[0];
+            weeklyStats[weekKey] = (weeklyStats[weekKey] || 0) + 1;
+        }
+    });
+
+    const sortedWeeks = Object.keys(weeklyStats).sort((a, b) => new Date(b) - new Date(a));
+
+    toolsAddedPerWeekList.innerHTML = '';
+    if (sortedWeeks.length === 0) {
+        noToolsAdded.style.display = 'block';
+    } else {
+        noToolsAdded.style.display = 'none';
+        sortedWeeks.forEach(weekKey => {
+            const count = weeklyStats[weekKey];
+            const weekStartDate = new Date(weekKey);
+            const options = {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            };
+            const formattedWeek = weekStartDate.toLocaleDateString(undefined, options);
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<span>Week of ${formattedWeek}</span><span>${count} entries</span>`;
+            toolsAddedPerWeekList.appendChild(listItem);
+        });
+    }
+}
+
+
+/**
+ * Displays a random OSINT tool recommendation or tip of the day.
+ */
+function showRandomDiscovery() {
+    const randomDiscoverySection = document.getElementById('randomDiscovery');
+    const randomItemDisplay = document.getElementById('randomItemDisplay');
+    const newRandomBtn = document.getElementById('newRandomBtn');
+
+    if (!randomDiscoverySection || !randomItemDisplay || !newRandomBtn) {
+        console.error("Random discovery elements not found. Ensure #randomDiscovery, #randomItemDisplay, and #newRandomBtn exist in HTML.");
+        return;
+    }
+
+    if (appState.readOnlyMode) {
+        newRandomBtn.style.display = 'none';
+        randomItemDisplay.innerHTML = `
+            <div class="random-content-card placeholder">
+                <i class="fas fa-lock"></i>
+                <h4 class="card-title">Read-Only Mode</h4>
+                <p class="card-description">Discovery is disabled in shared view.</p>
+            </div>
+        `;
+        randomDiscoverySection.classList.remove('two-rows', 'two-columns', 'single-centered');
+        randomDiscoverySection.classList.add('single-centered');
+        
+        if (randomDiscoveryInterval) {
+            clearInterval(randomDiscoveryInterval);
+            randomDiscoveryInterval = null;
+        }
+        return;
+    }
+
+    newRandomBtn.disabled = true;
+    randomItemDisplay.innerHTML = `
+        <div class="random-content-card placeholder">
+            <div class="loading" style="margin-bottom: 10px;"></div>
+            <p>Loading discovery...</p>
+        </div>
+    `;
+
+    randomDiscoverySection.classList.remove('single-centered', 'two-columns', 'two-rows');
+
+    setTimeout(() => {
+        const allTools = appState.tools.filter(tool => tool.url);
+        const allTips = appState.osintTips;
+        const allCaseStudies = appState.caseStudies;
+
+        if (allCaseStudies.length === 0 && allTools.length === 0 && allTips.length === 0) {
+            randomItemDisplay.innerHTML = `
+                <div class="random-content-card placeholder">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h4 class="card-title">No Content Available</h4>
+                    <p class="card-description">Add some tools, tips, or case studies to get amazing discoveries!</p>
+                </div>
+            `;
+            randomDiscoverySection.classList.add('single-centered');
+            newRandomBtn.disabled = false;
+            return;
+        }
+
+        const selectedLayout = 'two-rows'; // Force the 2-rows layout
+        randomDiscoverySection.classList.add(selectedLayout);
+
+        const generatedCards = [];
+
+        // 1. Generate the left column card (Always a Case Study if available, otherwise a fallback)
+        if (allCaseStudies.length > 0) {
+            generatedCards.push(generateRandomContentCard(getRandomItem(allCaseStudies), 'case-study'));
+        } else {
+            // Fallback if no case studies: pick a random tool or tip
+            const fallbackTypes = [];
+            if (allTools.length > 0) fallbackTypes.push('tool');
+            if (allTips.length > 0) fallbackTypes.push('tip');
+            if (fallbackTypes.length > 0) {
+                const randomFallbackType = getRandomItem(fallbackTypes);
+                generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allTips), randomFallbackType));
+            } else {
+                generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+            }
+        }
+
+        // 2. Generate the right-top card (Always a Random Tool if available)
+        if (allTools.length > 0) {
+            generatedCards.push(generateRandomContentCard(getRandomItem(allTools), 'tool'));
+        } else {
+            // Fallback if no tools: pick a random tip or case study
+            const fallbackTypes = [];
+            if (allTips.length > 0) fallbackTypes.push('tip');
+            if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+            if (fallbackTypes.length > 0) {
+                const randomFallbackType = getRandomItem(fallbackTypes);
+                generatedCards.push(generateRandomContentCard(randomFallbackType === 'tip' ? getRandomItem(allTips) : getRandomItem(allCaseStudies), randomFallbackType));
+            } else {
+                generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+            }
+        }
+
+        // 3. Generate the right-bottom card (Always a Random Tip if available)
+        if (allTips.length > 0) {
+            generatedCards.push(generateRandomContentCard(getRandomItem(allTips), 'tip'));
+        } else {
+            const fallbackTypes = [];
+            if (allTools.length > 0) fallbackTypes.push('tool');
+            if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+            if (fallbackTypes.length > 0) {
+                const randomFallbackType = getRandomItem(fallbackTypes);
+                generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allCaseStudies), randomFallbackType));
+            } else {
+                generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+            }
+        }
+
+        const contentCardsHtml = `
+            ${generatedCards[0]}
+            ${generatedCards[1]}
+            ${generatedCards[2]}
+        `;
+
+        randomItemDisplay.innerHTML = contentCardsHtml;
+        
+        randomItemDisplay.classList.add(`layout-${selectedLayout}`);
+        randomItemDisplay.classList.remove('layout-single', 'layout-two-columns');
+
+        newRandomBtn.disabled = false;
+    }, 500);
+}
+
+// Helper to get a random item (utility)
+function getRandomItem(array) {
+    if (!array || array.length === 0) {
+        return null;
+    }
+    return array[Math.floor(Math.random() * array.length)];
+}
+
+// Helper to generate a random content card HTML (utility)
+function generateRandomContentCard(item, type) {
+    let title, description, url, icon, faviconHtml = '', extraClass = '';
+
+    if (!item) {
+        return `
+            <div class="random-content-card placeholder">
+                <i class="fas fa-question-circle"></i>
+                <h4 class="card-title">No Discovery Available</h4>
+                <p class="card-description">Add more tools, tips, or case studies to get a random discovery!</p>
+            </div>
+        `;
+    }
+
+    switch (type) {
+        case 'tool':
+            title = item.name;
+            description = item.description;
+            url = item.url;
+            icon = 'fas fa-tools';
+            faviconHtml = `<img src="${item.favicon}" alt="" class="tool-favicon" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${new URL(item.url).hostname}'">`;
+            extraClass = 'random-tool-card';
+            break;
+        case 'tip':
+            title = "OSINT Tip";
+            description = item;
+            url = null;
+            icon = 'fas fa-lightbulb';
+            extraClass = 'random-tip-card';
+            break;
+        case 'case-study':
+            title = item.title;
+            description = item.summary;
+            url = null;
+            icon = 'fas fa-microscope';
+            extraClass = 'random-case-study-card';
+            break;
+        default:
+            title = "Unknown Discovery";
+            description = "Could not load content.";
+            url = null;
+            icon = 'fas fa-question-circle';
+            break;
+    }
+
+    return `
+        <div class="random-content-card ${extraClass}">
+            <div class="card-header">
+                ${faviconHtml || `<i class="${icon}"></i>`}
+                <h4 class="card-title">${title}</h4>
+            </div>
+            <p class="card-description">${description}</p>
+            ${url ? `<a href="${url}" target="_blank" class="card-link btn-sm btn-primary">Visit <i class="fas fa-external-link-alt"></i></a>` : ''}
+        </div>
+    `;
+}
+
+// Global variable to hold the interval ID for auto-rotation
+let randomDiscoveryInterval = null;
+
+// Function to start the automatic rotation
+function startRandomDiscoveryRotation() {
+    if (randomDiscoveryInterval) {
+        clearInterval(randomDiscoveryInterval);
+    }
+    randomDiscoveryInterval = setInterval(showRandomDiscovery, 10000);
+}
+
+// Function to stop the automatic rotation
+function stopRandomDiscoveryRotation() {
+    if (randomDiscoveryInterval) {
+        clearInterval(randomDiscoveryInterval);
+        randomDiscoveryInterval = null;
+    }
+}
+
+/**
+ * Checks if the current screen size is small and displays a desktop recommendation modal if needed.
+ */
+function checkAndShowDesktopRecommendation() {
+    if (!appState.readOnlyMode && !sessionStorage.getItem('desktopRecommendationShown')) {
+        if (window.innerWidth < 1024) {
+            showModal('desktopRecommendationModal');
+        }
+    }
+}
+
+/**
+ * Creates floating particle elements for background animation.
+ */
+function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    if (!particlesContainer) return;
+
+    const particleCount = window.innerWidth < 768 ? 15 : 30;
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
+        particlesContainer.appendChild(particle);
+    }
+}
+
+/**
+ * Creates connecting line elements for background animation.
+ */
+function createConnectingLines() {
+    const linesContainer = document.getElementById('connecting-lines');
+    if (!linesContainer) return;
+
+    const lineCount = window.innerWidth < 768 ? 3 : 6;
+    
+    for (let i = 0; i < lineCount; i++) {
+        const line = document.createElement('div');
+        line.className = 'connection-line';
+        line.style.top = Math.random() * 100 + '%';
+        line.style.left = Math.random() * 50 + '%';
+        line.style.width = Math.random() * 200 + 100 + 'px';
+        line.style.animationDelay = Math.random() * 4 + 's';
+        line.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        linesContainer.appendChild(line);
+    }
+}
+
+// Ensure particles and lines are created on DOMContentLoaded and remade on resize
+document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
+    createConnectingLines();
+    
+    const cards = document.querySelectorAll('.evidence-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+        card.style.animation = 'slideIn 0.8s ease forwards';
+    });
+});
+
+let resizeTimeout;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function() {
+        const particlesContainer = document.getElementById('particles');
+        const linesContainer = document.getElementById('connecting-lines');
+        if (particlesContainer) particlesContainer.innerHTML = '';
+        if (linesContainer) linesContainer.innerHTML = '';
+        createParticles();
+        createConnectingLines();
+    }, 250);
+});
+
+
 /**
  * Orchestrates the initial loading and setup of the application.
  */
 function initApp() {
-    loadState(); // This loads all appState data, including timeline and case studies.
-    parseShareableLink(); // Check for read-only shared link parameters
-    updateStats(); // Update dashboard stats
-    bindEvents(); // Attach all event listeners
-    initTheme(); // Apply saved or default theme
+    // These specific "load" functions are defined in their respective files,
+    // so they will be available as long as those files are loaded before initApp is called.
+    loadState(); // Defined in core.js
+    
+    parseShareableLink(); // Defined in core.js
+    
+    bindEvents(); // Defined in event-bindings.js
+    updateStats(); // Defined in core.js (after moving content from dashboard.js)
 
-    checkAndShowDesktopRecommendation(); // Prompt for desktop if on mobile
+    initTheme(); // Defined in core.js
 
-    // Determine the initial tab to switch to
+    checkAndShowDesktopRecommendation(); // Defined in core.js
+
     const validTabs = ['dashboard', 'intelligence-vault', 'custom-tabs', 'timeline', 'threats', 'handbook', 'dork-assistant', 'case-studies', 'threat-hunting'];
     if (!validTabs.includes(appState.currentTab)) {
         appState.currentTab = 'dashboard';
     }
 
-    switchTab(appState.currentTab); // This will render the content for the initial tab.
+    switchTab(appState.currentTab); // Defined in entry-rendering-and-filters.js
     
-    showRandomDiscovery(); // Initialize random discovery section
-    populateCategoryFilter(); // Fill category filter dropdown
-    updateDashboard(); // Update all dashboard charts and lists
-    applyReadOnlyMode(); // Apply read-only mode if shareable link is active
+    // These init functions will be called by switchTab when their respective tabs are activated,
+    // or manually if they need to run globally at startup.
+    initDorkAssistant(); // Defined in dork-assistant.js
+    showRandomDiscovery(); // Defined in core.js (moved from dashboard.js)
+    populateCategoryFilter(); // Defined in entry-rendering-and-filters.js
+    updateDashboard(); // Defined in core.js (moved from dashboard.js)
 
-    // Update view mode toggle buttons based on saved preference
     const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle');
     viewToggleButtons.forEach(btn => {
         if (appState.viewMode === 'grid') {
@@ -2013,6 +3075,3 @@ function initApp() {
         }
     });
 }
-
-// Ensure initApp is called when the DOM is fully loaded.
-document.addEventListener('DOMContentLoaded', initApp);

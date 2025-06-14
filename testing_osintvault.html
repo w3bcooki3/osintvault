@@ -3998,35 +3998,35 @@
         </div>
     </div>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="./java/core.js"></script>
+
     <script src="./java/modals-and-forms.js"></script>
     <script src="./java/entry-rendering-and-filters.js"></script>
     <script src="./java/custom-vault.js"></script>
-    <script src="./java/dashboard.js"></script>
     <script src="./java/handbook-and-notes.js"></script>
     <script src="./java/dork-assistant.js"></script>
     <script src="./java/timeline.js"></script>
     <script src="./java/case-studies.js"></script>
     <script src="./java/threat-intel-and-hunting.js"></script>
+    
     <script src="./java/event-bindings.js"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-        // This is the *only* custom JavaScript left in the HTML.
-        // It ensures initApp is called once all external scripts are loaded.
-        document.addEventListener('DOMContentLoaded', initApp);
-
-        // Auto-detect system theme preference (can be kept here or moved to core.js initTheme)
-        // Keeping it here for quick startup visual consistency before initApp fully runs.
+        // Auto-detect system theme preference (can be kept here for immediate visual effect)
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.setAttribute('data-theme', 'dark');
-            // Assuming #themeToggle has a relevant icon for this.
             const themeToggleBtn = document.getElementById('themeToggle');
             if (themeToggleBtn) {
                 themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
             }
         }
+
+        // The single entry point for your application's JavaScript
+        // This ensures initApp runs only after *all* JS files above have been loaded and parsed.
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 
 </body>
