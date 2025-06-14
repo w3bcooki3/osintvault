@@ -369,7 +369,7 @@ function handleCaseStudyFormSubmit(e) {
     hideModal('addEditCaseStudyModal');
     saveCaseStudies();
     renderCaseStudies();
-    updateStats();
+    updateDashboard();
 }
 
 /**
@@ -445,7 +445,7 @@ function handleCaseStudyAction(e) {
 
     saveCaseStudies();
     renderCaseStudies();
-    updateStats();
+    updateDashboard();
 }
 
 
