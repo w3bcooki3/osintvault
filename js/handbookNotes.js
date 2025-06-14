@@ -86,10 +86,10 @@ async function initHandbook() {
             handbookData = JSON.parse(savedHandbookData);
         } catch (e) {
             console.error("Error parsing saved handbook data, fetching defaults:", e);
-            handbookData.sections = await fetchJsonData('/data/handbookData.json'); // Assumes handbookData.json exists
+            handbookData.sections = await fetchJsonData('./data/handbookData.json'); // Assumes handbookData.json exists
         }
     } else {
-        handbookData.sections = await fetchJsonData('/data/handbookData.json'); // Assumes handbookData.json exists
+        handbookData.sections = await fetchJsonData('./data/handbookData.json'); // Assumes handbookData.json exists
     }
 
     // Render the sidebar

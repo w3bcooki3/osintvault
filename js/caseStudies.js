@@ -27,7 +27,7 @@ async function loadCaseStudiesData() {
     }
     // If no saved data, or parsing failed, load from file (which contains the samples).
     // Assumes fetchJsonData is a globally available utility function for fetching JSON files.
-    const fetchedCaseStudies = await fetchJsonData('/data/caseStudies.json');
+    const fetchedCaseStudies = await fetchJsonData('./data/caseStudies.json');
     return fetchedCaseStudies.map(cs => ({
         ...cs,
         addedDate: new Date(cs.addedDate) // Ensure dates are Date objects upon loading
