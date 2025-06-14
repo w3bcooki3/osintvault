@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Tool Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS Reset & Basic Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Root Variables for Colors and Spacing */
+        :root {
+            --primary-color: #2563eb; /* Blue 700 */
+            --secondary-color: #1e40af; /* Blue 800 */
+            --accent-color: #3b82f6; /* Blue 500 */
+            --success-color: #10b981; /* Green 600 */
+            --warning-color: #f59e0b; /* Amber 500 */
+            --danger-color: #ef4444; /* Red 500 */
+
+            --dark-bg: #0f172a; /* Slate 900 */
+            --dark-surface: #1e293b; /* Slate 800 */
+            --dark-border: #334155; /* Slate 700 */
+            --light-bg: #ffffff; /* White */
+            --light-surface: #f8fafc; /* Slate 50 */
+            --light-border: #e2e8f0; /* Slate 200 */
+
+            --text-primary: #1e293b; /* Slate 900 */
+            --text-secondary: #64748b; /* Slate 500 */
+            --text-dark-primary: #f1f5f9; /* Slate 100 */
+            --text-dark-secondary: #94a3b8; /* Slate 400 */
+
+            /* Spacing Variables */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-xxl: 48px;
+
+            /* Border Radii */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 15px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--text-dark-primary);
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 70px;
+            background: var(--light-surface);
+            border-right: 1px solid var(--light-border);
+            transition: width 0.3s ease;
+            overflow: hidden;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding-top: var(--spacing-md); /* Add padding to top */
+        }
+
+        body.dark-mode .sidebar {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .sidebar:hover {
+            width: 280px;
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-lg) var(--spacing-md); /* Adjusted padding */
+            border-bottom: 1px solid var(--light-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            min-height: 80px;
+        }
+
+        body.dark-mode .sidebar-header {
+            border-color: var(--dark-border);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:hover .logo-text {
+            opacity: 1;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: var(--spacing-md) 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin: var(--spacing-xs) var(--spacing-sm); /* Adjusted margins */
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-item span {
+            margin-left: var(--spacing-md);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:hover .nav-item span {
+            opacity: 1;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--warning-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar:hover .nav-item .badge {
+            opacity: 1;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-top: auto;
+            border-top: 1px solid var(--light-border);
+        }
+
+        body.dark-mode .theme-toggle {
+            border-color: var(--dark-border);
+        }
+
+        .theme-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            padding: var(--spacing-xl) var(--spacing-xxl); /* Adjusted padding */
+            background: var(--light-surface);
+            border-bottom: 1px solid var(--light-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .content-header {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: var(--spacing-xs);
+        }
+
+        body.dark-mode .page-subtitle {
+            color: var(--text-dark-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        /* Global Button Styles */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            text-decoration: none;
+            justify-content: center; /* Center content in button */
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+         .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--light-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--light-border);
+        }
+
+        body.dark-mode .btn-secondary {
+            background: var(--dark-surface);
+            color: var(--text-dark-primary);
+            border-color: var(--dark-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-border);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #cc3939; /* Slightly darker red */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-danger:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-xxl); /* Consistent padding */
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--light-surface);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--light-border);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .stat-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        body.dark-mode .stat-label {
+            color: var(--text-dark-secondary);
+        }
+
+        /* Intelligence Vault & Multi-Vault Controls */
+        .vault-controls {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            align-items: center; /* Align items vertically */
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-lg) var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--light-surface);
+            color: var(--text-primary);
+            transition: border-color 0.2s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        body.dark-mode .search-input {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--text-dark-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-md);
+            background: var(--light-surface);
+            color: var(--text-primary);
+            min-width: 150px;
+            appearance: none; /* Remove default arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2C114.7L159.2%2C0.8c-2.3-1.6-5.4-1.6-7.8%2C0.1L5.4%2C114.7c-3.1%2C2.1-3.6%2C6.4-1.2%2C9.5c2.4%2C3.1%2C6.8%2C3.6%2C9.8%2C1.2L145%2C28.2l128.5%2C96.7c3%2C2.2%2C7.3%2C1.7%2C9.7-1.4C290.5%2C121.1%2C290.1%2C116.8%2C287%2C114.7z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 12px;
+            padding-right: 30px; /* Make space for custom arrow */
+            transition: border-color 0.2s ease;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+
+        body.dark-mode .filter-select {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--text-dark-primary);
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--tools-per-row, auto-fill), minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        /* --tools-per-row is set in JS settings, default 'auto-fill' */
+
+        /* New: List View */
+        .tools-grid.list-view {
+            grid-template-columns: 1fr; /* Single column for list view */
+            gap: var(--spacing-md); /* Smaller gap for list view */
+        }
+
+        .tools-grid.list-view .tool-card {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-lg);
+            position: relative; /* For checkbox */
+        }
+
+        .tools-grid.list-view .tool-checkbox {
+             top: 50%;
+             transform: translateY(-50%);
+             left: var(--spacing-sm);
+        }
+
+        .tools-grid.list-view .tool-header {
+            flex: 1;
+            margin-bottom: 0;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .tools-grid.list-view .tool-favicon {
+            margin-right: var(--spacing-sm);
+            width: 24px; /* Smaller favicon in list view */
+            height: 24px;
+        }
+        .tools-grid.list-view .tool-favicon img {
+            width: 18px; /* Smaller favicon image */
+            height: 18px;
+        }
+
+        .tools-grid.list-view .tool-info {
+            flex-grow: 1;
+            margin-left: 25px; /* Offset for checkbox */
+        }
+
+        .tools-grid.list-view .tool-title {
+            font-size: 1.1em;
+            margin-bottom: 2px;
+        }
+
+        .tools-grid.list-view .tool-url {
+            font-size: 0.85em;
+        }
+
+        .tools-grid.list-view .tool-description,
+        .tools-grid.list-view .tool-tags {
+            display: none; /* Hide description and tags in list view */
+        }
+
+        .tools-grid.list-view .star-btn {
+            order: 2; /* Position star after buttons */
+            margin-left: var(--spacing-md);
+        }
+        .tools-grid.list-view .pin-icon {
+            right: 80px; /* Adjust based on new star position */
+            font-size: 14px;
+        }
+
+
+        .tools-grid.list-view .tool-actions {
+            margin-left: auto; /* Push actions to the right */
+            gap: var(--spacing-xs); /* Smaller gap for list view buttons */
+        }
+        .tools-grid.list-view .tool-buttons {
+            gap: var(--spacing-xs);
+        }
+        /* End New List View */
+
+
+        .tool-card {
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        body.dark-mode .tool-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        /* New: Tool selection checkbox */
+        .tool-card .tool-checkbox {
+            position: absolute;
+            top: var(--spacing-sm);
+            left: var(--spacing-sm);
+            z-index: 10;
+            width: 18px; /* Make checkbox slightly larger */
+            height: 18px;
+            cursor: pointer;
+        }
+        /* New: Pinned icon */
+        .tool-card .pin-icon {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: 40px; /* Adjust based on star button position */
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+        .tool-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-md); /* Offset for checkbox */
+        }
+
+        .tool-favicon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background: var(--light-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden; /* Ensure image doesn't overflow */
+        }
+
+        .tool-favicon img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block; /* Remove extra space below image */
+        }
+
+        .tool-info {
+            flex: 1;
+        }
+
+        .tool-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .tool-url {
+            color: var(--text-secondary);
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        body.dark-mode .tool-url {
+            color: var(--text-dark-secondary);
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-md);
+        }
+
+        body.dark-mode .tool-description {
+            color: var(--text-dark-secondary);
+        }
+
+        .tool-tags {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tool-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: space-between;
+            align-items: center;
+            padding-left: var(--spacing-md); /* Offset for checkbox */
+        }
+
+        .tool-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .tool-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: white; /* Default color for tool buttons */
+        }
+
+        .tool-btn:hover {
+            transform: scale(1.05); /* Slightly less dramatic scale */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tool-btn:active {
+            transform: scale(1);
+            box-shadow: none;
+        }
+
+        .btn-launch {
+            background: var(--success-color);
+        }
+
+        .btn-copy {
+            background: var(--warning-color);
+        }
+
+        .btn-edit {
+            background: var(--accent-color);
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+        }
+
+        .btn-remove { /* For removing from specific vault */
+            background: var(--danger-color);
+        }
+
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            padding: 0; /* Remove default button padding */
+            line-height: 1; /* Adjust vertical alignment */
+        }
+
+        .star-btn.starred {
+            color: var(--warning-color);
+        }
+        .star-btn:hover {
+            transform: scale(1.1);
+        }
+        .star-btn:active {
+            transform: scale(1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6); /* Slightly darker overlay */
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--light-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xxl);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--light-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); /* Add shadow */
+        }
+
+        body.dark-mode .modal-content {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px; /* Larger close button */
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+        .close-btn:hover {
+            color: var(--danger-color);
+            transform: rotate(90deg);
+        }
+        .close-btn:active {
+            transform: rotate(0);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+
+        body.dark-mode .form-input,
+        body.dark-mode .form-textarea,
+        body.dark-mode .form-select {
+            background: var(--dark-bg);
+            border-color: var(--dark-border);
+            color: var(--text-dark-primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-md);
+            background: var(--light-bg);
+            min-height: 45px;
+            align-items: center;
+        }
+
+        body.dark-mode .tag-input-container {
+            background: var(--dark-bg);
+            border-color: var(--dark-border);
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .tag-remove {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        .tag-remove:hover {
+            opacity: 1;
+        }
+
+        .tag-input {
+            border: none;
+            outline: none;
+            background: none;
+            flex: 1;
+            min-width: 100px;
+            color: var(--text-primary);
+            padding: 0;
+        }
+
+        body.dark-mode .tag-input {
+            color: var(--text-dark-primary);
+        }
+
+        /* Random Tool */
+        .random-tool {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .random-tool h3 {
+            margin-bottom: var(--spacing-sm);
+            font-size: 22px;
+        }
+
+        .random-tool p {
+            margin-bottom: var(--spacing-md);
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        .random-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .random-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        .random-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar:hover {
+                width: 250px;
+            }
+            
+            .content-area {
+                padding: var(--spacing-lg);
+            }
+            .content-header {
+                padding: var(--spacing-lg);
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vault-controls {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            .search-box {
+                min-width: 100%;
+            }
+            .filter-select {
+                width: 100%;
+            }
+             .intelligence-vault-action-buttons {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+             }
+             .intelligence-vault-action-buttons .btn {
+                 width: 100%;
+             }
+             .bulk-actions-bar {
+                 flex-direction: column;
+                 gap: var(--spacing-sm);
+             }
+             .bulk-actions-bar div {
+                 display: flex;
+                 flex-wrap: wrap;
+                 justify-content: center;
+                 gap: var(--spacing-sm);
+             }
+             .bulk-actions-bar .btn {
+                 flex-grow: 1;
+             }
+        }
+         @media (max-width: 480px) {
+             .modal-content {
+                 padding: var(--spacing-lg);
+             }
+         }
+
+
+        /* Multi-Vault Styles */
+        .vault-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--light-border);
+            padding-bottom: var(--spacing-sm);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .vault-tabs {
+            border-color: var(--dark-border);
+        }
+
+        .vault-tab {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        body.dark-mode .vault-tab {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .vault-tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .vault-tab:hover:not(.active) {
+            background: var(--light-border);
+        }
+        .vault-tab:active:not(.active) {
+            transform: translateY(1px);
+        }
+
+        .vault-tab .vault-delete {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+
+        .vault-tab .vault-delete:hover {
+            color: var(--danger-color);
+            opacity: 1;
+        }
+        .vault-tab .vault-delete:active {
+            transform: scale(0.9);
+        }
+
+        .vault-content {
+            background: var(--light-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            border: 1px solid var(--light-border);
+        }
+
+        body.dark-mode .vault-content {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        /* Cheatsheet Styles */
+        .cheatsheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .cheat-card {
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode .cheat-card {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .cheat-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+        }
+
+        .cheat-list {
+            list-style: none;
+        }
+
+        .cheat-item {
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--light-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--spacing-sm); /* Gap between text and command */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        body.dark-mode .cheat-item {
+            border-color: var(--dark-border);
+        }
+
+        .cheat-item:last-child {
+            border-bottom: none;
+        }
+
+        .cheat-command {
+            font-family: 'Courier New', monospace;
+            background: var(--light-border);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--text-primary);
+            flex-shrink: 0; /* Prevent from shrinking */
+        }
+        body.dark-mode .cheat-command {
+            background: var(--dark-border);
+            color: var(--text-dark-primary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: var(--spacing-xl);
+            right: var(--spacing-xl);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            z-index: 10001;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease-out; /* Smoother animation */
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .notification.info {
+            background: var(--accent-color);
+            color: white;
+        }
+        .notification::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 5px;
+        }
+        .notification.success::before {
+            content: "\f058"; /* fa-check-circle */
+        }
+        .notification.error::before {
+            content: "\f06a"; /* fa-exclamation-circle */
+        }
+        .notification.info::before {
+            content: "\f05a"; /* fa-info-circle */
+        }
+
+
+        .drag-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(37, 99, 235, 0.1);
+            border: 3px dashed var(--primary-color);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .drag-active {
+            display: flex !important;
+        }
+
+        /* NEW: Intelligence Vault Tabs and Controls */
+        .intelligence-vault-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--light-border);
+            padding-bottom: var(--spacing-sm);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .intelligence-vault-tabs {
+            border-color: var(--dark-border);
+        }
+
+        .intelligence-vault-tab {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        body.dark-mode .intelligence-vault-tab {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .intelligence-vault-tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .intelligence-vault-tab:hover:not(.active) {
+            background: var(--light-border);
+        }
+        .intelligence-vault-tab:active:not(.active) {
+             transform: translateY(1px);
+        }
+
+
+        .intelligence-vault-sub-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--light-border);
+        }
+        body.dark-mode .intelligence-vault-sub-tabs {
+            border-color: var(--dark-border);
+        }
+
+        .intelligence-vault-sub-tab {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: var(--light-border);
+            color: var(--text-primary);
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        body.dark-mode .intelligence-vault-sub-tab {
+            background: var(--dark-border);
+            color: var(--text-dark-primary);
+        }
+
+        .intelligence-vault-sub-tab.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .intelligence-vault-sub-tab:hover:not(.active) {
+            background: var(--accent-color);
+            color: white;
+        }
+        .intelligence-vault-sub-tab:active:not(.active) {
+            transform: translateY(1px);
+        }
+
+        .intelligence-vault-action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-items: center; /* Vertically align buttons */
+        }
+        .intelligence-vault-action-buttons .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 0.9em;
+        }
+
+        /* Bulk Actions Bar */
+        .bulk-actions-bar {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bulk-actions-bar.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .bulk-actions-bar span {
+            font-weight: 600;
+        }
+
+        .bulk-actions-bar .btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 0.85em;
+            padding: 6px 12px;
+        }
+        .bulk-actions-bar .btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+        .bulk-actions-bar .btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">OSINT Hub</div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                    <div class="badge" id="dashboard-badge"></div>
+                </div>
+                <div class="nav-item" data-section="intelligence-vault">
+                    <i class="fas fa-database"></i>
+                    <span>Intelligence Vault</span>
+                    <div class="badge" id="vault-badge"></div>
+                </div>
+                <div class="nav-item" data-section="multi-vault">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Multi-Vault</span>
+                    <div class="badge" id="multi-vault-badge"></div>
+                </div>
+                <div class="nav-item" data-section="cheatsheet">
+                    <i class="fas fa-book"></i>
+                    <span>Cheatsheet</span>
+                </div>
+                <div class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+            
+            <div class="theme-toggle">
+                <button class="theme-btn" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-tachometer-alt" id="page-icon"></i>
+                        <span id="page-title-text">Dashboard</span>
+                    </h1>
+                    <p class="page-subtitle" id="page-subtitle">Welcome to your OSINT command center</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn btn-primary" id="addToolHeaderBtn" style="display: none;">
+                        <i class="fas fa-plus"></i>
+                        Add Tool
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <section class="content-section active" id="dashboard">
+                    <div class="random-tool" id="randomTool">
+                        <h3>🔍 Random OSINT Tool</h3>
+                        <p id="randomToolContent">Click below to discover a random tool from your collection!</p>
+                        <button class="random-btn" onclick="showRandomTool()">Show Random Tool</button>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: var(--success-color)">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-number" id="totalTools">0</div>
+                                    <div class="stat-label">Total Tools</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: var(--warning-color)">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-number" id="favoriteTools">0</div>
+                                    <div class="stat-label">Favorites</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: var(--primary-color)">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-number" id="totalCategories">0</div>
+                                    <div class="stat-label">Categories</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: var(--accent-color)">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-number" id="totalUsage">0</div>
+                                    <div class="stat-label">Tool Launches</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 style="margin-bottom: 20px;">📈 Most Used Tools</h3>
+                        <div id="popularTools">No usage data yet. Start using tools to see statistics!</div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="intelligence-vault">
+                    <div class="intelligence-vault-tabs" id="intelligenceVaultTopTabs">
+                        </div>
+
+                    <div class="intelligence-vault-sub-tabs" id="intelligenceVaultSubTabs">
+                        </div>
+
+                    <div class="vault-controls">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search tools, URLs, tags, descriptions...">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        <select class="filter-select" id="categoryFilter" style="display: none;">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select class="filter-select" id="sortFilter">
+                            <option value="alphabetical">Alphabetical</option>
+                            <option value="newest">Newest First</option>
+                            <option value="popular">Most Used</option>
+                            <option value="favorites">Favorites</option>
+                            <option value="pinned">Pinned First</option>
+                        </select>
+                    </div>
+                    <div class="intelligence-vault-action-buttons">
+                        <button class="btn btn-secondary" onclick="toggleListView()">
+                            <i class="fas fa-list" id="viewModeIcon"></i>
+                            <span id="viewModeText">List View</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="filterByStarred()">
+                            <i class="fas fa-star"></i>
+                            Show Starred
+                        </button>
+                         <button class="btn btn-secondary" onclick="filterByPinned()">
+                            <i class="fas fa-thumbtack"></i>
+                            Show Pinned
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearAllFilters()">
+                            <i class="fas fa-redo"></i>
+                            Show All
+                        </button>
+                         <button class="btn btn-primary" onclick="openAddToolModal('intelligence-vault')">
+                            <i class="fas fa-plus"></i>
+                            Add New Tool
+                        </button>
+                    </div>
+
+                    <div class="bulk-actions-bar" id="bulkActionsBar">
+                        <span id="selectedToolsCount">0 tools selected</span>
+                        <div>
+                            <button class="btn" onclick="bulkStarToggle()">
+                                <i class="fas fa-star"></i> Star/Unstar
+                            </button>
+                            <button class="btn" onclick="bulkPinToggle()">
+                                <i class="fas fa-thumbtack"></i> Pin/Unpin
+                            </button>
+                            <button class="btn" onclick="bulkDeleteSelected()">
+                                <i class="fas fa-trash"></i> Delete Selected
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="tools-grid" id="intelligenceVaultToolsGrid">
+                        </div>
+                </section>
+
+                <section class="content-section" id="multi-vault">
+                    <div class="vault-tabs" id="vaultTabs">
+                        </div>
+                    
+                    <div class="vault-content" id="vaultContent">
+                        <div class="vault-controls">
+                            <input type="text" class="form-input" id="vaultNotes" placeholder="Add notes for this vault...">
+                            <button class="btn btn-primary" onclick="saveVaultNotes()">Save Notes</button>
+                        </div>
+                        
+                        <div class="tools-grid" id="currentVaultTools">
+                            </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="cheatsheet">
+                    <div class="cheatsheet-grid">
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">🔍 Google Dorking</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Search specific site</span>
+                                    <code class="cheat-command">site:example.com</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Find specific filetype</span>
+                                    <code class="cheat-command">filetype:pdf</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Search in URL</span>
+                                    <code class="cheat-command">inurl:admin</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Search in title</span>
+                                    <code class="cheat-command">intitle:login</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Exclude results</span>
+                                    <code class="cheat-command">-unwanted</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">📧 Email Investigation</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Hunter.io</span>
+                                    <code class="cheat-command">Find email addresses</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Have I Been Pwned</span>
+                                    <code class="cheat-command">Check breaches</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Email Header Analysis</span>
+                                    <code class="cheat-command">Trace email path</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Reverse Email</span>
+                                    <code class="cheat-command">Find social profiles</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">🌐 IP & Domain Intel</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Whois lookup</span>
+                                    <code class="cheat-command">whois domain.com</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>DNS records</span>
+                                    <code class="cheat-command">nslookup domain.com</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Subdomain enum</span>
+                                    <code class="cheat-command">subfinder -d domain.com</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>IP geolocation</span>
+                                    <code class="cheat-command">Check IP location</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">📱 Social Media</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Username search</span>
+                                    <code class="cheat-command">WhatsMyName</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Instagram OSINT</span>
+                                    <code class="cheat-command">Osintgram</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Twitter analysis</span>
+                                    <code class="cheat-command">Twint tool</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>LinkedIn recon</span>
+                                    <code class="cheat-command">theHarvester</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">🖼️ Image Analysis</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Reverse image search</span>
+                                    <code class="cheat-command">TinEye, Google Images</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>EXIF data extraction</span>
+                                    <code class="cheat-command">exiftool image.jpg</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Geolocation</span>
+                                    <code class="cheat-command">GPS coordinates</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Face recognition</span>
+                                    <code class="cheat-command">PimEyes</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="cheat-card">
+                            <h3 class="cheat-title">🔒 Security Tools</h3>
+                            <ul class="cheat-list">
+                                <li class="cheat-item">
+                                    <span>Port scanning</span>
+                                    <code class="cheat-command">nmap -sS target</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>SSL certificate</span>
+                                    <code class="cheat-command">crt.sh</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Vulnerability scan</span>
+                                    <code class="cheat-command">Shodan</code>
+                                </li>
+                                <li class="cheat-item">
+                                    <span>Web archive</span>
+                                    <code class="cheat-command">Wayback Machine</code>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section" id="settings">
+                    <div class="settings-grid">
+                        <div class="stat-card">
+                            <h3>🔧 Application Settings</h3>
+                            <div class="form-group">
+                                <label class="form-label">Default Sort Order</label>
+                                <select class="form-select" id="defaultSort">
+                                    <option value="alphabetical">Alphabetical</option>
+                                    <option value="newest">Newest First</option>
+                                    <option value="popular">Most Used</option>
+                                    <option value="favorites">Favorites</option>
+                                    <option value="pinned">Pinned First</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tools per Row (Grid View)</label>
+                                <select class="form-select" id="toolsPerRow">
+                                    <option value="2">2 Tools</option>
+                                    <option value="3">3 Tools</option>
+                                    <option value="4">4 Tools</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default View Mode</label>
+                                <select class="form-select" id="defaultViewMode">
+                                    <option value="grid">Grid View</option>
+                                    <option value="list">List View</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>📊 Data Management</h3>
+                            <div class="form-group">
+                                <button class="btn btn-secondary" onclick="exportData()">
+                                    <i class="fas fa-download"></i>
+                                    Export All Data
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <input type="file" id="importFile" accept=".json" style="display: none;">
+                                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                                    <i class="fas fa-upload"></i>
+                                    Import Data
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-danger" onclick="clearAllData()">
+                                    <i class="fas fa-trash"></i>
+                                    Clear All Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <h3>🔗 Bookmarklet</h3>
+                            <p>Drag this bookmarklet to your bookmarks bar to quickly save any page:</p>
+                            <div class="form-group">
+                                <a href="javascript:(function(){const title=document.title;const url=window.location.href;const toolData={id:Date.now().toString(36)+Math.random().toString(36).substr(2),title:title,url:url,description:'',category:'General Tools',tags:[],dateAdded:new Date().toISOString(),favorite:false,usage:0,pinned:false};let tools=JSON.parse(localStorage.getItem('osint_tools')||'[]');tools.push(toolData);localStorage.setItem('osint_tools',JSON.stringify(tools));let vaults=JSON.parse(localStorage.getItem('osint_vaults')||'{\"default\":{\"name\":\"Default Vault\",\"tools\":[],\"notes\":\"\"}}');const currentVaultId=localStorage.getItem('osint_currentVault')||'default';if(vaults[currentVaultId]&&!vaults[currentVaultId].tools.includes(toolData.id)){vaults[currentVaultId].tools.push(toolData.id);localStorage.setItem('osint_vaults',JSON.stringify(vaults));}alert('OSINT Tool Added!\\nTitle: '+title+'\\nURL: '+url+'\\nOpen your OSINT Hub to categorize it.');})();" class="btn btn-primary" draggable="true" title="Drag to bookmarks bar">
+                                    <i class="fas fa-bookmark"></i> OSINT Quick Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Tool</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="toolForm">
+                <div class="form-group">
+                    <label class="form-label">Tool Title *</label>
+                    <input type="text" class="form-input" id="toolTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL *</label>
+                    <input type="url" class="form-input" id="toolUrl" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="toolDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Main Category</label>
+                    <select class="form-select" id="toolCategory" onchange="populateSubCategories(this.value)">
+                        <option value="">Select Main Category</option>
+                        </select>
+                </div>
+                 <div class="form-group" id="subCategoryGroup" style="display: none;">
+                    <label class="form-label">Sub-Category</label>
+                    <select class="form-select" id="toolSubCategory">
+                        <option value="">Select Sub-Category</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tags (Press Enter to add)</label>
+                    <div class="tag-input-container" id="tagContainer">
+                        <input type="text" class="tag-input" id="tagInput" placeholder="Add tags...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Tool
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="drag-overlay" id="dragOverlay">
+        <div>
+            <i class="fas fa-link" style="font-size: 48px; margin-bottom: 20px;"></i>
+            <br>
+            Drop URL here to add to your vault
+        </div>
+    </div>
+
+    <script src="osint-hub.js"></script>
+
+</body>
+</html>

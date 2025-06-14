@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -616,10 +617,7 @@
                 width: calc(100% - 40px);
                 gap: 20px;
             }
-            .sidebar {
-                position: static;
-            }
-            .header-content, .stats-bar {
+            .header-content {
                 padding: 15px 20px;
             }
             .main-nav-tabs {
@@ -668,17 +666,6 @@
                 margin-left: 10px;
                 margin-top: 0;
                 width: auto;
-            }
-            .stats-bar {
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 10px 15px;
-                gap: 10px 15px;
-            }
-            .stat-item {
-                flex-basis: auto;
-                margin: 0;
-                font-size: 13px;
             }
 
             .tools-grid {
@@ -771,18 +758,6 @@
                 padding: 6px 10px;
                 font-size: 0.7rem;
                 min-height: 28px;
-            }
-
-            .stats-bar {
-                padding: 10px 10px;
-                font-size: 12px;
-                gap: 5px 10px;
-            }
-            .stat-item {
-                flex-basis: calc(50% - 10px);
-                justify-content: flex-start; 
-                border-right: 1px solid var(--border-light);
-                padding-right: 10px;
             }
             .stat-item:nth-child(2n) {
                 border-right: none;
@@ -1081,14 +1056,6 @@
                 font-size: 0.7rem;
                 margin-bottom: 3px; /* Smaller gap */
             }
-
-            .stats-bar {
-                padding: 8px 5px;
-                gap: 5px;
-            }
-            .stat-item {
-                font-size: 11px;
-            }
             .main-content {
                 padding: 10px;
             }
@@ -1223,39 +1190,6 @@
                 font-size: 0.8rem;
                 padding: 1px 6px;
             }
-        }
-
-
-        /* Stats Bar */
-        .stats-bar {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            padding: 15px 40px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            border-radius: 0;
-            margin: 0;
-            transition: background 0.3s ease, border-color 0.3s ease;
-            box-shadow: var(--shadow);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .stat-item i {
-            color: var(--primary);
-        }
-
-        .stat-value {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
         }
 
         /* Enhanced buttons */
@@ -1986,6 +1920,141 @@
             }
         }
 
+        /* --- COMPACT HEADER CONTROLS --- */
+        .header-controls-expanded {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping onto new lines if space is constrained */
+            justify-content: space-between; /* Spreads out filters and quick actions */
+            align-items: center; /* Vertically aligns items in the middle */
+            gap: 20px; /* Space between the two main compact sections */
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 15px 40px; /* Reduced vertical padding for a more compact look */
+            border-top: 1px solid var(--nav-border-primary);
+            background: rgba(0,0,0,0.05); /* Subtle background */
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-filters-compact,
+        .header-quick-actions-compact {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap; /* Allows items within these sections to wrap */
+            gap: 15px; /* Space between filter/action items */
+            /* Remove background, border, shadow from previous sections */
+            /* background: none; */
+            /* border: none; */
+            /* box-shadow: none; */
+            padding: 0; /* Remove padding as it's now handled by .header-controls-expanded */
+        }
+
+        /* Style the main text labels for "Filters:" and "Quick Actions:" */
+        .header-filters-compact > label,
+        .header-quick-actions-compact > span {
+            font-weight: 600;
+            color: var(--text-primary); /* Use primary text color for labels */
+            font-size: 15px;
+            white-space: nowrap; /* Prevent label from wrapping */
+            flex-shrink: 0; /* Prevent labels from shrinking */
+        }
+
+        /* Styles for inline form groups (Category, Sort By) */
+        .header-filters-compact .form-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Space between "Category:" label and dropdown */
+            margin: 0; /* Remove default form-group margin */
+        }
+
+        .header-filters-compact .form-group-inline label {
+            font-weight: 500; /* Slightly lighter weight for sub-labels */
+            color: var(--text-secondary); /* Muted color for sub-labels */
+            margin: 0; /* Remove default label margin */
+            white-space: nowrap; /* Prevent sub-label from wrapping */
+        }
+
+        .header-filters-compact select {
+            padding: 8px 12px; /* Adjusted padding for dropdowns */
+            border-radius: 8px; /* Softer border radius */
+            background: var(--nav-bg-tertiary); /* Input background */
+            color: var(--nav-text-primary);
+            border: 1px solid var(--nav-border-primary);
+            font-size: 13px;
+            min-width: 120px; /* Ensure dropdowns have a minimum width */
+            max-width: 180px; /* Max width for readability */
+        }
+
+        /* Styles for compact buttons in Quick Actions */
+        .header-quick-actions-compact .btn-compact {
+            padding: 8px 12px; /* Smaller padding for compact buttons */
+            font-size: 13px;
+            border-radius: 8px; /* Match filter dropdowns */
+            gap: 6px; /* Smaller gap between icon and text */
+            min-width: unset; /* Allow buttons to size based on content */
+            width: auto; /* Ensure width adjusts to content */
+        }
+
+        /* Ensure buttons don't take 100% width unless forced by wrap */
+        .header-quick-actions-compact .btn {
+            width: auto; /* Override previous 100% width for quick actions buttons */
+            margin-bottom: 0; /* Remove bottom margin here */
+        }
+
+        /* --- Media Queries for responsiveness --- */
+
+        @media (max-width: 992px) {
+            .header-controls-expanded {
+                flex-direction: column; /* Stack the entire control section vertically */
+                align-items: flex-start; /* Align contents to the start */
+                padding: 15px 20px; /* Adjust padding for smaller screens */
+                gap: 15px; /* Space between stacked compact sections */
+            }
+
+            .header-filters-compact,
+            .header-quick-actions-compact {
+                width: 100%; /* Take full width when stacked */
+                justify-content: flex-start; /* Align content to the start */
+                flex-direction: column; /* Stack items within these sections */
+                gap: 10px; /* Space between stacked items */
+                align-items: flex-start; /* Align labels/inputs to start */
+            }
+
+            .header-filters-compact > label,
+            .header-quick-actions-compact > span {
+                width: 100%; /* Ensure main labels span full width */
+                text-align: left; /* Align them left */
+                margin-bottom: 5px; /* Add some space below labels */
+            }
+
+            .header-filters-compact .form-group-inline,
+            .header-quick-actions-compact .btn-compact {
+                width: 100%; /* Force filter dropdowns and buttons to take full width */
+                justify-content: flex-start; /* Align content left */
+            }
+            
+            .header-filters-compact select {
+                width: 100%; /* Dropdowns take full width */
+                min-width: unset; /* Remove min-width constraint */
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Adjustments for even smaller screens */
+            .header-controls-expanded {
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            .header-filters-compact > label,
+            .header-quick-actions-compact > span {
+                font-size: 14px;
+            }
+            .header-filters-compact select,
+            .header-quick-actions-compact .btn-compact {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
 
         .status-indicator {
             display: inline-block;
@@ -2000,151 +2069,10 @@
         /* Dashboard Layout */
         .dashboard {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 1fr;
             gap: 30px;
             margin: 30px 40px;
             width: calc(100% - 80px);
-        }
-
-        /* Sidebar */
-        .sidebar {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 25px;
-            height: fit-content;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            position: sticky;
-            top: 120px;
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .sidebar h3 {
-            margin-bottom: 20px;
-            color: var(--primary);
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        /* Refined Random Discovery Section */
-        .random-display {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 180px;
-            box-shadow: var(--shadow);
-        }
-
-        .random-display .random-content-wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px; 
-        }
-
-        /* Refined Random Discovery Section - Header specific styling */
-        .random-display .random-display-header {
-            display: flex;
-            align-items: center; 
-            justify-content: center;
-            gap: 12px; 
-            margin-bottom: 20px; 
-            color: var(--text-primary); 
-            font-weight: 600; 
-            padding-bottom: 10px; 
-            border-bottom: 1px solid var(--border-light);
-            width: 100%;
-        }
-
-        .random-display .random-display-header .header-icon {
-            font-size: 1.8em;
-            color: var(--primary);
-            text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-        }
-
-        .random-display .random-display-header .header-text {
-            font-size: 1.2em;
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            letter-spacing: -0.5px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-
-        .random-display .random-item-placeholder {
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            width: 100%;
-        }
-
-        .random-display .random-item-placeholder p {
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-
-        .random-display .random-item-placeholder strong {
-            color: var(--text-primary);
-        }
-
-        .random-display .random-tool-link {
-            font-size: 1.05em;
-            font-weight: 600;
-            text-decoration: none;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            text-align: center;
-            word-break: break-word;
-            min-width: 0; 
-            overflow: hidden;
-        }
-
-        .random-display .random-item-placeholder p {
-            margin-bottom: 8px; 
-            line-height: 1.4;
-            word-wrap: break-word;
-            overflow-wrap: break-word; 
-            max-width: 100%;
-        }
-
-        .random-display .random-tool-link:hover {
-            text-decoration: underline;
-            color: var(--primary-dark);
-        }
-
-        .random-display .tool-favicon {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-        }
-
-        .random-display .btn-sm {
-            padding: 10px 18px;
-            font-size: 13px;
-            width: auto;
-            margin: 0 auto; 
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
         /* Main Content */
@@ -2490,10 +2418,6 @@
                 width: calc(100% - 40px);
                 gap: 20px; 
             }
-            
-            .sidebar {
-                position: static;
-            }
 
             .header-content, .stats-bar {
                 padding: 15px 20px;
@@ -2512,6 +2436,15 @@
 
             .main-content {
                 padding: 20px;
+            }
+            /* ADD THIS FOR THE NEW HEADER SECTION */
+            .header-controls-expanded {
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .header-filter-section, .header-quick-actions {
+                min-width: 200px; /* Adjust min-width if needed for smaller screens */
+                padding: 10px 15px;
             }
         }
 
@@ -2548,17 +2481,6 @@
                 margin-left: 10px;
                 margin-top: 0; 
                 width: auto;
-            }
-            .stats-bar {
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 10px 15px;
-                gap: 10px 15px;
-            }
-            .stat-item {
-                flex-basis: auto; 
-                margin: 0; 
-                font-size: 13px;
             }
 
             .tools-grid {
@@ -2650,24 +2572,6 @@
                 padding: 6px 10px;
                 font-size: 0.75rem;
                 min-height: 32px;
-            }
-
-            .stats-bar {
-                padding: 10px 10px; /* Even tighter padding */
-                font-size: 12px;
-                gap: 5px 10px;
-            }
-            .stat-item {
-                flex-basis: calc(50% - 10px); /* Two columns */
-                justify-content: flex-start; /* Align left */
-                border-right: 1px solid var(--border-light); /* Add visual separation */
-                padding-right: 10px;
-            }
-            .stat-item:nth-child(2n) { /* Remove border for every second item */
-                border-right: none;
-            }
-            .stat-item:last-child {
-                border-right: none;
             }
 
             .main-content {
@@ -2912,13 +2816,6 @@
                 font-size: 0.6rem;
                 min-height: 25px;
             }
-            .stats-bar {
-                padding: 8px 5px;
-                gap: 5px;
-            }
-            .stat-item {
-                font-size: 11px;
-            }
             .main-content {
                 padding: 10px;
             }
@@ -3053,6 +2950,7 @@
                 font-size: 0.8rem;
                 padding: 1px 6px;
             }
+
         }
 
 
@@ -5246,7 +5144,91 @@
         .case-studies-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 10px; /* Space between list items */
+            width: 100%; /* Ensure it takes full width */
+        }
+
+        .case-study-card.list-view {
+            display: flex;
+            flex-direction: column; /* Content stacks vertically within the card */
+            align-items: flex-start; /* Align content to the left */
+            padding: 15px 20px; /* Adjust padding for list items */
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-secondary); /* Same background as grid view */
+            border: 1px solid var(--border); /* Same border as grid view */
+            box-shadow: var(--shadow); /* Same shadow as grid view */
+            width: 100%; /* Ensure it takes full width of the list container */
+        }
+
+        .case-study-card.list-view:hover {
+            transform: translateY(-5px); /* Less dramatic hover for list */
+            box-shadow: var(--shadow-lg);
+            border-color: #6c5ce7; /* Match hover border to tab color */
+        }
+
+        .case-study-card.list-view .case-study-header {
+            width: 100%; /* Header takes full width */
+            flex-direction: row; /* Keep title/meta and actions in a row */
+            justify-content: space-between;
+            align-items: center; /* Vertically align items in header */
+            margin-bottom: 10px; /* Reduce margin bottom for list view */
+            flex-wrap: wrap; /* Allow header content to wrap if needed */
+            gap: 10px; /* Space between title/meta and actions */
+        }
+
+        .case-study-card.list-view .case-study-title {
+            font-size: 1.05rem; /* Slightly smaller title for list */
+            margin-bottom: 5px; /* Reduce margin below title */
+            flex-grow: 1; /* Allow title to take available space */
+            word-break: break-all; /* Ensure long titles break */
+        }
+
+        .case-study-card.list-view .case-study-meta {
+            font-size: 0.75rem; /* Smaller meta info */
+            flex-shrink: 0; /* Prevent meta from shrinking */
+            gap: 8px;
+        }
+
+        .case-study-card.list-view .case-study-actions {
+            margin-left: auto; /* Push actions to the right */
+            flex-shrink: 0;
+        }
+
+        .case-study-card.list-view .case-study-description {
+            font-size: 0.85rem; /* Smaller description for list */
+            max-height: 50px; /* Limit height even more for a compact list */
+            -webkit-line-clamp: 2; /* Show max 2 lines for list preview */
+        }
+
+        .case-study-card.list-view .case-study-tags {
+            margin-top: 5px; /* Adjust tag margin for list */
+        }
+
+        .case-study-card.list-view .tag {
+            font-size: 0.65rem; /* Smaller tags for list */
+            padding: 2px 6px;
+        }
+
+        /* Ensure grid view specific styles for cards are applied when in grid mode */
+        .case-study-card.grid-view {
+            display: flex; /* Re-apply flex properties for grid cards */
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 25px; /* Original padding for grid cards */
+            width: 100%; /* Occupy full grid cell */
+        }
+        .case-study-card.grid-view .case-study-header {
+            margin-bottom: 15px; /* Original margin for grid cards */
+        }
+        .case-study-card.grid-view .case-study-title {
+            font-size: 1.15rem; /* Original font size for grid cards */
+        }
+        .case-study-card.grid-view .case-study-description {
+            max-height: 90px; /* Original max height for grid cards */
+            -webkit-line-clamp: 3; /* Original line clamp for grid cards */
         }
 
         .case-study-card {
@@ -5455,14 +5437,14 @@
             text-align: center; /* Center tags in detail view */
         }
 
-        /* Responsive Adjustments for Case Studies */
+        /* Responsive adjustments for Case Studies View (already present, just verifying) */
         @media (max-width: 768px) {
             .case-studies-grid {
                 grid-template-columns: 1fr; /* Single column on small screens */
                 gap: 15px;
             }
 
-            .case-studies-list .case-study-card {
+            .case-studies-list .case-study-card { /* Ensure consistency for list on smaller screens */
                 padding: 10px 15px;
             }
 
@@ -5484,29 +5466,24 @@
             .case-study-description {
                 font-size: 13px;
                 max-height: 75px; /* Adjust preview height */
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 3; /* Adjust line clamp for unified mobile view */
             }
 
-            #caseStudyDetailModal .modal-content {
-                padding: 20px;
+            /* Ensure the controls for case studies also stack/adjust */
+            #case-studiesTab .content-header .controls {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
             }
-
-            #caseStudyDetailModal .detail-title {
-                font-size: 1.5em;
+            #case-studiesTab .content-header .controls input,
+            #case-studiesTab .content-header .controls select,
+            #case-studiesTab .content-header .controls button {
+                width: 100%;
+                margin-right: 0 !important; /* Override inline style */
+                margin-bottom: 10px; /* Add spacing between stacked controls */
             }
-
-            #caseStudyDetailModal .detail-meta {
-                font-size: 0.8em;
-                gap: 10px;
-            }
-
-            #caseStudyDetailModal .detail-content {
-                padding: 15px;
-                font-size: 14px;
-            }
-
-            #caseStudyDetailModal .detail-content h3 {
-                font-size: 1.1em;
+            #case-studiesTab .content-header .controls button:last-child {
+                margin-bottom: 0; /* No margin on the last button */
             }
         }
 
@@ -5675,10 +5652,313 @@
                 padding: 2px 6px;
             }
         }
+        
+        /* Add this CSS rule to your existing <style> block */
+            .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            z-index: 999; /* Below the sidebar but above other content */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Allows clicks to pass through by default */
+        }
+
+        .mobile-sidebar-menu.active + .mobile-menu-overlay {
+            opacity: 1;
+            pointer-events: auto; /* Enable clicks on the overlay when menu is active */
+        }
+
+
+ /* New: Styles for the Random Discovery section layouts */
+
+/* Basic styling for the main section container */
+.discovery-section {
+    width: 100%;
+    max-width: 1800px; /* Match header/footer max-width for consistency */
+    margin: 30px auto; /* Centered with top/bottom margin */
+    padding: 20px 40px; /* Match padding of main content/header */
+    box-sizing: border-box; /* Ensure padding is included in width */
+    background: var(--bg-card); /* Card background for this section */
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center; /* Center content within the section */
+    display: flex; /* Make it a flex container to center its own content */
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    gap: 20px; /* Space between header/content and button */
+}
+
+/* Styles for the inner random discovery container. This is #randomDiscovery */
+/* It will now receive layout classes (e.g., .two-rows) */
+.random-display {
+    width: 100%; /* Take full width of parent section */
+    display: flex;
+    flex-direction: column; /* Default to column, overridden by layout classes */
+    align-items: center;
+    justify-content: center;
+    gap: 20px; /* Space between header and content wrapper */
+    background: none; /* No extra background */
+    border: none; /* No extra border */
+    box-shadow: none; /* No extra shadow */
+    padding: 0;
+    min-height: auto;
+}
+
+/* Header for the random discovery section */
+.random-display .random-display-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+    width: 100%; /* Ensure header spans full width for border */
+    max-width: 600px; /* Constrain header width if desired */
+    margin-bottom: 20px; /* Space below header */
+}
+
+.random-display .random-display-header .header-icon {
+    font-size: 1.8em;
+    color: var(--primary);
+    text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.random-display .random-display-header .header-text {
+    font-size: 1.2em;
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.5px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Wrapper for the actual content cards. This is #randomItemDisplay */
+.random-content-wrapper {
+    width: 100%;
+    /* Default is flex column, overridden by layout classes on its parent (#randomDiscovery) */
+}
+
+/* Base style for individual content cards */
+.random-content-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 150px; /* Ensure cards have a minimum height */
+}
+
+.random-content-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.random-content-card .card-header i {
+    font-size: 1.5em;
+    color: var(--primary);
+}
+
+.random-content-card .card-header img.tool-favicon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.random-content-card .card-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.random-content-card .card-description {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    flex-grow: 1; /* Allow description to take available space */
+}
+
+.random-content-card .card-link {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 0.85em;
+    font-weight: 500;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Specific styling for different content types (for visual cues) */
+.random-tool-card {
+    border-left: 4px solid var(--primary);
+}
+
+.random-tip-card {
+    border-left: 4px solid var(--accent);
+}
+
+.random-case-study-card {
+    border-left: 4px solid #6c5ce7; /* Match case study tab color */
+}
+
+/* Placeholder card for when content is not available */
+.random-content-card.placeholder {
+    border: 1px dashed var(--border-light);
+    color: var(--text-muted);
+}
+.random-content-card.placeholder i {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* Layout specific styles applied to .random-display (#randomDiscovery) */
+
+/* Single centered item layout */
+.random-display.single-centered .random-content-wrapper {
+    max-width: 500px; /* Constrain width of the single item */
+    margin: 0 auto;
+    display: flex; /* Ensure it's a flex container for its single child */
+    flex-direction: column;
+    align-items: center;
+}
+.random-display.single-centered .random-content-wrapper .random-content-card {
+    width: 100%; /* Ensure card takes full width within its wrapper */
+}
+
+
+/* Two columns layout (side-by-side) */
+.random-display.two-columns .random-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 20px; /* Space between columns */
+    max-width: 900px; /* Max width for two columns */
+    margin: 0 auto; /* Center the grid */
+}
+.random-display.two-columns .random-content-wrapper .random-content-card {
+    width: 100%; /* Fill grid cell */
+}
+
+
+/* --- FIXED: Two rows layout (one large card, two smaller stacked on the right) --- */
+/* Target the random-content-wrapper (#randomItemDisplay) as the grid container when its parent (#randomDiscovery) has 'two-rows' class */
+.random-display.two-rows .random-content-wrapper {
+    display: grid;
+    /* Define 2 columns: first is 1 fraction unit, second is 1 fraction unit */
+    grid-template-columns: 1fr 1fr;
+    /* Define 2 rows: both automatically sized to content */
+    grid-template-rows: auto auto;
+    /* Define named areas: 'card1' spans both rows of the first column */
+    grid-template-areas: 
+        "card1 card2"
+        "card1 card3";
+    gap: 20px; /* Space between grid items */
+    max-width: 900px; /* Max width for this layout */
+    margin: 0 auto; /* Center the grid within its wrapper */
+    align-items: stretch; /* Stretch items to fill grid cells vertically */
+}
+
+/* Explicitly assign grid areas to the direct child cards based on their order */
+.random-display.two-rows .random-content-wrapper > .random-content-card:nth-child(1) {
+    grid-area: card1; /* The big card on the left */
+    min-height: 320px; /* Ensure it's tall enough to contain the other two, adjust as needed */
+}
+.random-display.two-rows .random-content-wrapper > .random-content-card:nth-child(2) {
+    grid-area: card2; /* Top right card */
+}
+.random-display.two-rows .random-content-wrapper > .random-content-card:nth-child(3) {
+    grid-area: card3; /* Bottom right card */
+}
+
+
+/* Media queries for responsiveness for the random discovery section */
+@media (max-width: 992px) {
+    .discovery-section {
+        padding: 15px 20px;
+        margin: 20px auto;
+    }
+
+    /* On smaller screens, stack all layout types into a single column */
+    .random-display.single-centered .random-content-wrapper,
+    .random-display.two-columns .random-content-wrapper,
+    .random-display.two-rows .random-content-wrapper {
+        grid-template-columns: 1fr; /* Stack into a single column */
+        grid-template-rows: auto; /* Remove explicit row sizing */
+        grid-template-areas: none; /* Clear grid areas for stacking */
+        max-width: 500px; /* Adjust max width for single column */
+        display: flex; /* Change back to flex for simpler stacking */
+        flex-direction: column;
+        align-items: center; /* Center items in column */
+    }
+    /* Reset specific card height if it was set for spanning rows */
+    .random-display .random-content-wrapper .random-content-card { /* Target all cards within dynamic area */
+        min-height: 150px; /* Revert to base min-height */
+    }
+}
+
+@media (max-width: 480px) {
+    .discovery-section {
+        padding: 10px 15px;
+        margin: 15px auto;
+    }
+
+    .random-display .random-display-header {
+        font-size: 0.9em;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .random-display .random-display-header .header-icon {
+        font-size: 1.5em;
+    }
+
+    .random-display .random-display-header .header-text {
+        font-size: 1.1em;
+    }
+
+    .random-content-card {
+        padding: 10px;
+        min-height: 120px;
+    }
+
+    .random-content-card .card-title {
+        font-size: 1em;
+    }
+
+    .random-content-card .card-description {
+        font-size: 0.85em;
+    }
+
+    .random-content-card .card-link {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+}
+        
     </style>
 </head>
     <body>
-<header>
+        <header>
             <div class="header-content">
                 <div class="logo-and-title-container">
                     <div class="header-logo">
@@ -5691,7 +5971,7 @@
                         <span class="header-tagline">Carry your investigations everywhere</span>
                     </div>
                 </div>
-
+        
                 <div class="mobile-menu-toggle">☰</div>
                 <div class="controls">
                     <div class="search-container">
@@ -5716,48 +5996,18 @@
                     </button>
                 </div>
             </div>
-        </header>
 
-        <div id="mobileSidebarMenu" class="mobile-sidebar-menu">
-            <button class="close-menu-btn">&times;</button>
-            <div class="mobile-menu-content"></div>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat-item">
-                <i class="fas fa-database"></i>
-                <span>Total Entries:</span>
-                <span class="stat-value" id="totalEntriesStat">0</span>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-layer-group"></i>
-                <span>Custom Vaults:</span>
-                <span class="stat-value" id="totalCustomVaultsStat">0</span>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-sticky-note"></i>
-                <span>Notes:</span>
-                <span class="stat-value" id="totalNotesStat">0</span>
-            </div>
-            <div class="stat-item">
-                <i class="fas fa-terminal"></i>
-                <span>Saved Dorks:</span>
-                <span class="stat-value" id="totalSavedDorksStat">0</span>
-            </div>
-        </div>
-
-        <div class="dashboard">
-            <div class="sidebar">
-                <div class="filter-section">
-                    <h3><i class="fas fa-filter"></i> Filters</h3>
-                    <div class="form-group">
-                        <label>Category</label>
+            <div class="header-controls-expanded">
+                <div class="header-filters-compact">
+                    <label for="categoryFilter">Filters:</label>
+                    <div class="form-group-inline">
+                        <label for="categoryFilter">Category:</label>
                         <select id="categoryFilter">
                             <option value="">All Categories</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Sort By</label>
+                    <div class="form-group-inline">
+                        <label for="sortFilter">Sort By:</label>
                         <select id="sortFilter">
                             <option value="name">Name (A-Z)</option>
                             <option value="recent">Recently Added</option>
@@ -5766,45 +6016,30 @@
                     </div>
                 </div>
 
-                <div class="filter-section">
-                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-                    <button class="btn btn-secondary" id="showAllBtn" style="width: 100%; margin-bottom: 10px;">
-                        <i class="fas fa-eye"></i>
-                        Show All
+                <div class="header-quick-actions-compact">
+                    <span>Quick Actions:</span>
+                    <button class="btn btn-secondary btn-compact" id="showAllBtn" title="Show All Entries">
+                        <i class="fas fa-eye"></i> Show All
                     </button>
-                    <button class="btn btn-secondary" id="pinAllBtn" style="width: 100%; margin-bottom: 10px;">
-                        <i class="fas fa-thumbtack"></i>
-                        Pinned Entries
+                    <button class="btn btn-secondary btn-compact" id="pinAllBtn" title="Show Pinned Entries">
+                        <i class="fas fa-thumbtack"></i> Pinned
                     </button>
-                    <button class="btn btn-secondary" id="starAllBtn" style="width: 100%; margin-bottom: 10px;">
-                        <i class="fas fa-star"></i>
-                        Starred Entries
+                    <button class="btn btn-secondary btn-compact" id="starAllBtn" title="Show Starred Entries">
+                        <i class="fas fa-star"></i> Starred
                     </button>
-                    <button class="btn btn-success" id="reportBtn" style="width: 100%;">
-                        <i class="fas fa-file-alt"></i>
-                        Generate Report
+                    <button class="btn btn-success btn-compact" id="reportBtn" title="Generate Report">
+                        <i class="fas fa-file-alt"></i> Report
                     </button>
-                </div>
-
-                <div class="filter-section" style="margin-top: 25px;">
-                    <h3><i class="fas fa-random"></i> Discovery</h3>
-                    <div class="random-display" id="randomDiscovery">
-                        <div class="random-content-wrapper">
-                            <div class="random-display-header">
-                                <span class="header-icon"><i class="fas fa-magic"></i></span>
-                                <h3 class="header-text">Daily OSINT Discovery</h3>
-                            </div>
-                            <div class="random-item-placeholder" id="randomItemDisplay">
-                                <div class="loading"></div> Loading discovery...
-                            </div>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" id="newRandomBtn">
-                            <i class="fas fa-sync-alt"></i> New Discovery
-                        </button>
-                    </div>
                 </div>
             </div>
+        </header>
 
+        <div id="mobileSidebarMenu" class="mobile-sidebar-menu">
+            <button class="close-menu-btn">&times;</button>
+            <div class="mobile-menu-content"></div>
+        </div>
+
+        <div class="dashboard">
             <div class="main-content">
                 <div class="nav-tabs main-nav-tabs">
                     <button class="nav-tab active" data-tab="dashboard">
@@ -6559,16 +6794,22 @@
                                 <option value="malware">Malware Analysis</option>
                                 <option value="fraud">Fraud</option>
                                 <option value="other">Other</option>
+                                <option value="custom">Custom Type</option>
                             </select>
+                            <button class="btn btn-secondary" id="caseStudyViewToggle" title="Switch to List View">
+                                <i class="fas fa-list"></i> List View
+                            </button>
                             <button class="btn btn-primary" id="addCaseStudyBtn">
                                 <i class="fas fa-plus-circle"></i> Add Case Study
                             </button>
                         </div>
                     </div>
-
+                
                     <div class="case-studies-grid" id="caseStudiesGrid">
+                    </div>
+                    <div class="case-studies-list" id="caseStudiesList" style="display: none;">
                         </div>
-
+                
                     <div class="empty-state" id="emptyCaseStudiesState" style="display: none;">
                         <i class="fas fa-book-open"></i>
                         <h3>No Case Studies Found</h3>
@@ -6884,6 +7125,26 @@
                 </form>
             </div>
         </div>
+
+        <section class="discovery-section">
+            <div class="random-display" id="randomDiscovery">
+                <div class="random-display-header">
+                    <span class="header-icon"><i class="fas fa-magic"></i></span>
+                    <h3 class="header-text">Daily OSINT Discovery</h3>
+                </div>
+                <div id="randomItemDisplay" class="random-content-wrapper">
+                    <div class="random-content-card placeholder">
+                        <i class="fas fa-question-circle"></i>
+                        <h4 class="card-title">Loading Discovery...</h4>
+                        <p class="card-description">Please wait.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="newRandomBtn">
+                <i class="fas fa-sync-alt"></i> New Discovery
+            </button>
+        </section>
+
 
         <footer>
             <div class="footer-content">
@@ -9715,6 +9976,7 @@
                 search: '',
                 type: ''
             },
+            caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid', // NEW: Add view mode for case studies
             theme: localStorage.getItem('theme') || 'dark',
             viewMode: localStorage.getItem('viewMode') || 'grid',
             usageStats: {
@@ -9744,7 +10006,9 @@
             },
             readOnlyMode: false,
             sharedTabId: null,
-            sharedEntryIds: []
+            sharedEntryIds: [],
+            randomDiscoveryLayouts: ['single-centered', 'two-columns', 'two-rows'],
+
         };
         // --- End of appState definition ---
 
@@ -10829,7 +11093,7 @@
         };
 
         function initApp() {
-            // loadDorkAssistantState(); // This is now called by the wrapper function for initApp
+            loadDorkAssistantState(); // Load the dork assistant state first
             loadState(); // This loads all other appState data, including timeline and case studies.
             parseShareableLink();
             updateStats();
@@ -10845,7 +11109,10 @@
 
             switchTab(appState.currentTab); // This will call renderIntelligenceEntries, renderTimelineEvents, renderCaseStudies, etc.
 
+            // This is the correct place to call the enhanced random discovery
             showRandomDiscovery();
+            startRandomDiscoveryRotation();
+            
             populateCategoryFilter();
             updateDashboard(); // Calls all dashboard rendering functions, including charts
             applyReadOnlyMode();
@@ -10863,7 +11130,6 @@
             });
         }
         // --- End of initApp (full code block) ---
-
 
         function switchTab(tabName) {
             // Update main tab buttons
@@ -10949,16 +11215,19 @@
                 initHandbookAndNotes();
             } else if (tabName === 'dork-assistant') {
                 initDorkAssistant();
-            } else if (tabName === 'case-studies') { // NEW: Handle Case Studies tab
-                renderCaseStudies();
+            } else if (tabName === 'case-studies') { // Handle Case Studies tab
+                renderCaseStudies(); // Now call renderCaseStudies to display content
                 // Reset filters for case studies specifically when entering the tab
                 appState.caseStudyFilters.search = '';
                 appState.caseStudyFilters.type = '';
                 document.getElementById('caseStudySearchInput').value = '';
                 document.getElementById('caseStudyFilterSelect').value = '';
-            } else if (tabName === 'threat-hunting') { // NEW: Handle Threat Hunting tab
+            } else if (tabName === 'threat-hunting') { // Handle Threat Hunting tab
                 initThreatHuntingToolkit();
+                // Ensure the 'script-library' sub-tab is explicitly activated
+                switchThSubTab('script-library'); 
             }
+
             saveState(); // Save state after tab switch
         }
 
@@ -11288,6 +11557,7 @@
                 };
                 appState.theme = parsedState.theme || 'dark';
                 appState.viewMode = parsedState.viewMode || 'grid';
+                appState.caseStudyViewMode = parsedState.caseStudyViewMode || 'grid'; // NEW
                 appState.usageStats = parsedState.usageStats || { toolsUsedToday: 0 };
                 appState.customTabs = parsedState.customTabs || [];
                 appState.currentCustomTab = parsedState.currentCustomTab && appState.customTabs.some(t => t.id === parsedState.currentCustomTab) ? parsedState.currentCustomTab : (appState.customTabs.length > 0 ? appState.customTabs[0].id : null);
@@ -11425,6 +11695,7 @@
                     search: '',
                     type: ''
                 };
+                appState.caseStudyViewMode = 'grid'; // NEW
                 appState.scriptFilters = { // NEW
                     search: '',
                     language: ''
@@ -11531,27 +11802,6 @@
         }
 
 
-        function closeMobileMenu() {
-            const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
-            if (mobileSidebarMenu) {
-                mobileSidebarMenu.classList.remove('active');
-            }
-            document.body.classList.remove('no-scroll');
-        }
-
-        function closeMobileMenu() {
-            const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
-            const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
-
-            if (mobileSidebarMenu) {
-                mobileSidebarMenu.classList.remove('active');
-            }
-            if (mobileMenuOverlay) {
-                mobileMenuOverlay.remove();
-            }
-            document.body.classList.remove('no-scroll');
-        }
-
         
 
         function saveState() {
@@ -11620,45 +11870,208 @@
         function updateStats() {
             // Combine all entries from all types for total entries
             const allEntries = [
-                ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
-                ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
-                ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
-                ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
-                ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
-                ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
-                ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.facialRecognition,
-                ...appState.personas, ...appState.vpns, ...appState.honeypots, ...appState.exploits,
-                ...appState.publicRecords,
-                ...appState.caseStudies, // NEW: Include case studies in total entries count
-                ...(appState.threatHuntingScripts || []) // NEW: Include threat hunting scripts
+                ...(appState.tools || []),
+                ...(appState.emails || []),
+                ...(appState.phones || []),
+                ...(appState.crypto || []),
+                ...(appState.locations || []),
+                ...(appState.links || []),
+                ...(appState.media || []),
+                ...(appState.passwords || []),
+                ...(appState.keywords || []),
+                ...(appState.socials || []),
+                ...(appState.domains || []),
+                ...(appState.usernames || []),
+                ...(appState.threats || []),
+                ...(appState.vulnerabilities || []),
+                ...(appState.malware || []),
+                ...(appState.breaches || []),
+                ...(appState.credentials || []),
+                ...(appState.forums || []),
+                ...(appState.vendors || []),
+                ...(appState.telegramChannels || []),
+                ...(appState.pastes || []),
+                ...(appState.documents || []),
+                ...(appState.networks || []),
+                ...(appState.metadataEntries || []),
+                ...(appState.archives || []),
+                ...(appState.messagingApps || []),
+                ...(appState.datingProfiles || []),
+                ...(appState.audioEntries || []),
+                ...(appState.facialRecognition || []),
+                ...(appState.personas || []),
+                ...(appState.vpns || []),
+                ...(appState.honeypots || []),
+                ...(appState.exploits || []),
+                ...(appState.publicRecords || []),
+                ...(appState.caseStudies || [])
             ];
 
-            // These IDs are for the top-level stats bar
-            document.getElementById('totalEntriesStat').textContent = allEntries.length;
-            document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
-            document.getElementById('totalNotesStat').textContent = notesState.notes.length;
-            document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
+            // --- Main Overview Stats (These are the big numbers at the top of the Dashboard tab) ---
+            document.getElementById('totalToolsCount').textContent = allEntries.length;
+            document.getElementById('activeVaultsCount').textContent = appState.customTabs.length;
+            document.getElementById('usedToolsTodayCount').textContent = appState.usageStats.toolsUsedToday;
+            document.getElementById('notesCount').textContent = notesState.notes.length;
+
+
+            // --- Detailed Starred & Pinned Breakdown by Type ---
+            const starredPinnedBreakdownList = document.getElementById('starredPinnedBreakdownList');
+            if (starredPinnedBreakdownList) {
+                let breakdownHtml = '';
+                const entryTypes = [
+                    'tool', 'email', 'phone', 'crypto', 'location', 'link', 'media', 'password',
+                    'keyword', 'social', 'domain', 'username', 'threat', 'vulnerability', 'malware',
+                    'breach', 'credential', 'forum', 'vendor', 'telegram', 'paste', 'document',
+                    'network', 'metadata', 'archive', 'messaging', 'dating', 'audio', 'facial',
+                    'persona', 'vpn', 'honeypot', 'exploit', 'publicrecord', 'caseStudy'
+                ];
+
+                // Count for each type
+                const typeCounts = {};
+                allEntries.forEach(entry => {
+                    // Normalize entry.type if necessary, e.g., 'telegram' -> 'telegramChannels' for lookup
+                    let typeKey = entry.type;
+                    if (typeKey === 'telegram') typeKey = 'telegramChannels';
+                    if (typeKey === 'metadata') typeKey = 'metadataEntries';
+                    if (typeKey === 'messaging') typeKey = 'messagingApps';
+                    if (typeKey === 'dating') typeKey = 'datingProfiles';
+                    if (typeKey === 'audio') typeKey = 'audioEntries';
+                    if (typeKey === 'facial') typeKey = 'facialRecognition';
+                    if (typeKey === 'persona') typeKey = 'personas';
+                    if (typeKey === 'vpn') typeKey = 'vpns';
+                    if (typeKey === 'caseStudy') typeKey = 'caseStudies';
+
+                    // Ensure the key exists in our counts object
+                    if (!typeCounts[typeKey]) {
+                        typeCounts[typeKey] = {
+                            starred: 0,
+                            pinned: 0
+                        };
+                    }
+                    if (entry.starred) {
+                        typeCounts[typeKey].starred++;
+                    }
+                    if (entry.pinned) {
+                        typeCounts[typeKey].pinned++;
+                    }
+                });
+
+                // Add overall starred/pinned totals first for clarity
+                breakdownHtml += `<li><span>Total Starred Entries:</span> <span class="stat-value">${allEntries.filter(e => e.starred).length}</span></li>`;
+                breakdownHtml += `<li><span>Total Pinned Entries:</span> <span class="stat-value">${allEntries.filter(e => e.pinned).length}</span></li>`;
+                breakdownHtml += `<li><hr style="border: 0; height: 1px; background: var(--border-light); margin: 10px 0;"></li>`; // Divider
+
+                // Iterate through counts and build HTML
+                entryTypes.forEach(type => {
+                    let pluralType = type + 's'; // Default plural
+                    // Adjust plural for specific arrays if they differ from type + 's'
+                    if (type === 'telegram') pluralType = 'telegramChannels';
+                    if (type === 'metadata') pluralType = 'metadataEntries';
+                    if (type === 'messaging') pluralType = 'messagingApps';
+                    if (type === 'dating') pluralType = 'datingProfiles';
+                    if (type === 'audio') pluralType = 'audioEntries';
+                    if (type === 'facial') pluralType = 'facialRecognition';
+                    if (type === 'persona') pluralType = 'personas';
+                    if (type === 'vpn') pluralType = 'vpns';
+                    if (type === 'caseStudy') pluralType = 'caseStudies';
+
+                    const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
+                    if (typeCounts[pluralType] && (typeCounts[pluralType].starred > 0 || typeCounts[pluralType].pinned > 0)) {
+                        if (typeCounts[pluralType].starred > 0) {
+                            breakdownHtml += `<li><span>Starred ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].starred}</span></li>`;
+                        }
+                        if (typeCounts[pluralType].pinned > 0) {
+                            breakdownHtml += `<li><span>Pinned ${capitalizedType}s:</span> <span class="stat-value">${typeCounts[pluralType].pinned}</span></li>`;
+                        }
+                    }
+                });
+                starredPinnedBreakdownList.innerHTML = breakdownHtml;
+            }
+
+
+            // --- Intelligence Vault Summary ---
+            const intelVaultCategories = new Set((appState.tools || []).map(tool => tool.category));
+            document.getElementById('intelVaultTotalTools').textContent = (appState.tools || []).length;
+            document.getElementById('intelVaultStarredTools').textContent = (appState.tools || []).filter(tool => tool.starred).length;
+            document.getElementById('intelVaultPinnedTools').textContent = (appState.tools || []).filter(tool => tool.pinned).length;
+            document.getElementById('intelVaultCategoriesCount').textContent = intelVaultCategories.size;
+
+            // --- Custom Vaults Summary ---
+            let totalEntriesInCustomVaults = 0;
+            (appState.customTabs || []).forEach(tab => {
+                totalEntriesInCustomVaults += (tab.toolIds || []).length;
+            });
+            const totalCustomVaults = (appState.customTabs || []).length;
+            document.getElementById('customVaultsTotal').textContent = totalCustomVaults;
+            document.getElementById('customVaultsTotalEntries').textContent = totalEntriesInCustomVaults;
+            document.getElementById('customVaultsAvgEntries').textContent = totalCustomVaults > 0 ? (totalEntriesInCustomVaults / totalCustomVaults).toFixed(1) : '0';
+
+            // Render chart for entries per custom vault
+            renderEntriesPerCustomVaultChart();
+
+
+            // --- Notes & Dork Assistant Summary ---
+            const totalTemplates = Object.values(dorkTemplates).flat().length;
+            document.getElementById('notesSummaryTotal').textContent = (notesState.notes || []).length;
+            document.getElementById('notesSummaryPinned').textContent = (notesState.notes || []).filter(n => n.pinned).length;
+            document.getElementById('dorksSummaryTotal').textContent = (dorkAssistantState.savedQueries || []).length;
+            document.getElementById('dorksSummaryTemplates').textContent = totalTemplates;
+
+
+            // --- Render lists ---
+            renderMostUsedTools();
+            renderNeverUsedTools();
+            renderToolsAddedPerWeek();
+
+            // --- Chart Rendering Calls ---
+            renderEntriesByTypeChart();
+            renderUsageTrendChart();
+            renderTopCategoriesChart();
+            renderPinnedStarredDonutChart();
+            renderEntryGrowthOverTimeChart();
+            renderTaggingOverviewChart();
         }
 
         // --- NEW: Case Studies Functions ---
-
         // Renders the list of case studies
         function renderCaseStudies() {
             const caseStudiesGrid = document.getElementById('caseStudiesGrid');
+            const caseStudiesList = document.getElementById('caseStudiesList'); // NEW
             const emptyState = document.getElementById('emptyCaseStudiesState');
+            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle'); // NEW
 
             const filteredCaseStudies = filterCaseStudies();
+
+            // First, update the view toggle button text
+            if (caseStudyViewToggleButton) {
+                if (appState.caseStudyViewMode === 'grid') {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    caseStudyViewToggleButton.title = 'Switch to List View';
+                } else {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    caseStudyViewToggleButton.title = 'Switch to Grid View';
+                }
+            }
+
 
             if (filteredCaseStudies.length === 0) {
                 emptyState.style.display = 'block';
                 caseStudiesGrid.style.display = 'none';
+                caseStudiesList.style.display = 'none'; // Ensure list is hidden too
             } else {
                 emptyState.style.display = 'none';
-                caseStudiesGrid.style.display = 'grid'; // Ensure grid display for case studies
-                caseStudiesGrid.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy)).join('');
+
+                if (appState.caseStudyViewMode === 'grid') {
+                    caseStudiesGrid.style.display = 'grid';
+                    caseStudiesList.style.display = 'none';
+                    caseStudiesGrid.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy, 'grid')).join(''); // Pass view type
+                } else { // list view
+                    caseStudiesGrid.style.display = 'none';
+                    caseStudiesList.style.display = 'flex'; // Use flex for list layout
+                    caseStudiesList.innerHTML = filteredCaseStudies.map(caseStudy => createCaseStudyCard(caseStudy, 'list')).join(''); // Pass view type
+                }
             }
         }
-
         // Filters case studies based on current search and type filters
         function filterCaseStudies() {
             let filtered = [...appState.caseStudies];
@@ -11689,7 +12102,7 @@
         }
 
         // Creates the HTML for a single case study card
-        function createCaseStudyCard(caseStudy) {
+        function createCaseStudyCard(caseStudy, viewMode) { // NEW: Add viewMode parameter
             const isStarred = caseStudy.starred;
             const isPinned = caseStudy.pinned;
             const difficultyIcon = {
@@ -11698,41 +12111,61 @@
                 'advanced': 'fas fa-tree'
             }[caseStudy.difficulty] || 'fas fa-info-circle';
 
-            return `
-                <div class="case-study-card ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
-                    <div class="case-study-header">
-                        <div>
-                            <div class="case-study-title">
-                                <i class="fas fa-microscope case-study-icon" style="color: #6c5ce7;"></i>
-                                <span>${caseStudy.title}</span>
-                            </div>
-                            <div class="case-study-meta">
-                                <span><i class="fas fa-tags"></i> ${caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1)}</span>
-                                <span><i class="${difficultyIcon}"></i> ${caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1)}</span>
-                                <span><i class="fas fa-calendar-alt"></i> ${caseStudy.dateRange}</span>
-                            </div>
-                        </div>
-                        <div class="case-study-actions">
-                            <button class="action-btn" data-action="edit-case-study" title="Edit Case Study">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn ${isStarred ? 'starred' : ''}" data-action="star-case-study" title="Star Case Study">
-                                <i class="fas fa-star"></i>
-                            </button>
-                            <button class="action-btn ${isPinned ? 'pinned' : ''}" data-action="pin-case-study" title="Pin Case Study">
-                                <i class="fas fa-thumbtack"></i>
-                            </button>
-                            <button class="action-btn" data-action="delete-case-study" title="Delete Case Study">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+            // Common header for both views
+            const headerHtml = `
+                <div>
+                    <div class="case-study-title">
+                        <i class="fas fa-microscope case-study-icon" style="color: #6c5ce7;"></i>
+                        <span>${caseStudy.title}</span>
                     </div>
-                    <p class="case-study-description">${caseStudy.summary}</p>
-                    <div class="case-study-tags">
-                        ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                    <div class="case-study-meta">
+                        <span><i class="fas fa-tags"></i> ${caseStudy.incidentType.charAt(0).toUpperCase() + caseStudy.incidentType.slice(1)}</span>
+                        <span><i class="${difficultyIcon}"></i> ${caseStudy.difficulty.charAt(0).toUpperCase() + caseStudy.difficulty.slice(1)}</span>
+                        <span><i class="fas fa-calendar-alt"></i> ${caseStudy.dateRange}</span>
                     </div>
                 </div>
+                <div class="case-study-actions">
+                    <button class="action-btn" data-action="edit-case-study" title="Edit Case Study">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn ${isStarred ? 'starred' : ''}" data-action="star-case-study" title="Star Case Study">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button class="action-btn ${isPinned ? 'pinned' : ''}" data-action="pin-case-study" title="Pin Case Study">
+                        <i class="fas fa-thumbtack"></i>
+                    </button>
+                    <button class="action-btn" data-action="delete-case-study" title="Delete Case Study">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             `;
+
+            // Different card structure based on view mode
+            if (viewMode === 'list') {
+                return `
+                    <div class="case-study-card list-view ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
+                        <div class="case-study-header">
+                            ${headerHtml}
+                        </div>
+                        <p class="case-study-description">${caseStudy.summary}</p>
+                        <div class="case-study-tags">
+                            ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+            } else { // default to grid view
+                return `
+                    <div class="case-study-card grid-view ${isStarred ? 'starred' : ''} ${isPinned ? 'pinned' : ''}" data-case-study-id="${caseStudy.id}">
+                        <div class="case-study-header">
+                            ${headerHtml}
+                        </div>
+                        <p class="case-study-description">${caseStudy.summary}</p>
+                        <div class="case-study-tags">
+                            ${caseStudy.tags ? caseStudy.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         // Opens the modal to display full case study details
@@ -12773,6 +13206,21 @@
 
         // MODIFIED: bindEvents function for event delegation
         function bindEvents() {
+            // NEW: Case Study View Toggle
+            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle');
+            if (caseStudyViewToggleButton) {
+                caseStudyViewToggleButton.addEventListener('click', () => {
+                    if (appState.readOnlyMode) {
+                        showToast("Cannot change view mode in read-only shared view.", "warning");
+                        return;
+                    }
+                    appState.caseStudyViewMode = appState.caseStudyViewMode === 'grid' ? 'list' : 'grid';
+                    localStorage.setItem('caseStudyViewMode', appState.caseStudyViewMode); // Save preference
+                    renderCaseStudies(); // Re-render case studies with new view
+                    showToast(`Switched Case Studies to ${appState.caseStudyViewMode} view.`);
+                });
+            }
+            
 
              // NEW: Case Studies Tab Event Listeners
             // Handle Case Studies Tab Navigation
@@ -12797,17 +13245,22 @@
             document.getElementById('addCaseStudyEmptyStateBtn').addEventListener('click', () => openAddEditCaseStudyModal('add'));
 
             // Handle clicks on case study cards (for opening detail modal)
-            document.getElementById('caseStudiesGrid').addEventListener('click', (e) => {
-                const card = e.target.closest('.case-study-card');
-                const actionBtn = e.target.closest('.action-btn');
+            // NEW: Delegate the listener to the main case-studiesTab content area
+            const caseStudiesTabContent = document.getElementById('case-studiesTab');
+            if (caseStudiesTabContent) {
+                caseStudiesTabContent.addEventListener('click', (e) => {
+                    const card = e.target.closest('.case-study-card');
+                    const actionBtn = e.target.closest('.action-btn');
 
-                if (card && !actionBtn) { // If card is clicked and it's not an action button
-                    const caseStudyId = card.dataset.caseStudyId;
-                    openCaseStudyDetailModal(caseStudyId);
-                } else if (actionBtn) { // If an action button is clicked
-                    handleCaseStudyAction(e);
-                }
-            });
+                    // If a case study card is clicked AND it's not an action button (like edit, star, pin, delete)
+                    if (card && !actionBtn) {
+                        const caseStudyId = card.dataset.caseStudyId;
+                        openCaseStudyDetailModal(caseStudyId);
+                    } else if (actionBtn) { // If an action button is clicked
+                        handleCaseStudyAction(e);
+                    }
+                });
+            }
 
             // Threat Hunting Tab Event Listeners
             document.querySelector('[data-tab="threat-hunting"]').addEventListener('click', () => {
@@ -13432,17 +13885,18 @@
             }
         }
 
-       function closeMobileMenu() {
-                const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
-                const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
-                if (mobileSidebarMenu) {
-                    mobileSidebarMenu.classList.remove('active'); // CSS to slide out
-                }
-                if (mobileMenuOverlay) {
-                    mobileMenuOverlay.remove();
-                }
-                document.body.classList.remove('no-scroll');
+        function closeMobileMenu() {
+            const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
+            const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay'); // Assuming you add this overlay for better UX
+
+            if (mobileSidebarMenu) {
+                mobileSidebarMenu.classList.remove('active'); // CSS to slide out
             }
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.remove(); // Remove the overlay from DOM
+            }
+            document.body.classList.remove('no-scroll');
+        }
 
         // Handles actions on individual case study cards (star, pin, edit, delete)
         function handleCaseStudyAction(e) {
@@ -13798,6 +14252,7 @@
         function initThreatHuntingToolkit() {
             populateScriptLanguageFilter(); // Populate language filter dropdown
             renderThreatHuntingScripts();   // Render scripts for the active sub-tab
+            appState.currentThSubTab = 'script-library'; // **ADD THIS LINE**
             switchThSubTab(appState.currentThSubTab); // Ensure correct sub-tab is active
         }
 
@@ -15262,15 +15717,9 @@ function bulkAction(action) {
                 ...(appState.caseStudies || []) // Include case studies in total entries count
             ];
 
-            // These IDs are for the top-level stats bar
-            document.getElementById('totalEntriesStat').textContent = allEntries.length;
-            document.getElementById('totalCustomVaultsStat').textContent = appState.customTabs.length;
-            document.getElementById('totalNotesStat').textContent = notesState.notes.length;
-            document.getElementById('totalSavedDorksStat').textContent = dorkAssistantState.savedQueries.length;
-
-
             // --- Main Overview Stats (These are the big numbers at the top of the Dashboard tab) ---
-            document.getElementById('totalToolsCount').textContent = allEntries.length; // Still represents all entries
+            // These elements exist in the dashboard tab and are correctly updated.
+            document.getElementById('totalToolsCount').textContent = allEntries.length;
             document.getElementById('activeVaultsCount').textContent = appState.customTabs.length;
             document.getElementById('usedToolsTodayCount').textContent = appState.usageStats.toolsUsedToday;
             document.getElementById('notesCount').textContent = notesState.notes.length;
@@ -17747,53 +18196,6 @@ function openEditEntryModal(entry) {
             initTheme(); // Apply new theme
             showToast(`Switched to ${appState.theme} theme.`);
         }
-
-        // Random Discovery (Tool or Tip)
-        function showRandomDiscovery() {
-            const randomItemDisplay = document.getElementById('randomItemDisplay');
-            const randomBtn = document.getElementById('newRandomBtn');
-            randomBtn.disabled = true; // Disable button during loading
-            randomItemDisplay.innerHTML = '<div class="loading"></div> Loading discovery...';
-
-            // Simulate API call delay
-            setTimeout(() => {
-                const allTools = appState.tools;
-                const allTips = appState.osintTips;
-
-                const hasTools = allTools.length > 0;
-                const hasTips = allTips.length > 0;
-
-                let content = '';
-
-                if (hasTools && (!hasTips || Math.random() < 0.7)) { // Prioritize tools if available
-                    const randomTool = allTools[Math.floor(Math.random() * allTools.length)];
-                    const favicon = `https://www.google.com/s2/favicons?domain=${new URL(randomTool.url).hostname}`;
-                    content = `
-                        <p style="font-size: 1.1em; color: var(--text-primary); font-weight: 500;">Tool Recommendation:</p>
-                        <a href="${randomTool.url}" target="_blank" class="random-tool-link" title="Visit ${randomTool.name}">
-                            <img src="${favicon}" alt="" class="tool-favicon" onerror="this.src='https://placehold.co/18x18/cccccc/000000?text=?'">
-                            <span>${randomTool.name}</span>
-                            <i class="fas fa-external-link-alt" style="font-size: 0.7em; margin-left: 5px;"></i>
-                        </a>
-                        <p style="font-size: 0.85em; color: var(--text-secondary); margin-top: 10px;">${randomTool.description}</p>
-                    `;
-                } else if (hasTips) {
-                    const randomTip = allTips[Math.floor(Math.random() * allTips.length)];
-                    content = `
-                        <p style="font-size: 1.1em; color: var(--text-primary); font-weight: 500;">OSINT Tip of the Day:</p>
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 10px;">"${randomTip}"</p>
-                    `;
-                } else {
-                    content = `
-                        <p style="font-size: 0.9em; color: var(--text-secondary);">No tools or tips available yet. Add some to get started!</p>
-                    `;
-                }
-
-                randomItemDisplay.innerHTML = content;
-                randomBtn.disabled = false; // Re-enable button
-            }, 500); // Simulate network delay
-        }
-
 
         // Custom Tabs (Multi-Vault) Logic
         function renderCustomTabs() {
@@ -21468,6 +21870,238 @@ function getEntryIcon(type) {
             }
         }
 
+        // Function to get a random item from a given array (utility)
+        function getRandomItem(array) {
+            if (!array || array.length === 0) {
+                return null;
+            }
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Function to generate a single random content card HTML
+        function generateRandomContentCard(item, type) {
+            let title, description, url, icon, faviconHtml = '', extraClass = '';
+
+            if (!item) {
+                // Placeholder card for when no item is available or a slot needs filling
+                return `
+                    <div class="random-content-card placeholder">
+                        <i class="fas fa-question-circle"></i>
+                        <h4 class="card-title">No Discovery Available</h4>
+                        <p class="card-description">Add more tools, tips, or case studies to get a random discovery!</p>
+                    </div>
+                `;
+            }
+
+            switch (type) {
+                case 'tool':
+                    title = item.name;
+                    description = item.description;
+                    url = item.url;
+                    icon = 'fas fa-tools';
+                    // Attempt to get favicon, fallback to a generic image if error
+                    faviconHtml = `<img src="${item.favicon}" alt="" class="tool-favicon" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${new URL(item.url).hostname}'">`;
+                    extraClass = 'random-tool-card';
+                    break;
+                case 'tip':
+                    title = "OSINT Tip";
+                    description = item; // item itself is the tip string
+                    url = null;
+                    icon = 'fas fa-lightbulb';
+                    extraClass = 'random-tip-card';
+                    break;
+                case 'case-study':
+                    title = item.title;
+                    description = item.summary;
+                    url = null; // Case studies typically don't have a direct URL to open from here
+                    icon = 'fas fa-microscope';
+                    extraClass = 'random-case-study-card';
+                    break;
+                default:
+                    title = "Unknown Discovery";
+                    description = "Could not load content.";
+                    url = null;
+                    icon = 'fas fa-question-circle';
+                    break;
+            }
+
+            return `
+                <div class="random-content-card ${extraClass}">
+                    <div class="card-header">
+                        ${faviconHtml || `<i class="${icon}"></i>`}
+                        <h4 class="card-title">${title}</h4>
+                    </div>
+                    <p class="card-description">${description}</p>
+                    ${url ? `<a href="${url}" target="_blank" class="card-link btn-sm btn-primary">Visit <i class="fas fa-external-link-alt"></i></a>` : ''}
+                </div>
+            `;
+        }
+
+        // Global variable to hold the interval ID for auto-rotation
+        let randomDiscoveryInterval = null;
+
+        // Main function to show random discovery with dynamic layouts
+        function showRandomDiscovery() {
+            // #randomDiscovery is the main container (the .random-display div)
+            const randomDiscoverySection = document.getElementById('randomDiscovery');
+            // #randomItemDisplay is the content wrapper inside it (the .random-content-wrapper div)
+            const randomItemDisplay = document.getElementById('randomItemDisplay');
+            const newRandomBtn = document.getElementById('newRandomBtn');
+
+            if (!randomDiscoverySection || !randomItemDisplay || !newRandomBtn) {
+                console.error("Random discovery elements not found. Ensure #randomDiscovery, #randomItemDisplay, and #newRandomBtn exist in HTML.");
+                return;
+            }
+
+            // Handle read-only mode first
+            if (appState.readOnlyMode) {
+                newRandomBtn.style.display = 'none';
+                randomItemDisplay.innerHTML = `
+                    <div class="random-content-card placeholder">
+                        <i class="fas fa-lock"></i>
+                        <h4 class="card-title">Read-Only Mode</h4>
+                        <p class="card-description">Discovery is disabled in shared view.</p>
+                    </div>
+                `;
+                randomDiscoverySection.classList.remove('two-rows', 'two-columns', 'single-centered'); // Clear layout classes
+                randomDiscoverySection.classList.add('single-centered'); // Default to single view in read-only
+                
+                // Clear any existing auto-rotation if entering read-only mode
+                if (randomDiscoveryInterval) {
+                    clearInterval(randomDiscoveryInterval);
+                    randomDiscoveryInterval = null;
+                }
+                return;
+            }
+
+            newRandomBtn.disabled = true; // Disable button during loading
+            // Display a loading spinner or message initially within the content area
+            randomItemDisplay.innerHTML = `
+                <div class="random-content-card placeholder">
+                    <div class="loading" style="margin-bottom: 10px;"></div>
+                    <p>Loading discovery...</p>
+                </div>
+            `;
+
+            // Clear existing layout classes from the main section to apply new ones consistently
+            randomDiscoverySection.classList.remove('single-centered', 'two-columns', 'two-rows');
+
+
+            // Simulate API call delay or complex content generation
+            setTimeout(() => {
+                const allTools = appState.tools.filter(tool => tool.url); // Ensure tools have a URL
+                const allTips = appState.osintTips;
+                const allCaseStudies = appState.caseStudies;
+
+                // Check if there's *any* content available to display
+                if (allCaseStudies.length === 0 && allTools.length === 0 && allTips.length === 0) {
+                    randomItemDisplay.innerHTML = `
+                        <div class="random-content-card placeholder">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h4 class="card-title">No Content Available</h4>
+                            <p class="card-description">Add some tools, tips, or case studies to get amazing discoveries!</p>
+                        </div>
+                    `;
+                    randomDiscoverySection.classList.add('single-centered');
+                    newRandomBtn.disabled = false;
+                    return;
+                }
+
+                // --- FIXED LAYOUT LOGIC: Always use 'two-rows' as requested ---
+                const selectedLayout = 'two-rows'; // Force the 2-rows layout
+                randomDiscoverySection.classList.add(selectedLayout); // Add layout class to the main #randomDiscovery container
+
+                const generatedCards = [];
+
+                // 1. Generate the left column card (Always a Case Study if available, otherwise a fallback)
+                if (allCaseStudies.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allCaseStudies), 'case-study'));
+                } else {
+                    // Fallback if no case studies: pick a random tool or tip
+                    const fallbackTypes = [];
+                    if (allTools.length > 0) fallbackTypes.push('tool');
+                    if (allTips.length > 0) fallbackTypes.push('tip');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allTips), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder if no content at all
+                    }
+                }
+
+                // 2. Generate the right-top card (Always a Random Tool if available)
+                if (allTools.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allTools), 'tool'));
+                } else {
+                    // Fallback if no tools: pick a random tip or case study
+                    const fallbackTypes = [];
+                    if (allTips.length > 0) fallbackTypes.push('tip');
+                    if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tip' ? getRandomItem(allTips) : getRandomItem(allCaseStudies), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+                    }
+                }
+
+                // 3. Generate the right-bottom card (Always a Random Tip if available)
+                if (allTips.length > 0) {
+                    generatedCards.push(generateRandomContentCard(getRandomItem(allTips), 'tip'));
+                } else {
+                    // Fallback if no tips: pick a random tool or case study
+                    const fallbackTypes = [];
+                    if (allTools.length > 0) fallbackTypes.push('tool');
+                    if (allCaseStudies.length > 0) fallbackTypes.push('case-study');
+                    if (fallbackTypes.length > 0) {
+                        const randomFallbackType = getRandomItem(fallbackTypes);
+                        generatedCards.push(generateRandomContentCard(randomFallbackType === 'tool' ? getRandomItem(allTools) : getRandomItem(allCaseStudies), randomFallbackType));
+                    } else {
+                        generatedCards.push(generateRandomContentCard(null, null)); // Add a generic placeholder
+                    }
+                }
+
+                // Construct the HTML for the content cards.
+                // The .layout-two-rows class should be applied to the .random-content-wrapper (which is #randomItemDisplay)
+                const contentCardsHtml = `
+                    ${generatedCards[0]}
+                    ${generatedCards[1]}
+                    ${generatedCards[2]}
+                `;
+
+                // Update the innerHTML of `randomItemDisplay` (the content wrapper) with the new cards
+                randomItemDisplay.innerHTML = contentCardsHtml;
+                
+                // This ensures the layout is applied to the direct parent of cards, which is randomItemDisplay
+                randomItemDisplay.classList.add(`layout-${selectedLayout}`);
+                randomItemDisplay.classList.remove('layout-single', 'layout-two-columns'); // Clear other layout classes
+
+                newRandomBtn.disabled = false; // Re-enable button
+            }, 500); // Simulate network delay
+        }
+
+        // Function to start the automatic rotation
+        function startRandomDiscoveryRotation() {
+            // Clear any existing interval to prevent multiple rotations running simultaneously
+            if (randomDiscoveryInterval) {
+                clearInterval(randomDiscoveryInterval);
+            }
+            // Set a new interval to call showRandomDiscovery every 10 seconds (10000 milliseconds)
+            randomDiscoveryInterval = setInterval(showRandomDiscovery, 10000);
+        }
+
+        // Function to stop the automatic rotation (useful if you want to add a pause button later)
+        function stopRandomDiscoveryRotation() {
+            if (randomDiscoveryInterval) {
+                clearInterval(randomDiscoveryInterval);
+                randomDiscoveryInterval = null;
+            }
+        }
+
+
+
+
+        
         // Add loadDorkAssistantState to the very beginning of initApp
         const originalInitApp = initApp;
         initApp = function() {
