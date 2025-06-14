@@ -423,5 +423,22 @@
     "addedDate": "2024-03-25T16:00:00Z",
     "customTabs": [],
     "origin": "pre-added"
+  },
+    {
+    "id": "lol",
+    "type": "tool",
+    "name": "lololololl",
+    "url": "https://www.google.com/advanced_search",
+    "category": "search engines",
+    "intelligenceVaultCategories": ["tools"],
+    "description": "Advanced search operators and techniques for comprehensive information gathering",
+    "tags": ["search", "google", "operators"],
+    "starred": false,
+    "pinned": false,
+    "favicon": "https://www.google.com/favicon.ico",
+    "lastUsed": 0,
+    "addedDate": "2023-01-15T10:00:00Z",
+    "customTabs": [],
+    "origin": "pre-added"
   }
 ]

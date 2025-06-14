@@ -1,0 +1,74 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Getting Started",
+    "icon": "fas fa-rocket",
+    "content": "<h2>Getting Started with OSINT</h2><p>Open Source Intelligence (OSINT) is the collection and analysis of information from publicly available sources. This handbook will guide you through essential techniques, tools, and methodologies.</p><h3>Basic Principles</h3><p>Remember these fundamental principles when conducting OSINT investigations:</p><ul><li>Use secure, anonymous connections (VPNs, Tor)</li><li>Create separate research personas</li><li>Document everything</li><li>Verify information through multiple sources</li><li>Follow legal and ethical guidelines</li></ul>"
+  },
+  {
+    "id": "osint-framework",
+    "title": "OSINT Framework Overview",
+    "icon": "fas fa-sitemap",
+    "content": "<h2>OSINT Framework Overview</h2><p>The OSINT Framework provides a structured approach to gathering intelligence across various domains.</p><h3>Key Components</h3><ul><li><strong>Reconnaissance</strong>: Initial information gathering</li><li><strong>Identification</strong>: Pinpointing relevant data sources</li><li><strong>Collection</strong>: Systematic gathering of intelligence</li><li><strong>Processing</strong>: Organizing and filtering collected data</li><li><strong>Analysis</strong>: Deriving insights and connections</li><li><strong>Reporting</strong>: Documenting findings in a structured format</li></ul><h3>OSINT Cycle</h3><p>The OSINT process is cyclical, with each phase informing the next. As new information is discovered, you may need to revisit earlier phases to refine your search parameters.</p><div class=\"code-block\"><pre id=\"osint-cycle-code\"><code>Planning → Collection → Processing → Analysis → Dissemination → Feedback → Planning</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#osint-cycle-code\"><i class=\"fas fa-copy\"></i></button></div>"
+  },
+  {
+    "id": "tools-category",
+    "title": "Tools by Category",
+    "icon": "fas fa-tools",
+    "isCategory": true,
+    "subcategories": [
+      {
+        "id": "people-search",
+        "title": "People Search",
+        "icon": "fas fa-user-secret",
+        "content": "<h2>People Search Tools</h2><p>These tools help locate and gather information about individuals through public records, social media, and other sources.</p><h3>Essential Tools</h3><ul><li><strong>Pipl</strong>: Comprehensive people search engine</li><li><strong>BeenVerified</strong>: Background check service</li><li><strong>Spokeo</strong>: People search and public records</li><li><strong>PeekYou</strong>: Searches across social networks</li><li><strong>WebMii</strong>: Person-centric web search</li></ul><div class=\"code-block\"><pre id=\"phone-validate-code\"><code>/* Validate a phone number pattern */\nconst validatePhone = (phone) => {\n  const regex = /^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$/;\n  return regex.test(phone);\n};</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#phone-validate-code\"><i class=\"fas fa-copy\"></i></button></div><div class=\"tag-section\"><span class=\"tag\">people</span><span class=\"tag\">social</span><span class=\"tag\">identity</span><span class=\"tag\">background</span></div>"
+      },
+      {
+        "id": "domain-whois",
+        "title": "Domain/WHOIS",
+        "icon": "fas fa-globe",
+        "content": "<h2>Domain & WHOIS Investigation Tools</h2><p>These tools allow investigators to gather information about domain registrations, ownership, and infrastructure.</p><h3>Key Tools</h3><ul><li><strong>WHOIS Lookup</strong>: Domain registration information</li><li><strong>DomainTools</strong>: Domain profile and history</li><li><strong>ViewDNS.info</strong>: Multiple DNS research tools</li><li><strong>Shodan</strong>: Internet-connected device search engine</li><li><strong>SecurityTrails</strong>: Historical DNS data</li></ul><div class=\"code-block\"><pre id=\"whois-code\"><code>/* Basic WHOIS lookup using command line */\nwhois example.com\n\n/* Reverse IP lookup using host command */\nhost example.com</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#whois-code\"><i class=\"fas fa-copy\"></i></button></div><div class=\"tag-section\"><span class=\"tag\">domain</span><span class=\"tag\">dns</span><span class=\"tag\">hosting</span><span class=\"tag\">infrastructure</span></div>"
+      },
+      {
+        "id": "crypto-tracking",
+        "title": "Crypto Tracking",
+        "icon": "fas fa-coins",
+        "content": "<h2>Cryptocurrency Tracking Tools</h2><p>These tools help track and analyze cryptocurrency transactions, wallets, and entities across various blockchains.</p><h3>Essential Tools</h3><ul><li><strong>Blockchain.com Explorer</strong>: Bitcoin blockchain analysis</li><li><strong>Etherscan</strong>: Ethereum blockchain explorer</li><li><strong>Chainalysis</strong>: Advanced cryptocurrency investigation</li><li><strong>CipherTrace</strong>: Financial crime tracking in crypto</li><li><strong>Crystal Blockchain</strong>: Crypto AML and analytics</li></ul><div class=\"code-block\"><pre id=\"crypto-code\"><code>/* Example API call to get Bitcoin address information */\ncurl -X GET \"https://blockchain.info/rawaddr/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa\"</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#crypto-code\"><i class=\"fas fa-copy\"></i></button></div><div class=\"tag-section\"><span class=\"tag\">crypto</span><span class=\"tag\">blockchain</span><span class=\"tag\">bitcoin</span><span class=\"tag\">ethereum</span></div>"
+      }
+    ]
+  },
+  {
+    "id": "techniques",
+    "title": "Techniques",
+    "icon": "fas fa-lightbulb",
+    "isCategory": true,
+    "subcategories": [
+      {
+        "id": "pivoting",
+        "title": "Pivoting",
+        "icon": "fas fa-network-wired",
+        "content": "<h2>Pivoting Techniques</h2><p>Pivoting is the process of using discovered information to find new leads and expand your investigation.</p><h3>Key Pivoting Methods</h3><ul><li><strong>Email Pivoting</strong>: Use email addresses to discover accounts across platforms</li><li><strong>Username Pivoting</strong>: Track usernames across multiple services</li><li><strong>Image Pivoting</strong>: Use reverse image search to find related content</li><li><strong>Network Pivoting</strong>: Map connections between people and organizations</li><li><strong>Domain Pivoting</strong>: Find related websites and infrastructure</li></ul><h3>Practical Example</h3><p>Starting with an email address, you might:</p><ol><li>Check email breach databases for password history</li><li>Search for the email in document metadata</li><li>Use the username portion to search social platforms</li><li>Look up the domain for related websites</li><li>Search for the email in forum posts and comments</li></ol><div class=\"tag-section\"><span class=\"tag\">pivoting</span><span class=\"tag\">methodology</span><span class=\"tag\">investigation</span></div>"
+      },
+      {
+        "id": "sock-puppets",
+        "title": "Sock Puppet Accounts",
+        "icon": "fas fa-user-secret",
+        "content": "<h2>Sock Puppet Accounts</h2><p>Sock puppets are alternate online identities created for research purposes to protect your real identity during investigations.</p><h3>Creation Guidelines</h3><ul><li>Use a dedicated device or VM if possible</li><li>Always access through VPN/Tor</li><li>Create a complete, consistent backstory</li><li>Use generated photos for profiles (never your own)</li><li>Maintain regular activity to build history</li><li>Never connect to personal accounts or information</li></ul><div class=\"code-block\"><pre id=\"sockpuppet-code\"><code>/* OPSEC checklist for sock puppets */\n1. Separate email account\n2. Unique username not used elsewhere\n3. Unique password not used elsewhere\n4. 2FA on a dedicated device\n5. Consistent profile details\n6. Regular login patterns\n7. No personal information leakage</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#sockpuppet-code\"><i class=\"fas fa-copy\"></i></button></div><div class=\"tag-section\"><span class=\"tag\">identity</span><span class=\"tag\">opsec</span><span class=\"tag\">anonymity</span></div>"
+      }
+    ]
+  },
+  {
+    "id": "cheat-sheets",
+    "title": "Cheat Sheets",
+    "icon": "fas fa-file-alt",
+    "isCategory": true,
+    "subcategories": [
+      {
+        "id": "command-line",
+        "title": "Command Line Tools",
+        "icon": "fas fa-terminal",
+        "content": "<h2>Command Line OSINT Tools</h2><p>These command-line tools can significantly enhance your OSINT capabilities and automation.</p><h3>Essential CLI Tools</h3><div class=\"code-block\"><pre id=\"cli-tools-code\"><code># Recon-ng - Full-featured reconnaissance framework\npip install recon-ng\n\n# TheHarvester - Email, subdomain and name harvester\ntheHarvester -d example.com -b google,linkedin\n\n# Sherlock - Hunt down social media accounts by username\npython3 sherlock username\n\n# Amass - In-depth DNS enumeration\namass enum -d example.com\n\n# Shodan CLI - Internet device search\nshodan search --fields ip_str,port,org,hostnames apache</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#cli-tools-code\"><i class=\"fas fa-copy\"></i></button></div><h3>Quick Reference: Google Dorks</h3><div class=\"code-block\"><pre id=\"google-dorks-code\"><code># Find specific file types\nfiletype:pdf \"confidential\"\n\n# Search within a site\nsite:example.com password\n\n# Find exposed directories\nintitle:\"index of\" \"parent directory\"\n\n# Find exposed cameras\nintitle:\"webcamXP 5\"\n\n# Find exposed databases\nintitle:\"Index of\" phpmyadmin</code></pre><button class=\"copy-btn\" data-clipboard-target=\"#google-dorks-code\"><i class=\"fas fa-copy\"></i></button></div><div class=\"tag-section\"><span class=\"tag\">cli</span><span class=\"tag\">terminal</span><span class=\"tag\">automation</span><span class=\"tag\">dorks</span></div>"
+      }
+    ]
+  }
+]
