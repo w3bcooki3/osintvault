@@ -1175,7 +1175,7 @@ function deleteNote(noteId) {
     }
 
     saveNotes();
-    updateStats(); // Assuming updateStats is global
+    updateDashboard(); // Assuming updateStats is global
 }
 
 /**

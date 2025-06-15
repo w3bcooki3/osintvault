@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberIntel Analysis - Investigation Reports Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #1e293b;
+            --accent-color: #3b82f6;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --success-color: #10b981;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--gradient-dark);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 100px);
+        }
+
+        .view-selector {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .view-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .view-btn.active {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .search-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.875rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .reports-container {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .report-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .report-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+        }
+
+        .report-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .report-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .report-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .severity-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .severity-critical {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: var(--danger-color);
+            border: 1px solid #fca5a5;
+        }
+
+        .severity-high {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: var(--warning-color);
+            border: 1px solid #fcd34d;
+        }
+
+        .severity-medium {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: var(--accent-color);
+            border: 1px solid #93c5fd;
+        }
+
+        .severity-low {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: var(--success-color);
+            border: 1px solid #6ee7b7;
+        }
+
+        .report-content {
+            padding: 2rem;
+        }
+
+        .report-excerpt {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding: 1.5rem 2rem;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Editor Styles */
+        .editor-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .editor-header {
+            background: var(--gradient-dark);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .editor-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .editor-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .editor-form {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .toolbar {
+            background: #f8fafc;
+            border: 2px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+            padding-right: 1rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-btn {
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .toolbar-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 600px;
+            border: 2px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            background: white;
+        }
+
+        .editor-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .preview-container {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2rem;
+            min-height: 600px;
+            overflow-y: auto;
+        }
+
+        .preview-content {
+            max-width: none;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .preview-content h1, .preview-content h2, .preview-content h3,
+        .preview-content h4, .preview-content h5, .preview-content h6 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            line-height: 1.3;
+        }
+
+        .preview-content h1 { font-size: 2.5rem; }
+        .preview-content h2 { font-size: 2rem; }
+        .preview-content h3 { font-size: 1.5rem; }
+
+        .preview-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-content code {
+            background: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+        }
+
+        .preview-content pre {
+            background: #1e293b;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .preview-content blockquote {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .preview-content ul, .preview-content ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+
+        .preview-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-content th, .preview-content td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-content th {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .editor-actions {
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            background: #f8fafc;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gradient-dark);
+            color: white;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 1024px) {
+            .search-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .report-actions {
+                flex-direction: column;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .toolbar-group {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 0.5rem;
+            }
+
+            .editor-actions {
+                flex-direction: column;
+            }
+
+            .view-selector {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .modal-content {
+                width: 98%;
+                margin: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .report-card {
+                margin: 0 -0.5rem;
+            }
+        }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mb-0 { margin-bottom: 0 !important; }
+        .mt-2 { margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🔍</div>
+                    <div>
+                        <div>CyberIntel Analysis</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Investigation Reports Platform</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showCreateEditor()">
+                        ✍️ New Analysis Report
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportReports()">
+                        📊 Export Reports
+                    </button>
+                    <button class="btn btn-secondary" onclick="importReports()">
+                        📁 Import Reports
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- View Selector -->
+            <div class="view-selector">
+                <button class="view-btn active" onclick="showView('dashboard')" data-view="dashboard">
+                    📊 Dashboard
+                </button>
+                <button class="view-btn" onclick="showView('reports')" data-view="reports">
+                    📄 All Reports
+                </button>
+                <button class="view-btn" onclick="showView('editor')" data-view="editor">
+                    ✍️ Editor
+                </button>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view-content">
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">📊</div>
+                        <div class="stat-value" id="totalReports">0</div>
+                        <div class="stat-label">Total Analysis Reports</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">🚨</div>
+                        <div class="stat-value" id="criticalReports">0</div>
+                        <div class="stat-label">Critical Investigations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">🔍</div>
+                        <div class="stat-value" id="activeReports">0</div>
+                        <div class="stat-label">Active Cases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">✅</div>
+                        <div class="stat-value" id="closedReports">0</div>
+                        <div class="stat-label">Resolved Cases</div>
+                    </div>
+                </div>
+
+                <div class="search-section">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">📋 Recent Analysis Reports</h3>
+                    <div class="search-grid">
+                        <div class="form-group">
+                            <label class="form-label">🔍 Search Reports</label>
+                            <input type="text" class="form-input" id="searchInput" placeholder="Search by title, case ID, threat type, IOCs...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">🚨 Severity Filter</label>
+                            <select class="form-input" id="severityFilter">
+                                <option value="">All Severities</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📊 Status Filter</label>
+                            <select class="form-input" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active Investigation</option>
+                                <option value="analysis">Under Analysis</option>
+                                <option value="review">Peer Review</option>
+                                <option value="published">Published</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline" onclick="clearFilters()">
+                            🗑️ Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-container" id="reportsContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No Analysis Reports Found</h3>
+                        <p>Create your first cybersecurity investigation analysis report to get started.</p>
+                        <button class="btn btn-primary mt-2" onclick="showCreateEditor()">
+                            ✍️ Create First Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports List View -->
+            <div id="reportsView" class="view-content hidden">
+                <div class="search-section">
+                    <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">📚 All Investigation Reports</h2>
+                    <div class="search-grid">
+                        <div class="form-group">
+                            <label class="form-label">🔍 Search Reports</label>
+                            <input type="text" class="form-input" id="searchInput2" placeholder="Search by title, case ID, threat type, IOCs...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">🚨 Severity Filter</label>
+                            <select class="form-input" id="severityFilter2">
+                                <option value="">All Severities</option>
+                                <option value="critical">Critical</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📊 Status Filter</label>
+                            <select class="form-input" id="statusFilter2">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active Investigation</option>
+                                <option value="analysis">Under Analysis</option>
+                                <option value="review">Peer Review</option>
+                                <option value="published">Published</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline" onclick="clearFilters()">
+                            🗑️ Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-container" id="allReportsContainer">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>No Reports Available</h3>
+                        <p>Start by creating your first cybersecurity investigation report.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor View -->
+            <div id="editorView" class="view-content hidden">
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <div class="editor-title">📝 Analysis Report Editor</div>
+                        <div class="editor-subtitle">Create comprehensive cybersecurity investigation reports</div>
+                    </div>
+
+                    <form class="editor-form" id="reportForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">🏷️ Report Title</label>
+                                <input type="text" class="form-input" id="reportTitle" placeholder="e.g., APT29 Phishing Campaign Analysis" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🔢 Case ID</label>
+                                <input type="text" class="form-input" id="caseId" placeholder="e.g., CASE-2024-001" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🚨 Severity Level</label>
+                                <select class="form-input" id="reportSeverity" required>
+                                    <option value="">Select Severity</option>
+                                    <option value="critical">🔴 Critical</option>
+                                    <option value="high">🟠 High</option>
+                                    <option value="medium">🟡 Medium</option>
+                                    <option value="low">🟢 Low</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">📊 Investigation Status</label>
+                                <select class="form-input" id="reportStatus" required>
+                                    <option value="">Select Status</option>
+                                    <option value="active">🔍 Active Investigation</option>
+                                    <option value="analysis">🔬 Under Analysis</option>
+                                    <option value="review">👥 Peer Review</option>
+                                    <option value="published">✅ Published</option>
+                                    <option value="archived">📦 Archived</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">👤 Lead Analyst</label>
+                                <input type="text" class="form-input" id="leadAnalyst" placeholder="e.g., John Smith" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">📅 Investigation Date</label>
+                                <input type="date" class="form-input" id="investigationDate" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">🏷️ Tags (comma-separated)</label>
+                                <input type="text" class="form-input" id="reportTags" placeholder="e.g., phishing, apt29, malware, email-security">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">📋 Report Content</label>
+                            <div class="toolbar">
+                                <div class="toolbar-group">
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('**', '**')" title="Bold">
+                                        <strong>B</strong>
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('*', '*')" title="Italic">
+                                        <em>I</em>
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('`', '`')" title="Code">
+                                        &lt;/&gt;
+                                    </button>
+                                </div>
+                                <div class="toolbar-group">
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('# ', '')" title="Heading 1">
+                                        H1
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('## ', '')" title="Heading 2">
+                                        H2
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('### ', '')" title="Heading 3">
+                                        H3
+                                    </button>
+                                </div>
+                                <div class="toolbar-group">
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('- ', '')" title="Bullet List">
+                                        • List
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('1. ', '')" title="Numbered List">
+                                        1. List
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertFormat('> ', '')" title="Quote">
+                                        Quote
+                                    </button>
+                                </div>
+                                <div class="toolbar-group">
+                                    <button type="button" class="toolbar-btn" onclick="insertTemplate('executive')" title="Executive Summary">
+                                        📊 Summary
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertTemplate('ioc')" title="IOCs">
+                                        🎯 IOCs
+                                    </button>
+                                    <button type="button" class="toolbar-btn" onclick="insertTemplate('timeline')" title="Timeline">
+                                        ⏰ Timeline
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea class="editor-textarea" id="reportContent" placeholder="Enter your detailed analysis report here...
+
+# Executive Summary
+Brief overview of the investigation...
+
+# Threat Analysis
+Detailed analysis of the threat...
+
+# Indicators of Compromise (IOCs)
+- IP Addresses: 
+- Domain Names: 
+- File Hashes: 
+- Email Addresses: 
+
+# Investigation Timeline
+- **2024-01-15**: Initial detection
+- **2024-01-16**: Analysis began
+
+# Recommendations
+1. Immediate actions
+2. Long-term security improvements
+
+# Conclusion
+Summary of findings and next steps..."></textarea>
+                        </div>
+
+                        <div class="editor-actions">
+                            <button type="button" class="btn btn-secondary" onclick="previewReport()">
+                                👁️ Preview
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="saveAsDraft()">
+                                💾 Save Draft
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                ✅ Publish Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Report Details -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Report Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="preview-container">
+                <div class="preview-content" id="modalContent">
+                    <!-- Report content will be inserted here -->
+                </div>
+            </div>
+            <div class="editor-actions">
+                <button class="btn btn-outline" onclick="editReport()">
+                    ✏️ Edit Report
+                </button>
+                <button class="btn btn-secondary" onclick="exportReport()">
+                    📄 Export PDF
+                </button>
+                <button class="btn btn-danger" onclick="deleteReport()">
+                    🗑️ Delete Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Preview -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Report Preview</h2>
+                <button class="close-btn" onclick="closePreview()">&times;</button>
+            </div>
+            <div class="preview-container">
+                <div class="preview-content" id="previewContent">
+                    <!-- Preview content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let reports = JSON.parse(localStorage.getItem('cyberReports')) || [];
+        let currentEditingReport = null;
+
+        // Sample data for demonstration
+        if (reports.length === 0) {
+            reports = [
+                {
+                    id: 'CASE-2024-001',
+                    title: 'APT29 Phishing Campaign Analysis',
+                    severity: 'critical',
+                    status: 'published',
+                    analyst: 'Sarah Chen',
+                    date: '2024-01-15',
+                    tags: ['phishing', 'apt29', 'malware', 'email-security'],
+                    content: `# Executive Summary
+
+This report analyzes a sophisticated phishing campaign attributed to APT29 (Cozy Bear) targeting government contractors and defense organizations. The campaign utilized spear-phishing emails with malicious PDF attachments to deliver custom malware.
+
+## Key Findings
+- **Attack Vector**: Spear-phishing emails with PDF exploits
+- **Target**: Government contractors and defense organizations  
+- **Attribution**: APT29 (Cozy Bear) with high confidence
+- **Impact**: Potential data exfiltration from 12 organizations
+
+# Threat Analysis
+
+The attackers demonstrated advanced tradecraft consistent with APT29's historical operations:
+
+1. **Reconnaissance**: Extensive OSINT gathering on targets
+2. **Initial Access**: Spear-phishing with contextual lures
+3. **Persistence**: Custom backdoor deployment
+4. **Lateral Movement**: Living-off-the-land techniques
+
+# Indicators of Compromise (IOCs)
+
+## IP Addresses
+- 185.159.157.18 (C2 Server)
+- 194.147.85.214 (Staging Server)
+- 91.218.67.145 (Backup C2)
+
+## Domain Names
+- secure-gov-portal[.]com
+- defense-contractor-hub[.]net
+- gov-security-update[.]org
+
+## File Hashes (SHA256)
+- a1b2c3d4e5f6789... (malicious.pdf)
+- f6e5d4c3b2a1987... (backdoor.exe)
+
+## Email Addresses
+- admin@secure-gov-portal[.]com
+- security@defense-contractor-hub[.]net
+
+# Investigation Timeline
+
+- **2024-01-10**: Initial phishing emails sent
+- **2024-01-12**: First infections detected
+- **2024-01-13**: C2 communication identified
+- **2024-01-14**: Full scope analysis began
+- **2024-01-15**: Attribution completed
+
+# Recommendations
+
+## Immediate Actions
+1. Block all identified IOCs at network perimeter
+2. Hunt for additional infections using provided IOCs
+3. Reset credentials for potentially compromised accounts
+4. Implement additional email security controls
+
+## Long-term Improvements
+1. Enhanced security awareness training
+2. Deployment of advanced email security solutions
+3. Implementation of zero-trust architecture
+4. Regular threat hunting exercises
+
+# Conclusion
+
+This APT29 campaign demonstrates continued targeting of the defense industrial base with sophisticated techniques. Organizations should implement the recommended mitigations and remain vigilant for similar attacks.
+
+**Confidence Level**: High
+**Threat Level**: Critical
+**Recommended Actions**: Immediate response required`
+                },
+                {
+                    id: 'CASE-2024-002',
+                    title: 'Ransomware Incident Response - Manufacturing Sector',
+                    severity: 'high',
+                    status: 'active',
+                    analyst: 'Michael Rodriguez',
+                    date: '2024-01-20',
+                    tags: ['ransomware', 'incident-response', 'manufacturing', 'lockbit'],
+                    content: `# Executive Summary
+
+Active ransomware incident affecting a major manufacturing company. LockBit 3.0 ransomware deployed across production networks causing operational shutdown.
+
+# Incident Details
+
+## Timeline
+- **2024-01-20 03:15**: Initial encryption detected
+- **2024-01-20 04:30**: Full production shutdown
+- **2024-01-20 06:00**: Incident response team activated
+- **2024-01-20 08:00**: Forensic analysis began
+
+## Impact Assessment
+- Production systems: 85% encrypted
+- Administrative systems: 60% encrypted  
+- Estimated downtime: 72+ hours
+- Financial impact: $2.5M+ (preliminary)
+
+# Technical Analysis
+
+## Attack Vector
+Initial access gained through compromised VPN credentials. Attackers moved laterally using legitimate admin tools.
+
+## IOCs
+- Ransom note: "LockBit_README.txt"
+- File extension: .lockbit3
+- Registry modifications in HKLM\\SOFTWARE\\LockBit
+
+# Response Actions
+
+## Containment
+- Network segmentation implemented
+- Infected systems isolated
+- VPN access disabled
+
+## Recovery
+- Clean backups identified
+- Recovery priority established
+- Decryption assessment ongoing
+
+# Recommendations
+
+Critical security gaps identified requiring immediate attention.`
+                },
+                {
+                    id: 'CASE-2024-003',
+                    title: 'Supply Chain Compromise Investigation',
+                    severity: 'medium',
+                    status: 'review',
+                    analyst: 'Emily Watson',
+                    date: '2024-01-25',
+                    tags: ['supply-chain', 'third-party-risk', 'malware', 'investigation'],
+                    content: `# Executive Summary
+
+Investigation into potential supply chain compromise affecting software vendor used by multiple client organizations.
+
+# Investigation Status
+
+Currently under peer review. Analysis indicates low-severity compromise with limited impact.
+
+# Preliminary Findings
+
+- Affected software: Developer Tools Suite v3.2
+- Compromise method: Build system infiltration
+- Payload: Information gathering malware
+- Estimated affected users: 1,200+
+
+# Next Steps
+
+- Complete technical analysis
+- Coordinate with software vendor
+- Prepare client notifications
+- Develop remediation guidance
+
+# Impact Assessment
+
+Low to medium risk based on limited payload capabilities and detection timeline.`
+                }
+            ];
+            saveReports();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            renderReports();
+            setupEventListeners();
+            
+            // Set default date to today
+            document.getElementById('investigationDate').value = new Date().toISOString().split('T')[0];
+        });
+
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', filterReports);
+            document.getElementById('severityFilter').addEventListener('change', filterReports);
+            document.getElementById('statusFilter').addEventListener('change', filterReports);
+            
+            document.getElementById('searchInput2').addEventListener('input', filterReports);
+            document.getElementById('severityFilter2').addEventListener('change', filterReports);
+            document.getElementById('statusFilter2').addEventListener('change', filterReports);
+
+            // Form submission
+            document.getElementById('reportForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveReport();
+            });
+
+            // Modal close on outside click
+            document.getElementById('reportModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            
+            document.getElementById('previewModal').addEventListener('click', function(e) {
+                if (e.target === this) closePreview();
+            });
+        }
+
+        function showView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view-content').forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            // Show selected view
+            document.getElementById(viewName + 'View').classList.remove('hidden');
+            
+            // Update active button
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+
+            // Refresh data for specific views
+            if (viewName === 'dashboard') {
+                updateDashboard();
+                renderReports();
+            } else if (viewName === 'reports') {
+                renderAllReports();
+            }
+        }
+
+        function updateDashboard() {
+            const total = reports.length;
+            const critical = reports.filter(r => r.severity === 'critical').length;
+            const active = reports.filter(r => r.status === 'active' || r.status === 'analysis').length;
+            const closed = reports.filter(r => r.status === 'published' || r.status === 'archived').length;
+
+            document.getElementById('totalReports').textContent = total;
+            document.getElementById('criticalReports').textContent = critical;
+            document.getElementById('activeReports').textContent = active;
+            document.getElementById('closedReports').textContent = closed;
+        }
+
+        function renderReports() {
+            const container = document.getElementById('reportsContainer');
+            
+            if (reports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No Analysis Reports Found</h3>
+                        <p>Create your first cybersecurity investigation analysis report to get started.</p>
+                        <button class="btn btn-primary mt-2" onclick="showCreateEditor()">
+                            ✍️ Create First Report
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const recentReports = reports.slice(0, 5); // Show only recent 5 on dashboard
+            container.innerHTML = recentReports.map(report => createReportCard(report)).join('');
+        }
+
+        function renderAllReports() {
+            const container = document.getElementById('allReportsContainer');
+            
+            if (reports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>No Reports Available</h3>
+                        <p>Start by creating your first cybersecurity investigation report.</p>
+                        <button class="btn btn-primary mt-2" onclick="showCreateEditor()">
+                            ✍️ Create First Report
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reports.map(report => createReportCard(report)).join('');
+        }
+
+        function createReportCard(report) {
+            const severityClass = `severity-${report.severity}`;
+            const statusIcon = getStatusIcon(report.status);
+            const severityIcon = getSeverityIcon(report.severity);
+            
+            return `
+                <div class="report-card" onclick="viewReport('${report.id}')">
+                    <div class="report-header">
+                        <h3 class="report-title">${report.title}</h3>
+                        <div class="report-meta">
+                            <div class="meta-item">
+                                <span>🔢</span>
+                                <span><strong>Case ID:</strong> ${report.id}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>👤</span>
+                                <span><strong>Analyst:</strong> ${report.analyst}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>📅</span>
+                                <span><strong>Date:</strong> ${formatDate(report.date)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>${statusIcon}</span>
+                                <span><strong>Status:</strong> ${formatStatus(report.status)}</span>
+                            </div>
+                            <div class="severity-badge ${severityClass}">
+                                ${severityIcon} ${report.severity.toUpperCase()}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-content">
+                        <div class="report-excerpt">
+                            ${getExcerpt(report.content)}
+                        </div>
+                        <div class="report-tags">
+                            ${report.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); editReportById('${report.id}')">
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); exportReportById('${report.id}')">
+                            📄 Export
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            👁️ View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                'active': '🔍',
+                'analysis': '🔬',
+                'review': '👥',
+                'published': '✅',
+                'archived': '📦'
+            };
+            return icons[status] || '📋';
+        }
+
+        function getSeverityIcon(severity) {
+            const icons = {
+                'critical': '🔴',
+                'high': '🟠',
+                'medium': '🟡',
+                'low': '🟢'
+            };
+            return icons[severity] || '⚪';
+        }
+
+        function formatStatus(status) {
+            const statusMap = {
+                'active': 'Active Investigation',
+                'analysis': 'Under Analysis',
+                'review': 'Peer Review',
+                'published': 'Published',
+                'archived': 'Archived'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function getExcerpt(content) {
+            const plainText = content.replace(/[#*`>-]/g, '').replace(/\n+/g, ' ');
+            return plainText.length > 200 ? plainText.substring(0, 200) + '...' : plainText;
+        }
+
+        function filterReports() {
+            const searchTerm = (document.getElementById('searchInput').value || 
+                              document.getElementById('searchInput2').value || '').toLowerCase();
+            const severityFilter = document.getElementById('severityFilter').value || 
+                                 document.getElementById('severityFilter2').value || '';
+            const statusFilter = document.getElementById('statusFilter').value || 
+                               document.getElementById('statusFilter2').value || '';
+
+            const filteredReports = reports.filter(report => {
+                const matchesSearch = !searchTerm || 
+                    report.title.toLowerCase().includes(searchTerm) ||
+                    report.id.toLowerCase().includes(searchTerm) ||
+                    report.analyst.toLowerCase().includes(searchTerm) ||
+                    report.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+                    report.content.toLowerCase().includes(searchTerm);
+
+                const matchesSeverity = !severityFilter || report.severity === severityFilter;
+                const matchesStatus = !statusFilter || report.status === statusFilter;
+
+                return matchesSearch && matchesSeverity && matchesStatus;
+            });
+
+            // Update both containers
+            updateFilteredReports('reportsContainer', filteredReports.slice(0, 5));
+            updateFilteredReports('allReportsContainer', filteredReports);
+        }
+
+        function updateFilteredReports(containerId, filteredReports) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (filteredReports.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>No Reports Found</h3>
+                        <p>Try adjusting your search criteria or filters.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = filteredReports.map(report => createReportCard(report)).join('');
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('severityFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('searchInput2').value = '';
+            document.getElementById('severityFilter2').value = '';
+            document.getElementById('statusFilter2').value = '';
+            
+            renderReports();
+            renderAllReports();
+        }
+
+        function showCreateEditor() {
+            showView('editor');
+            clearForm();
+            currentEditingReport = null;
+        }
+
+        function clearForm() {
+            document.getElementById('reportForm').reset();
+            document.getElementById('investigationDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function saveReport() {
+            const formData = new FormData(document.getElementById('reportForm'));
+            
+            const report = {
+                id: document.getElementById('caseId').value,
+                title: document.getElementById('reportTitle').value,
+                severity: document.getElementById('reportSeverity').value,
+                status: document.getElementById('reportStatus').value,
+                analyst: document.getElementById('leadAnalyst').value,
+                date: document.getElementById('investigationDate').value,
+                tags: document.getElementById('reportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                content: document.getElementById('reportContent').value,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+
+            if (currentEditingReport) {
+                // Update existing report
+                const index = reports.findIndex(r => r.id === currentEditingReport);
+                if (index !== -1) {
+                    report.created = reports[index].created; // Keep original creation date
+                    reports[index] = report;
+                }
+            } else {
+                // Add new report
+                if (reports.some(r => r.id === report.id)) {
+                    alert('A report with this Case ID already exists. Please use a different Case ID.');
+                    return;
+                }
+                reports.unshift(report);
+            }
+
+            saveReports();
+            updateDashboard();
+            renderReports();
+            renderAllReports();
+            
+            alert(currentEditingReport ? 'Report updated successfully!' : 'Report created successfully!');
+            showView('dashboard');
+        }
+
+        function saveAsDraft() {
+            const report = {
+                id: document.getElementById('caseId').value || 'DRAFT-' + Date.now(),
+                title: document.getElementById('reportTitle').value || 'Untitled Draft',
+                severity: document.getElementById('reportSeverity').value || 'low',
+                status: 'draft',
+                analyst: document.getElementById('leadAnalyst').value || 'Unknown',
+                date: document.getElementById('investigationDate').value || new Date().toISOString().split('T')[0],
+                tags: document.getElementById('reportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                content: document.getElementById('reportContent').value,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+
+            reports.unshift(report);
+            saveReports();
+            alert('Draft saved successfully!');
+        }
+
+        function saveReports() {
+            try {
+                localStorage.setItem('cyberReports', JSON.stringify(reports));
+            } catch (e) {
+                console.error('Failed to save reports to localStorage:', e);
+                alert('Failed to save reports. Storage may be full.');
+            }
+        }
+
+        function viewReport(reportId) {
+            const report = reports.find(r => r.id === reportId);
+            if (!report) return;
+
+            document.getElementById('modalTitle').textContent = report.title;
+            document.getElementById('modalContent').innerHTML = `
+                <div class="report-header" style="margin-bottom: 2rem;">
+                    <div class="report-meta" style="margin-bottom: 1rem;">
+                        <div class="meta-item">🔢 <strong>Case ID:</strong> ${report.id}</div>
+                        <div class="meta-item">👤 <strong>Analyst:</strong> ${report.analyst}</div>
+                        <div class="meta-item">📅 <strong>Date:</strong> ${formatDate(report.date)}</div>
+                        <div class="meta-item">${getStatusIcon(report.status)} <strong>Status:</strong> ${formatStatus(report.status)}</div>
+                        <div class="severity-badge severity-${report.severity}">
+                            ${getSeverityIcon(report.severity)} ${report.severity.toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="report-tags">
+                        ${report.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <div>${formatMarkdown(report.content)}</div>
+            `;
+            
+            currentEditingReport = reportId;
+            document.getElementById('reportModal').classList.add('active');
+        }
+
+        function editReport() {
+            if (!currentEditingReport) return;
+            
+            const report = reports.find(r => r.id === currentEditingReport);
+            if (!report) return;
+
+            // Populate form with report data
+            document.getElementById('reportTitle').value = report.title;
+            document.getElementById('caseId').value = report.id;
+            document.getElementById('reportSeverity').value = report.severity;
+            document.getElementById('reportStatus').value = report.status;
+            document.getElementById('leadAnalyst').value = report.analyst;
+            document.getElementById('investigationDate').value = report.date;
+            document.getElementById('reportTags').value = report.tags.join(', ');
+            document.getElementById('reportContent').value = report.content;
+
+            closeModal();
+            showView('editor');
+        }
+
+        function editReportById(reportId) {
+            currentEditingReport = reportId;
+            editReport();
+        }
+
+        
+function deleteReport() {
+            if (!currentEditingReport) return;
+            
+            if (confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
+                reports = reports.filter(r => r.id !== currentEditingReport);
+                saveReports();
+                updateDashboard();
+                renderReports();
+                renderAllReports();
+                closeModal();
+                alert('Report deleted successfully!');
+            }
+        }
+
+        function exportReport() {
+            if (!currentEditingReport) return;
+            
+            const report = reports.find(r => r.id === currentEditingReport);
+            if (!report) return;
+
+            const content = `
+# ${report.title}
+**Case ID:** ${report.id}
+**Analyst:** ${report.analyst}
+**Date:** ${formatDate(report.date)}
+**Status:** ${formatStatus(report.status)}
+**Severity:** ${report.severity.toUpperCase()}
+**Tags:** ${report.tags.join(', ')}
+
+---
+
+${report.content}
+            `.trim();
+
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${report.id}_${report.title.replace(/[^a-zA-Z0-9]/g, '_')}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportReportById(reportId) {
+            currentEditingReport = reportId;
+            exportReport();
+        }
+
+        function previewReport() {
+            const title = document.getElementById('reportTitle').value || 'Untitled Report';
+            const caseId = document.getElementById('caseId').value || 'N/A';
+            const severity = document.getElementById('reportSeverity').value || 'low';
+            const status = document.getElementById('reportStatus').value || 'draft';
+            const analyst = document.getElementById('leadAnalyst').value || 'Unknown';
+            const date = document.getElementById('investigationDate').value || new Date().toISOString().split('T')[0];
+            const tags = document.getElementById('reportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const content = document.getElementById('reportContent').value || 'No content provided.';
+
+            document.getElementById('previewContent').innerHTML = `
+                <div class="report-header" style="margin-bottom: 2rem;">
+                    <h1>${title}</h1>
+                    <div class="report-meta" style="margin: 1rem 0;">
+                        <div class="meta-item">🔢 <strong>Case ID:</strong> ${caseId}</div>
+                        <div class="meta-item">👤 <strong>Analyst:</strong> ${analyst}</div>
+                        <div class="meta-item">📅 <strong>Date:</strong> ${formatDate(date)}</div>
+                        <div class="meta-item">${getStatusIcon(status)} <strong>Status:</strong> ${formatStatus(status)}</div>
+                        <div class="severity-badge severity-${severity}">
+                            ${getSeverityIcon(severity)} ${severity.toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="report-tags">
+                        ${tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <div>${formatMarkdown(content)}</div>
+            `;
+            
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('reportModal').classList.remove('active');
+            currentEditingReport = null;
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        function formatMarkdown(text) {
+            return text
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^\* (.*$)/gim, '<li>$1</li>')
+                .replace(/^- (.*$)/gim, '<li>$1</li>')
+                .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+                .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+                .replace(/\*(.*)\*/gim, '<em>$1</em>')
+                .replace(/`(.*?)`/gim, '<code>$1</code>')
+                .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
+                .replace(/\n/gim, '<br>');
+        }
+
+        // Toolbar functionality
+        function insertFormat(start, end) {
+            const textarea = document.getElementById('reportContent');
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(startPos, endPos);
+            const beforeText = textarea.value.substring(0, startPos);
+            const afterText = textarea.value.substring(endPos);
+            
+            textarea.value = beforeText + start + selectedText + end + afterText;
+            textarea.focus();
+            textarea.setSelectionRange(startPos + start.length, endPos + start.length);
+        }
+
+        function insertTemplate(type) {
+            const textarea = document.getElementById('reportContent');
+            const templates = {
+                executive: `
+# Executive Summary
+
+## Key Findings
+- **Attack Vector**: 
+- **Target**: 
+- **Attribution**: 
+- **Impact**: 
+
+## Risk Assessment
+- **Threat Level**: 
+- **Confidence Level**: 
+- **Affected Systems**: 
+
+`,
+                ioc: `
+# Indicators of Compromise (IOCs)
+
+## IP Addresses
+- 
+
+## Domain Names
+- 
+
+## File Hashes (SHA256)
+- 
+
+## Email Addresses
+- 
+
+## Registry Keys
+- 
+
+## File Paths
+- 
+
+`,
+                timeline: `
+# Investigation Timeline
+
+- **YYYY-MM-DD HH:MM**: Initial detection
+- **YYYY-MM-DD HH:MM**: Analysis began
+- **YYYY-MM-DD HH:MM**: IOCs identified
+- **YYYY-MM-DD HH:MM**: Attribution completed
+- **YYYY-MM-DD HH:MM**: Report finalized
+
+`
+            };
+
+            const template = templates[type];
+            if (template) {
+                const cursorPos = textarea.selectionStart;
+                const beforeText = textarea.value.substring(0, cursorPos);
+                const afterText = textarea.value.substring(cursorPos);
+                
+                textarea.value = beforeText + template + afterText;
+                textarea.focus();
+                textarea.setSelectionRange(cursorPos + template.length, cursorPos + template.length);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        if (document.getElementById('editorView').classList.contains('hidden')) return;
+                        saveAsDraft();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (document.getElementById('editorView').classList.contains('hidden')) return;
+                        document.getElementById('reportForm').dispatchEvent(new Event('submit'));
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        if (document.getElementById('editorView').classList.contains('hidden')) return;
+                        previewReport();
+                        break;
+                }
+            }
+            
+            // Escape key to close modals
+            if (e.key === 'Escape') {
+                closeModal();
+                closePreview();
+            }
+        });
+
+        // Auto-save functionality
+        let autoSaveTimeout;
+        document.getElementById('reportContent').addEventListener('input', function() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                const content = this.value;
+                if (content.length > 100) { // Only auto-save if there's substantial content
+                    // Auto-save indication could be added here
+                    console.log('Auto-save triggered');
+                }
+            }, 2000);
+        });
+
+        // Enhanced search with debouncing
+        let searchTimeout;
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterReports, 300);
+        }
+
+        // Update search event listeners to use debouncing
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInputs = ['searchInput', 'searchInput2'];
+            searchInputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', debounceSearch);
+                }
+            });
+        });
+
+        // Export all reports functionality
+        function exportAllReports() {
+            if (reports.length === 0) {
+                alert('No reports to export.');
+                return;
+            }
+
+            const allReportsContent = reports.map(report => `
+# ${report.title}
+**Case ID:** ${report.id}
+**Analyst:** ${report.analyst}
+**Date:** ${formatDate(report.date)}
+**Status:** ${formatStatus(report.status)}
+**Severity:** ${report.severity.toUpperCase()}
+**Tags:** ${report.tags.join(', ')}
+
+---
+
+${report.content}
+
+${'='.repeat(80)}
+
+`).join('\n');
+
+            const blob = new Blob([allReportsContent], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CyberSec_Reports_${new Date().toISOString().split('T')[0]}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Statistics and analytics
+        function getReportStatistics() {
+            const stats = {
+                total: reports.length,
+                bySeverity: {
+                    critical: reports.filter(r => r.severity === 'critical').length,
+                    high: reports.filter(r => r.severity === 'high').length,
+                    medium: reports.filter(r => r.severity === 'medium').length,
+                    low: reports.filter(r => r.severity === 'low').length
+                },
+                byStatus: {
+                    active: reports.filter(r => r.status === 'active').length,
+                    analysis: reports.filter(r => r.status === 'analysis').length,
+                    review: reports.filter(r => r.status === 'review').length,
+                    published: reports.filter(r => r.status === 'published').length,
+                    archived: reports.filter(r => r.status === 'archived').length
+                },
+                recentActivity: reports.filter(r => {
+                    const reportDate = new Date(r.date);
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    return reportDate >= thirtyDaysAgo;
+                }).length
+            };
+            
+            return stats;
+        }
+
+        // Data validation
+        function validateReportData(report) {
+            const errors = [];
+            
+            if (!report.title || report.title.trim().length < 5) {
+                errors.push('Title must be at least 5 characters long');
+            }
+            
+            if (!report.id || report.id.trim().length < 3) {
+                errors.push('Case ID must be at least 3 characters long');
+            }
+            
+            if (!report.analyst || report.analyst.trim().length < 2) {
+                errors.push('Lead Analyst name must be at least 2 characters long');
+            }
+            
+            if (!report.content || report.content.trim().length < 50) {
+                errors.push('Report content must be at least 50 characters long');
+            }
+            
+            if (!report.date) {
+                errors.push('Investigation date is required');
+            }
+            
+            return errors;
+        }
+
+        // Enhanced save with validation
+        function saveReportWithValidation() {
+            const report = {
+                id: document.getElementById('caseId').value.trim(),
+                title: document.getElementById('reportTitle').value.trim(),
+                severity: document.getElementById('reportSeverity').value,
+                status: document.getElementById('reportStatus').value,
+                analyst: document.getElementById('leadAnalyst').value.trim(),
+                date: document.getElementById('investigationDate').value,
+                tags: document.getElementById('reportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                content: document.getElementById('reportContent').value.trim(),
+                created: new Date().toISOString(),
+                modified: new Date().toISOString()
+            };
+
+            const errors = validateReportData(report);
+            if (errors.length > 0) {
+                alert('Please fix the following errors:\n\n' + errors.join('\n'));
+                return false;
+            }
+
+            return true;
+        }
+
+        // Update the original saveReport function to use validation
+        const originalSaveReport = saveReport;
+        saveReport = function() {
+            if (!saveReportWithValidation()) {
+                return;
+            }
+            originalSaveReport();
+        };
+    </script>
+
+</body>
+</html>

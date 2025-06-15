@@ -5098,384 +5098,6 @@
             }
         }
 
-        /* --- New Case Studies Tab Styles --- */
-        /* Main tab icon (using a new one) */
-        .nav-tab[data-tab="case-studies"].active::before {
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* A vibrant purple for case studies */
-        }
-
-        /* Case Study Grid/List Styles (similar to tools but distinct) */
-        .case-studies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Slightly smaller min-width for more cards */
-            gap: 20px;
-            width: 100%;
-        }
-
-        .case-studies-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* Space between list items */
-            width: 100%; /* Ensure it takes full width */
-        }
-
-        .case-study-card.list-view {
-            display: flex;
-            flex-direction: column; /* Content stacks vertically within the card */
-            align-items: flex-start; /* Align content to the left */
-            padding: 15px 20px; /* Adjust padding for list items */
-            transition: all 0.2s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: var(--bg-secondary); /* Same background as grid view */
-            border: 1px solid var(--border); /* Same border as grid view */
-            box-shadow: var(--shadow); /* Same shadow as grid view */
-            width: 100%; /* Ensure it takes full width of the list container */
-        }
-
-        .case-study-card.list-view:hover {
-            transform: translateY(-5px); /* Less dramatic hover for list */
-            box-shadow: var(--shadow-lg);
-            border-color: #6c5ce7; /* Match hover border to tab color */
-        }
-
-        .case-study-card.list-view .case-study-header {
-            width: 100%; /* Header takes full width */
-            flex-direction: row; /* Keep title/meta and actions in a row */
-            justify-content: space-between;
-            align-items: center; /* Vertically align items in header */
-            margin-bottom: 10px; /* Reduce margin bottom for list view */
-            flex-wrap: wrap; /* Allow header content to wrap if needed */
-            gap: 10px; /* Space between title/meta and actions */
-        }
-
-        .case-study-card.list-view .case-study-title {
-            font-size: 1.05rem; /* Slightly smaller title for list */
-            margin-bottom: 5px; /* Reduce margin below title */
-            flex-grow: 1; /* Allow title to take available space */
-            word-break: break-all; /* Ensure long titles break */
-        }
-
-        .case-study-card.list-view .case-study-meta {
-            font-size: 0.75rem; /* Smaller meta info */
-            flex-shrink: 0; /* Prevent meta from shrinking */
-            gap: 8px;
-        }
-
-        .case-study-card.list-view .case-study-actions {
-            margin-left: auto; /* Push actions to the right */
-            flex-shrink: 0;
-        }
-
-        .case-study-card.list-view .case-study-description {
-            font-size: 0.85rem; /* Smaller description for list */
-            max-height: 50px; /* Limit height even more for a compact list */
-            -webkit-line-clamp: 2; /* Show max 2 lines for list preview */
-        }
-
-        .case-study-card.list-view .case-study-tags {
-            margin-top: 5px; /* Adjust tag margin for list */
-        }
-
-        .case-study-card.list-view .tag {
-            font-size: 0.65rem; /* Smaller tags for list */
-            padding: 2px 6px;
-        }
-
-        /* Ensure grid view specific styles for cards are applied when in grid mode */
-        .case-study-card.grid-view {
-            display: flex; /* Re-apply flex properties for grid cards */
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 25px; /* Original padding for grid cards */
-            width: 100%; /* Occupy full grid cell */
-        }
-        .case-study-card.grid-view .case-study-header {
-            margin-bottom: 15px; /* Original margin for grid cards */
-        }
-        .case-study-card.grid-view .case-study-title {
-            font-size: 1.15rem; /* Original font size for grid cards */
-        }
-        .case-study-card.grid-view .case-study-description {
-            max-height: 90px; /* Original max height for grid cards */
-            -webkit-line-clamp: 3; /* Original line clamp for grid cards */
-        }
-
-        .case-study-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer; /* Indicates clickable */
-        }
-
-        .case-studies-list .case-study-card {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 15px 20px;
-        }
-
-        .case-study-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6c5ce7, #a29bfe); /* Purple gradient */
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .case-study-card:hover {
-            transform: translateY(-7px);
-            box-shadow: var(--shadow-lg);
-            border-color: #6c5ce7; /* Match hover border to new tab color */
-        }
-
-        .case-study-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Status highlights for case studies (e.g., solved, ongoing) */
-        .case-study-card.solved {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), transparent);
-        }
-
-        .case-study-card.ongoing {
-            border-color: var(--warning);
-            background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
-        }
-
-        .case-study-card.starred {
-            border-color: var(--secondary);
-        }
-
-        .case-study-card.pinned {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), transparent);
-        }
-
-        .case-study-card.selected {
-            border-color: var(--warning);
-            background: linear-gradient(135deg, rgba(255, 170, 0, 0.05), transparent);
-        }
-
-        .case-study-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            width: 100%;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .case-study-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            min-width: 0;
-            word-break: break-word;
-        }
-
-        .case-study-icon {
-            font-size: 20px;
-            color: var(--primary); /* Use primary for icon color */
-            flex-shrink: 0;
-        }
-
-        .case-study-meta {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-            word-break: break-all;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .case-study-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0; /* Prevent actions from shrinking */
-        }
-
-        /* Reusing existing action-btn styles */
-
-        .case-study-description {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 10px;
-            line-height: 1.5;
-            max-height: 90px; /* Limit height for preview */
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3; /* Show maximum 3 lines */
-            -webkit-box-orient: vertical;
-            text-overflow: ellipsis;
-        }
-
-        .case-study-tags {
-            margin-top: 10px;
-        }
-
-        /* Reusing existing tag styles */
-
-        /* Case Study Detail Modal Styles (similar to notes/editor) */
-        #caseStudyDetailModal .modal-content {
-            max-width: 850px; /* Wider modal for detailed content */
-            padding: 30px;
-        }
-
-        #caseStudyDetailModal .case-study-detail-header {
-            margin-bottom: 25px;
-            text-align: center;
-            position: relative;
-        }
-
-        #caseStudyDetailModal .detail-title {
-            font-size: 2em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Purple gradient for modal title */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        #caseStudyDetailModal .detail-meta {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        #caseStudyDetailModal .detail-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        #caseStudyDetailModal .detail-content {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            max-height: 50vh; /* Limit height for scrollable content */
-            overflow-y: auto;
-            color: var(--text-primary);
-            line-height: 1.7;
-        }
-
-        #caseStudyDetailModal .detail-content h3 {
-            font-size: 1.3em;
-            color: var(--primary); /* Primary blue for subheadings */
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed var(--border-light);
-            padding-bottom: 5px;
-        }
-
-        #caseStudyDetailModal .detail-content ul,
-        #caseStudyDetailModal .detail-content ol {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-
-        #caseStudyDetailModal .detail-content li {
-            margin-bottom: 5px;
-        }
-
-        #caseStudyDetailModal .detail-tags {
-            margin-top: 15px;
-            text-align: center; /* Center tags in detail view */
-        }
-
-        /* Responsive adjustments for Case Studies View (already present, just verifying) */
-        @media (max-width: 768px) {
-            .case-studies-grid {
-                grid-template-columns: 1fr; /* Single column on small screens */
-                gap: 15px;
-            }
-
-            .case-studies-list .case-study-card { /* Ensure consistency for list on smaller screens */
-                padding: 10px 15px;
-            }
-
-            .case-study-title {
-                font-size: 1rem;
-                flex-direction: column; /* Stack icon and text vertically if needed */
-                align-items: flex-start;
-            }
-            .case-study-title .case-study-icon {
-                margin-bottom: 5px;
-            }
-
-            .case-study-meta {
-                font-size: 0.75rem;
-                flex-wrap: wrap; /* Allow meta items to wrap */
-                gap: 5px;
-            }
-
-            .case-study-description {
-                font-size: 13px;
-                max-height: 75px; /* Adjust preview height */
-                -webkit-line-clamp: 3; /* Adjust line clamp for unified mobile view */
-            }
-
-            /* Ensure the controls for case studies also stack/adjust */
-            #case-studiesTab .content-header .controls {
-                flex-direction: column;
-                align-items: flex-start;
-                width: 100%;
-            }
-            #case-studiesTab .content-header .controls input,
-            #case-studiesTab .content-header .controls select,
-            #case-studiesTab .content-header .controls button {
-                width: 100%;
-                margin-right: 0 !important; /* Override inline style */
-                margin-bottom: 10px; /* Add spacing between stacked controls */
-            }
-            #case-studiesTab .content-header .controls button:last-child {
-                margin-bottom: 0; /* No margin on the last button */
-            }
-        }
-
-        @media (max-width: 480px) {
-            .case-study-card {
-                padding: 10px;
-            }
-            .case-study-title {
-                font-size: 0.9rem;
-            }
-            .case-study-meta {
-                font-size: 0.7rem;
-            }
-            .case-study-actions {
-                gap: 3px;
-            }
-            .action-btn {
-                padding: 4px;
-                font-size: 0.8rem;
-            }
-        }
 
         /* --- New Close Modal Button Styles --- */
         .close-modal-btn {
@@ -5506,124 +5128,7 @@
             box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
         }
 
-        /* Threat Hunting Tab Colors (New) */
-        .nav-tab[data-tab="threat-hunting"].active::before {
-            background: linear-gradient(135deg, #10b981, #059669); /* A vibrant green for threat hunting */
-        }
-
-        /* Threat Hunting Sub-tab Content */
-        .th-subtab-content {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            width: 100%;
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        /* Script Card Styles (Reusing .tool-card as base) */
-        .script-card { /* Can be used as a modifier if needed, or simply let .tool-card styles apply */
-            /* Many styles inherited from .tool-card, but define specific if needed */
-        }
-
-        .script-card .script-language {
-            font-size: 0.7em;
-            background: var(--accent); /* Green accent for language */
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            margin-left: auto; /* Push to right */
-            flex-shrink: 0;
-        }
-
-        /* Script Code Display Modal */
-        #scriptCodeDisplayModal .modal-content {
-            max-width: 800px;
-            padding: 30px;
-        }
-
-        #scriptCodeDisplayModal pre {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--text-primary);
-        }
-
-        #scriptCodeDisplayModal .copy-code-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        #scriptCodeDisplayModal .copy-code-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px var(--primary-shadow-color-hover);
-        }
-
-        /* Responsive adjustments for Threat Hunting Toolkit */
-        @media (max-width: 768px) {
-            .th-subtab-content {
-                padding: 15px;
-            }
-            .script-card {
-                padding: 15px;
-            }
-            .script-card .tool-header { /* Reusing tool-header for consistency */
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            .script-card .tool-actions {
-                margin-left: 0;
-                width: 100%;
-                justify-content: flex-start;
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-            .script-card .script-language {
-                margin-left: 0; /* Reset alignment */
-                margin-top: 5px; /* Add space below name/title */
-            }
-
-            /* Code preview in modal */
-            #scriptCodeDisplayModal pre {
-                font-size: 12px;
-                padding: 10px;
-            }
-            #scriptCodeDisplayModal .modal-content {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .th-subtab-content {
-                padding: 10px;
-            }
-            /* Hide some elements if necessary for very small screens */
-            .script-card .script-language {
-                font-size: 0.6em;
-                padding: 2px 6px;
-            }
-        }
-        
+ 
         /* Add this CSS rule to your existing <style> block */
             .mobile-menu-overlay {
             position: fixed;
@@ -6299,3 +5804,303 @@
             opacity: 1;
             transform: translateY(0);
         }
+/* ===================================== */
+/* Case Studies Tab - General Styling */
+/* ===================================== */
+
+#case-studiesTab {
+    padding: 20px;
+}
+
+#caseStudyParentTabs {
+    display: flex;
+    flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border); /* Optional: A separator line */
+    padding-bottom: 10px;
+    justify-content: flex-start; /* Align tabs to the start */
+}
+
+.case-study-category-tab {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    white-space: nowrap; /* Prevent text wrapping within tabs */
+}
+
+.case-study-category-tab.active,
+.case-study-category-tab:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.case-study-category-tab i {
+    margin-right: 8px;
+}
+
+#caseStudiesGrid {
+    /* Inherits .tools-grid or .tools-list styling from app.js based on viewMode */
+    gap: 20px; /* Consistent gap with other grids */
+}
+
+/* Specific styling for .tool-card when it's a case study */
+/* It already uses .tool-card, so general .tool-card styling applies */
+
+/* Adjusting tool-card content for better responsiveness in list view */
+.tools-list .tool-card {
+    flex-direction: row; /* Keep content in a row in list view */
+    align-items: flex-start;
+    padding: 15px 20px;
+}
+
+.tools-list .tool-card .tool-header {
+    flex-direction: row; /* Keep header elements in a row */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Take full width */
+}
+
+.tools-list .tool-card .tool-header > div {
+    flex: 1; /* Allow header text to take available space */
+}
+
+.tools-list .tool-card .tool-title {
+    flex-wrap: wrap; /* Allow title elements to wrap if needed */
+}
+
+.tools-list .tool-card .tool-actions {
+    flex-wrap: nowrap; /* Prevent action buttons from wrapping too much */
+    margin-left: 15px; /* Space between title and actions */
+    align-self: flex-start; /* Align actions to the top in list view */
+}
+
+.tools-list .tool-card p {
+    flex-basis: 100%; /* Force paragraphs to full width below header */
+    margin-top: 10px;
+}
+
+.tools-list .tool-card .tool-tags {
+    flex-basis: 100%; /* Force tags to full width */
+    margin-top: 10px;
+}
+
+/* ===================================== */
+/* Case Study Modals (Add/Edit/Preview) */
+/* ===================================== */
+
+/* Inherits general .modal and .modal-content styling, but refine for content */
+#addCaseStudyModal .modal-content,
+#editCaseStudyModal .modal-content,
+#caseStudyPreviewModal .modal-content {
+    max-width: 700px; /* Slightly wider for article content */
+    width: 90%;
+    max-height: 90vh; /* Allow scrolling for long content */
+    overflow-y: auto;
+    padding: 30px; /* More internal padding */
+}
+
+#caseStudyPreviewModal .modal-content {
+    padding-bottom: 20px; /* Adjust padding for bottom buttons */
+}
+
+/* Specific input/textarea styling within modals */
+#addCaseStudyModal .form-group input[type="text"],
+#addCaseStudyModal .form-group input[type="url"],
+#addCaseStudyModal .form-group textarea,
+#editCaseStudyModal .form-group input[type="text"],
+#editCaseStudyModal .form-group input[type="url"],
+#editCaseStudyModal .form-group textarea {
+    width: 100%; /* Full width inputs */
+    padding: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    box-sizing: border-box; /* Include padding in width */
+}
+
+#addCaseStudyModal .form-group select,
+#editCaseStudyModal .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    box-sizing: border-box;
+    -webkit-appearance: none; /* Remove default arrow on select */
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2C197.9c-3.1%2C3.1-7.1%2C4.7-11.2%2C4.7s-8.2-1.6-11.2-4.7L146.2%2C87.4L27.9%2C197.9c-3.1%2C3.1-7.1%2C4.7-11.2%2C4.7s-8.2-1.6-11.2-4.7c-6.2-6.2-6.2-16.4%2C0-22.6L135%2C64.9c3.1-3.1%2C7.1-4.7%2C11.2-4.7c4.1%2C0%2C8.2%2C1.6%2C11.2%2C4.7l117.3%2C110.4C293.2%2C181.5%2C293.2%2C191.7%2C287%2C197.9z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+/* Read-only inputs in preview modal should be clearly styled as non-editable */
+#caseStudyPreviewModal .form-group input[readonly],
+#caseStudyPreviewModal .form-group textarea[readonly] {
+    opacity: 0.8;
+    cursor: default;
+}
+
+
+/* ===================================== */
+/* Media Queries for Responsiveness */
+/* ===================================== */
+
+/* Tablets and smaller desktops (e.g., 768px to 1024px) */
+@media (max-width: 1024px) {
+    .dashboard {
+        padding: 15px; /* Reduce padding on dashboard */
+    }
+
+    .header-content {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .controls {
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    #caseStudyParentTabs {
+        justify-content: center; /* Center align tabs on smaller screens */
+    }
+
+    /* Modals adjustments */
+    #addCaseStudyModal .modal-content,
+    #editCaseStudyModal .modal-content,
+    #caseStudyPreviewModal .modal-content {
+        max-width: 600px;
+        width: 95%;
+        padding: 25px;
+    }
+}
+
+/* Mobile devices (e.g., up to 767px) */
+@media (max-width: 767px) {
+    body {
+        font-size: 14px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .header-controls-expanded {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input,
+    .search-icon,
+    #searchScopeSelect {
+        width: 100%; /* Full width for search elements */
+    }
+    #searchScopeSelect {
+        margin-top: 5px;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .controls button {
+        width: 100%; /* Full width buttons */
+    }
+
+    .nav-tabs.main-nav-tabs {
+        overflow-x: auto; /* Allow horizontal scrolling for main tabs */
+        white-space: nowrap; /* Prevent tabs from wrapping */
+        padding-bottom: 5px; /* Space for scrollbar */
+        justify-content: flex-start; /* Align to start for scroll */
+    }
+
+    .nav-tab {
+        flex: 0 0 auto; /* Prevent tabs from shrinking */
+        padding: 8px 10px;
+        font-size: 0.85em;
+    }
+
+    /* Adjust tools grid for mobile */
+    .tools-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+    }
+
+    /* Ensure list view looks good on mobile too */
+    .tools-list .tool-card {
+        padding: 10px 15px;
+    }
+
+    .tools-list .tool-card .tool-header {
+        flex-direction: column; /* Stack header elements vertically */
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .tools-list .tool-card .tool-actions {
+        margin-left: 0;
+        margin-top: 10px; /* Space below title */
+        width: 100%; /* Take full width */
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 5px; /* Smaller gap for buttons */
+    }
+
+    /* Modals for mobile */
+    #addCaseStudyModal .modal-content,
+    #editCaseStudyModal .modal-content,
+    #caseStudyPreviewModal .modal-content {
+        width: 95%; /* Take almost full width */
+        padding: 20px;
+        margin: 10px auto; /* More margin from edges */
+    }
+
+    #caseStudyPreviewModal .modal-content .form-group label {
+        font-size: 0.9em; /* Smaller label text */
+    }
+}
+
+/* Landscape orientation for small phones */
+@media (max-width: 500px) and (orientation: landscape) {
+    /* Adjustments if needed for very narrow landscape views */
+    .nav-tabs.main-nav-tabs {
+        justify-content: flex-start;
+    }
+}
+

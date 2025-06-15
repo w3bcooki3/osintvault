@@ -456,7 +456,7 @@ async function handleAddToolOnly(e) {
     hideModal('addToolOnlyModal'); // Assuming hideModal() is globally accessible
     document.getElementById('addToolOnlyForm').reset(); // Reset form for next use
     showToast('Tool added successfully!', 'success'); // Assuming showToast() is globally accessible
-    updateStats(); // Assuming updateStats() is globally accessible
+    updateDashboard(); // Assuming updateStats() is globally accessible
     populateCategoryFilter(); // Re-populate category filter as a new category might have been added
     renderIntelligenceEntries(); // Re-render the tool list
     saveState(); // Assuming saveState() is globally accessible
