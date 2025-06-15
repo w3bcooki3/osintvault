@@ -1,18 +1,13 @@
-// multiVault.js
-
-// This file will contain functions and data structures specific to the Multi-Vault tab.
-
-// Define the structure for custom vault entries
 const customVaultEntryStructure = [{
     id: 'coreInvestigation',
     name: 'General',
     icon: 'fas fa-globe-americas',
     children: [
-        { id: 'tool', name: 'General Tools', icon: 'fas fa-tools' }, // Matches entry.type 'tool'
-        { id: 'keyword', name: 'Keyword & Text Analysis', icon: 'fas fa-font' }, // Matches entry.type 'keyword'
-        { id: 'ai', name: 'AI & Generative', icon: 'fas fa-brain' }, // Placeholder, needs actual entry.type if not 'tool'
-        { id: 'osintSearch', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' }, // Placeholder
-        { id: 'archive', name: 'Archiving & Cache', icon: 'fas fa-archive' }, // Matches entry.type 'archive'
+        { id: 'tool', name: 'General Tools', icon: 'fas fa-tools' }, 
+        { id: 'keyword', name: 'Keyword & Text Analysis', icon: 'fas fa-font' }, 
+        { id: 'ai', name: 'AI & Generative', icon: 'fas fa-brain' }, 
+        { id: 'osintSearch', name: 'OSINT-Specific Search', icon: 'fas fa-search-dollar' }, 
+        { id: 'archive', name: 'Archiving & Cache', icon: 'fas fa-archive' },
     ]
 }, {
     id: 'identityCommunication',
@@ -92,37 +87,16 @@ const customVaultEntryStructure = [{
     ]
 }];
 
-const timelineCategories = {
-    "phishing": { name: "Phishing", icon: "fas fa-fish", color: "#e74c3c" },
-    "initial_access": { name: "Initial Access", icon: "fas fa-door-open", color: "#3498db" },
-    "lateral_movement": { name: "Lateral Movement", icon: "fas fa-arrows-alt-h", color: "#9b59b6" },
-    "exfiltration": { name: "Data Exfiltration", icon: "fas fa-cloud-upload-alt", color: "#f1c40f" },
-    "command_control": { name: "Command & Control", icon: "fas fa-satellite-dish", color: "#e67e22" },
-    "reconnaissance": { name: "Reconnaissance", icon: "fas fa-binoculars", color: "#1abc9c" },
-    "malware_delivery": { name: "Malware Delivery", icon: "fas fa-bug", color: "#d35400" },
-    "persistence": { name: "Persistence", icon: "fas fa-redo-alt", color: "#f39c12" },
-    "privilege_escalation": { name: "Privilege Escalation", icon: "fas fa-lock-open", color: "#16a085" },
-    "defense_evasion": { name: "Defense Evasion", icon: "fas fa-shield-virus", color: "#c0392b" },
-    "credential_access": { name: "Credential Access", icon: "fas fa-user-lock", color: "#2980b9" },
-    "discovery": { name: "Discovery", icon: "fas fa-compass", color: "#8e44ad" },
-    "collection": { name: "Collection", icon: "fas fa-box-open", color: "#27ae60" },
-    "impact": { name: "Impact", icon: "fas fa-explosion", color: "#e74c3c" },
-    "remediation": { name: "Remediation", icon: "fas fa-wrench", color: "#2ecc71" },
-    "fraud": { name: "Financial Fraud", icon: "fas fa-money-check-alt", color: "#f1c40f" },
-    "insider_threat": { name: "Insider Threat", icon: "fas fa-user-secret", color: "#c0392b" },
-    "other": { name: "Other", icon: "fas fa-info-circle", color: "#7f8c8d" },
-};
 
-// Function to render the main custom tabs (the list of custom vaults)
 function renderCustomTabs() {
     const customSubTabsContainer = document.getElementById('customSubTabs');
     const createSubTabBtn = document.getElementById('createSubTabBtn');
     const editSubTabBtn = document.getElementById('editSubTabBtn');
     const deleteSubTabBtn = document.getElementById('deleteSubTabBtn');
     const exportSubTabBtn = document.getElementById('exportSubTabBtn');
-    const addEntryBtnCustomVault = document.getElementById('addEntryBtnCustomVault'); // The "Add New Entry" button
+    const addEntryBtnCustomVault = document.getElementById('addEntryBtnCustomVault'); 
 
-    customSubTabsContainer.innerHTML = ''; // Clear existing tabs
+    customSubTabsContainer.innerHTML = ''; 
 
     if (appState.customTabs.length === 0) {
         document.getElementById('emptyCustomTabState').style.display = 'block';
@@ -131,17 +105,17 @@ function renderCustomTabs() {
         editSubTabBtn.style.display = 'none';
         deleteSubTabBtn.style.display = 'none';
         exportSubTabBtn.style.display = 'none';
-        addEntryBtnCustomVault.style.display = 'none'; // Hide add entry button
-        appState.currentCustomTab = null; // No custom tab selected
-        renderIntelligenceEntries(); // Re-render to show empty state
+        addEntryBtnCustomVault.style.display = 'none';
+        appState.currentCustomTab = null;
+        renderIntelligenceEntries(); 
         return;
     } else {
         document.getElementById('emptyCustomTabState').style.display = 'none';
         customSubTabsContainer.style.display = 'flex';
-        editSubTabBtn.style.display = appState.readOnlyMode ? 'none' : 'inline-flex'; // New: Hide in read-only
-        deleteSubTabBtn.style.display = appState.readOnlyMode ? 'none' : 'inline-flex'; // New: Hide in read-only
+        editSubTabBtn.style.display = appState.readOnlyMode ? 'none' : 'inline-flex'; 
+        deleteSubTabBtn.style.display = appState.readOnlyMode ? 'none' : 'inline-flex'; 
         exportSubTabBtn.style.display = 'inline-flex';
-        addEntryBtnCustomVault.style.display = appState.readOnlyMode ? 'none' : 'inline-flex'; // New: Hide in read-only
+        addEntryBtnCustomVault.style.display = appState.readOnlyMode ? 'none' : 'inline-flex';
     }
 
     // Ensure a custom tab is selected if there are any
@@ -154,86 +128,62 @@ function renderCustomTabs() {
         tabButton.classList.add('sub-nav-tab');
         if (tab.id === appState.currentCustomTab) {
             tabButton.classList.add('active');
-            // Set active tab color
             tabButton.style.backgroundColor = tab.color;
-            tabButton.style.color = 'white'; // Ensure text is white for contrast
+            tabButton.style.color = 'white'; 
         } else {
-            tabButton.style.color = 'var(--text-secondary)'; // Default text color for inactive
+            tabButton.style.color = 'var(--text-secondary)'; 
         }
         tabButton.dataset.subTabId = tab.id;
         tabButton.innerHTML = `<i class="${tab.icon}"></i> ${tab.name}`;
         customSubTabsContainer.appendChild(tabButton);
     });
 
-    // Update the share options modal with custom tabs
     updateShareScopeSelect();
 
-    renderIntelligenceEntries(); // Re-render content for the active custom tab
+    renderIntelligenceEntries(); 
     saveState();
 }
 
 function switchCustomTab(tabId) {
     appState.currentCustomTab = tabId;
 
-    // First, ensure parent and child entry tabs are always visible when a custom vault is selected.
     document.getElementById('customVaultEntryParentTabs').style.display = 'flex';
-    document.getElementById('customVaultEntryChildTabs').style.display = 'flex'; // Assume children will be rendered
+    document.getElementById('customVaultEntryChildTabs').style.display = 'flex';
 
-    // Re-render the vault selection tabs (the top row: My First Vault, New Vault, etc.)
-    // This updates the 'active' class for the selected vault.
+
     renderCustomTabs();
 
-    // Now, determine which content area should be active: the entry grid or the timeline.
-    // We'll use a new appState property to remember the last active view within the custom vault.
-    // Let's add `appState.customVaultViewMode: 'entries' | 'timeline'` to your appState.
-    if (!appState.customVaultViewMode) {
-        appState.customVaultViewMode = 'entries'; // Default view mode for custom vaults
-    }
 
-    // Hide both content areas initially
     document.getElementById('customTabToolsGrid').style.display = 'none';
-    document.getElementById('customTabTimelineDisplay').style.display = 'none';
 
-    // Hide entry-specific controls that might conflict with timeline view
+
     document.getElementById('addEntryBtnCustomVault').style.display = 'none';
     document.getElementById('customVaultViewToggle').style.display = 'none';
     document.getElementById('bulkActions').style.display = 'none';
 
-    // Show appropriate content based on the stored view mode for the current vault
-    if (appState.customVaultViewMode === 'timeline') {
-        document.getElementById('customTabTimelineDisplay').style.display = 'block';
-        document.getElementById('emptyCurrentCustomTabState').style.display = 'none'; // Ensure main empty state is off
-        renderCustomVaultTimeline(); // Render timeline for the newly selected vault
-    } else { // 'entries' view mode
-        document.getElementById('customTabToolsGrid').style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
-        // Re-show relevant buttons for entry view
-        if (!appState.readOnlyMode) { // Only show if not in read-only mode
-            document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
-        }
-        document.getElementById('customVaultViewToggle').style.display = 'inline-flex';
-        document.getElementById('bulkActions').style.display = appState.selectedEntries.size > 0 && !appState.readOnlyMode ? 'flex' : 'none';
-        renderIntelligenceEntries(); // Re-render entries for the newly selected vault
-    }
 
-    // Ensure the parent and child tabs are rendered correctly for the new vault
+    document.getElementById('customTabToolsGrid').style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+
+    if (!appState.readOnlyMode) { 
+        document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
+    }
+    document.getElementById('customVaultViewToggle').style.display = 'inline-flex';
+    document.getElementById('bulkActions').style.display = appState.selectedEntries.size > 0 && !appState.readOnlyMode ? 'flex' : 'none';
+    renderIntelligenceEntries(); 
+
     renderCustomVaultParentTabs();
-    // Re-select the correct child tab based on currentCustomVaultEntrySubTab
-    // This will implicitly call renderIntelligenceEntries() again, but it's safe and ensures correct filter.
-    // If you always want to reset to 'tool' when switching vaults, change logic here.
     const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
     if (currentCustomParent) {
         const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
         if (!currentCustomChild) {
             appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
         }
-        // This will activate the correct sub-tab visually and trigger renderIntelligenceEntries if needed.
         switchCustomVaultEntrySubTab(appState.currentCustomVaultEntrySubTab);
     }
 
 
     saveState();
 }
-
 function showCreateSubTabModal() {
     if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
         showToast("Cannot create custom vaults in read-only shared view.", "warning");
@@ -641,8 +591,7 @@ function switchCustomVaultEntrySubTab(childTabName) {
     appState.filters.category = ''; // Clear category filter when switching sub-tabs
     document.getElementById('categoryFilter').value = '';
     
-    // Ensure content display is set to grid/list view and not timeline
-    document.getElementById('customTabTimelineDisplay').style.display = 'none';
+
     document.getElementById('customTabToolsGrid').style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
 
     // Show/Hide relevant action buttons
@@ -656,183 +605,8 @@ function switchCustomVaultEntrySubTab(childTabName) {
     saveState();
 }
 
-// Function to render the Custom Vault Timeline
-function renderCustomVaultTimeline() {
-    const timelineContainer = document.getElementById('customTabTimelineDisplay');
-    const emptyState = document.getElementById('emptyCustomVaultTimelineState');
 
-    if (!timelineContainer || !emptyState) {
-        console.error("renderCustomVaultTimeline: Required DOM elements (customTabTimelineDisplay or emptyCustomVaultTimelineState) not found. Please add them to your HTML.");
-        return;
-    }
 
-    timelineContainer.innerHTML = ''; // Clear previous content
-    timelineContainer.style.display = 'block'; // Make sure this container is visible
-
-    const activeCustomTab = appState.customTabs.find(tab => tab.id === appState.currentCustomTab);
-
-    if (!activeCustomTab || activeCustomTab.toolIds.length === 0) {
-        emptyState.style.display = 'block';
-        timelineContainer.style.display = 'none';
-        return;
-    }
-
-    emptyState.style.display = 'none';
-
-    // Collect all entries from all appState arrays
-    const allEntriesCombined = [
-        ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
-        ...appState.locations, ...appState.links, ...appState.media, ...appState.passwords,
-        ...appState.keywords, ...appState.socials, ...appState.domains, ...appState.usernames,
-        ...appState.threats, ...appState.vulnerabilities, ...appState.malware, ...appState.breaches,
-        ...appState.credentials, ...appState.forums, ...appState.vendors, ...appState.telegramChannels,
-        ...appState.pastes, ...appState.documents, ...appState.networks, ...appState.metadataEntries,
-        ...appState.archives, ...appState.messagingApps, ...appState.datingProfiles, ...appState.audioEntries,
-        ...appState.facialRecognition, ...appState.personas, ...appState.vpns, ...appState.honeypots,
-        ...appState.exploits, ...appState.publicRecords
-    ];
-
-    // Filter to get only entries belonging to the current custom tab
-    const vaultEntries = allEntriesCombined.filter(entry =>
-        (entry.customTabs || []).includes(activeCustomTab.id)
-    );
-
-    // Map these entries to a timeline event structure
-    const customVaultTimelineEvents = vaultEntries.map(entry => {
-        let title = getEntryName(entry); // Use existing helper
-        let category = entry.type; // Use entry type as category for now
-        let notes = entry.description || entry.notes || 'No description available.';
-        let confidence = 'info'; // Default confidence for custom vault entries
-        let evidence = entry.url || entry.source || ''; // Use URL or source as evidence
-        let actor = 'System/Investigator'; // Default actor
-
-        // Attempt to get a more specific timestamp if available, otherwise fallback to addedDate
-        let timestamp = entry.addedDate;
-        if (entry.lastUsed && entry.lastUsed !== 0) { // If lastUsed is more recent than addedDate
-            timestamp = new Date(Math.max(new Date(entry.addedDate || 0).getTime(), entry.lastUsed));
-        }
-        if (entry.date) { // For types like breach, publicrecord which have specific 'date' fields
-            timestamp = new Date(entry.date);
-        }
-        if (entry.timestamp) { // For types like archive, which have their own 'timestamp'
-            timestamp = new Date(entry.timestamp);
-        }
-
-        // Add a "meta" field to notes for more detailed information if needed
-        let detailedNotes = notes;
-        if (entry.platform) detailedNotes += ` (Platform: ${entry.platform})`;
-        if (entry.username) detailedNotes += ` (Username: ${entry.username})`;
-        if (entry.filename) detailedNotes += ` (File: ${entry.filename})`;
-
-        return {
-            id: entry.id, // Reuse entry ID for event ID
-            timestamp: timestamp || new Date(), // Fallback to current date if no timestamp
-            title: title,
-            category: category,
-            notes: detailedNotes,
-            confidence: confidence,
-            evidence: evidence,
-            actor: actor
-        };
-    }).sort((a, b) => a.timestamp - b.timestamp); // Sort by timestamp
-
-    // Now, render these generated events into the custom vault timeline display.
-    // We'll mimic the structure of renderTimelineEvents but apply it to the custom vault's specific div.
-    const fragment = document.createDocumentFragment();
-
-    if (customVaultTimelineEvents.length === 0) {
-        emptyState.style.display = 'block';
-        timelineContainer.innerHTML = '';
-        return;
-    }
-
-    customVaultTimelineEvents.forEach(event => {
-        // We need to define or reuse a mapping for categories to icons/colors for custom vault entries.
-        // For simplicity, let's map common entry types to a default timeline category,
-        // or create a simple fallback category for generic entries.
-        const defaultCategoryMap = {
-            'tool': 'other', // Or a more specific tool category if you add one to timelineCategories
-            'email': 'phishing',
-            'phone': 'other',
-            'crypto': 'other',
-            'location': 'discovery',
-            'link': 'collection',
-            'media': 'collection',
-            'password': 'credential_access',
-            'keyword': 'reconnaissance',
-            'social': 'reconnaissance',
-            'domain': 'reconnaissance',
-            'username': 'reconnaissance',
-            'threat': 'malware_delivery',
-            'vulnerability': 'malware_delivery',
-            'malware': 'malware_delivery',
-            'breach': 'impact',
-            'credential': 'credential_access',
-            'forum': 'other',
-            'vendor': 'other',
-            'telegram': 'other',
-            'paste': 'collection',
-            'document': 'collection',
-            'network': 'discovery',
-            'metadata': 'collection',
-            'archive': 'collection',
-            'messaging': 'collection',
-            'dating': 'collection',
-            'audio': 'collection',
-            'facial': 'collection',
-            'persona': 'reconnaissance',
-            'vpn': 'other',
-            'honeypot': 'other',
-            'exploit': 'malware_delivery',
-            'publicrecord': 'collection'
-        };
-
-        const timelineCategory = defaultCategoryMap[event.category] || 'other';
-        const categoryInfo = timelineCategories[timelineCategory] || { name: timelineCategory, icon: "fas fa-question-circle", color: "var(--primary)" };
-
-        const eventDate = new Date(event.timestamp).toLocaleDateString();
-        const eventTime = new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        const eventCardDiv = document.createElement('div');
-        eventCardDiv.classList.add('timeline-event-card');
-        eventCardDiv.dataset.category = timelineCategory; // Use the mapped category for styling
-        eventCardDiv.dataset.confidence = event.confidence;
-        eventCardDiv.dataset.eventId = event.id; // Keep original entry ID for reference
-        eventCardDiv.style.borderLeft = `5px solid ${categoryInfo.color || 'var(--primary)'}`;
-
-        eventCardDiv.innerHTML = `
-            <div class="timeline-event-header">
-                <div class="timeline-event-title">
-                    <i class="${categoryInfo.icon}" style="color: ${categoryInfo.color || 'var(--primary)'};"></i> ${event.title}
-                </div>
-                <span class="timeline-event-timestamp">${eventDate} ${eventTime}</span>
-                <div class="timeline-event-actions">
-                    <button class="action-btn" onclick="openEditEntryModal(findEntryById('${event.id}', '${event.category}'))" title="Edit Entry">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="action-btn" onclick="handleEntryAction({ target: { closest: () => ({ dataset: { entryId: '${event.id}', entryType: '${event.category}' } }) }, preventDefault: () => {} }, 'delete')" title="Delete Entry">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-            <p class="timeline-event-notes">${event.notes || 'No notes.'}</p>
-            <div class="timeline-event-meta">
-                <span><i class="fas fa-certificate"></i> Confidence: <strong style="color: var(--${event.confidence});">${event.confidence.charAt(0).toUpperCase() + event.confidence.slice(1)}</strong></span>
-                <span><i class="fas fa-tag"></i> Original Type: ${event.category}</span>
-                ${event.actor ? `<span><i class="fas fa-user-circle"></i> Actor: ${event.actor}</span>` : ''}
-                ${event.evidence ? `<span><i class="fas fa-paperclip"></i> Evidence: <a href="${event.evidence}" target="_blank" style="color: var(--primary); text-decoration: none;">${event.evidence.length > 30 ? event.evidence.substring(0, 27) + '...' : event.evidence}</a></span>` : ''}
-            </div>
-        `;
-        fragment.appendChild(eventCardDiv);
-    });
-
-    timelineContainer.appendChild(fragment);
-
-    // Force a reflow
-    void timelineContainer.offsetHeight;
-}
-
-// Function to populate custom tab assignment checkboxes in Add/Edit Entry Modals
 function populateCustomTabAssignmentCheckboxes(assignedTabIds) {
     const container = document.getElementById('assignCustomTabsCheckboxes');
     container.innerHTML = ''; // Clear previous checkboxes
@@ -861,7 +635,7 @@ function populateCustomTabAssignmentCheckboxes(assignedTabIds) {
     });
 }
 
-// Helper function to find an entry by ID across all appState arrays
+
 function findEntryById(id) {
     const allEntries = [
         ...appState.tools, ...appState.emails, ...appState.phones, ...appState.crypto,
@@ -877,7 +651,7 @@ function findEntryById(id) {
     return allEntries.find(entry => entry.id === id);
 }
 
-// Helper function to get the primary display name for an entry, for sorting/listing
+
 function getEntryName(entry) {
     switch (entry.type) {
         case 'tool': return entry.name;
@@ -918,7 +692,6 @@ function getEntryName(entry) {
     }
 }
 
-// Helper to get icon based on entry type
 function getEntryIcon(type) {
     switch (type) {
         case 'tool': return 'fas fa-tools';
@@ -935,7 +708,7 @@ function getEntryIcon(type) {
         case 'username': return 'fas fa-user';
         case 'threat': return 'fas fa-skull-crossbones';
         case 'vulnerability': return 'fas fa-bug';
-        case 'malware': return 'fas fa-biohazard'; // Changed to biohazard for malware
+        case 'malware': return 'fas fa-biohazard'; 
         case 'breach': return 'fas fa-database';
         case 'credential': return 'fas fa-user-lock';
         case 'forum': return 'fas fa-comments';
