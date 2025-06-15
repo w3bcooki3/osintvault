@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Forensics Evidence Timeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #c0c0c0;
+            line-height: 1.4;
+        }
+
+        .header {
+            background: #1a1a1a;
+            padding: 20px;
+            border-bottom: 2px solid #333;
+        }
+
+        .header h1 {
+            color: #00ff00;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header .case-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .case-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .case-field label {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .case-field input {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #c0c0c0;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .case-field input:focus {
+            outline: none;
+            border-color: #00ff00;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: calc(100vh - 120px);
+        }
+
+        .evidence-panel {
+            background: #1a1a1a;
+            border-right: 2px solid #333;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .evidence-type-selector {
+            margin-bottom: 20px;
+        }
+
+        .evidence-type-selector label {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .evidence-type-selector select {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #c0c0c0;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .evidence-form {
+            display: none;
+            background: #222;
+            border: 1px solid #444;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .evidence-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #c0c0c0;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00ff00;
+        }
+
+        .btn {
+            background: #333;
+            border: 1px solid #555;
+            color: #c0c0c0;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #444;
+        }
+
+        .btn-primary {
+            background: #006600;
+            border-color: #008800;
+        }
+
+        .btn-primary:hover {
+            background: #008800;
+        }
+
+        .btn-danger {
+            background: #660000;
+            border-color: #880000;
+        }
+
+        .btn-danger:hover {
+            background: #880000;
+        }
+
+        .timeline-panel {
+            background: #0f0f0f;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .timeline-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .timeline-controls select,
+        .timeline-controls input {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #c0c0c0;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .timeline {
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #333;
+        }
+
+        .timeline-entry {
+            position: relative;
+            padding-left: 70px;
+            margin-bottom: 30px;
+            border-left: 2px solid transparent;
+        }
+
+        .timeline-entry::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #00ff00;
+            border: 3px solid #0f0f0f;
+        }
+
+        .timeline-entry.critical::before {
+            background: #ff0000;
+        }
+
+        .timeline-entry.high::before {
+            background: #ff6600;
+        }
+
+        .timeline-entry.medium::before {
+            background: #ffff00;
+        }
+
+        .timeline-entry.low::before {
+            background: #00ff00;
+        }
+
+        .entry-header {
+            background: #1a1a1a;
+            padding: 10px;
+            border: 1px solid #333;
+            margin-bottom: 5px;
+        }
+
+        .entry-timestamp {
+            color: #00ff00;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .entry-type {
+            color: #888;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .entry-content {
+            background: #1a1a1a;
+            padding: 15px;
+            border: 1px solid #333;
+            border-top: none;
+        }
+
+        .entry-title {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .entry-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .detail-item {
+            font-size: 12px;
+        }
+
+        .detail-label {
+            color: #888;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .detail-value {
+            color: #c0c0c0;
+        }
+
+        .entry-notes {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .entry-actions {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+
+        .stats-bar {
+            background: #1a1a1a;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            color: #00ff00;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .empty-timeline {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .evidence-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DIGITAL FORENSICS EVIDENCE TIMELINE</h1>
+        <div class="case-info">
+            <div class="case-field">
+                <label>CASE NUMBER</label>
+                <input type="text" id="caseNumber" placeholder="CF-2024-001">
+            </div>
+            <div class="case-field">
+                <label>INVESTIGATOR</label>
+                <input type="text" id="investigator" placeholder="Det. Smith">
+            </div>
+            <div class="case-field">
+                <label>INCIDENT DATE</label>
+                <input type="date" id="incidentDate">
+            </div>
+            <div class="case-field">
+                <label>CASE STATUS</label>
+                <select id="caseStatus">
+                    <option value="open">OPEN</option>
+                    <option value="pending">PENDING</option>
+                    <option value="closed">CLOSED</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="evidence-panel">
+            <div class="evidence-type-selector">
+                <label>SELECT EVIDENCE TYPE</label>
+                <select id="evidenceType" onchange="showEvidenceForm()">
+                    <option value="">-- Select Evidence Type --</option>
+                    <option value="email">Email Communication</option>
+                    <option value="phone">Phone Records</option>
+                    <option value="digital_tool">Digital Tool/Software</option>
+                    <option value="website">Website/URL</option>
+                    <option value="address">Physical Address</option>
+                    <option value="location">GPS Location</option>
+                    <option value="metadata">File Metadata</option>
+                    <option value="cryptocurrency">Cryptocurrency Transaction</option>
+                    <option value="network">Network Activity</option>
+                    <option value="device">Digital Device</option>
+                    <option value="document">Document/File</option>
+                    <option value="social_media">Social Media Activity</option>
+                </select>
+            </div>
+
+            <!-- Email Evidence Form -->
+            <div id="form-email" class="evidence-form">
+                <h3>EMAIL EVIDENCE</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="email-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>FROM ADDRESS</label>
+                    <input type="email" id="email-from" required>
+                </div>
+                <div class="form-group">
+                    <label>TO ADDRESS</label>
+                    <input type="email" id="email-to" required>
+                </div>
+                <div class="form-group">
+                    <label>SUBJECT</label>
+                    <input type="text" id="email-subject" required>
+                </div>
+                <div class="form-group">
+                    <label>MESSAGE ID</label>
+                    <input type="text" id="email-msgid">
+                </div>
+                <div class="form-group">
+                    <label>IP ADDRESS</label>
+                    <input type="text" id="email-ip">
+                </div>
+                <div class="form-group">
+                    <label>ATTACHMENT COUNT</label>
+                    <input type="number" id="email-attachments" min="0">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="email-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="email-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('email')">ADD EMAIL EVIDENCE</button>
+            </div>
+
+            <!-- Phone Evidence Form -->
+            <div id="form-phone" class="evidence-form">
+                <h3>PHONE RECORDS</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="phone-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>PHONE NUMBER</label>
+                    <input type="tel" id="phone-number" required>
+                </div>
+                <div class="form-group">
+                    <label>CALL TYPE</label>
+                    <select id="phone-type">
+                        <option value="incoming">INCOMING</option>
+                        <option value="outgoing">OUTGOING</option>
+                        <option value="missed">MISSED</option>
+                        <option value="sms">SMS</option>
+                        <option value="mms">MMS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>DURATION (seconds)</label>
+                    <input type="number" id="phone-duration" min="0">
+                </div>
+                <div class="form-group">
+                    <label>CELL TOWER ID</label>
+                    <input type="text" id="phone-tower">
+                </div>
+                <div class="form-group">
+                    <label>CARRIER</label>
+                    <input type="text" id="phone-carrier">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="phone-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="phone-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('phone')">ADD PHONE EVIDENCE</button>
+            </div>
+
+            <!-- Digital Tool Evidence Form -->
+            <div id="form-digital_tool" class="evidence-form">
+                <h3>DIGITAL TOOL/SOFTWARE</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="tool-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>TOOL NAME</label>
+                    <input type="text" id="tool-name" required>
+                </div>
+                <div class="form-group">
+                    <label>VERSION</label>
+                    <input type="text" id="tool-version">
+                </div>
+                <div class="form-group">
+                    <label>PURPOSE</label>
+                    <select id="tool-purpose">
+                        <option value="malware">MALWARE</option>
+                        <option value="hacking">HACKING TOOL</option>
+                        <option value="encryption">ENCRYPTION</option>
+                        <option value="communication">COMMUNICATION</option>
+                        <option value="anonymization">ANONYMIZATION</option>
+</select>
+                </div>
+                <div class="form-group">
+                    <label>FILE HASH (MD5/SHA256)</label>
+                    <input type="text" id="tool-hash">
+                </div>
+                <div class="form-group">
+                    <label>INSTALLATION PATH</label>
+                    <input type="text" id="tool-path">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="tool-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="tool-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('digital_tool')">ADD TOOL EVIDENCE</button>
+            </div>
+
+            <!-- Website Evidence Form -->
+            <div id="form-website" class="evidence-form">
+                <h3>WEBSITE/URL EVIDENCE</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="website-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="website-url" required>
+                </div>
+                <div class="form-group">
+                    <label>DOMAIN</label>
+                    <input type="text" id="website-domain">
+                </div>
+                <div class="form-group">
+                    <label>IP ADDRESS</label>
+                    <input type="text" id="website-ip">
+                </div>
+                <div class="form-group">
+                    <label>ACTIVITY TYPE</label>
+                    <select id="website-activity">
+                        <option value="visited">VISITED</option>
+                        <option value="download">DOWNLOAD</option>
+                        <option value="upload">UPLOAD</option>
+                        <option value="login">LOGIN</option>
+                        <option value="registration">REGISTRATION</option>
+                        <option value="transaction">TRANSACTION</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>BROWSER</label>
+                    <input type="text" id="website-browser">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="website-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="website-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('website')">ADD WEBSITE EVIDENCE</button>
+            </div>
+
+            <!-- Address Evidence Form -->
+            <div id="form-address" class="evidence-form">
+                <h3>PHYSICAL ADDRESS</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="address-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>FULL ADDRESS</label>
+                    <textarea id="address-full" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>ADDRESS TYPE</label>
+                    <select id="address-type">
+                        <option value="residence">RESIDENCE</option>
+                        <option value="business">BUSINESS</option>
+                        <option value="postal">POSTAL BOX</option>
+                        <option value="temporary">TEMPORARY</option>
+                        <option value="unknown">UNKNOWN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>RELEVANCE</label>
+                    <select id="address-relevance">
+                        <option value="suspect">SUSPECT ADDRESS</option>
+                        <option value="victim">VICTIM ADDRESS</option>
+                        <option value="witness">WITNESS ADDRESS</option>
+                        <option value="delivery">DELIVERY ADDRESS</option>
+                        <option value="meeting">MEETING LOCATION</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="address-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="address-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('address')">ADD ADDRESS EVIDENCE</button>
+            </div>
+
+            <!-- Location Evidence Form -->
+            <div id="form-location" class="evidence-form">
+                <h3>GPS LOCATION</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="location-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>LATITUDE</label>
+                    <input type="number" id="location-lat" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label>LONGITUDE</label>
+                    <input type="number" id="location-lng" step="any" required>
+                </div>
+                <div class="form-group">
+                    <label>ACCURACY (meters)</label>
+                    <input type="number" id="location-accuracy" min="0">
+                </div>
+                <div class="form-group">
+                    <label>SOURCE</label>
+                    <select id="location-source">
+                        <option value="gps">GPS</option>
+                        <option value="cell">CELL TOWER</option>
+                        <option value="wifi">WIFI</option>
+                        <option value="ip">IP GEOLOCATION</option>
+                        <option value="manual">MANUAL ENTRY</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>DEVICE</label>
+                    <input type="text" id="location-device">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="location-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="location-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('location')">ADD LOCATION EVIDENCE</button>
+            </div>
+
+            <!-- Metadata Evidence Form -->
+            <div id="form-metadata" class="evidence-form">
+                <h3>FILE METADATA</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="metadata-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>FILE NAME</label>
+                    <input type="text" id="metadata-filename" required>
+                </div>
+                <div class="form-group">
+                    <label>FILE SIZE (bytes)</label>
+                    <input type="number" id="metadata-size" min="0">
+                </div>
+                <div class="form-group">
+                    <label>FILE TYPE</label>
+                    <input type="text" id="metadata-type">
+                </div>
+                <div class="form-group">
+                    <label>CREATED DATE</label>
+                    <input type="datetime-local" id="metadata-created">
+                </div>
+                <div class="form-group">
+                    <label>MODIFIED DATE</label>
+                    <input type="datetime-local" id="metadata-modified">
+                </div>
+                <div class="form-group">
+                    <label>MD5 HASH</label>
+                    <input type="text" id="metadata-hash">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="metadata-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="metadata-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('metadata')">ADD METADATA EVIDENCE</button>
+            </div>
+
+            <!-- Cryptocurrency Evidence Form -->
+            <div id="form-cryptocurrency" class="evidence-form">
+                <h3>CRYPTOCURRENCY TRANSACTION</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="crypto-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>CRYPTOCURRENCY</label>
+                    <select id="crypto-type">
+                        <option value="bitcoin">BITCOIN</option>
+                        <option value="ethereum">ETHEREUM</option>
+                        <option value="litecoin">LITECOIN</option>
+                        <option value="monero">MONERO</option>
+                        <option value="other">OTHER</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>TRANSACTION ID</label>
+                    <input type="text" id="crypto-txid" required>
+                </div>
+                <div class="form-group">
+                    <label>FROM ADDRESS</label>
+                    <input type="text" id="crypto-from">
+                </div>
+                <div class="form-group">
+                    <label>TO ADDRESS</label>
+                    <input type="text" id="crypto-to">
+                </div>
+                <div class="form-group">
+                    <label>AMOUNT</label>
+                    <input type="number" id="crypto-amount" step="0.00000001">
+                </div>
+                <div class="form-group">
+                    <label>BLOCK HEIGHT</label>
+                    <input type="number" id="crypto-block">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="crypto-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="crypto-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('cryptocurrency')">ADD CRYPTO EVIDENCE</button>
+            </div>
+
+            <!-- Network Evidence Form -->
+            <div id="form-network" class="evidence-form">
+                <h3>NETWORK ACTIVITY</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="network-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>SOURCE IP</label>
+                    <input type="text" id="network-src-ip" required>
+                </div>
+                <div class="form-group">
+                    <label>DESTINATION IP</label>
+                    <input type="text" id="network-dst-ip" required>
+                </div>
+                <div class="form-group">
+                    <label>PROTOCOL</label>
+                    <select id="network-protocol">
+                        <option value="tcp">TCP</option>
+                        <option value="udp">UDP</option>
+                        <option value="icmp">ICMP</option>
+                        <option value="http">HTTP</option>
+                        <option value="https">HTTPS</option>
+                        <option value="ftp">FTP</option>
+                        <option value="ssh">SSH</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PORT</label>
+                    <input type="number" id="network-port" min="1" max="65535">
+                </div>
+                <div class="form-group">
+                    <label>BYTES TRANSFERRED</label>
+                    <input type="number" id="network-bytes" min="0">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="network-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="network-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('network')">ADD NETWORK EVIDENCE</button>
+            </div>
+
+            <!-- Device Evidence Form -->
+            <div id="form-device" class="evidence-form">
+                <h3>DIGITAL DEVICE</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="device-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>DEVICE TYPE</label>
+                    <select id="device-type">
+                        <option value="computer">COMPUTER</option>
+                        <option value="smartphone">SMARTPHONE</option>
+                        <option value="tablet">TABLET</option>
+                        <option value="usb">USB DRIVE</option>
+                        <option value="hdd">HARD DRIVE</option>
+                        <option value="router">ROUTER</option>
+                        <option value="other">OTHER</option>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label>BRAND/MODEL</label>
+                    <input type="text" id="device-model">
+                </div>
+                <div class="form-group">
+                    <label>SERIAL NUMBER</label>
+                    <input type="text" id="device-serial">
+                </div>
+                <div class="form-group">
+                    <label>MAC ADDRESS</label>
+                    <input type="text" id="device-mac">
+                </div>
+                <div class="form-group">
+                    <label>IMEI (Mobile Devices)</label>
+                    <input type="text" id="device-imei">
+                </div>
+                <div class="form-group">
+                    <label>OPERATING SYSTEM</label>
+                    <input type="text" id="device-os">
+                </div>
+                <div class="form-group">
+                    <label>STATUS</label>
+                    <select id="device-status">
+                        <option value="seized">SEIZED</option>
+                        <option value="analyzed">ANALYZED</option>
+                        <option value="returned">RETURNED</option>
+                        <option value="pending">PENDING</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="device-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="device-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('device')">ADD DEVICE EVIDENCE</button>
+            </div>
+
+            <!-- Document Evidence Form -->
+            <div id="form-document" class="evidence-form">
+                <h3>DOCUMENT/FILE</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="document-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>DOCUMENT TITLE</label>
+                    <input type="text" id="document-title" required>
+                </div>
+                <div class="form-group">
+                    <label>DOCUMENT TYPE</label>
+                    <select id="document-type">
+                        <option value="pdf">PDF</option>
+                        <option value="word">WORD DOCUMENT</option>
+                        <option value="excel">EXCEL SPREADSHEET</option>
+                        <option value="text">TEXT FILE</option>
+                        <option value="image">IMAGE</option>
+                        <option value="video">VIDEO</option>
+                        <option value="audio">AUDIO</option>
+                        <option value="other">OTHER</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>FILE PATH</label>
+                    <input type="text" id="document-path">
+                </div>
+                <div class="form-group">
+                    <label>FILE SIZE (bytes)</label>
+                    <input type="number" id="document-size" min="0">
+                </div>
+                <div class="form-group">
+                    <label>AUTHOR/CREATOR</label>
+                    <input type="text" id="document-author">
+                </div>
+                <div class="form-group">
+                    <label>MD5 HASH</label>
+                    <input type="text" id="document-hash">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="document-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="document-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('document')">ADD DOCUMENT EVIDENCE</button>
+            </div>
+
+            <!-- Social Media Evidence Form -->
+            <div id="form-social_media" class="evidence-form">
+                <h3>SOCIAL MEDIA ACTIVITY</h3>
+                <div class="form-group">
+                    <label>TIMESTAMP</label>
+                    <input type="datetime-local" id="social-timestamp" required>
+                </div>
+                <div class="form-group">
+                    <label>PLATFORM</label>
+                    <select id="social-platform">
+                        <option value="facebook">FACEBOOK</option>
+                        <option value="twitter">TWITTER</option>
+                        <option value="instagram">INSTAGRAM</option>
+                        <option value="linkedin">LINKEDIN</option>
+                        <option value="tiktok">TIKTOK</option>
+                        <option value="youtube">YOUTUBE</option>
+                        <option value="snapchat">SNAPCHAT</option>
+                        <option value="other">OTHER</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>USERNAME/PROFILE</label>
+                    <input type="text" id="social-username" required>
+                </div>
+                <div class="form-group">
+                    <label>ACTIVITY TYPE</label>
+                    <select id="social-activity">
+                        <option value="post">POST</option>
+                        <option value="comment">COMMENT</option>
+                        <option value="message">PRIVATE MESSAGE</option>
+                        <option value="like">LIKE/REACTION</option>
+                        <option value="share">SHARE</option>
+                        <option value="login">LOGIN</option>
+                        <option value="profile_update">PROFILE UPDATE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>CONTENT</label>
+                    <textarea id="social-content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>IP ADDRESS</label>
+                    <input type="text" id="social-ip">
+                </div>
+                <div class="form-group">
+                    <label>PRIORITY LEVEL</label>
+                    <select id="social-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                        <option value="critical">CRITICAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>NOTES</label>
+                    <textarea id="social-notes"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addEvidence('social_media')">ADD SOCIAL MEDIA EVIDENCE</button>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn btn-danger" onclick="clearAllEvidence()">CLEAR ALL EVIDENCE</button>
+                <button class="btn" onclick="exportEvidence()">EXPORT DATA</button>
+            </div>
+        </div>
+
+        <div class="timeline-panel">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-evidence">0</div>
+                    <div class="stat-label">TOTAL EVIDENCE</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="critical-evidence">0</div>
+                    <div class="stat-label">CRITICAL</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="high-evidence">0</div>
+                    <div class="stat-label">HIGH PRIORITY</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="unique-sources">0</div>
+                    <div class="stat-label">UNIQUE SOURCES</div>
+                </div>
+            </div>
+
+            <div class="timeline-controls">
+                <label>FILTER BY TYPE:</label>
+                <select id="filter-type" onchange="filterTimeline()">
+                    <option value="">ALL TYPES</option>
+                    <option value="email">EMAIL</option>
+                    <option value="phone">PHONE</option>
+                    <option value="digital_tool">DIGITAL TOOL</option>
+                    <option value="website">WEBSITE</option>
+                    <option value="address">ADDRESS</option>
+                    <option value="location">LOCATION</option>
+                    <option value="metadata">METADATA</option>
+                    <option value="cryptocurrency">CRYPTOCURRENCY</option>
+                    <option value="network">NETWORK</option>
+                    <option value="device">DEVICE</option>
+                    <option value="document">DOCUMENT</option>
+                    <option value="social_media">SOCIAL MEDIA</option>
+                </select>
+
+                <label>FILTER BY PRIORITY:</label>
+                <select id="filter-priority" onchange="filterTimeline()">
+                    <option value="">ALL PRIORITIES</option>
+                    <option value="critical">CRITICAL</option>
+                    <option value="high">HIGH</option>
+                    <option value="medium">MEDIUM</option>
+                    <option value="low">LOW</option>
+                </select>
+
+                <label>SORT BY:</label>
+                <select id="sort-order" onchange="sortTimeline()">
+                    <option value="newest">NEWEST FIRST</option>
+                    <option value="oldest">OLDEST FIRST</option>
+                    <option value="priority">PRIORITY</option>
+                </select>
+            </div>
+
+            <div class="timeline" id="timeline">
+                <div class="empty-timeline">
+                    <h2>NO EVIDENCE ENTRIES</h2>
+                    <p>Select an evidence type from the left panel to begin adding evidence to the timeline.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let evidenceData = [];
+        let filteredData = [];
+
+        function showEvidenceForm() {
+            // Hide all forms
+            const forms = document.querySelectorAll('.evidence-form');
+            forms.forEach(form => form.classList.remove('active'));
+
+            // Show selected form
+            const selectedType = document.getElementById('evidenceType').value;
+            if (selectedType) {
+                const form = document.getElementById(`form-${selectedType}`);
+                if (form) {
+                    form.classList.add('active');
+                }
+            }
+        }
+
+        function addEvidence(type) {
+            const evidence = {
+                id: Date.now(),
+                type: type,
+                timestamp: new Date(document.getElementById(`${type}-timestamp`).value),
+                priority: document.getElementById(`${type}-priority`).value,
+                notes: document.getElementById(`${type}-notes`).value,
+                data: {}
+            };
+
+            // Collect type-specific data
+            switch (type) {
+                case 'email':
+                    evidence.data = {
+                        from: document.getElementById('email-from').value,
+                        to: document.getElementById('email-to').value,
+                        subject: document.getElementById('email-subject').value,
+                        messageId: document.getElementById('email-msgid').value,
+                        ip: document.getElementById('email-ip').value,
+                        attachments: document.getElementById('email-attachments').value
+                    };
+                    evidence.title = `Email: ${evidence.data.subject}`;
+                    break;
+
+                case 'phone':
+                    evidence.data = {
+                        number: document.getElementById('phone-number').value,
+                        callType: document.getElementById('phone-type').value,
+                        duration: document.getElementById('phone-duration').value,
+                        tower: document.getElementById('phone-tower').value,
+                        carrier: document.getElementById('phone-carrier').value
+                    };
+                    evidence.title = `Phone ${evidence.data.callType}: ${evidence.data.number}`;
+                    break;
+
+                case 'digital_tool':
+                    evidence.data = {
+                        name: document.getElementById('tool-name').value,
+                        version: document.getElementById('tool-version').value,
+                        purpose: document.getElementById('tool-purpose').value,
+                        hash: document.getElementById('tool-hash').value,
+                        path: document.getElementById('tool-path').value
+                    };
+                    evidence.title = `Tool: ${evidence.data.name}`;
+                    break;
+
+                case 'website':
+                    evidence.data = {
+                        url: document.getElementById('website-url').value,
+                        domain: document.getElementById('website-domain').value,
+                        ip: document.getElementById('website-ip').value,
+                        activity: document.getElementById('website-activity').value,
+                        browser: document.getElementById('website-browser').value
+                    };
+                    evidence.title = `Website ${evidence.data.activity}: ${evidence.data.domain || evidence.data.url}`;
+                    break;
+
+                case 'address':
+                    evidence.data = {
+                        fullAddress: document.getElementById('address-full').value,
+                        addressType: document.getElementById('address-type').value,
+                        relevance: document.getElementById('address-relevance').value
+                    };
+                    evidence.title = `Address (${evidence.data.relevance}): ${evidence.data.fullAddress.substring(0, 50)}...`;
+                    break;
+
+                case 'location':
+                    evidence.data = {
+                        latitude: document.getElementById('location-lat').value,
+                        longitude: document.getElementById('location-lng').value,
+                        accuracy: document.getElementById('location-accuracy').value,
+                        source: document.getElementById('location-source').value,
+                        device: document.getElementById('location-device').value
+                    };
+                    evidence.title = `GPS Location: ${evidence.data.latitude}, ${evidence.data.longitude}`;
+                    break;
+
+                case 'metadata':
+                    evidence.data = {
+                        filename: document.getElementById('metadata-filename').value,
+                        size: document.getElementById('metadata-size').value,
+                        fileType: document.getElementById('metadata-type').value,
+                        created: document.getElementById('metadata-created').value,
+                        modified: document.getElementById('metadata-modified').value,
+                        hash: document.getElementById('metadata-hash').value
+                    };
+                    evidence.title = `File Metadata: ${evidence.data.filename}`;
+                    break;
+
+                case 'cryptocurrency':
+                    evidence.data = {
+                        cryptoType: document.getElementById('crypto-type').value,
+                        txid: document.getElementById('crypto-txid').value,
+                        from: document.getElementById('crypto-from').value,
+                        to: document.getElementById('crypto-to').value,
+                        amount: document.getElementById('crypto-amount').value,
+                        block: document.getElementById('crypto-block').value
+                    };
+                    evidence.title = `${evidence.data.cryptoType.toUpperCase()} Transaction: ${evidence.data.amount}`;
+                    break;
+
+                case 'network':
+                    evidence.data = {
+                        srcIp: document.getElementById('network-src-ip').value,
+                        dstIp: document.getElementById('network-dst-ip').value,
+                        protocol: document.getElementById('network-protocol').value,
+                        port: document.getElementById('network-port').value,
+                        bytes: document.getElementById('network-bytes').value
+                    };
+                    evidence.title = `Network ${evidence.data.protocol.toUpperCase()}: ${evidence.data.srcIp} → ${evidence.data.dstIp}`;
+                    break;
+
+                case 'device':
+                    evidence.data = {
+                        deviceType: document.getElementById('device-type').value,
+                        model: document.getElementById('device-model').value,
+                        serial: document.getElementById('device-serial').value,
+                        mac: document.getElementById('device-mac').value,
+                        imei: document.getElementById('device-imei').value,
+                        os: document.getElementById('device-os').value,
+                        status: document.getElementById('device-status').value
+                    };
+                    evidence.title = `Device: ${evidence.data.model || evidence.data.deviceType}`;
+                    break;
+
+                case 'document':
+                    evidence.data = {
+                        title: document.getElementById('document-title').value,
+                        docType: document.getElementById('document-type').value,
+                        path: document.getElementById('document-path').value,
+                        size: document.getElementById('document-size').value,
+                        author: document.getElementById('document-author').value,
+                        hash: document.getElementById('document-hash').value
+                    };
+                    evidence.title = `Document: ${evidence.data.title}`;
+                    break;
+
+                case 'social_media':
+                    evidence.data = {
+                        platform: document.getElementById('social-platform').value,
+                        username: document.getElementById('social-username').value,
+                        activity: document.getElementById('social-activity').value,
+                        content: document.getElementById('social-content').value,
+                        ip: document.getElementById('social-ip').value
+                    };
+                    evidence.title = `${evidence.data.platform.toUpperCase()} ${evidence.data.activity}: ${evidence.data.username}`;
+                    break;
+            }
+
+            evidenceData.push(evidence);
+            clearForm(type);
+            renderTimeline();
+            updateStats();
+        }
+
+        function clearForm(type) {
+            const form = document.getElementById(`form-${type}`);
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type !== 'datetime-local' && input.id.includes('priority')) {
+                    input.value = input.tagName === 'SELECT' ? input.options[0].value : '';
+                } else if (!input.id.includes('priority')) {
+                    input.value = '';
+                }
+            });
+        }
+
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            
+            if (evidenceData.length === 0) {
+                timeline.innerHTML = `
+                    <div class="empty-timeline">
+                        <h2>NO EVIDENCE ENTRIES</h2>
+                        <p>Select an evidence type from the left panel to begin adding evidence to the timeline.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort evidence by timestamp (newest first by default)
+            const sortOrder = document.getElementById('sort-order').value;
+            let sortedData = [...evidenceData];
+
+            switch (sortOrder) {
+                case 'oldest':
+                    sortedData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    break;
+                case 'priority':
+                    const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+                    sortedData.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+                    break;
+                default: // newest first
+                    sortedData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            }
+
+            // Apply filters
+            const typeFilter = document.getElementById('filter-type').value;
+            const priorityFilter = document.getElementById('filter-priority').value;
+
+            filteredData = sortedData.filter(evidence => {
+                const typeMatch = !typeFilter || evidence.type === typeFilter;
+                const priorityMatch = !priorityFilter || evidence.priority === priorityFilter;
+                return typeMatch && priorityMatch;
+            });
+
+            timeline.innerHTML = filteredData.map(evidence => createTimelineEntry(evidence)).join('');
+        }
+
+        function createTimelineEntry(evidence) {
+            const timestamp = new Date(evidence.timestamp).toLocaleString();
+            const typeLabel = evidence.type.replace('_', ' ').toUpperCase();
+            
+            let detailsHtml = '';
+            Object.entries(evidence.data).forEach(([key, value]) => {
+                if (value) {
+                    const label = key.replace(/([A-Z])/g, ' $1').toUpperCase();
+                    detailsHtml += `
+                        <div class="detail-item">
+                            <span class="detail-label">${label}:</span>
+                            <span class="detail-value">${value}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            return `
+                <div class="timeline-entry ${evidence.priority}">
+                    <div class="entry-header">
+                        <div class="entry-timestamp">${timestamp}</div>
+                        <div class="entry-type">${typeLabel} - ${evidence.priority.toUpperCase()}</div>
+                    </div>
+                    <div class="entry-content">
+                        <div class="entry-title">${evidence.title}</div>
+                        <div class="entry-details">
+                            ${detailsHtml}
+                        </div>
+                        ${evidence.notes ? `<div class="entry-notes">NOTES: ${evidence.notes}</div>` : ''}
+                        <div class="entry-actions">
+                            <button class="btn btn-danger" onclick="deleteEvidence(${evidence.id})">DELETE</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteEvidence(id) {
+            evidenceData = evidenceData.filter(evidence => evidence.id !== id);
+            renderTimeline();
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = evidenceData.length;
+            const critical = evidenceData.filter(e => e.priority === 'critical').length;
+            const high = evidenceData.filter(e => e.priority === 'high').length;
+            const uniqueSources = new Set(evidenceData.map(e => e.type)).size;
+
+            document.getElementById('total-evidence').textContent = total;
+            document.getElementById('critical-evidence').textContent = critical;
+            document.getElementById('high-evidence').textContent = high;
+            document.getElementById('unique-sources').textContent = uniqueSources;
+        }
+
+        function filterTimeline() {
+            renderTimeline();
+        }
+
+        function sortTimeline() {
+            renderTimeline();
+        }
+
+        function clearAllEvidence() {
+            if (confirm('Are you sure you want to clear all evidence? This action cannot be undone.')) {
+                evidenceData = [];
+                renderTimeline();
+                updateStats();
+            }
+        }
+
+        function exportEvidence() {
+            const caseInfo = {
+                caseNumber: document.getElementById('caseNumber').value,
+                investigator: document.getElementById('investigator').value,
+                incidentDate: document.getElementById('incidentDate').value,
+                caseStatus: document.getElementById('caseStatus').value
+            };
+
+            const exportData = {
+                caseInfo: caseInfo,
+                evidence: evidenceData,
+                exportDate: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `forensics_evidence_${caseInfo.caseNumber || 'case'}_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default timestamp to current time for all forms
+            const now = new Date();
+            const timestamp = now.toISOString().slice(0, 16);
+            
+            document.querySelectorAll('input[type="datetime-local"]').forEach(input => {
+                if (input.id.includes('timestamp')) {
+                    input.value = timestamp;
+                }
+            });
+
+            renderTimeline();
+            updateStats();
+        });
+    </script>
+</body>
+</html>
