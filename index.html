@@ -8898,7 +8898,9 @@ function switchTab(tabName) {
             const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies] = await Promise.all([ // MODIFIED
                 fetchJsonData('tools.json'),
                 fetchJsonData('handbookData.json'),
-                fetchJsonData('caseStudies.json'), 
+                fetchJsonData('caseStudies.json'),
+                fetchJsonData('dorkTemplates.json')
+
             ]);
 
             appState = {
@@ -8957,12 +8959,19 @@ function switchTab(tabName) {
                 currentCustomTab: null,
 
                 notesState: { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' },
-                dorkAssistantState: {
-                    keywords: '', customInput: '', engine: 'google', previewQuery: '', convertedQuery: '',
-                    currentDorkSubTab: 'query-playground', savedQueries: [], savedQuerySearchTerm: '',
-                    currentTemplateCategory: 'All Templates', preTemplateSearchTerm: '', conversionJustPerformed: false
+                dorkAssistantState: { // Make sure this is present
+                    keywords: '',
+                    customInput: '',
+                    engine: 'google',
+                    previewQuery: '',
+                    convertedQuery: '',
+                    currentDorkSubTab: 'query-playground',
+                    savedQueries: [],
+                    savedQuerySearchTerm: '',
+                    currentTemplateCategory: 'All Templates',
+                    preTemplateSearchTerm: '',
+                    conversionJustPerformed: false
                 },
-
                 selectedEntries: new Set(),
                 filters: { category: '', search: '', sort: 'name', searchScope: 'currentTab' },
                 theme: 'dark',
@@ -9024,7 +9033,8 @@ function switchTab(tabName) {
             const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies] = await Promise.all([ // MODIFIED
                 fetchJsonData('tools.json'),
                 fetchJsonData('handbookData.json'),
-                fetchJsonData('caseStudies.json') 
+                fetchJsonData('caseStudies.json'),
+                fetchJsonData('dorkTemplates.json')
             ]);
 
             const savedState = localStorage.getItem('osintArsenalState');

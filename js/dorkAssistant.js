@@ -11,169 +11,113 @@ const dorkAssistantState = {
     savedQuerySearchTerm: '',
     currentTemplateCategory: 'All Templates',
     preTemplateSearchTerm: '',
-    conversionJustPerformed: false
+    conversionJustPerformed: false,
+    templates: {} // Initialize templates as an empty object
 };
 
-const dorkTemplates = {
-    "General OSINT": [{
-        id: 'exposed_docs',
-        name: 'Exposed Documents',
-        description: 'Finds publicly accessible PDF, DOCX, or XLSX files containing sensitive terms.',
-        keywords: '',
-        custom: 'filetype:pdf OR filetype:docx OR filetype:xlsx confidential OR secret',
-        engine: 'google'
-    }, {
-        id: 'login_pages',
-        name: 'Admin Login Pages',
-        description: 'Discovers common admin login interfaces.',
-        keywords: '',
-        custom: 'intitle:"Login" inurl:admin OR inurl:auth',
-        engine: 'google'
-    }, {
-        id: 'sensitive_files',
-        name: 'Sensitive Filetypes',
-        description: 'Identifies configuration files, database backups, or environment files.',
-        keywords: '',
-        custom: 'inurl:config OR inurl:backup OR inurl:db filetype:sql OR filetype:env',
-        engine: 'google'
-    }, {
-        id: 'pastebin_search',
-        name: 'Pastebin Leaks',
-        description: 'Searches Pastebin for common sensitive terms or patterns indicating leaks.',
-        keywords: 'site:pastebin.com',
-        custom: 'password OR "api key" OR "private key"',
-        engine: 'google'
-    }],
-    "IoT / Devices": [{
-        id: 'webcams',
-        name: 'Open Webcams',
-        description: 'Locates publicly accessible webcams and live streams.',
-        keywords: '',
-        custom: 'intitle:"webcamXP" OR intitle:"live view" inurl:viewerframe.html',
-        engine: 'google'
-    }, {
-        id: 'printers',
-        name: 'Network Printers',
-        description: 'Finds network-connected printers accessible via web interfaces.',
-        keywords: '',
-        custom: 'intitle:"printer" inurl:web/guest/en/websys/status/view.htm',
-        engine: 'google'
-    }, {
-        id: 'routers_modems',
-        name: 'Router/Modem Interfaces',
-        description: 'Discovers common router or modem login pages.',
-        keywords: 'intitle:"router setup" OR intitle:"modem config"',
-        custom: 'inurl:setup.cgi OR inurl:main.html',
-        engine: 'google'
-    }],
-    "Social Media": [{
-        id: 'linkedin_profiles',
-        name: 'LinkedIn Profiles',
-        description: 'Searches for LinkedIn profiles by job title or keywords within the profile.',
-        keywords: '"site:linkedin.com/in"',
-        custom: '',
-        engine: 'google'
-    }, {
-        id: 'twitter_emails',
-        name: 'Twitter User Emails',
-        description: 'Attempts to find email addresses mentioned in public Twitter profiles or tweets.',
-        keywords: '"site:twitter.com" "email"',
-        custom: '',
-        engine: 'google'
-    }, {
-        id: 'facebook_public',
-        name: 'Facebook Public Posts',
-        description: 'Searches public Facebook posts for specific terms (limited by Facebook privacy).',
-        keywords: 'site:facebook.com/posts',
-        custom: '',
-        engine: 'google'
-    }],
-    "Database / Server": [{
-        id: 'sql_errors',
-        name: 'SQL Injection Errors',
-        description: 'Detects common database error messages that may indicate SQL injection vulnerabilities.',
-        keywords: '',
-        custom: 'intext:"SQL syntax" OR intext:"mysql_fetch_array" OR intext:"Warning: mysql_connect()"',
-        engine: 'google'
-    }, {
-        id: 'phpmyadmin',
-        name: 'phpMyAdmin Panels',
-        description: 'Discovers publicly accessible phpMyAdmin database management interfaces.',
-        keywords: '',
-        custom: 'inurl:phpmyadmin intitle:"phpMyAdmin"',
-        engine: 'google'
-    }, {
-        id: 'database_config',
-        name: 'Database Config Files',
-        description: 'Finds exposed database configuration files that might contain credentials.',
-        keywords: 'filetype:sql OR filetype:conf',
-        custom: 'intext:"password" OR "username" "database"',
-        engine: 'google'
-    }],
-     "Vulnerability Research": [{
-        id: 'cve_poc',
-        name: 'CVE PoC/Exploits',
-        description: 'Searches for Proof-of-Concept code or exploits related to specific CVEs.',
-        keywords: 'github.com',
-        custom: 'CVE-202X-XXXXX "PoC" OR "exploit"',
-        engine: 'google'
-    }, {
-        id: 'exploitdb_search',
-        name: 'Exploit-DB Search',
-        description: 'Finds exploits listed on Exploit-DB for specific software or versions.',
-        keywords: 'site:exploit-db.com',
-        custom: 'apache OR nginx',
-        engine: 'google'
-    }],
-    "File / Document Analysis": [{
-        id: 'git_config',
-        name: 'Git Config Files',
-        description: 'Discovers exposed Git configuration files that might contain sensitive information.',
-        keywords: 'inurl:.git/config',
-        custom: '',
-        engine: 'google'
-    }, {
-        id: 'log_files',
-        name: 'Exposed Log Files',
-        description: 'Identifies publicly accessible server log files.',
-        keywords: 'inurl:access.log OR inurl:error.log',
-        custom: '',
-        engine: 'google'
-    }],
-    "Network Intelligence": [{
-        id: 'open_ports_shodan',
-        name: 'Shodan: Open Ports',
-        description: 'Shodan query to find hosts with specific open ports (e.g., 22, 80, 443).',
-        keywords: '',
-        custom: 'port:22 OR port:80 OR port:443',
-        engine: 'shodan'
-    }, {
-        id: 'c2_servers_shodan',
-        name: 'Shodan: C2 Servers',
-        description: 'Shodan query to identify potential Command and Control servers.',
-        keywords: '',
-        custom: 'tag:c2 OR "command and control"',
-        engine: 'shodan'
-    }, {
-        id: 'self_signed_certs_censys',
-        name: 'Censys: Self-Signed Certs',
-        description: 'Censys query to find hosts using self-signed SSL certificates, often found on internal systems.',
-        keywords: '',
-        custom: 'services.tls.certificates.leaf_data.basic_constraints.is_ca: true and services.tls.certificates.chain.length: 1',
-        engine: 'censys'
-    }]
+let dorkTemplates = {}; // This will hold the fetched templates, grouped by category
+
+// Define engine colors based on common brand colors
+const engineColors = {
+    'google': {
+        color: '#FFFFFF', // White text
+        background: '#4285F4' // Google Blue
+    },
+    'duckduckgo': {
+        color: '#FFFFFF', // White text
+        background: '#DE5833' // DuckDuckGo Orange
+    },
+    'bing': {
+        color: '#FFFFFF', // White text
+        background: '#008373' // Bing Teal/Green
+    },
+    'yandex': {
+        color: '#FFFFFF', // White text
+        background: '#FC3F1D' // Yandex Red
+    },
+    'shodan': {
+        color: '#FFFFFF', // White text
+        background: '#AA33BB' // Shodan Purple
+    },
+    'censys': {
+        color: '#FFFFFF', // White text
+        background: '#336699' // Censys Blue
+    },
+    'default': { // Fallback for any unknown engine
+        color: 'var(--text-primary)',
+        background: 'var(--bg-tertiary)'
+    }
 };
+
 
 /**
  * Initializes the Dork Assistant tab by loading saved queries, binding events,
  * and setting up the initial view based on the saved state.
  */
-function initDorkAssistant() {
+async function initDorkAssistant() { // Made async to await fetching templates
+    await loadDorkTemplates(); // Load dork templates from the new JSON file
     loadSavedQueries(); // Load saved queries at init
-    bindDorkAssistantEvents();
+    bindDorkAssistantEvents(); // Bind events once, using delegation
     switchDorkSubTab(dorkAssistantState.currentDorkSubTab); // Show correct sub-tab on load
     updateDorkQueryPreview(); // Initial preview for Playground
 }
+
+/**
+ * Fetches dork templates from dorkTemplates.json and organizes them by category.
+ */
+async function loadDorkTemplates() {
+    try {
+        // Assuming fetchJsonData is a global utility function that can fetch JSON
+        const fetchedTemplates = await fetchJsonData('dorkTemplates.json');
+
+        // Organize templates by category
+        dorkTemplates = { "All Templates": [] }; // Ensure 'All Templates' always exists
+        fetchedTemplates.forEach(template => {
+            // Derive a simple category based on ID or common keywords
+            let categoryName = "General OSINT"; // Default category if not derivable
+            if (template.id.includes("iot") || template.id.includes("webcam") || template.id.includes("printer") || template.id.includes("router")) {
+                categoryName = "IoT / Devices";
+            } else if (template.id.includes("linkedin") || template.id.includes("twitter") || template.id.includes("facebook") || template.id.includes("social")) {
+                categoryName = "Social Media";
+            } else if (template.id.includes("sql") || template.id.includes("phpmyadmin") || template.id.includes("database") || template.id.includes("server")) {
+                categoryName = "Database / Server";
+            } else if (template.id.includes("cve") || template.id.includes("exploitdb")) {
+                categoryName = "Vulnerability Research";
+            } else if (template.id.includes("git") || template.id.includes("log_files") || template.id.includes("filetype") || template.id.includes("document")) {
+                categoryName = "File / Document Analysis";
+            } else if (template.id.includes("shodan") || template.id.includes("censys") || template.id.includes("network") || template.id.includes("ftp") || template.id.includes("ssh") || template.id.includes("rdp") || template.id.includes("vnc")) {
+                categoryName = "Network Intelligence";
+            } else if (template.id.includes("cloud") || template.id.includes("s3") || template.id.includes("jenkins") || template.id.includes("docker") || template.id.includes("kubernetes") || template.id.includes("elastic")) {
+                 categoryName = "Cloud / Infrastructure";
+            } else if (template.id.includes("api") || template.id.includes("swagger") || template.id.includes("developer")) {
+                 categoryName = "API & Development";
+            } else if (template.id.includes("credentials") || template.id.includes("password") || template.id.includes("user_data") || template.id.includes("email_lists")) {
+                 categoryName = "Exposed Credentials & Data";
+            } else if (template.id.includes("ics") || template.id.includes("scada") || template.id.includes("industrial")) {
+                 categoryName = "Industrial Control Systems";
+            }
+            // Add more specific categorizations based on keywords or other fields if needed
+
+            if (!dorkTemplates[categoryName]) {
+                dorkTemplates[categoryName] = [];
+            }
+            dorkTemplates[categoryName].push(template);
+            dorkTemplates["All Templates"].push(template); // Add to All Templates category
+        });
+
+        // Sort templates within each category by name
+        for (const category in dorkTemplates) {
+            dorkTemplates[category].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        dorkAssistantState.templates = dorkTemplates; // Store for later use if needed.
+
+    } catch (error) {
+        console.error("Failed to load dork templates:", error);
+        dorkTemplates = { "All Templates": [] };
+    }
+}
+
 
 /**
  * Binds all necessary event listeners for the Dork Assistant tab.
@@ -294,7 +238,7 @@ function bindDorkAssistantEvents() {
         saveCurrentDorkBtn.addEventListener('click', openSaveDorkQueryModal);
     }
 
-    // Pre-Templates events (delegated)
+    // Pre-Templates events (delegated to preTemplateCategoriesList)
     const preTemplateCategoriesList = document.getElementById('preTemplateCategoriesList');
     if (preTemplateCategoriesList) {
         preTemplateCategoriesList.addEventListener('click', (e) => {
@@ -329,13 +273,15 @@ function bindDorkAssistantEvents() {
         });
     }
 
+    // ************ IMPORTANT FIX: Event Delegation for Dork Templates List ************
+    // Attach ONE listener to the parent container, not to individual buttons on each render.
     const dorkTemplatesList = document.getElementById('dorkTemplatesList');
     if (dorkTemplatesList) {
         dorkTemplatesList.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
 
-            const templateId = btn.dataset.templateId;
+            const templateId = btn.closest('.dork-template-card').dataset.templateId; // Get ID from card
             if (btn.classList.contains('apply-template-btn')) {
                 applySelectedTemplate(templateId);
             } else if (btn.classList.contains('execute-template-btn')) {
@@ -345,6 +291,7 @@ function bindDorkAssistantEvents() {
             }
         });
     }
+    // *********************************************************************************
 
     const cancelEditExecuteTemplateBtn = document.getElementById('cancelEditExecuteTemplate');
     if (cancelEditExecuteTemplateBtn) {
@@ -593,29 +540,29 @@ function clearDorkBuilder() {
  * and displays it in the converted preview area.
  * @param {string} [targetEngineOverride=null] Optional: The target engine to convert to.
  */
-function convertDorkQuery(targetEngineOverride = null) { //
-    const originalQuery = dorkAssistantState.previewQuery; //
-    
+function convertDorkQuery(targetEngineOverride = null) {
+    const originalQuery = dorkAssistantState.previewQuery;
+
     // Ensure targetEngine is a string before calling charAt()
-    let targetEngine = String(targetEngineOverride || document.getElementById('conversionTarget').value); //
-    
-    const convertedPreviewEl = document.getElementById('convertedDorkPreview'); //
+    let targetEngine = String(targetEngineOverride || document.getElementById('conversionTarget').value);
 
-    if (!originalQuery) { //
-        showToast('No query to convert. Please build a query first.', 'warning'); //
-        return; //
+    const convertedPreviewEl = document.getElementById('convertedDorkPreview');
+
+    if (!originalQuery) {
+        showToast('No query to convert. Please build a query first.', 'warning');
+        return;
     }
-    if (!targetEngine) { //
-        showToast('Please select a target engine for conversion.', 'warning'); //
-        return; //
+    if (!targetEngine) {
+        showToast('Please select a target engine for conversion.', 'warning');
+        return;
     }
 
-    const convertedQuery = convertToShodanCensys(originalQuery, targetEngine); //
-    convertedPreviewEl.value = convertedQuery; //
-    convertedPreviewEl.style.display = 'block'; //
-    document.getElementById('executeConvertedDorkBtn').style.display = 'block'; //
-    dorkAssistantState.convertedQuery = convertedQuery; //
-    showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success'); //
+    const convertedQuery = convertToShodanCensys(originalQuery, targetEngine);
+    convertedPreviewEl.value = convertedQuery;
+    convertedPreviewEl.style.display = 'block';
+    document.getElementById('executeConvertedDorkBtn').style.display = 'block';
+    dorkAssistantState.convertedQuery = convertedQuery;
+    showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success');
 }
 
 /**
@@ -670,6 +617,8 @@ function convertToShodanCensys(query, targetEngine) {
         }
     }
 
+    // Clean up any remaining generic operators that aren't native to Shodan/Censys after conversion
+    // This is a crude cleanup, advanced conversion would require more sophisticated parsing.
     converted = converted.replace(/HOST:/gi, '');
     converted = converted.replace(/TITLE:/gi, '');
     converted = converted.replace(/URL:/gi, '');
@@ -690,8 +639,8 @@ function renderPreTemplates() {
     const currentTemplateCategoryTitle = document.getElementById('currentTemplateCategoryTitle');
     const preTemplateSearchInput = document.getElementById('preTemplateSearchInput');
 
-    templatesList.innerHTML = '';
-    categoriesListContainer.innerHTML = '';
+    templatesList.innerHTML = ''; // Clear existing templates
+    categoriesListContainer.innerHTML = ''; // Clear existing categories
 
     const categories = Object.keys(dorkTemplates);
 
@@ -706,28 +655,49 @@ function renderPreTemplates() {
     templatesList.style.display = 'grid';
     preTemplatesEmptyState.style.display = 'none';
 
+    // Render "All Templates" category first, calculating total count dynamically
     let allTemplatesCount = 0;
+    for (const categoryName in dorkTemplates) {
+        if (categoryName !== "All Templates") { // Exclude "All Templates" itself from this count
+            allTemplatesCount += dorkTemplates[categoryName].length;
+        }
+    }
     const allCategoryItem = document.createElement('div');
     allCategoryItem.classList.add('category-item');
     allCategoryItem.dataset.category = 'All Templates';
-    allCategoryItem.innerHTML = `<i class="fas fa-layer-group"></i> <span>All Templates</span> <span class="template-count">0</span>`;
+    allCategoryItem.innerHTML = `<i class="fas fa-layer-group"></i> <span>All Templates</span> <span class="template-count">${allTemplatesCount}</span>`;
     categoriesListContainer.appendChild(allCategoryItem);
 
-    categories.forEach(categoryName => {
-        const categoryTemplates = dorkTemplates[categoryName] || [];
-        allTemplatesCount += categoryTemplates.length;
 
+    // Render other categories
+    categories.sort((a, b) => {
+        if (a === "All Templates") return -1;
+        if (b === "All Templates") return 1;
+        return a.localeCompare(b);
+    }).forEach(categoryName => {
+        if (categoryName === "All Templates") return; // Skip "All Templates" as it's already added
+
+        const categoryTemplates = dorkTemplates[categoryName] || [];
         const categoryItem = document.createElement('div');
         categoryItem.classList.add('category-item');
         categoryItem.dataset.category = categoryName;
-        categoryItem.innerHTML = `<i class="fas fa-folder-open"></i> <span>${categoryName}</span> <span class="template-count">${categoryTemplates.length}</span>`;
+        // Use a default icon if one isn't specified or infer from category name
+        let iconClass = 'fas fa-folder-open'; 
+        if (categoryName.includes('IoT')) iconClass = 'fas fa-wifi';
+        if (categoryName.includes('Social Media')) iconClass = 'fas fa-share-alt';
+        if (categoryName.includes('Database')) iconClass = 'fas fa-database';
+        if (categoryName.includes('Vulnerability')) iconClass = 'fas fa-bug';
+        if (categoryName.includes('File')) iconClass = 'fas fa-file';
+        if (categoryName.includes('Network')) iconClass = 'fas fa-network-wired';
+        if (categoryName.includes('Cloud')) iconClass = 'fas fa-cloud';
+        if (categoryName.includes('API')) iconClass = 'fas fa-code';
+        if (categoryName.includes('Credentials')) iconClass = 'fas fa-key';
+        if (categoryName.includes('Industrial')) iconClass = 'fas fa-industry';
+
+
+        categoryItem.innerHTML = `<i class="${iconClass}"></i> <span>${categoryName}</span> <span class="template-count">${categoryTemplates.length}</span>`;
         categoriesListContainer.appendChild(categoryItem);
     });
-
-    const allCountSpan = allCategoryItem.querySelector('.template-count');
-    if (allCountSpan) {
-        allCountSpan.textContent = allTemplatesCount;
-    }
 
     document.querySelectorAll('#preTemplateCategoriesList .category-item').forEach(item => {
         if (item.dataset.category === dorkAssistantState.currentTemplateCategory) {
@@ -735,6 +705,7 @@ function renderPreTemplates() {
         } else {
             item.classList.remove('active');
         }
+        // Listener for category items is delegated in bindDorkAssistantEvents, no need to re-add here
     });
 
     currentTemplateCategoryTitle.textContent = dorkAssistantState.currentTemplateCategory;
@@ -743,9 +714,7 @@ function renderPreTemplates() {
 
     let templatesToRender = [];
     if (dorkAssistantState.currentTemplateCategory === 'All Templates') {
-        Object.values(dorkTemplates).forEach(templateArray => {
-            templatesToRender = templatesToRender.concat(templateArray);
-        });
+        templatesToRender = dorkTemplates["All Templates"] || [];
     } else {
         templatesToRender = dorkTemplates[dorkAssistantState.currentTemplateCategory] || [];
     }
@@ -771,11 +740,12 @@ function renderPreTemplates() {
         templatesList.style.display = 'grid';
         templatesToRender.forEach(template => {
             const fullQuery = `${template.keywords ? template.keywords + ' ' : ''}${template.custom}`;
+            const engineStyle = engineColors[template.engine.toLowerCase()] || engineColors['default']; // Get colors based on engine
             templatesList.innerHTML += `
                 <div class="dork-template-card" data-template-id="${template.id}">
                     <div class="template-header">
                         <span>${template.name}</span>
-                        <span class="template-engine">${template.engine.charAt(0).toUpperCase() + template.engine.slice(1)}</span>
+                        <span class="template-engine" style="background-color: ${engineStyle.background}; color: ${engineStyle.color};">${template.engine.charAt(0).toUpperCase() + template.engine.slice(1)}</span>
                     </div>
                     <div class="template-query">${fullQuery.trim()}</div>
                     <div class="template-description">${template.description}</div>
@@ -795,14 +765,8 @@ function renderPreTemplates() {
         });
     }
 
-    document.querySelectorAll('#preTemplateCategoriesList .category-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            dorkAssistantState.currentTemplateCategory = e.currentTarget.dataset.category;
-            renderPreTemplates();
-        });
-    });
+    // No need to re-attach button listeners here, as they are handled by delegation in bindDorkAssistantEvents
 
-    let preTemplateSearchTimeout;
     const preTemplateSearchInputElement = document.getElementById('preTemplateSearchInput');
     if (preTemplateSearchInputElement) {
         preTemplateSearchInputElement.addEventListener('input', (e) => {
@@ -827,70 +791,9 @@ function renderPreTemplates() {
         });
     }
 
-    document.querySelectorAll('.apply-template-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const templateId = e.target.dataset.templateId;
-            applySelectedTemplate(templateId);
-        });
-    });
-    document.querySelectorAll('.execute-template-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const templateId = e.target.dataset.templateId;
-            executeTemplateQuery(templateId);
-        });
-    });
-    document.querySelectorAll('.edit-execute-template-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const templateId = e.target.dataset.templateId;
-            openEditExecuteTemplateModal(templateId);
-        });
-    });
-
-    document.getElementById('cancelEditExecuteTemplate').addEventListener('click', () => hideModal('editExecuteTemplateModal'));
-    document.getElementById('editExecuteTemplateForm').addEventListener('submit', handleEditExecuteTemplate);
-
-    const editExecuteTemplateEngineElement = document.getElementById('editExecuteTemplateEngine');
-    if (editExecuteTemplateEngineElement) {
-        editExecuteTemplateEngineElement.addEventListener('change', () => {
-            const selectedEngine = editExecuteTemplateEngineElement.value;
-            const conversionSection = document.getElementById('editExecuteConversionSection');
-
-            if (conversionSection) {
-                if (selectedEngine === 'shodan' || selectedEngine === 'censys') {
-                    conversionSection.style.display = 'block';
-                } else {
-                    conversionSection.style.display = 'none';
-                }
-            }
-        });
-    }
-
-    const performEditExecuteConversionButton = document.getElementById('performEditExecuteConversionBtn');
-    if (performEditExecuteConversionButton) {
-        performEditExecuteConversionButton.addEventListener('click', () => {
-            const currentQueryInput = document.getElementById('editExecuteTemplateQuery');
-            const currentQuery = currentQueryInput.value.trim();
-            const targetEngine = document.getElementById('editExecuteTemplateEngine').value;
-
-            if (!currentQuery) {
-                showToast('No query to convert.', 'warning');
-                return;
-            }
-            if (!(targetEngine === 'shodan' || targetEngine === 'censys')) {
-                showToast('Select Shodan or Censys as the target engine to convert.', 'warning');
-                return;
-            }
-
-            const convertedQuery = convertToShodanCensys(currentQuery, targetEngine);
-            currentQueryInput.value = convertedQuery;
-            showToast(`Query converted for ${targetEngine.charAt(0).toUpperCase() + targetEngine.slice(1)}!`, 'success');
-
-            const conversionSection = document.getElementById('editExecuteConversionSection');
-            if (conversionSection) {
-                conversionSection.style.display = 'none';
-            }
-        });
-    }
+    // Removed individual button listeners here, as they are handled by delegation in bindDorkAssistantEvents
+    // Removed specific event listener re-attachments as they are now handled by delegation
+    // The relevant modal event listeners are attached once in bindDorkAssistantEvents
 }
 
 /**
@@ -899,6 +802,7 @@ function renderPreTemplates() {
  */
 function applySelectedTemplate(templateId) {
     let template = null;
+    // Iterate through all categories including "All Templates"
     for (const category in dorkTemplates) {
         template = dorkTemplates[category].find(t => t.id === templateId);
         if (template) break;
@@ -1144,11 +1048,12 @@ function renderSavedQueries() {
     savedQueriesList.style.display = 'grid';
 
     filteredQueries.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(query => {
+        const engineStyle = engineColors[query.engine.toLowerCase()] || engineColors['default'];
         savedQueriesList.innerHTML += `
             <div class="saved-query-card" data-query-id="${query.id}">
                 <div class="query-header">
                     <span>${query.name}</span>
-                    <span class="query-engine">${query.engine.charAt(0).toUpperCase() + query.engine.slice(1)}</span>
+                    <span class="query-engine" style="background-color: ${engineStyle.background}; color: ${engineStyle.color};">${query.engine.charAt(0).toUpperCase() + query.engine.slice(1)}</span>
                 </div>
                 <div class="query-string">${query.query}</div>
                 <div class="query-description">${query.description || 'No description.'}</div>
@@ -1212,6 +1117,7 @@ function deleteSavedQuery(queryId) {
         saveSavedQueries();
         showToast('Saved query deleted!', 'error');
         renderSavedQueries();
+        updateDashboard(); // Update dashboard count
     }
 }
 
@@ -1264,3 +1170,4 @@ window.renderPreTemplates = renderPreTemplates;
 window.renderSavedQueries = renderSavedQueries;
 window.saveDorkAssistantState = saveDorkAssistantState; // Export save for initApp
 window.loadDorkAssistantState = loadDorkAssistantState; // Export load for initApp
+window.dorkTemplates = dorkTemplates; // Export dorkTemplates so dashboard can access total count

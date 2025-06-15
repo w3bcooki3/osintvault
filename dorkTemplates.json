@@ -1,0 +1,426 @@
+[
+    {
+        "id": "exposed_docs",
+        "name": "Exposed Documents",
+        "description": "Finds publicly accessible PDF, DOCX, or XLSX files containing sensitive terms.",
+        "keywords": "",
+        "custom": "filetype:pdf OR filetype:docx OR filetype:xlsx confidential OR secret",
+        "engine": "google"
+    },
+    {
+        "id": "login_pages",
+        "name": "Admin Login Pages",
+        "description": "Discovers common admin login interfaces.",
+        "keywords": "",
+        "custom": "intitle:\"Login\" inurl:admin OR inurl:auth",
+        "engine": "google"
+    },
+    {
+        "id": "sensitive_files",
+        "name": "Sensitive Filetypes",
+        "description": "Identifies configuration files, database backups, or environment files.",
+        "keywords": "",
+        "custom": "inurl:config OR inurl:backup OR inurl:db filetype:sql OR filetype:env",
+        "engine": "google"
+    },
+    {
+        "id": "pastebin_search",
+        "name": "Pastebin Leaks",
+        "description": "Searches Pastebin for common sensitive terms or patterns indicating leaks.",
+        "keywords": "site:pastebin.com",
+        "custom": "password OR \"api key\" OR \"private key\"",
+        "engine": "google"
+    },
+    {
+        "id": "webcams",
+        "name": "Open Webcams",
+        "description": "Locates publicly accessible webcams and live streams.",
+        "keywords": "",
+        "custom": "intitle:\"webcamXP\" OR intitle:\"live view\" inurl:viewerframe.html",
+        "engine": "google"
+    },
+    {
+        "id": "printers",
+        "name": "Network Printers",
+        "description": "Finds network-connected printers accessible via web interfaces.",
+        "keywords": "",
+        "custom": "intitle:\"printer\" inurl:web/guest/en/websys/status/view.htm",
+        "engine": "google"
+    },
+    {
+        "id": "routers_modems",
+        "name": "Router/Modem Interfaces",
+        "description": "Discovers common router or modem login pages.",
+        "keywords": "intitle:\"router setup\" OR intitle:\"modem config\"",
+        "custom": "inurl:setup.cgi OR inurl:main.html",
+        "engine": "google"
+    },
+    {
+        "id": "linkedin_profiles",
+        "name": "LinkedIn Profiles",
+        "description": "Searches for LinkedIn profiles by job title or keywords within the profile.",
+        "keywords": "\"site:linkedin.com/in\"",
+        "custom": "",
+        "engine": "google"
+    },
+    {
+        "id": "twitter_emails",
+        "name": "Twitter User Emails",
+        "description": "Attempts to find email addresses mentioned in public Twitter profiles or tweets.",
+        "keywords": "\"site:twitter.com\" \"email\"",
+        "custom": "",
+        "engine": "google"
+    },
+    {
+        "id": "facebook_public",
+        "name": "Facebook Public Posts",
+        "description": "Searches public Facebook posts for specific terms (limited by Facebook privacy).",
+        "keywords": "site:facebook.com/posts",
+        "custom": "",
+        "engine": "google"
+    },
+    {
+        "id": "sql_errors",
+        "name": "SQL Injection Errors",
+        "description": "Detects common database error messages that may indicate SQL injection vulnerabilities.",
+        "keywords": "",
+        "custom": "intext:\"SQL syntax\" OR intext:\"mysql_fetch_array\" OR intext:\"Warning: mysql_connect()\"",
+        "engine": "google"
+    },
+    {
+        "id": "phpmyadmin",
+        "name": "phpMyAdmin Panels",
+        "description": "Discovers publicly accessible phpMyAdmin database management interfaces.",
+        "keywords": "",
+        "custom": "inurl:phpmyadmin intitle:\"phpMyAdmin\"",
+        "engine": "google"
+    },
+    {
+        "id": "database_config",
+        "name": "Database Config Files",
+        "description": "Finds exposed database configuration files that might contain credentials.",
+        "keywords": "filetype:sql OR filetype:conf",
+        "custom": "intext:\"password\" OR \"username\" \"database\"",
+        "engine": "google"
+    },
+    {
+        "id": "cve_poc",
+        "name": "CVE PoC/Exploits",
+        "description": "Searches for Proof-of-Concept code or exploits related to specific CVEs.",
+        "keywords": "github.com",
+        "custom": "CVE-202X-XXXXX \"PoC\" OR \"exploit\"",
+        "engine": "google"
+    },
+    {
+        "id": "exploitdb_search",
+        "name": "Exploit-DB Search",
+        "description": "Finds exploits listed on Exploit-DB for specific software or versions.",
+        "keywords": "site:exploit-db.com",
+        "custom": "apache OR nginx",
+        "engine": "google"
+    },
+    {
+        "id": "git_config",
+        "name": "Git Config Files",
+        "description": "Discovers exposed Git configuration files that might contain sensitive information.",
+        "keywords": "inurl:.git/config",
+        "custom": "",
+        "engine": "google"
+    },
+    {
+        "id": "log_files",
+        "name": "Exposed Log Files",
+        "description": "Identifies publicly accessible server log files.",
+        "keywords": "inurl:access.log OR inurl:error.log",
+        "custom": "",
+        "engine": "google"
+    },
+    {
+        "id": "open_ports_shodan",
+        "name": "Shodan: Open Ports",
+        "description": "Shodan query to find hosts with specific open ports (e.g., 22, 80, 443).",
+        "keywords": "",
+        "custom": "port:22 OR port:80 OR port:443",
+        "engine": "shodan"
+    },
+    {
+        "id": "c2_servers_shodan",
+        "name": "Shodan: C2 Servers",
+        "description": "Shodan query to identify potential Command and Control servers.",
+        "keywords": "",
+        "custom": "tag:c2 OR \"command and control\"",
+        "engine": "shodan"
+    },
+    {
+        "id": "self_signed_certs_censys",
+        "name": "Censys: Self-Signed Certs",
+        "description": "Censys query to find hosts using self-signed SSL certificates, often found on internal systems.",
+        "keywords": "",
+        "custom": "services.tls.certificates.leaf_data.basic_constraints.is_ca: true and services.tls.certificates.chain.length: 1",
+        "engine": "censys"
+    },
+    {
+        "id": "apache_status_page",
+        "name": "Apache Server Status Page",
+        "description": "Finds Apache server status pages which may reveal sensitive information.",
+        "keywords": "",
+        "custom": "intitle:\"Apache Status\" inurl:server-status",
+        "engine": "google"
+    },
+    {
+        "id": "nginx_conf_files",
+        "name": "Nginx Configuration Files",
+        "description": "Locates exposed Nginx configuration files.",
+        "keywords": "",
+        "custom": "inurl:nginx.conf OR inurl:nginx.conf.default filetype:conf",
+        "engine": "google"
+    },
+    {
+        "id": "backup_files_generic",
+        "name": "Generic Backup Files",
+        "description": "Searches for common backup file extensions which might contain website or system backups.",
+        "keywords": "",
+        "custom": "inurl:backup.zip OR inurl:backup.rar OR inurl:backup.tgz OR inurl:backup.sql OR inurl:backup.tar.gz",
+        "engine": "google"
+    },
+    {
+        "id": "web_shell_detection",
+        "name": "Web Shell Detection",
+        "description": "Identifies potential web shells uploaded to servers by looking for common web shell filenames and keywords.",
+        "keywords": "",
+        "custom": "inurl:shell.php OR inurl:cmd.asp OR inurl:r57.php OR inurl:c99.php filetype:php OR filetype:asp OR filetype:txt \"upload file\" OR \"execute command\"",
+        "engine": "google"
+    },
+    {
+        "id": "git_expose",
+        "name": "Exposed Git Repositories",
+        "description": "Discovers publicly accessible .git folders.",
+        "keywords": "",
+        "custom": "inurl:.git/HEAD -github",
+        "engine": "google"
+    },
+    {
+        "id": "jira_boards",
+        "name": "Public JIRA Boards",
+        "description": "Finds publicly accessible JIRA issue tracking boards, potentially exposing project details.",
+        "keywords": "site:jira.*.com",
+        "custom": "intitle:\"dashboard\" inurl:secure/Dashboard.jspa",
+        "engine": "google"
+    },
+    {
+        "id": "confluence_pages",
+        "name": "Public Confluence Pages",
+        "description": "Locates publicly exposed Confluence wiki pages, often containing internal documentation.",
+        "keywords": "site:confluence.*.com",
+        "custom": "intitle:\"dashboard\" intitle:\"wiki\"",
+        "engine": "google"
+    },
+    {
+        "id": "s3_buckets_open",
+        "name": "Open S3 Buckets",
+        "description": "Discovers misconfigured Amazon S3 buckets that allow public listing.",
+        "keywords": "",
+        "custom": "site:s3.amazonaws.com intitle:\"index of\" \"bucket\" OR \"access denied\"",
+        "engine": "google"
+    },
+    {
+        "id": "jenkins_dashboards",
+        "name": "Jenkins Dashboards",
+        "description": "Finds exposed Jenkins automation server dashboards.",
+        "keywords": "",
+        "custom": "intitle:\"Jenkins\" inurl:manage",
+        "engine": "google"
+    },
+    {
+        "id": "mongodb_exposed",
+        "name": "Exposed MongoDB Databases",
+        "description": "Identifies publicly accessible MongoDB instances.",
+        "keywords": "",
+        "custom": "inurl:27017 intitle:\"MongoDB Enterprise\"",
+        "engine": "google"
+    },
+    {
+        "id": "docker_registry",
+        "name": "Exposed Docker Registries",
+        "description": "Locates publicly accessible Docker registries.",
+        "keywords": "",
+        "custom": "intitle:\"Docker Registry\" inurl:v2/_catalog",
+        "engine": "google"
+    },
+    {
+        "id": "vpn_login_pages",
+        "name": "VPN Login Pages",
+        "description": "Finds generic VPN login portals.",
+        "keywords": "",
+        "custom": "intitle:\"VPN\" inurl:login.html OR inurl:sslvpn",
+        "engine": "google"
+    },
+    {
+        "id": "rce_phpinfo",
+        "name": "PHP Info Pages (RCE potential)",
+        "description": "Discovers phpinfo.php pages, which often expose sensitive server configurations and versions, potentially aiding RCE.",
+        "keywords": "",
+        "custom": "filetype:php inurl:phpinfo.php",
+        "engine": "google"
+    },
+    {
+        "id": "config_files_credentials",
+        "name": "Config Files with Credentials",
+        "description": "Searches for common configuration files that might contain hardcoded credentials.",
+        "keywords": "",
+        "custom": "filetype:config OR filetype:xml OR filetype:yml intext:\"password\" OR intext:\"api_key\" OR intext:\"secret\" AROUND(10) \"user\"",
+        "engine": "google"
+    },
+    {
+        "id": "linkedin_emails_advanced",
+        "name": "Advanced LinkedIn Email Search",
+        "description": "More specific search for email addresses within LinkedIn profiles (requires careful keyword selection).",
+        "keywords": "site:linkedin.com/in",
+        "custom": "\"@company.com\" \"contact info\"",
+        "engine": "google"
+    },
+    {
+        "id": "github_sensitive_files",
+        "name": "GitHub Sensitive Files",
+        "description": "Finds specific sensitive file types on GitHub that should not be public.",
+        "keywords": "site:github.com",
+        "custom": "extension:pem OR extension:key OR extension:sql OR extension:json \"private key\" OR \"password\" OR \"api_key\"",
+        "engine": "google"
+    },
+    {
+        "id": "swagger_ui_exposed",
+        "name": "Exposed Swagger UI/API Docs",
+        "description": "Discovers publicly accessible Swagger UI instances, often revealing API endpoints and structure.",
+        "keywords": "",
+        "custom": "inurl:swagger-ui.html OR inurl:swagger/index.html intitle:\"Swagger UI\" OR intitle:\"API Documentation\"",
+        "engine": "google"
+    },
+    {
+        "id": "jira_credentials_exposed",
+        "name": "JIRA Credentials Exposed",
+        "description": "Searches for JIRA related credential leaks in public accessible files.",
+        "keywords": "site:pastebin.com OR site:github.com",
+        "custom": "jira password OR jira username",
+        "engine": "google"
+    },
+    {
+        "id": "confluence_attachments",
+        "name": "Confluence Attachments Exposed",
+        "description": "Finds attached files on public Confluence pages which might contain sensitive data.",
+        "keywords": "site:confluence.*.com",
+        "custom": "filetype:pdf OR filetype:docx OR filetype:xlsx \"confidential\" OR \"internal\"",
+        "engine": "google"
+    },
+    {
+        "id": "open_databases_shodan",
+        "name": "Shodan: Open Databases",
+        "description": "Shodan query to find common open database ports and technologies.",
+        "keywords": "",
+        "custom": "port:3306 (mysql) OR port:5432 (postgresql) OR port:27017 (mongodb) OR port:6379 (redis)",
+        "engine": "shodan"
+    },
+    {
+        "id": "webcams_shodan",
+        "name": "Shodan: Advanced Webcams",
+        "description": "More specific Shodan queries for various types of open webcams/CCTV systems.",
+        "keywords": "",
+        "custom": "product:\"IP Camera\" OR product:\"Dahua IP Camera\" OR product:\"Axis network camera\" tag:webcam -port:8080",
+        "engine": "shodan"
+    },
+    {
+        "id": "rdp_shodan",
+        "name": "Shodan: Exposed RDP",
+        "description": "Finds hosts with exposed Remote Desktop Protocol (RDP) services.",
+        "keywords": "",
+        "custom": "port:3389 \"Remote Desktop Protocol\"",
+        "engine": "shodan"
+    },
+    {
+        "id": "ftp_anonymous_shodan",
+        "name": "Shodan: Anonymous FTP",
+        "description": "Locates FTP servers allowing anonymous login, potentially exposing files.",
+        "keywords": "",
+        "custom": "port:21 \"220 (ftp) Anonymous user logged in\"",
+        "engine": "shodan"
+    },
+    {
+        "id": "vnc_shodan",
+        "name": "Shodan: Open VNC Servers",
+        "description": "Identifies hosts with exposed VNC (Virtual Network Computing) services.",
+        "keywords": "",
+        "custom": "port:5900 \"RFB 003.008\"",
+        "engine": "shodan"
+    },
+    {
+        "id": "ssh_shodan",
+        "name": "Shodan: SSH Servers",
+        "description": "Finds publicly accessible SSH servers.",
+        "keywords": "",
+        "custom": "port:22 product:OpenSSH",
+        "engine": "shodan"
+    },
+    {
+        "id": "unprotected_containers_censys",
+        "name": "Censys: Unprotected Containers",
+        "description": "Censys query to find unprotected Docker or Kubernetes API endpoints.",
+        "keywords": "",
+        "custom": "(services.http.response.html.body:\"docker\" or services.http.response.html.body:\"kubernetes\") and (services.http.response.status_code:200 or services.http.response.status_code:401)",
+        "engine": "censys"
+    },
+    {
+        "id": "cisco_vulnerabilities_censys",
+        "name": "Censys: Cisco Vulnerabilities",
+        "description": "Censys query to find Cisco devices potentially vulnerable to known CVEs.",
+        "keywords": "",
+        "custom": "services.banner:\"Cisco\" and vulnerability.id:CVE-20XX-XXXXX",
+        "engine": "censys"
+    },
+    {
+        "id": "iot_devices_censys",
+        "name": "Censys: Generic IoT Devices",
+        "description": "Broad Censys search for common IoT device fingerprints and tags.",
+        "keywords": "",
+        "custom": "services.http.tags:iot or services.fingerprint.product:\"smart device\" and services.port:80",
+        "engine": "censys"
+    },
+    {
+        "id": "industrial_control_systems_censys",
+        "name": "Censys: Industrial Control Systems",
+        "description": "Censys query for exposed ICS/SCADA systems using common ports and protocols.",
+        "keywords": "",
+        "custom": "(port:502 and protocol:modbus) or (port:44818 and protocol:ethernet/ip) or (port:102 and protocol:s7)",
+        "engine": "censys"
+    },
+    {
+        "id": "exposed_api_keys_github",
+        "name": "GitHub: Exposed API Keys",
+        "description": "Finds API keys accidentally committed to public GitHub repositories.",
+        "keywords": "site:github.com",
+        "custom": "\"api_key\" OR \"API_KEY\" OR \"token\" OR \"secret\" extension:txt OR extension:yml OR extension:json OR extension:xml",
+        "engine": "google"
+    },
+    {
+        "id": "exposed_db_creds_github",
+        "name": "GitHub: Exposed DB Credentials",
+        "description": "Searches for database credentials in public GitHub repos.",
+        "keywords": "site:github.com",
+        "custom": "\"DB_USERNAME\" OR \"DB_PASSWORD\" OR \"database_user\" OR \"database_password\" extension:env OR extension:config OR extension:yml",
+        "engine": "google"
+    },
+    {
+        "id": "employee_directories",
+        "name": "Company Employee Directories",
+        "description": "Locates public employee directories often found on university or large company websites.",
+        "keywords": "",
+        "custom": "intitle:\"directory\" \"staff list\" OR \"employee list\" site:*.edu OR site:*.com",
+        "engine": "google"
+    },
+    {
+        "id": "customer_data_exposed",
+        "name": "Customer Data Exposed",
+        "description": "Searches for publicly accessible files containing customer data terms.",
+        "keywords": "",
+        "custom": "filetype:csv OR filetype:xls OR filetype:xlsx \"customer data\" OR \"client list\" OR \"user database\"",
+        "engine": "google"
+    }
+]
