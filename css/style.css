@@ -1,138 +1,143 @@
-        :root {
-            --primary: #007bff; /* Slightly less vibrant blue, more authoritative */
-            --primary-dark: #0056b3;
-            --secondary: #ff6b35; /* Strong accent for highlights */
-            --accent: #28a745; /* Positive action/success */
-            --danger: #dc3545;
-            --warning: #ffaa00;
-            --success: #28a745;
+:root {
+    /* Darker, more professional greyscale for dark theme */
+    --primary: #007bff; /* Keep original vibrant blue for highlights */
+    --primary-dark: #0056b3; /* Keep original darker blue */
+    --secondary: #ff6b35; /* Strong accent for highlights */
+    --accent: #28a745; /* Positive action/success */
+    --danger: #dc3545;
+    --warning: #ffaa00;
+    --success: #28a745;
 
-            /* Darker, more professional greyscale for dark theme */
-            --bg-primary: #0C1017; /* Deeper primary background */
-            --bg-secondary: #171E28; /* Slightly lighter card/section background */
-            --bg-tertiary: #212B3B; /* Input/hover background */
-            --bg-card: #1E2736;     /* Card background */
+    --bg-primary: #0C1017; /* Deeper primary background */
+    --bg-secondary: #171E28; /* Slightly lighter card/section background */
+    --bg-tertiary: #212B3B; /* Input/hover background */
+    --bg-card: #1E2736;     /* Card background */
+    --bg-hover: #293649;    /* NEW: Explicit hover background for dark mode */
 
-            --text-primary: #E0E6F0; /* Brighter text for contrast */
-            --text-secondary: #9BAEC8; /* Muted text */
-            --text-muted: #6A7F9D;    /* Even more muted text */
+    --text-primary: #E0E6F0; /* Brighter text for contrast */
+    --text-secondary: #9BAEC8; /* Muted text */
+    --text-muted: #6A7F9D;    /* Even more muted text */
 
-            --border: #3D4C61;      /* Stronger but still subtle border */
-            --border-light: #526680; /* Lighter border for dividers */
+    --border: #3D4C61;      /* Stronger but still subtle border */
+    --border-light: #526680; /* Lighter border for dividers */
 
-            /* Softer, multi-layered shadow */
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3), 0 16px 60px rgba(0, 0, 0, 0.2);
+    /* Softer, multi-layered shadow */
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3), 0 16px 60px rgba(0, 0, 0, 0.2);
 
-            --glow: 0 0 15px rgba(0, 123, 255, 0.4); /* Adjusted glow for new primary */
-            --primary-shadow-color: rgba(0, 123, 255, 0.3); /* For primary button shadow */
-            --primary-shadow-color-hover: rgba(0, 123, 255, 0.4);
+    --glow: 0 0 15px rgba(0, 123, 255, 0.4); /* Adjusted glow for new primary */
+    --primary-shadow-color: rgba(0, 123, 255, 0.3); /* For primary button shadow */
+    --primary-shadow-color-hover: rgba(0, 123, 255, 0.4);
 
-            /* Very subtle gradient, mainly for active states or branding */
-            --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
-            --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
-            --gradient-accent: linear-gradient(135deg, #28a745, #1e8738);
-            /* Softened background gradient */
-            --gradient-bg: linear-gradient(135deg, #0C1017, #171E28);
+    /* Very subtle gradient, mainly for active states or branding */
+    --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
+    --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
+    --gradient-accent: linear-gradient(135deg, #28a745, #1e8738);
+    /* Softened background gradient */
+    --gradient-bg: linear-gradient(135deg, #0C1017, #171E28);
 
-            /* Default Tab Colors */
-            --tab-color-default: var(--primary);
-            --tab-color-red: #e74c3c;
-            --tab-color-blue: #3498db;
-            --tab-color-green: #2ecc71;
-            --tab-color-yellow: #f1c40f;
-            --tab-color-purple: #9b59b6;
-            --tab-color-orange: #e67e22;
-        }
+    /* Default Tab Colors */
+    --tab-color-default: var(--primary);
+    --tab-color-red: #e74c3c;
+    --tab-color-blue: #3498db;
+    --tab-color-green: #2ecc71;
+    --tab-color-yellow: #f1c40f;
+    --tab-color-purple: #9b59b6;
+    --tab-color-orange: #e67e22;
 
-        [data-theme="light"] {
-            --primary: #007bff;
-            --primary-dark: #0056b3;
-            --secondary: #6c757d;
-            --accent: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --success: #28a745;
+    /* Nav bar specific colors for Dark Mode (existing) */
+    --nav-bg-primary: #0f172a;
+    --nav-bg-secondary: #1e293b;
+    --nav-bg-tertiary: #334155;
+    --nav-bg-card: rgba(30, 41, 59, 0.9);
+    --nav-text-primary: #f8fafc;
+    --nav-text-secondary: #cbd5e1;
+    --nav-text-muted: #64748b;
+    --nav-accent-primary: #06b6d4; /* Teal/Cyan */
+    --nav-accent-secondary: #a855f7; /* Purple */
+    --nav-accent-success: #22c55e;
+    --nav-accent-warning: #fbbf24;
+    --nav-accent-danger: #f87171;
+    --nav-border-primary: #334155;
+    --nav-border-secondary: #475569;
+    --nav-shadow-light: rgba(0, 0, 0, 0.3);
+    --nav-shadow-medium: rgba(0, 0, 0, 0.5);
+    --nav-shadow-heavy: rgba(0, 0, 0, 0.8);
+    --nav-glow-primary: rgba(6, 182, 212, 0.4);
+    --nav-glow-secondary: rgba(168, 85, 247, 0.4);
+    --nav-grid-color: rgba(148, 163, 184, 0.05);
+    --nav-bg-nav: rgba(15, 23, 42, 0.6); /* Adjusted from your main header to be consistent */
+    --nav-backdrop-blur: blur(25px) saturate(180%);
+}
 
-            /* Lighter, professional greyscale for light theme */
-            --bg-primary: #FFFFFF;
-            --bg-secondary: #F7F9FC; /* Slightly off-white for sections */
-            --bg-tertiary: #E8EEF5; /* Light grey for inputs/hovers */
-            --bg-card: #FFFFFF;    /* White card background */
+[data-theme="light"] {
+    /* Core colors for Light Mode - Brighter, cleaner, less blue tint */
+    --primary: #007bff; /* Primary blue for main actions, links */
+    --primary-dark: #0056b3; /* Darker primary for hover/active */
+    --secondary: #6c757d; /* Muted gray for secondary actions/text */
+    --accent: #28a745; /* Green for success/positive actions */
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --success: #28a745;
 
-            --text-primary: #2C3E50; /* Darker text for readability */
-            --text-secondary: #607D8B; /* Muted grey text */
-            --text-muted: #95A5A6;    /* Even more muted */
+    --bg-primary: #F8F9FA; /* Off-white for general background */
+    --bg-secondary: #FFFFFF; /* Pure white for cards/sections */
+    --bg-tertiary: #F0F2F5; /* Light gray for inputs/subtle backgrounds */
+    --bg-card: #FFFFFF;    /* White card background */
+    --bg-hover: #E2E6EC;    /* Explicit hover background for light mode */
 
-            --border: #CFD8DC; /* Light grey border */
-            --border-light: #ECEFF1; /* Very light border */
+    --text-primary: #212529; /* Deep charcoal for main text */
+    --text-secondary: #495057; /* Darker gray for secondary text */
+    --text-muted: #6C757D;    /* Medium gray for muted text */
 
-            --glow: 0 0 10px rgba(0, 123, 255, 0.2);
-            --shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08);
+    --border: #DEE2E6;      /* Light gray border */
+    --border-light: #E9ECEF; /* Very light border for dividers */
 
-            --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
-            --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
-            --gradient-accent: linear-gradient(135deg, #28a745, #218838);
-            --gradient-bg: linear-gradient(135deg, #F7F9FC, #E8EEF5);
+    --glow: 0 0 10px rgba(0, 123, 255, 0.2);
+    --primary-shadow-color: rgba(0, 123, 255, 0.15); /* Lighter shadow for light theme */
+    --primary-shadow-color-hover: rgba(0, 123, 255, 0.25);
 
-            /* Default Tab Colors (Light Theme) */
-            --tab-color-default: var(--primary);
-            --tab-color-red: #c0392b;
-            --tab-color-blue: #2980b9;
-            --tab-color-green: #27ae60;
-            --tab-color-yellow: #f39c12;
-            --tab-color-purple: #8e44ad;
-            --tab-color-orange: #d35400;
+    --shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.08);
 
+    --gradient-primary: linear-gradient(135deg, #007bff, #0056b3);
+    --gradient-secondary: linear-gradient(135deg, #dc3545, #b02a37);
+    --gradient-accent: linear-gradient(135deg, #28a745, #218838);
+    --gradient-bg: linear-gradient(135deg, #F8F9FA, #E9ECEF); /* Soft background gradient */
 
-            --nav-bg-primary: #f8fafc;
-            --nav-bg-secondary: #ffffff;
-            --nav-bg-tertiary: #f1f5f9;
-            --nav-bg-card: rgba(255, 255, 255, 0.9);
-            --nav-text-primary: #1e293b;
-            --nav-text-secondary: #64748b;
-            --nav-text-muted: #94a3b8;
-            --nav-accent-primary: #0ea5e9;
-            --nav-accent-secondary: #8b5cf6;
-            --nav-accent-success: #10b981;
-            --nav-accent-warning: #f59e0b;
-            --nav-accent-danger: #ef4444;
-            --nav-border-primary: #e2e8f0;
-            --nav-border-secondary: #cbd5e1;
-            --nav-shadow-light: rgba(0, 0, 0, 0.05);
-            --nav-shadow-medium: rgba(0, 0, 0, 0.1);
-            --nav-shadow-heavy: rgba(0, 0, 0, 0.25);
-            --nav-glow-primary: rgba(14, 165, 233, 0.3);
-            --nav-glow-secondary: rgba(139, 92, 246, 0.3);
-            --nav-grid-color: rgba(148, 163, 184, 0.1);
-        }
+    /* Default Tab Colors (Light Theme) */
+    --tab-color-default: var(--primary);
+    --tab-color-red: #c0392b;
+    --tab-color-blue: #2980b9;
+    --tab-color-green: #27ae60;
+    --tab-color-yellow: #f39c12;
+    --tab-color-purple: #8e44ad;
+    --tab-color-orange: #d35400;
 
-        [data-theme="dark"] {
-            /* Dark mode colors */
-            --nav-bg-primary: #0f172a;
-            --nav-bg-secondary: #1e293b;
-            --nav-bg-tertiary: #334155;
-            --nav-bg-card: rgba(30, 41, 59, 0.9);
-            --nav-text-primary: #f8fafc;
-            --nav-text-secondary: #cbd5e1;
-            --nav-text-muted: #64748b;
-            --nav-accent-primary: #06b6d4;
-            --nav-accent-secondary: #a855f7;
-            --nav-accent-success: #22c55e;
-            --nav-accent-warning: #fbbf24;
-            --nav-accent-danger: #f87171;
-            --nav-border-primary: #334155;
-            --nav-border-secondary: #475569;
-            --nav-shadow-light: rgba(0, 0, 0, 0.3);
-            --nav-shadow-medium: rgba(0, 0, 0, 0.5);
-            --nav-shadow-heavy: rgba(0, 0, 0, 0.8);
-            --nav-glow-primary: rgba(6, 182, 212, 0.4);
-            --nav-glow-secondary: rgba(168, 85, 247, 0.4);
-            --nav-grid-color: rgba(148, 163, 184, 0.05);
-        }
-
-
+    /* Nav bar specific colors for Light Mode */
+    --nav-bg-primary: #FFFFFF; /* Pure white for header base */
+    --nav-bg-secondary: #F8F9FA; /* Slightly off-white for elements within header */
+    --nav-bg-tertiary: #E8EEF5; /* Light gray for search, input backgrounds */
+    --nav-bg-card: rgba(255, 255, 255, 0.9); /* Transparent white for header background */
+    --nav-text-primary: #212529; /* Dark text for header elements */
+    --nav-text-secondary: #495057; /* Muted text in header */
+    --nav-text-muted: #6C757D; /* Even more muted */
+    --nav-accent-primary: #007bff; /* Primary blue for accents */
+    --nav-accent-secondary: #6610f2; /* A deeper purple for secondary accent */
+    --nav-accent-success: #28a745;
+    --nav-accent-warning: #fd7e14;
+    --nav-accent-danger: #dc3545;
+    --nav-border-primary: #E9ECEF; /* Light border for header elements */
+    --nav-border-secondary: #DEE2E6; /* Slightly darker light border */
+    --nav-shadow-light: rgba(0, 0, 0, 0.05);
+    --nav-shadow-medium: rgba(0, 0, 0, 0.1);
+    --nav-shadow-heavy: rgba(0, 0, 0, 0.15);
+    --nav-glow-primary: rgba(0, 123, 255, 0.3);
+    --nav-glow-secondary: rgba(102, 16, 242, 0.3);
+    --nav-grid-color: rgba(0, 0, 0, 0.03); /* Very light grid */
+    --nav-bg-nav: rgba(255, 255, 255, 0.8); /* Adjusted from your main header to be consistent */
+    --nav-backdrop-blur: blur(25px) saturate(180%);
+}
 
         * {
             margin: 0;
@@ -1257,6 +1262,7 @@
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px var(--primary-shadow-color-hover);
+            color: var(--gradient-primary);
         }
 
         .btn-secondary {
@@ -1290,6 +1296,7 @@
         .btn-success:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+            color: var(--gradient-secondary);
         }
 
         /* Nav */
@@ -1411,11 +1418,8 @@
         }
 
         .nav-tab.active {
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 15px -3px var(--nav-glow-primary),
-                0 4px 6px -2px var(--nav-shadow-medium);
+            color: var(--text-primary); /* Use dark primary text color */
+            text-shadow: none; /* Remove text shadow */
         }
 
         .nav-tab.active::before {
@@ -1427,11 +1431,10 @@
         }
 
         .nav-tab.active i {
-            color: white;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            animation: pulse 2s infinite;
+            color: var(--text-primary); /* Match icon color to text color */
+            text-shadow: none; /* Remove icon text shadow */
         }
-
+        
         /* Cybersecurity-specific tab colors */
         .nav-tab[data-tab="intelligence-vault"].active::before {
             background: linear-gradient(135deg, var(--nav-accent-primary), #0284c7);
