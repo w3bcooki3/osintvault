@@ -253,6 +253,45 @@ function findSectionById(sectionId) {
     return foundSection;
 }
 
+// (New function to initialize accordions)
+function initializeAccordions() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach(header => {
+        // Remove existing listener to prevent duplicates if called multiple times
+        header.removeEventListener('click', toggleAccordion);
+        // Add new listener
+        header.addEventListener('click', toggleAccordion);
+    });
+}
+
+function toggleAccordion() {
+    const item = this.closest('.accordion-item');
+    if (!item) return; // Should not happen
+
+    const content = item.querySelector('.accordion-content');
+    const icon = item.querySelector('.accordion-icon');
+
+    if (item.classList.contains('active')) {
+        item.classList.remove('active');
+        content.style.maxHeight = null; // Collapse
+        if (icon) icon.classList.remove('rotate');
+    } else {
+        // Optional: Close other open accordions
+        document.querySelectorAll('.accordion-item.active').forEach(openItem => {
+            if (openItem !== item) { // Don't collapse self
+                openItem.classList.remove('active');
+                openItem.querySelector('.accordion-content').style.maxHeight = null;
+                const openIcon = openItem.querySelector('.accordion-icon');
+                if (openIcon) openIcon.classList.remove('rotate');
+            }
+        });
+
+        item.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + "px"; // Expand to content height
+        if (icon) icon.classList.add('rotate');
+    }
+}
+
 /**
  * Displays the content of a specific handbook section in the main content area.
  * Assumes `appState`, `showToast`, `localStorage` access are globally available.
@@ -270,6 +309,12 @@ function showHandbookSection(sectionId) {
     }
 
     contentContainer.innerHTML = sectionData.content;
+
+    // --- IMPORTANT: Add this line to initialize accordions after content is loaded ---
+    if (sectionId === 'osint-tools-catalog') { // Only initialize if it's the tools catalog page
+        initializeAccordions();
+    }
+    // --- End of IMPORTANT addition ---
 
     // Add copy button functionality for code blocks
     contentContainer.querySelectorAll('.copy-btn').forEach(btn => {
@@ -308,6 +353,7 @@ function showHandbookSection(sectionId) {
     saveState();
     addHandbookControls();
 }
+
 
 /**
  * Initializes controls for adding, editing, and deleting handbook sections.

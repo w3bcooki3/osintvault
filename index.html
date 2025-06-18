@@ -71,6 +71,9 @@
                         <i class="fas fa-share-alt"></i>
                         Share
                     </button>
+                    <button class="btn btn-secondary" id="osintrixRedirectBtn">
+                        <i class="fas fa-project-diagram"></i> OSINTrix
+                    </button>
                     <button class="btn btn-secondary" id="themeToggle">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -145,9 +148,9 @@
                         OSINT Handbook & Notes
                     </button>
                     <button class="nav-tab" data-tab="case-studies">
-                        <i class="fas fa-book-reader"></i> Case Studies
+                        <i class="fas fa-book-reader"></i> 
+                        Case Studies
                     </button>
-
                 </div>
 
                 <div class="bulk-actions" id="bulkActions">
@@ -3838,6 +3841,43 @@
         </div>
     </div>
 
+    <div class="modal" id="osintrixRedirectModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-project-diagram"></i> Redirecting to <span class="osintrix-highlight">OSINTrix</span>: Your OSINT Graph Visualizer</h3>
+            <p style="margin-bottom: 15px; color: var(--text-primary);">
+                <span class="osintrix-highlight">OSINTrix</span> is a powerful, browser-based Graph Visualizer designed for personal cyber investigations, threat intelligence, and crypto forensics. Built entirely with HTML, CSS, and vanilla JavaScript, it requires no frameworks or servers, running completely offline for maximum privacy and control.
+            </p>
+            <p style="margin-bottom: 15px; color: var(--text-primary);">
+                It's ideal for visualizing connections between entities like people, domains, IPs, wallet addresses, and more.
+            </p>
+            <h4 style="margin-top: 20px; margin-bottom: 10px; color: var(--accent);">Key Features:</h4>
+            <ul style="list-style-type: disc; margin-left: 20px; margin-bottom: 15px; color: var(--text-secondary);">
+                <li>
+                    <strong>Interactive Graph:</strong> Utilizes Cytoscape.js for smooth drag, zoom, and pan functionality. It supports rich context menus for editing, deleting, connecting, and highlighting nodes, and can find shortest/all paths between entities. You can also group and collapse related nodes.
+                </li>
+                <li>
+                    <strong>Detailed Panels:</strong> Includes a Node Detail Panel for metadata, images, and links; an Entity List Panel for filtering and auto-updates; and a Resizable Notes Panel with rich text support.
+                </li>
+                <li>
+                    <strong>Data Lookup Links:</strong> Provides quick-access links to external OSINT tools and resources based on the selected entity type (e.g., email lookup, domain WHOIS, wallet explorers).
+                </li>
+                <li>
+                    <strong>Dorking Assistant:</strong> Build and launch advanced Google, Shodan, or Bing dorks for tasks like finding login panels, leaked databases, or domain footprints. It comes with prebuilt templates and a custom query builder.
+                </li>
+                <li>
+                    <strong>Comprehensive Search & Utilities:</strong> Offers global search across all node data, filtering by entity type, and highlighting results. You can also save/load graphs to local JSON, export full graphs with base64 images, and utilize undo/redo and theme toggles.
+                </li>
+            </ul>
+            <p style="margin-bottom: 25px; color: var(--text-secondary);">
+                Click "Proceed" to open <span class="osintrix-highlight">OSINTrix</span> in a new tab and begin visualizing your cyber investigations, or "Stay Here" to remain in OSINTVault.
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" id="cancelOsintrixRedirect">Stay Here</button>
+                <button type="button" class="btn btn-primary" id="confirmOsintrixRedirect">Proceed</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let appState = {
             tools: [], // Will be loaded from tools.json
@@ -3960,99 +4000,6 @@
             });
         }
         // --- End of initApp (full code block) ---
-
-// --- switchTab function (modify this in app.js) ---
-function switchTab(tabName) {
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    const targetTabBtn = document.querySelector(`[data-tab="${tabName}"]`);
-    if (targetTabBtn) {
-        targetTabBtn.classList.add('active');
-    }
-
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-        if (content.id === 'intelligence-vaultTab') {
-            document.getElementById('intelligenceVaultParentTabs').style.display = 'none';
-            document.getElementById('intelligenceVaultChildTabs').style.display = 'none';
-            document.getElementById('addToolBtnIntelligenceVault').style.display = 'none';
-        } else if (content.id === 'custom-tabsTab') {
-            document.getElementById('customVaultEntryParentTabs').style.display = 'none';
-            document.getElementById('customVaultEntryChildTabs').style.display = 'none';
-            document.getElementById('addEntryBtnCustomVault').style.display = 'none';
-        }
-    });
-
-    const targetTabContent = document.getElementById(`${tabName}Tab`);
-    if (targetTabContent) {
-        targetTabContent.classList.add('active');
-    }
-
-    appState.currentTab = tabName;
-    appState.filters.category = '';
-    const categoryFilterElement = document.getElementById('categoryFilter');
-    if (categoryFilterElement) {
-        categoryFilterElement.value = '';
-    }
-    appState.filters.search = '';
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.value = '';
-    }
-
-    if (tabName === 'intelligence-vault') {
-        document.getElementById('intelligenceVaultParentTabs').style.display = 'flex';
-        renderIntelligenceVaultParentTabs();
-
-        const currentIntelParent = intelligenceVaultTabStructure.find(p => p.id === appState.currentIntelligenceVaultParentTab);
-        if (!currentIntelParent) {
-            appState.currentIntelligenceVaultParentTab = intelligenceVaultTabStructure[0].id;
-        }
-        switchIntelligenceVaultParentTab(appState.currentIntelligenceVaultParentTab);
-
-        if (!appState.readOnlyMode) {
-            document.getElementById('addToolBtnIntelligenceVault').style.display = 'inline-flex';
-        }
-        renderIntelligenceEntries();
-
-    } else if (tabName === 'custom-tabs') {
-        renderCustomTabs();
-
-        if (appState.customTabs.length > 0) {
-            document.getElementById('customVaultEntryParentTabs').style.display = 'flex';
-            renderCustomVaultParentTabs();
-
-            const currentCustomParent = customVaultEntryStructure.find(p => p.id === appState.currentCustomVaultParentTab);
-            if (!currentCustomParent) {
-                appState.currentCustomVaultParentTab = customVaultEntryStructure[0].id;
-            }
-            const currentCustomChild = currentCustomParent.children.find(c => c.id === appState.currentCustomVaultEntrySubTab);
-            if (!currentCustomChild) {
-                appState.currentCustomVaultEntrySubTab = currentCustomParent.children[0]?.id;
-            }
-            switchCustomVaultParentTab(appState.currentCustomVaultParentTab);
-
-            if (!appState.readOnlyMode) {
-                document.getElementById('addEntryBtnCustomVault').style.display = 'inline-flex';
-            }
-        }
-        renderIntelligenceEntries();
-
-    } else if (tabName === 'handbook') {
-        initHandbookAndNotes();
-    } else if (tabName === 'dork-assistant') {
-        initDorkAssistant();
-    } else if (tabName === 'welcome') {
-        const resetVaultButton = document.getElementById('resetVaultButton');
-        const openExportFromWelcome = document.getElementById('openExportFromWelcome');
-        if (resetVaultButton) resetVaultButton.disabled = appState.readOnlyMode;
-        if (openExportFromWelcome) openExportFromWelcome.disabled = appState.readOnlyMode;
-    }
-
-    saveState();
-}
-
 
 
         // --- Start of loadState (full code block) ---
@@ -5335,6 +5282,60 @@ function switchTab(tabName) {
 
 
         function bindEvents() {
+
+            // --- NEW OSINTrix Redirect Modal Event Listeners ---
+            const osintrixRedirectBtn = document.getElementById('osintrixRedirectBtn');
+            const osintrixRedirectModal = document.getElementById('osintrixRedirectModal');
+            const cancelOsintrixRedirect = document.getElementById('cancelOsintrixRedirect');
+            const confirmOsintrixRedirect = document.getElementById('confirmOsintrixRedirect');
+
+            if (osintrixRedirectBtn) {
+                osintrixRedirectBtn.addEventListener('click', () => {
+                    if (appState.readOnlyMode) {
+                        showToast("Cannot redirect from a read-only shared view.", "warning");
+                        return;
+                    }
+                    if (osintrixRedirectModal) { // Ensure modal exists before trying to show
+                        osintrixRedirectModal.classList.add('show');
+                        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+                    }
+                });
+            }
+
+            if (cancelOsintrixRedirect) {
+                cancelOsintrixRedirect.addEventListener('click', () => {
+                    if (osintrixRedirectModal) {
+                        osintrixRedirectModal.classList.remove('show');
+                        document.body.style.overflow = ''; // Restore scrolling
+                    }
+                });
+            }
+
+            if (confirmOsintrixRedirect) {
+                confirmOsintrixRedirect.addEventListener('click', () => {
+                    // Replace with the actual URL of your OSINTrix web app
+                    window.open('https://w3bcooki3.github.io/osintrix2/', '_blank'); // IMPORTANT: Update this URL
+                    if (osintrixRedirectModal) {
+                        osintrixRedirectModal.classList.remove('show');
+                        document.body.style.overflow = ''; // Restore scrolling
+                    }
+                });
+            }
+
+            // Close modal if clicking outside content (delegated to modal element itself)
+            // This listener should be on the modal directly, not on its children.
+            // Assuming your `showModal` and `hideModal` functions correctly handle class `show`
+            // and apply `document.body.style.overflow`.
+            if (osintrixRedirectModal) {
+                osintrixRedirectModal.addEventListener('click', (e) => {
+                    if (e.target === osintrixRedirectModal) { // Only close if clicking the backdrop
+                        osintrixRedirectModal.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+            // --- END NEW OSINTrix Redirect Modal Event Listeners ---
+
 
             // Search functionality
             document.getElementById('searchInput').addEventListener('input', (e) => {

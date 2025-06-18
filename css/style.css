@@ -6104,3 +6104,143 @@
     }
 }
 
+/* Accordion Container */
+.accordion-container {
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden; /* Ensures borders/shadows within items don't bleed */
+}
+
+/* Individual Accordion Item */
+.accordion-item {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    margin-bottom: 10px; /* Space between items */
+    border-radius: 8px;
+    transition: all 0.3s ease; /* Smooth transition for active state */
+    box-shadow: var(--shadow);
+}
+
+.accordion-item:last-child {
+    margin-bottom: 0; /* No margin after the last item */
+}
+
+/* Accordion Header (the clickable button) */
+.accordion-header {
+    background-color: var(--bg-tertiary); /* Slightly lighter/darker than item bg */
+    color: var(--text-primary);
+    padding: 18px 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px; /* Match item border-radius */
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.accordion-header h3 {
+    margin: 0; /* Remove default h3 margin */
+    font-size: 1.1em; /* Keep it consistent with button font size */
+    display: flex;
+    align-items: center;
+    color: var(--text-primary);
+}
+
+.accordion-header:hover {
+    background-color: var(--bg-hover); /* Subtle hover effect */
+    color: var(--primary); /* Highlight text on hover */
+}
+
+/* Icon within the header */
+.accordion-icon {
+    margin-left: 15px;
+    transition: transform 0.3s ease;
+}
+
+/* Rotates the icon when the accordion is active */
+.accordion-item.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+/* Accordion Content */
+.accordion-content {
+    background-color: var(--bg-secondary);
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    padding: 0 20px; /* Initial padding when collapsed */
+}
+
+/* Active content styling (when expanded) */
+.accordion-item.active .accordion-content {
+    padding: 20px 20px 25px 20px; /* Top, Right, Bottom, Left padding - increased bottom */
+    border-top: 1px solid var(--border-light); /* Separator line */
+}
+
+/* List styling within accordion content */
+.accordion-content ul {
+    list-style: none; /* Remove default bullets */
+    padding: 0;
+    margin: 0;
+}
+
+.accordion-content ul li {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-light); /* Light separator for list items */
+    font-size: 0.95em;
+    color: var(--text-secondary);
+}
+
+.accordion-content ul li:last-child {
+    border-bottom: none; /* No border for the last list item */
+    margin-bottom: 40px;
+}
+
+.accordion-content strong {
+    color: var(--accent); /* Highlight tool names */
+}
+
+/* Adjust h2/p styling for general catalog intro */
+.handbook-content h2, .handbook-content p {
+    margin-top: 0; /* Reset top margin for first elements in section */
+}
+
+.handbook-content p:first-of-type {
+    margin-bottom: 20px; /* Space out intro paragraph from accordions */
+}
+
+/* OSINTrix Gradient Highlight */
+.osintrix-highlight {
+    font-weight: bold; /* Keep it bold */
+    /* Adjust these colors to match your dark theme's primary and secondary tones */
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block; /* Essential for background-clip to work on text */
+    /* Keep a subtle text-shadow if it helps visibility, adjust opacity */
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4); /* Subtle dark shadow for contrast */
+}
+
+/* Specific adjustment for dark theme if your theme has distinct dark/light mode variables */
+body[data-theme="dark"] .osintrix-highlight {
+    /* Use colors that are visible but not overly bright in a dark theme.
+       Example: A transition from your primary/accent to a slightly lighter/more vibrant version of them.
+       Or, a subtle shift in hue.
+       
+       Let's try a cooler, more digital-like gradient that fits a cyber theme,
+       using colors that might be similar to `var(--primary)` and `var(--accent)` but perhaps slightly desaturated
+       or a shade lighter/darker depending on desired contrast.
+    */
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%); /* Sticking to your theme vars */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Increase shadow for dark theme if text needs to pop more */
+    text-shadow: 0px 0px 5px rgba(0, 255, 255, 0.2), 0px 0px 10px rgba(0, 255, 255, 0.1); /* Lighter shadow for glow */
+}
