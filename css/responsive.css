@@ -1,0 +1,1039 @@
+/* Responsive Styles - Full Updated Code */
+
+/* Mobile menu toggle */
+.mobile-menu-toggle {
+    display: none; /* Hidden by default, shown in media query */
+}
+
+/* Mobile Sidebar Menu (NEW) */
+.mobile-sidebar-menu {
+    position: fixed;
+    top: 0;
+    right: -320px; /* Off-screen initially */
+    width: 280px; /* Adjusted width for mobile */
+    max-width: 80vw; /* Ensure it doesn't overflow very small screens */
+    height: 100vh;
+    background: var(--nav-bg-card);
+    backdrop-filter: blur(25px) saturate(180%);
+    border-left: 1px solid var(--nav-border-primary);
+    z-index: 1000; /* High z-index to appear on top */
+    transition: right 0.3s ease-in-out;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+    overflow-y: auto; /* Allow scrolling for long menus */
+    padding: 20px;
+}
+
+.mobile-sidebar-menu.active {
+    right: 0; /* Slide in when active */
+}
+
+.mobile-sidebar-menu .close-menu-btn {
+    background: none;
+    border: none;
+    color: var(--nav-text-primary);
+    font-size: 24px;
+    position: absolute; /* Changed to absolute for consistent positioning within menu */
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure it's above menu content */
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.mobile-sidebar-menu .close-menu-btn:hover {
+    background: var(--bg-tertiary);
+}
+
+.mobile-sidebar-menu .mobile-menu-content {
+    padding-top: 40px; /* Space for the close button */
+}
+
+.mobile-sidebar-menu .mobile-nav-cloned {
+    display: flex;
+    flex-direction: column; /* Stack tabs vertically in mobile menu */
+    width: 100%;
+    align-items: flex-start; /* Align tabs to the left */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+    background: none; /* Remove background */
+}
+
+.mobile-sidebar-menu .mobile-nav-cloned .nav-tab {
+    width: 100%; /* Make tabs full width */
+    justify-content: flex-start; /* Align text to left */
+    flex-direction: row; /* Icon and text in a row */
+    padding: 12px 15px; /* Larger tap target */
+    font-size: 1rem;
+    gap: 10px;
+    margin-bottom: 5px; /* Space between items */
+    border-radius: 8px; /* Restore some rounding */
+}
+.mobile-sidebar-menu .mobile-nav-cloned .nav-tab i {
+    margin-bottom: 0;
+}
+
+.mobile-sidebar-menu .mobile-controls-cloned {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--nav-border-primary);
+}
+.mobile-sidebar-menu .mobile-controls-cloned .btn {
+    width: 100%;
+    justify-content: center;
+}
+.mobile-sidebar-menu .mobile-controls-cloned .search-container {
+    width: 100%;
+    max-width: none;
+    padding: 8px;
+    flex-direction: column;
+    align-items: stretch;
+}
+.mobile-sidebar-menu .mobile-controls-cloned .search-input {
+    padding: 12px 40px 12px 15px;
+    margin-bottom: 10px;
+}
+.mobile-sidebar-menu .mobile-controls-cloned #searchScopeSelect {
+    margin-left: 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+/* Mobile sidebar overlay */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    z-index: 999; /* Below the sidebar but above other content */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Allows clicks to pass through by default */
+}
+
+.mobile-sidebar-menu.active + .mobile-menu-overlay {
+    opacity: 1;
+    pointer-events: auto; /* Enable clicks on the overlay when menu is active */
+}
+
+/* Prevent body scrolling when mobile menu/sidebar is open */
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* Handbook mobile toggle */
+.handbook-mobile-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    z-index: 1001;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+body.handbook-overlay-active {
+    overflow: hidden;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--nav-bg-card);
+    border: 1px solid var(--nav-border-primary);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px var(--nav-shadow-light);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 8px 24px var(--nav-shadow-medium);
+}
+
+/* --- New Close Modal Button Styles --- */
+.close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--bg-tertiary); /* Give it a distinct background */
+    border: 1px solid var(--border); /* Add a subtle border */
+    border-radius: 50%; /* Make it round */
+    width: 32px; /* Fixed width */
+    height: 32px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px; /* Larger 'x' */
+    color: var(--text-primary); /* Ensure contrast with primary text color */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10; /* Ensure it's above other content in the modal */
+    box-shadow: var(--shadow-light); /* Subtle shadow */
+}
+
+.close-modal-btn:hover {
+    background: var(--danger); /* Red background on hover for "close" action */
+    color: white; /* White 'x' on hover */
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    border-color: var(--danger);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
+}
+
+/* Media Queries */
+
+@media (max-width: 1200px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        margin: 20px 20px;
+        width: calc(100% - 40px);
+        gap: 20px;
+    }
+    .header-content {
+        padding: 15px 20px;
+    }
+    .main-nav-tabs {
+        padding: 8px 10px;
+        gap: 5px;
+    }
+    .nav-tab {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+    .search-container {
+        min-width: 250px;
+    }
+    .main-content {
+        padding: 20px;
+    }
+    .header-controls-expanded {
+        padding: 15px 20px;
+        gap: 15px;
+    }
+    .header-filter-section, .header-quick-actions {
+        min-width: 200px;
+        padding: 10px 15px;
+    }
+    .evidence-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    .wall-header {
+        padding: 2rem 1rem;
+    }
+    .handbook-container {
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+    }
+    .handbook-content-container {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .nav-tab {
+        padding: 12px 16px;
+        font-size: 0.8rem;
+    }
+    .tab-content {
+        padding: 1rem;
+    }
+    .content-title-heading {
+        font-size: 2rem;
+    }
+    .welcome-content-wrapper {
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    .welcome-heading {
+        font-size: 1.5rem;
+    }
+    .welcome-action-buttons-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .welcome-info-items li {
+        padding: 1rem;
+    }
+    #addCaseStudyModal .modal-content,
+    #editCaseStudyModal .modal-content,
+    #caseStudyPreviewModal .modal-content {
+        max-width: 600px;
+        width: 95%;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        gap: 15px;
+    }
+    .logo-and-title-container {
+        justify-content: center;
+        width: 100%;
+        margin-right: 0;
+    }
+    .controls {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        order: 1;
+    }
+    .search-container {
+        min-width: auto;
+        width: 100%;
+        max-width: 450px;
+        flex-direction: row;
+        padding: 8px;
+    }
+    .search-input {
+        padding: 12px 40px 12px 15px;
+        margin-bottom: 0;
+    }
+    #searchScopeSelect {
+        margin-left: 10px;
+        margin-top: 0;
+        width: auto;
+    }
+    .tools-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+    }
+    .tool-card {
+        padding: 20px;
+    }
+    .tool-title {
+        font-size: 1.05rem;
+    }
+    .tool-url {
+        font-size: 0.75rem;
+    }
+    .pre-templates-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .pre-templates-sidebar {
+        position: static;
+        margin-bottom: 0;
+    }
+    .header-controls-expanded {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+        gap: 15px;
+    }
+    .header-filters-compact,
+    .header-quick-actions-compact {
+        width: 100%;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    .header-filters-compact > label,
+    .header-quick-actions-compact > span {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    .header-filters-compact .form-group-inline,
+    .header-quick-actions-compact .btn-compact {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .header-filters-compact select {
+        width: 100%;
+        min-width: unset;
+    }
+    #dork-assistantTab > div {
+        flex-direction: column;
+    }
+    #dork-assistantTab > div > div {
+        flex: none;
+        width: 100%;
+    }
+    .random-display.single-centered .random-content-wrapper,
+    .random-display.two-columns .random-content-wrapper,
+    .random-display.two-rows .random-content-wrapper {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: none;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .random-display .random-content-wrapper .random-content-card {
+        min-height: 150px;
+    }
+    #caseStudyParentTabs {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+        font-size: 14px;
+    }
+    .dashboard {
+        margin: 15px 10px;
+        width: calc(100% - 20px);
+        gap: 15px;
+    }
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        gap: 10px;
+    }
+    .logo-and-title-container {
+        justify-content: flex-start;
+        width: auto;
+        flex-grow: 1;
+    }
+    .header-text-group {
+        display: none;
+    }
+    .controls {
+        display: none; /* Hide desktop controls */
+        order: unset;
+    }
+    .mobile-menu-toggle {
+        display: block; /* Show mobile menu toggle */
+        order: 2;
+    }
+    .header-logo {
+        height: 50px;
+    }
+    .main-nav-tabs {
+        padding: 4px;
+        border-radius: 10px;
+        margin: 0 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .nav-tab {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        gap: 5px;
+        flex-direction: column;
+        text-align: center;
+        min-width: 65px;
+    }
+    .nav-tab i {
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+    }
+    .sub-nav-tabs {
+        margin: 10px 0;
+        padding: 3px;
+        border-radius: 8px;
+    }
+    .sub-nav-tab {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        min-height: 28px;
+    }
+    .stat-item:nth-child(2n) {
+        border-right: none;
+    }
+    .stat-item:last-child {
+        border-right: none;
+    }
+    .main-content {
+        padding: 15px;
+    }
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .content-title {
+        font-size: 24px;
+        width: 100%;
+        text-align: center;
+    }
+    .content-header .controls {
+        display: flex; /* Re-show controls within content-header, but stack them */
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+    }
+    .content-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Force Grid View on Mobile and Hide List View */
+    .tools-grid {
+        display: grid !important; /* Force grid display */
+        grid-template-columns: 1fr !important; /* Single column grid for tools on mobile */
+        gap: 15px !important; /* Consistent gap */
+    }
+
+    .tools-list {
+        display: none !important; /* Hide the list view container completely on mobile */
+    }
+
+    /* Hide the list view toggle button on mobile */
+    /* Adjust this selector to match your actual list view toggle button/element */
+    .list-view-toggle, /* If you have a specific class for the list toggle */
+    .view-mode-toggle[data-view="list"] { /* If you have a generic toggle with data attributes */
+        display: none !important; /* Important to override any other display rules */
+    }
+
+    /* Ensure the grid view toggle remains visible if it's a separate button */
+    .view-mode-toggle[data-view="grid"] {
+        display: flex !important;
+    }
+    /* End Force Grid View on Mobile */
+
+
+    .tool-card {
+        padding: 15px;
+    }
+    .tool-title {
+        font-size: 15px;
+    }
+    .tool-url {
+        font-size: 10px;
+    }
+    .bulk-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 10px;
+    }
+    .bulk-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .analytics-card {
+        padding: 20px;
+    }
+    .analytics-value {
+        font-size: 2.5rem;
+    }
+    .analytics-list li {
+        font-size: 13px;
+        padding: 8px 0;
+    }
+    .threat-item {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    .threat-header h4 {
+        font-size: 1.1em;
+    }
+    .threat-level {
+        font-size: 0.7em;
+        padding: 3px 8px;
+    }
+    .modal-content {
+        padding: 25px;
+        border-radius: 12px;
+    }
+    .form-group label {
+        font-size: 0.9em;
+        margin-bottom: 8px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+    .btn {
+        padding: 10px 15px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+    .btn2 {
+        padding: 10px 15px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+    .toast {
+        max-width: calc(100% - 40px);
+        margin: 0 auto;
+        text-align: center;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .handbook-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin: 0;
+        width: 100%;
+    }
+    .handbook-sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        bottom: 0;
+        width: 300px;
+        z-index: 1000;
+        border-radius: 0;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        background: var(--nav-bg-card);
+        border-right: 1px solid var(--nav-border-primary);
+        box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+    }
+    .handbook-sidebar.mobile-open {
+        left: 0;
+    }
+    .handbook-mobile-toggle {
+        display: flex;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1001;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    body.handbook-overlay-active {
+        overflow: hidden;
+    }
+    .handbook-content-container {
+        padding: 15px;
+        margin-top: 0;
+        width: 100%;
+    }
+    .notes-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .notes-search-container {
+        margin-left: 0;
+        width: 100%;
+        order: 1;
+    }
+    .new-note-btn {
+        width: 100%;
+        justify-content: center;
+        order: 3;
+    }
+    #noteSortFilter {
+        width: 100%;
+        order: 2;
+    }
+    .notes-grid {
+        grid-template-columns: 1fr;
+    }
+    .note-editor-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .formatting-toolbar {
+        padding: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3px;
+    }
+    .formatting-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    #intelligenceVaultParentTabs,
+    #customVaultEntryParentTabs {
+        flex-direction: column;
+        width: 100%;
+        margin: 15px 0 0 0;
+        padding: 5px;
+        box-shadow: none;
+        border-radius: 8px;
+    }
+    #intelligenceVaultParentTabs .nav-tab,
+    #customVaultEntryParentTabs .nav-tab {
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 5px;
+        padding: 10px 15px;
+        font-size: 0.8rem;
+        flex-direction: row;
+    }
+    #intelligenceVaultChildTabs,
+    #customVaultEntryChildTabs {
+        flex-direction: column;
+        width: 100%;
+        margin: 10px 0 0 0;
+        padding: 5px;
+        box-shadow: none;
+        border-radius: 8px;
+    }
+    #intelligenceVaultChildTabs .sub-nav-tab,
+    #customVaultEntryChildTabs .sub-nav-tab {
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 5px;
+        padding: 8px 15px;
+        font-size: 0.75rem;
+        flex-direction: row;
+    }
+    .header-filters-compact > label,
+    .header-quick-actions-compact > span {
+        font-size: 14px;
+    }
+    .header-filters-compact select,
+    .header-quick-actions-compact .btn-compact {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    .investigation-wall {
+        padding: 1rem 0;
+    }
+    .evidence-container {
+        padding: 0 1rem;
+    }
+    .evidence-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .evidence-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    .wall-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1rem;
+    }
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+    }
+    .discovery-section {
+        padding: 15px 20px;
+        margin: 20px auto;
+    }
+    /* Removed the problematic .tools-list adjustments for 768px here */
+    #addCaseStudyModal .modal-content,
+    #editCaseStudyModal .modal-content,
+    #caseStudyPreviewModal .modal-content {
+        max-width: 95%;
+        width: 95%;
+        padding: 20px;
+        margin: 10px auto;
+    }
+    #caseStudyPreviewModal .modal-content .form-group label {
+        font-size: 0.9em;
+    }
+    .handbook-controls {
+        flex-wrap: wrap;
+    }
+    .handbook-btn {
+        flex-grow: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 1rem;
+    }
+    .nav-tabs {
+        margin: 0;
+        padding: 4px;
+        border-radius: 10px;
+    }
+    .nav-tab {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+        gap: 4px;
+        flex-direction: column;
+        text-align: center;
+        min-width: 70px;
+    }
+    .nav-tab i {
+        font-size: 0.75rem;
+        margin-bottom: 2px;
+    }
+    .sub-nav-tab {
+        padding: 5px 8px;
+        font-size: 0.7rem;
+        min-height: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard {
+        margin: 10px 5px;
+        width: calc(100% - 10px);
+        gap: 10px;
+    }
+    .header-content {
+        padding: 8px 10px;
+    }
+    .header-logo {
+        height: 40px;
+    }
+    .main-nav-tabs {
+        margin: 0 5px;
+        padding: 3px;
+    }
+    .nav-tab {
+        padding: 6px 8px;
+        font-size: 0.65rem;
+        min-width: 60px;
+    }
+    .sub-nav-tabs {
+        margin: 8px 0;
+        padding: 2px;
+    }
+    .sub-nav-tab {
+        padding: 4px 8px;
+        font-size: 0.6rem;
+        min-height: 25px;
+    }
+    #intelligenceVaultParentTabs .nav-tab,
+    #customVaultEntryParentTabs .nav-tab,
+    #intelligenceVaultChildTabs .sub-nav-tab,
+    #customVaultEntryChildTabs .sub-nav-tab {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+        margin-bottom: 3px;
+    }
+    .main-content {
+        padding: 10px;
+    }
+    .content-title {
+        font-size: 20px;
+    }
+    .tool-card {
+        padding: 10px;
+    }
+    .tool-title {
+        font-size: 14px;
+    }
+    .tool-url {
+        font-size: 9px;
+    }
+    .tag {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+    }
+    .modal-content {
+        padding: 20px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+        padding: 8px;
+        font-size: 12px;
+    }
+    .btn, .btn2 {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    .notes-empty-state, .empty-state {
+        padding: 30px 10px;
+    }
+    .notes-empty-state h3, .empty-state h3 {
+        font-size: 1.2em;
+    }
+    .notes-empty-state p, .empty-state p {
+        font-size: 0.85em;
+    }
+    .notes-empty-state i, .empty-state i {
+        font-size: 48px;
+    }
+    .theme-toggle, .handbook-mobile-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    #desktopRecommendationModal .modal-content {
+        padding: 20px;
+    }
+    #desktopRecommendationModal h3 {
+        font-size: 18px;
+    }
+    #desktopRecommendationModal p {
+        font-size: 13px;
+    }
+    .dork-subtab-content > div {
+        flex-direction: column;
+    }
+    .dork-subtab-content > div > div {
+        width: 100%;
+        max-width: none;
+    }
+    .pre-templates-sidebar .category-item {
+        flex-direction: row;
+        text-align: left;
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+    .pre-templates-sidebar .category-item i {
+        font-size: 1em;
+        margin-right: 5px;
+    }
+    .pre-templates-sidebar .category-item span {
+        flex-grow: 1;
+    }
+    .pre-templates-sidebar .category-item .template-count {
+        font-size: 0.7em;
+        padding: 2px 6px;
+    }
+    .dork-operator-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    #savedQueriesSearch, #preTemplateSearchInput {
+        max-width: 100%;
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
+    .content-header .controls button {
+        margin-right: 0 !important;
+        width: 100%;
+    }
+    .wall-header {
+        padding: 1.5rem 1rem;
+    }
+    .section-title {
+        font-size: clamp(1.8rem, 8vw, 3rem);
+        margin-bottom: 0.8rem;
+    }
+    .section-subtitle {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        margin-top: 1rem;
+    }
+    .evidence-container {
+        padding: 0 1rem;
+    }
+    .evidence-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .evidence-card {
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+        margin-right: 0.8rem;
+    }
+    .card-title {
+        font-size: 1rem;
+    }
+    .card-content {
+        font-size: 0.9rem;
+    }
+    .highlight {
+        font-size: 0.8rem;
+        padding: 1px 6px;
+    }
+    #customVaultButtonsRow .btn {
+        padding: 8px 10px;
+        font-size: 11px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .discovery-section {
+        padding: 10px 15px;
+        margin: 15px auto;
+    }
+    .random-display .random-display-header {
+        font-size: 0.9em;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .random-display .random-display-header .header-icon {
+        font-size: 1.5em;
+    }
+    .random-display .random-display-header .header-text {
+        font-size: 1.1em;
+    }
+    .random-content-card {
+        padding: 10px;
+        min-height: 120px;
+    }
+    .random-content-card .card-title {
+        font-size: 1em;
+    }
+    .random-content-card .card-description {
+        font-size: 0.85em;
+    }
+    .random-content-card .card-link {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+    .handbook-content-container {
+        padding: 15px;
+    }
+    .handbook-content h2 {
+        font-size: 24px;
+    }
+    .handbook-content h3 {
+        font-size: 20px;
+    }
+    .note-editor-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .formatting-toolbar {
+        padding: 8px;
+        gap: 3px;
+    }
+    .formatting-btn {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Landscape orientation for small phones */
+@media (max-width: 500px) and (orientation: landscape) {
+    .nav-tabs.main-nav-tabs {
+        justify-content: flex-start;
+    }
+}

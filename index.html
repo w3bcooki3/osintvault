@@ -31,6 +31,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="./favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/osintDocs.css">
+    <link rel="stylesheet" href="./css/responsive.css">
 
 </head>
     <body>
@@ -70,9 +72,6 @@
                     <button class="btn btn-secondary" id="shareOptionsBtn">
                         <i class="fas fa-share-alt"></i>
                         Share
-                    </button>
-                    <button class="btn btn-secondary" id="osintrixRedirectBtn">
-                        <i class="fas fa-project-diagram"></i> OSINTrix
                     </button>
                     <button class="btn btn-secondary" id="themeToggle">
                         <i class="fas fa-moon"></i>
@@ -148,9 +147,13 @@
                         OSINT Handbook & Notes
                     </button>
                     <button class="nav-tab" data-tab="case-studies">
-                        <i class="fas fa-book-reader"></i> 
-                        Case Studies
+                        <i class="fas fa-book-reader"></i> Case Studies
                     </button>
+                    <button class="nav-tab" data-tab="osint-docs">
+                        <i class="fas fa-graduation-cap"></i> 
+                        OSINT Docs
+                    </button>
+
                 </div>
 
                 <div class="bulk-actions" id="bulkActions">
@@ -882,6 +885,8 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="tab-content" id="osint-docsTab"></div>
 
             </div>
         </div>
@@ -3841,43 +3846,6 @@
         </div>
     </div>
 
-    <div class="modal" id="osintrixRedirectModal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 20px; color: var(--primary);"><i class="fas fa-project-diagram"></i> Redirecting to <span class="osintrix-highlight">OSINTrix</span>: Your OSINT Graph Visualizer</h3>
-            <p style="margin-bottom: 15px; color: var(--text-primary);">
-                <span class="osintrix-highlight">OSINTrix</span> is a powerful, browser-based Graph Visualizer designed for personal cyber investigations, threat intelligence, and crypto forensics. Built entirely with HTML, CSS, and vanilla JavaScript, it requires no frameworks or servers, running completely offline for maximum privacy and control.
-            </p>
-            <p style="margin-bottom: 15px; color: var(--text-primary);">
-                It's ideal for visualizing connections between entities like people, domains, IPs, wallet addresses, and more.
-            </p>
-            <h4 style="margin-top: 20px; margin-bottom: 10px; color: var(--accent);">Key Features:</h4>
-            <ul style="list-style-type: disc; margin-left: 20px; margin-bottom: 15px; color: var(--text-secondary);">
-                <li>
-                    <strong>Interactive Graph:</strong> Utilizes Cytoscape.js for smooth drag, zoom, and pan functionality. It supports rich context menus for editing, deleting, connecting, and highlighting nodes, and can find shortest/all paths between entities. You can also group and collapse related nodes.
-                </li>
-                <li>
-                    <strong>Detailed Panels:</strong> Includes a Node Detail Panel for metadata, images, and links; an Entity List Panel for filtering and auto-updates; and a Resizable Notes Panel with rich text support.
-                </li>
-                <li>
-                    <strong>Data Lookup Links:</strong> Provides quick-access links to external OSINT tools and resources based on the selected entity type (e.g., email lookup, domain WHOIS, wallet explorers).
-                </li>
-                <li>
-                    <strong>Dorking Assistant:</strong> Build and launch advanced Google, Shodan, or Bing dorks for tasks like finding login panels, leaked databases, or domain footprints. It comes with prebuilt templates and a custom query builder.
-                </li>
-                <li>
-                    <strong>Comprehensive Search & Utilities:</strong> Offers global search across all node data, filtering by entity type, and highlighting results. You can also save/load graphs to local JSON, export full graphs with base64 images, and utilize undo/redo and theme toggles.
-                </li>
-            </ul>
-            <p style="margin-bottom: 25px; color: var(--text-secondary);">
-                Click "Proceed" to open <span class="osintrix-highlight">OSINTrix</span> in a new tab and begin visualizing your cyber investigations, or "Stay Here" to remain in OSINTVault.
-            </p>
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" id="cancelOsintrixRedirect">Stay Here</button>
-                <button type="button" class="btn btn-primary" id="confirmOsintrixRedirect">Proceed</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         let appState = {
             tools: [], // Will be loaded from tools.json
@@ -3941,6 +3909,8 @@
             sharedEntryIds: [],
             hasUnsavedChanges: false,
             handbookData: { sections: [] },
+            osintDocsStructure: [], // ADD THIS LINE
+            osintDocsContentMap: {}, // ADD THIS LINE
         };
         // --- End of appState definition --- //
 
@@ -4533,23 +4503,23 @@
             const toolsContainer = document.getElementById('toolsGrid');
             const customTabToolsContainer = document.getElementById('customTabToolsGrid');
             const intelligenceVaultEntriesContainer = document.getElementById('intelligenceVaultEntries');
-            const caseStudiesGridContainer = document.getElementById('caseStudiesGrid'); 
+            const caseStudiesGridContainer = document.getElementById('caseStudiesGrid');
             const emptyState = document.getElementById('emptyState'); // General empty state
             const emptyCustomTabState = document.getElementById('emptyCustomTabState'); // Empty state for custom-tabs (if no custom vaults exist)
             const emptyCurrentCustomTabState = document.getElementById('emptyCurrentCustomTabState'); // Empty state for a specific custom vault (if it has no entries)
             const emptyIntelligenceVaultState = document.getElementById('emptyIntelligenceVaultState'); // Empty state for Intelligence Vault
-            const emptyCaseStudyState = document.getElementById('emptyCaseStudyState'); 
+            const emptyCaseStudyState = document.getElementById('emptyCaseStudyState');
 
             // Hide all empty states and containers initially
             toolsContainer.style.display = 'none';
             customTabToolsContainer.style.display = 'none';
             intelligenceVaultEntriesContainer.style.display = 'none';
-            if (caseStudiesGridContainer) caseStudiesGridContainer.style.display = 'none'; 
+            if (caseStudiesGridContainer) caseStudiesGridContainer.style.display = 'none';
             emptyState.style.display = 'none';
             emptyCustomTabState.style.display = 'none';
             emptyCurrentCustomTabState.style.display = 'none';
             emptyIntelligenceVaultState.style.display = 'none';
-            if (emptyCaseStudyState) emptyCaseStudyState.style.display = 'none'; 
+            if (emptyCaseStudyState) emptyCaseStudyState.style.display = 'none';
 
 
             // Also hide all tab containers by default, they will be explicitly shown below
@@ -4557,18 +4527,27 @@
             const intelligenceVaultChildTabs = document.getElementById('intelligenceVaultChildTabs');
             const customVaultEntryParentTabs = document.getElementById('customVaultEntryParentTabs');
             const customVaultEntryChildTabs = document.getElementById('customVaultEntryChildTabs');
-            const caseStudyParentTabs = document.getElementById('caseStudyParentTabs'); 
+            const caseStudyParentTabs = document.getElementById('caseStudyParentTabs');
 
             if (intelligenceVaultParentTabs) intelligenceVaultParentTabs.style.display = 'none';
             if (intelligenceVaultChildTabs) intelligenceVaultChildTabs.style.display = 'none';
             if (customVaultEntryParentTabs) customVaultEntryParentTabs.style.display = 'none';
             if (customVaultEntryChildTabs) customVaultEntryChildTabs.style.display = 'none';
-            if (caseStudyParentTabs) caseStudyParentTabs.style.display = 'none'; 
+            if (caseStudyParentTabs) caseStudyParentTabs.style.display = 'none';
 
             let filteredEntries = filterEntries();
 
             let targetContainer = null;
             let currentEmptyState = null;
+            let currentViewMode = appState.viewMode; // Default to general view mode
+            let currentCaseStudyViewMode = appState.caseStudyViewMode; // Specific for case studies
+
+            // Force to grid on mobile
+            if (isMobileScreen()) {
+                currentViewMode = 'grid';
+                currentCaseStudyViewMode = 'grid';
+            }
+
 
             if (appState.currentTab === 'intelligence-vault') {
                 targetContainer = intelligenceVaultEntriesContainer;
@@ -4585,22 +4564,22 @@
                     targetContainer.style.display = 'none';
                 } else {
                     currentEmptyState.style.display = 'none';
-                    targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+                    // Use the determined viewMode here
+                    targetContainer.style.display = currentViewMode === 'grid' ? 'grid' : 'flex';
                 }
 
             } else if (appState.currentTab === 'custom-tabs') {
                 targetContainer = customTabToolsContainer;
 
-                // Only show parent/child entry tabs if there's an active custom vault selected
                 if (appState.customTabs.length === 0) {
                     emptyCustomTabState.style.display = 'block';
-                    document.getElementById('addEntryBtnCustomVault').style.display = 'none'; // Hide add entry button if no custom tabs
+                    document.getElementById('addEntryBtnCustomVault').style.display = 'none';
                     return;
                 } else {
-                    emptyCustomTabState.style.display = 'none'; // Hide global empty state if custom tabs exist
+                    emptyCustomTabState.style.display = 'none';
                 }
 
-                if (appState.currentCustomTab) { // If a specific custom vault is selected
+                if (appState.currentCustomTab) {
                     if (customVaultEntryParentTabs) customVaultEntryParentTabs.style.display = 'flex';
                     if (appState.currentCustomVaultEntrySubTab && customVaultEntryChildTabs) {
                         customVaultEntryChildTabs.style.display = 'flex';
@@ -4609,46 +4588,46 @@
 
 
                     if (filteredEntries.length === 0) {
-                        emptyCurrentCustomTabState.style.display = 'block'; // Show empty state for selected custom tab
+                        emptyCurrentCustomTabState.style.display = 'block';
                         targetContainer.style.display = 'none';
                     } else {
                         emptyCurrentCustomTabState.style.display = 'none';
-                        targetContainer.style.display = appState.viewMode === 'grid' ? 'grid' : 'flex';
+                        // Use the determined viewMode here
+                        targetContainer.style.display = currentViewMode === 'grid' ? 'grid' : 'flex';
                     }
-                } else { // No specific custom vault selected, but custom tabs exist
-                    emptyCurrentCustomTabState.style.display = 'block'; // Show empty state for selected custom tab
+                } else {
+                    emptyCurrentCustomTabState.style.display = 'block';
                     targetContainer.style.display = 'none';
                 }
 
 
-            } else if (appState.currentTab === 'case-studies') { 
+            } else if (appState.currentTab === 'case-studies') {
                 targetContainer = caseStudiesGridContainer;
                 currentEmptyState = emptyCaseStudyState;
-                if (caseStudyParentTabs) caseStudyParentTabs.style.display = 'flex'; // Ensure category tabs are visible
+                if (caseStudyParentTabs) caseStudyParentTabs.style.display = 'flex';
 
                 if (filteredEntries.length === 0) {
                     currentEmptyState.style.display = 'block';
                     targetContainer.style.display = 'none';
                 } else {
                     currentEmptyState.style.display = 'none';
-                    targetContainer.style.display = appState.caseStudyViewMode === 'grid' ? 'grid' : 'flex'; // Use caseStudyViewMode
+                    // Use the determined caseStudyViewMode here
+                    targetContainer.style.display = currentCaseStudyViewMode === 'grid' ? 'grid' : 'flex';
                 }
             }
-            // For other tabs (analytics, threats, handbook), no entries are rendered in this function.
 
-            // Set the appropriate class based on viewMode
-            if (targetContainer) { // Only apply if a container is actually being targeted
+            if (targetContainer) {
                 if (appState.currentTab === 'case-studies') {
-                    if (appState.caseStudyViewMode === 'grid') {
+                    if (currentCaseStudyViewMode === 'grid') { // Use currentCaseStudyViewMode
                         targetContainer.classList.remove('tools-list');
                         targetContainer.classList.add('tools-grid');
                     } else {
                         targetContainer.classList.remove('tools-grid');
                         targetContainer.classList.add('tools-list');
                     }
-                    targetContainer.innerHTML = filteredEntries.map(entry => createCaseStudyCard(entry)).join(''); // Use specific card renderer
-                } else { // Existing logic for other tabs (tools, custom vaults)
-                    if (appState.viewMode === 'grid') {
+                    targetContainer.innerHTML = filteredEntries.map(entry => createEntryCard(entry)).join(''); // MODIFIED: Use createEntryCard as it's now universal
+                } else {
+                    if (currentViewMode === 'grid') { // Use currentViewMode
                         targetContainer.classList.remove('tools-list');
                         targetContainer.classList.add('tools-grid');
                     } else {
@@ -4659,32 +4638,65 @@
                 }
             }
 
-            // Update view toggle button text based on appState.viewMode
+            // Update view toggle button text based on appState.viewMode (they might be hidden by CSS but still update for consistency)
             const viewToggleButton = document.getElementById('viewToggle');
             const vaultViewToggleButton = document.getElementById('vaultViewToggle');
             const customVaultViewToggleButton = document.getElementById('customVaultViewToggle');
-            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle'); 
+            const caseStudyViewToggleButton = document.getElementById('caseStudyViewToggle');
 
-            if (viewToggleButton) { // General button, might be used for old 'tools' tab or as a fallback
-                if (appState.viewMode === 'grid') viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                else viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+            if (viewToggleButton) {
+                // Force text to "List View" if mobile (meaning it will only show grid)
+                if (isMobileScreen()) {
+                    viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    viewToggleButton.title = 'Switch to List View';
+                } else if (appState.viewMode === 'grid') {
+                    viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    viewToggleButton.title = 'Switch to List View';
+                } else {
+                    viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    viewToggleButton.title = 'Switch to Grid View';
+                }
             }
-            if (vaultViewToggleButton) { // Intelligence Vault button
-                if (appState.viewMode === 'grid') vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                else vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+            if (vaultViewToggleButton) {
+                if (isMobileScreen()) {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    vaultViewToggleButton.title = 'Switch to List View';
+                } else if (appState.viewMode === 'grid') {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    vaultViewToggleButton.title = 'Switch to List View';
+                } else {
+                    vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    vaultViewToggleButton.title = 'Switch to Grid View';
+                }
             }
-            if (customVaultViewToggleButton) { // Multi-Vault button
-                if (appState.viewMode === 'grid') customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                else customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+            if (customVaultViewToggleButton) {
+                if (isMobileScreen()) {
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    customVaultViewToggleButton.title = 'Switch to List View';
+                } else if (appState.viewMode === 'grid') {
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    customVaultViewToggleButton.title = 'Switch to List View';
+                } else {
+                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    customVaultViewToggleButton.title = 'Switch to Grid View';
+                }
             }
-            if (caseStudyViewToggleButton) { 
-                if (appState.caseStudyViewMode === 'grid') caseStudyViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                else caseStudyViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+            if (caseStudyViewToggleButton) {
+                if (isMobileScreen()) {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    caseStudyViewToggleButton.title = 'Switch to List View';
+                } else if (appState.caseStudyViewMode === 'grid') { // Use caseStudyViewMode
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
+                    caseStudyViewToggleButton.title = 'Switch to List View';
+                } else {
+                    caseStudyViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    caseStudyViewToggleButton.title = 'Switch to Grid View';
+                }
             }
+
 
             // New: Apply shared-highlight if in read-only mode and relevant entries are found
             if (appState.readOnlyMode && appState.sharedEntryIds.length > 0) {
-                // Determine if the current view corresponds to the shared scope
                 let shouldHighlight = false;
                 if (appState.sharedTabId === 'allData' || appState.sharedTabId === 'allVault') {
                     shouldHighlight = true;
@@ -4692,18 +4704,17 @@
                     shouldHighlight = true;
                 } else if (appState.currentTab === 'intelligence-vault' && appState.currentIntelligenceVaultChildTab === appState.sharedTabId) {
                     shouldHighlight = true;
-                } else if (appState.currentTab === 'case-studies' && appState.currentCaseStudyCategory === appState.sharedTabId) { 
+                } else if (appState.currentTab === 'case-studies' && appState.currentCaseStudyCategory === appState.sharedTabId) {
                     shouldHighlight = true;
                 }
 
                 if (shouldHighlight) {
-                    // Select the appropriate container based on the current tab
                     let containerToHighlight = null;
                     if (appState.currentTab === 'intelligence-vault') {
                         containerToHighlight = intelligenceVaultEntriesContainer;
                     } else if (appState.currentTab === 'custom-tabs') {
                         containerToHighlight = customTabToolsContainer;
-                    } else if (appState.currentTab === 'case-studies') { 
+                    } else if (appState.currentTab === 'case-studies') {
                         containerToHighlight = caseStudiesGridContainer;
                     }
 
@@ -4718,7 +4729,7 @@
                 }
             }
 
-            saveState(); // Save state after rendering entries
+            saveState();
         }
 
         function filterEntries() {
@@ -5283,60 +5294,6 @@
 
         function bindEvents() {
 
-            // --- NEW OSINTrix Redirect Modal Event Listeners ---
-            const osintrixRedirectBtn = document.getElementById('osintrixRedirectBtn');
-            const osintrixRedirectModal = document.getElementById('osintrixRedirectModal');
-            const cancelOsintrixRedirect = document.getElementById('cancelOsintrixRedirect');
-            const confirmOsintrixRedirect = document.getElementById('confirmOsintrixRedirect');
-
-            if (osintrixRedirectBtn) {
-                osintrixRedirectBtn.addEventListener('click', () => {
-                    if (appState.readOnlyMode) {
-                        showToast("Cannot redirect from a read-only shared view.", "warning");
-                        return;
-                    }
-                    if (osintrixRedirectModal) { // Ensure modal exists before trying to show
-                        osintrixRedirectModal.classList.add('show');
-                        document.body.style.overflow = 'hidden'; // Prevent scrolling background
-                    }
-                });
-            }
-
-            if (cancelOsintrixRedirect) {
-                cancelOsintrixRedirect.addEventListener('click', () => {
-                    if (osintrixRedirectModal) {
-                        osintrixRedirectModal.classList.remove('show');
-                        document.body.style.overflow = ''; // Restore scrolling
-                    }
-                });
-            }
-
-            if (confirmOsintrixRedirect) {
-                confirmOsintrixRedirect.addEventListener('click', () => {
-                    // Replace with the actual URL of your OSINTrix web app
-                    window.open('https://w3bcooki3.github.io/osintrix2/', '_blank'); // IMPORTANT: Update this URL
-                    if (osintrixRedirectModal) {
-                        osintrixRedirectModal.classList.remove('show');
-                        document.body.style.overflow = ''; // Restore scrolling
-                    }
-                });
-            }
-
-            // Close modal if clicking outside content (delegated to modal element itself)
-            // This listener should be on the modal directly, not on its children.
-            // Assuming your `showModal` and `hideModal` functions correctly handle class `show`
-            // and apply `document.body.style.overflow`.
-            if (osintrixRedirectModal) {
-                osintrixRedirectModal.addEventListener('click', (e) => {
-                    if (e.target === osintrixRedirectModal) { // Only close if clicking the backdrop
-                        osintrixRedirectModal.classList.remove('show');
-                        document.body.style.overflow = '';
-                    }
-                });
-            }
-            // --- END NEW OSINTrix Redirect Modal Event Listeners ---
-
-
             // Search functionality
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 appState.filters.search = e.target.value;
@@ -5374,7 +5331,7 @@
             document.getElementById('sortFilter').addEventListener('change', (e) => {
                 appState.filters.sort = e.target.value;
                 renderIntelligenceEntries();
-                if (appState.currentTab === 'case-studies') { 
+                if (appState.currentTab === 'case-studies') {
                     renderCaseStudies();
                 }
             });
@@ -5466,6 +5423,7 @@
                 });
             }
 
+            // Case Study Parent Tabs (Delegation)
             const caseStudyParentTabsContainer = document.getElementById('caseStudyParentTabs');
             if (caseStudyParentTabsContainer) {
                 caseStudyParentTabsContainer.addEventListener('click', (e) => {
@@ -5481,13 +5439,13 @@
             document.getElementById('toolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('customTabToolsGrid').addEventListener('click', handleEntryAction);
             document.getElementById('intelligenceVaultEntries').addEventListener('click', handleEntryAction);
-            document.getElementById('caseStudiesGrid').addEventListener('click', handleEntryAction); 
+            document.getElementById('caseStudiesGrid').addEventListener('click', handleEntryAction);
 
             // Event delegation for bulk selection checkboxes
             document.getElementById('toolsGrid').addEventListener('change', handleBulkSelection);
             document.getElementById('customTabToolsGrid').addEventListener('change', handleBulkSelection);
             document.getElementById('intelligenceVaultEntries').addEventListener('change', handleBulkSelection);
-            document.getElementById('caseStudiesGrid').addEventListener('change', handleBulkSelection); 
+            document.getElementById('caseStudiesGrid').addEventListener('change', handleBulkSelection);
 
             // Modal controls (Add New Entry) - specific to Multi-Vault now
             document.getElementById('addEntryBtnCustomVault').addEventListener('click', () => {
@@ -5594,13 +5552,27 @@
             document.getElementById('exportBtn').addEventListener('click', exportData);
 
             // View toggle (Grid/List)
-            document.getElementById('viewToggle').addEventListener('click', toggleViewMode);
-            // Intelligence Vault View Toggle
-            document.getElementById('vaultViewToggle').addEventListener('click', toggleViewMode);
-            //Multi Vault View Toggle
-            document.getElementById('customVaultViewToggle').addEventListener('click', toggleViewMode);
-
-            document.getElementById('caseStudyViewToggle').addEventListener('click', toggleCaseStudyViewMode);
+            // --- START OF MODIFICATION for hiding/disabling view toggles on mobile ---
+            const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle, #caseStudyViewToggle');
+            viewToggleButtons.forEach(btn => {
+                // Initially hide list view buttons if on mobile.
+                // The CSS will also handle this, but this adds a JS layer of control.
+                if (isMobileScreen()) {
+                    if (btn.id === 'viewToggle' || btn.id === 'vaultViewToggle' || btn.id === 'customVaultViewToggle' || btn.id === 'caseStudyViewToggle') {
+                        // If it's a list view button (e.g. current text shows "List View" means it's offering to switch to list)
+                        // Or if it's explicitly named to toggle to list
+                        if (btn.textContent.includes('List View') || btn.dataset.view === 'list') { // Check both text content and potential data attribute
+                            btn.style.display = 'none';
+                        }
+                        // Ensure grid view button is visible if it exists and offers grid
+                        if (btn.textContent.includes('Grid View') || btn.dataset.view === 'grid') { // Check both text content and potential data attribute
+                            btn.style.display = 'inline-flex'; // Or 'block' depending on its default display
+                        }
+                    }
+                }
+                btn.addEventListener('click', toggleViewMode); // Keep click listener to handle changes
+            });
+            // --- END OF MODIFICATION ---
 
             // Custom Sub-tab buttons
             document.getElementById('createSubTabBtn').addEventListener('click', () => showCreateSubTabModal());
@@ -5699,17 +5671,12 @@
 
                     const mobileSidebarMenu = document.getElementById('mobileSidebarMenu');
                     if (!mobileSidebarMenu) {
-                        // This block should ideally create the menu if it doesn't exist.
-                        // However, the menu's HTML structure is already in the document, just hidden.
-                        // Re-creating it here would duplicate elements.
-                        // The correct approach is to populate the *existing* mobile menu.
                         console.error("Mobile sidebar menu element not found. Please ensure #mobileSidebarMenu is in HTML.");
-                        return; // Exit to prevent errors if element missing
+                        return;
                     }
 
-                    // Populate the mobile menu content when opened
                     const mobileMenuContent = mobileSidebarMenu.querySelector('.mobile-menu-content');
-                    mobileMenuContent.innerHTML = ''; // Clear existing content before populating
+                    mobileMenuContent.innerHTML = '';
 
                     const navClonedContainer = document.createElement('div');
                     navClonedContainer.classList.add('mobile-nav-cloned');
@@ -5799,7 +5766,7 @@
                     document.body.classList.add('no-scroll');
 
                     mobileSidebarMenu.querySelector('.close-menu-btn').addEventListener('click', closeMobileMenu);
-                    mobileMenuOverlay.addEventListener('click', closeMobileMenu); // Close when clicking overlay
+                    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
                 });
             }
         }
@@ -8368,49 +8335,38 @@
             return text;
         }
 
-        // Toggle Grid/List View
+        // Toggle Grid/List View for intelligence vault and custom vault entries
         function toggleViewMode() {
-            if (appState.readOnlyMode) { // New: Prevent actions in read-only mode
+            if (appState.readOnlyMode) {
                 showToast("Cannot change view mode in read-only shared view.", "warning");
                 return;
             }
+            // If on a mobile screen, always force grid and show a message
+            if (isMobileScreen()) {
+                appState.viewMode = 'grid'; // Ensure appState is set to grid
+                localStorage.setItem('viewMode', 'grid');
+                showToast("List View is not available on mobile. Displaying Grid View.", "info");
+                renderIntelligenceEntries(); // Re-render to ensure grid is active
+                return; // Exit the function to prevent further logic
+            }
+
+            // Original desktop logic:
             appState.viewMode = appState.viewMode === 'grid' ? 'list' : 'grid';
             localStorage.setItem('viewMode', appState.viewMode); // Save view mode preference
 
-            // Update text and icon for both toggle buttons
-            const viewToggleButton = document.getElementById('viewToggle');
-            const vaultViewToggleButton = document.getElementById('vaultViewToggle');
-            const customVaultViewToggleButton = document.getElementById('customVaultViewToggle'); 
+            // Update text and icon for all relevant toggle buttons
+            const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle');
+            viewToggleButtons.forEach(btn => {
+                if (appState.viewMode === 'grid') {
+                    btn.innerHTML = '<i class="fas fa-list"></i> List View';
+                    btn.title = 'Switch to List View';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    btn.title = 'Switch to Grid View';
+                }
+            });
 
-            if (appState.viewMode === 'grid') {
-                if (viewToggleButton) {
-                    viewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                    viewToggleButton.title = 'Switch to List View';
-                }
-                if (vaultViewToggleButton) {
-                    vaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                    vaultViewToggleButton.title = 'Switch to List View';
-                }
-                if (customVaultViewToggleButton) { 
-                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-list"></i> List View';
-                    customVaultViewToggleButton.title = 'Switch to List View';
-                }
-            } else {
-                if (viewToggleButton) {
-                    viewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
-                    viewToggleButton.title = 'Switch to Grid View';
-                }
-                if (vaultViewToggleButton) {
-                    vaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
-                    vaultViewToggleButton.title = 'Switch to Grid View';
-                }
-                if (customVaultViewToggleButton) { 
-                    customVaultViewToggleButton.innerHTML = '<i class="fas fa-th"></i> Grid View';
-                    customVaultViewToggleButton.title = 'Switch to Grid View';
-                }
-            }
-
-            renderIntelligenceEntries(); // This function will now apply the correct view to the active tab's grid/list.
+            renderIntelligenceEntries();
             showToast(`Switched to ${appState.viewMode} view.`);
         }
 
@@ -8879,29 +8835,33 @@
             }
         }
 
-        // MODIFIED: performReset to include caseStudies in reset
         async function performReset() {
             if (appState.readOnlyMode) return;
 
             localStorage.removeItem('osintArsenalState');
             localStorage.removeItem('osintNotes');
             localStorage.removeItem('osintDorkSavedQueries');
-            localStorage.removeItem('osintCaseStudies'); 
+            localStorage.removeItem('osintCaseStudies');
+            localStorage.removeItem('osintDocsData'); // ADD THIS LINE for OSINT Docs data
 
             localStorage.removeItem('viewMode');
             localStorage.removeItem('theme');
             localStorage.removeItem('noteSortFilter');
-            localStorage.removeItem('caseStudyViewMode'); 
+            localStorage.removeItem('caseStudyViewMode');
+            localStorage.removeItem('osintDocsCurrentSection'); // Consider if you want to save/restore the last viewed doc section
+            localStorage.removeItem('osintDocsCurrentSubsection'); // Consider if you want to save/restore the last viewed doc subsection
+
 
             hideModal('resetConfirmModal');
             showToast('Intelligence Vault has been reset to default!', 'success');
 
-            const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies] = await Promise.all([ // MODIFIED
+            // MODIFIED: Include fetchedOsintDocsData in the Promise.all for resetting
+            const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies, fetchedDorkTemplates, fetchedOsintDocsData] = await Promise.all([
                 fetchJsonData('tools.json'),
                 fetchJsonData('handbookData.json'),
                 fetchJsonData('caseStudies.json'),
-                fetchJsonData('dorkTemplates.json')
-
+                fetchJsonData('dorkTemplates.json'),
+                fetchJsonData('osintDocsData.json')
             ]);
 
             appState = {
@@ -8940,7 +8900,7 @@
                 honeypots: [],
                 exploits: [],
                 publicRecords: [],
-                caseStudies: fetchedCaseStudies.map(cs => ({ 
+                caseStudies: fetchedCaseStudies.map(cs => ({
                     ...cs,
                     id: cs.id || generateId(),
                     publishedDate: new Date(cs.publishedDate),
@@ -8960,7 +8920,7 @@
                 currentCustomTab: null,
 
                 notesState: { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' },
-                dorkAssistantState: { // Make sure this is present
+                dorkAssistantState: {
                     keywords: '',
                     customInput: '',
                     engine: 'google',
@@ -8977,7 +8937,7 @@
                 filters: { category: '', search: '', sort: 'name', searchScope: 'currentTab' },
                 theme: 'dark',
                 viewMode: 'grid', // General viewMode
-                caseStudyViewMode: 'grid', 
+                caseStudyViewMode: 'grid',
                 usageStats: { toolsUsedToday: 0 },
                 currentTab: 'welcome',
                 currentIntelligenceVaultParentTab: 'generalAndCore',
@@ -8986,11 +8946,16 @@
                 currentCustomVaultEntrySubTab: 'tool',
                 currentHandbookSubTab: 'handbook',
                 currentHandbookSection: null,
-                currentCaseStudyCategory: 'all', 
+                currentCaseStudyCategory: 'all',
                 readOnlyMode: false,
                 sharedTabId: null,
                 sharedEntryIds: [],
-                hasUnsavedChanges: false
+                hasUnsavedChanges: false,
+                // MODIFIED: Reset osintDocs related appState properties
+                osintDocsStructure: fetchedOsintDocsData.docSections || [],
+                osintDocsContentMap: fetchedOsintDocsData.contentMap || {},
+                currentOsintDocsSection: null,
+                currentOsintDocsSubsection: null
             };
 
             saveState();
@@ -9007,6 +8972,7 @@
             initHandbookAndNotes();
             initDorkAssistant();
             initCaseStudies();
+            initOsintDocs(); // Re-initialize OSINT Docs after reset
         }
 
 
@@ -9024,18 +8990,23 @@
             }
         }
 
+        // Function to check if it's a mobile screen (using the same breakpoint as CSS)
+        function isMobileScreen() {
+            return window.matchMedia("(max-width: 768px)").matches;
+        }
 
-
+        // --- Start of initApp ---
         async function initApp() {
             // Load the dork assistant state first
             loadDorkAssistantState();
 
             // Fetch all necessary JSON data concurrently
-            const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies] = await Promise.all([ // MODIFIED
+            const [fetchedDefaultTools, fetchedHandbookData, fetchedCaseStudies, fetchedDorkTemplates, fetchedOsintDocsData] = await Promise.all([
                 fetchJsonData('tools.json'),
                 fetchJsonData('handbookData.json'),
                 fetchJsonData('caseStudies.json'),
-                fetchJsonData('dorkTemplates.json')
+                fetchJsonData('dorkTemplates.json'),
+                fetchJsonData('osintDocsData.json')
             ]);
 
             const savedState = localStorage.getItem('osintArsenalState');
@@ -9050,23 +9021,20 @@
 
             // Initialize all appState properties with their defaults or saved values
             Object.assign(appState, {
-                // Start with tools from localStorage if they exist, and map them correctly.
-                // Then, concat with tools from fetchedDefaultTools that are NOT already in localStorage.
                 tools: (parsedState.tools || []).map(entry => ({
                     ...entry,
                     addedDate: entry.addedDate ? new Date(entry.addedDate) : null,
                     lastUsed: entry.lastUsed || 0,
                     customTabs: entry.customTabs || [],
                     intelligenceVaultCategories: entry.intelligenceVaultCategories || [],
-                    origin: entry.origin || 'user-added' // Mark as user-added if it came from saved state
+                    origin: entry.origin || 'user-added'
                 })).concat(
-                    // Filter fetchedDefaultTools to include only those not present in the saved state
                     fetchedDefaultTools.filter(defaultTool =>
                         !(parsedState.tools || []).some(savedTool => savedTool.id === defaultTool.id)
                     ).map(tool => ({
                         ...tool,
-                        addedDate: new Date(tool.addedDate), // Ensure date is parsed
-                        origin: 'pre-added' // Mark as pre-added
+                        addedDate: new Date(tool.addedDate),
+                        origin: 'pre-added'
                     }))
                 ),
                 emails: parsedState.emails || [],
@@ -9146,8 +9114,8 @@
                         pinned: false
                     }))
                 ),
-                currentCaseStudyCategory: parsedState.currentCaseStudyCategory || 'all', 
-                caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid', 
+                currentCaseStudyCategory: parsedState.currentCaseStudyCategory || 'all',
+                caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid',
 
                 notesState: {
                     notes: (parsedState.notesState && parsedState.notesState.notes || []).map(note => ({
@@ -9202,6 +9170,8 @@
                         )
                     )
                 },
+                osintDocsStructure: fetchedOsintDocsData.docSections || [],
+                osintDocsContentMap: fetchedOsintDocsData.contentMap || {},
 
                 // Other top-level properties
                 selectedEntries: new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []),
@@ -9273,7 +9243,7 @@
                         conversionJustPerformed: false
                     };
                 }
-                // Initialize default caseStudies if no saved data 
+                // Initialize default caseStudies if no saved data
                 if (!appState.caseStudies || appState.caseStudies.length === 0) {
                     appState.caseStudies = fetchedCaseStudies.map(cs => ({
                         ...cs,
@@ -9294,7 +9264,7 @@
                 appState.currentCustomVaultEntrySubTab = 'tool';
                 appState.currentHandbookSubTab = 'handbook';
                 appState.currentHandbookSection = null;
-                appState.currentCaseStudyCategory = 'all'; 
+                appState.currentCaseStudyCategory = 'all';
             }
 
             parseShareableLink();
@@ -9332,9 +9302,17 @@
 
             checkAndShowDesktopRecommendation();
 
-            const validTabs = ['welcome', 'dashboard', 'intelligence-vault', 'custom-tabs', 'handbook', 'dork-assistant', 'case-studies']; // MODIFIED
+            const validTabs = ['welcome', 'dashboard', 'intelligence-vault', 'custom-tabs', 'handbook', 'dork-assistant', 'case-studies', 'osint-docs'];
             if (!validTabs.includes(appState.currentTab)) {
                 appState.currentTab = 'welcome';
+            }
+
+            // Force viewMode to 'grid' if on mobile. This will affect what renderIntelligenceEntries uses.
+            if (isMobileScreen()) {
+                appState.viewMode = 'grid';
+                appState.caseStudyViewMode = 'grid'; // Also force case study view to grid
+                localStorage.setItem('viewMode', 'grid'); // Persist this mobile preference
+                localStorage.setItem('caseStudyViewMode', 'grid');
             }
 
             // Call init functions for each main module AFTER global appState is fully loaded
@@ -9342,23 +9320,25 @@
             initDorkAssistant(); // Always init Dork Assistant
             initHandbookAndNotes(); // Always init Handbook and Notes
             initCaseStudies();
+            initOsintDocs(); // CALL THIS AFTER THE INITIAL switchTab
 
             populateCategoryFilter();
             updateDashboard();
             applyReadOnlyMode();
 
             // Update view toggle buttons based on their respective viewMode states
-            const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle, #caseStudyViewToggle'); // MODIFIED
+            // These buttons will be hidden on mobile by CSS, but this ensures their internal state is correct if they appear
+            const viewToggleButtons = document.querySelectorAll('#viewToggle, #vaultViewToggle, #customVaultViewToggle, #caseStudyViewToggle');
             viewToggleButtons.forEach(btn => {
                 let currentMode = appState.viewMode; // Default to general viewMode
                 if (btn.id === 'caseStudyViewToggle') {
                     currentMode = appState.caseStudyViewMode; // Use specific mode for case studies
                 }
 
-                if (currentMode === 'grid') {
+                if (currentMode === 'grid') { // If the current mode is grid, the button text should offer 'List View'
                     btn.innerHTML = '<i class="fas fa-list"></i> List View';
                     btn.title = 'Switch to List View';
-                } else {
+                } else { // If the current mode is list, the button text should offer 'Grid View'
                     btn.innerHTML = '<i class="fas fa-th"></i> Grid View';
                     btn.title = 'Switch to Grid View';
                 }
@@ -9474,7 +9454,7 @@
 
             window.addEventListener('beforeunload', handleBeforeUnload);
         }
-        // --- End of initApp (full code block) ---//
+        // --- End of initApp ---
 
         // MODIFIED: setupExportOptions to include case studies in export categories
         function setupExportOptions() {
@@ -9855,28 +9835,6 @@
     </script>
 
     <script>
-        // Auto-detect system theme preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-icon').className = 'fas fa-moon';
-        }
-        // Tab functionality
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Remove active class from all tabs
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                this.classList.add('active');
-                
-                // Optional: Add haptic feedback on mobile
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            });
-        });
-    </script>
-    <script>
         // Create floating particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
@@ -9921,11 +9879,6 @@
             });
         });
 
-        // Auto-detect system theme preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-icon').className = 'fas fa-moon';
-        }
 
         // Initialize animations
         document.addEventListener('DOMContentLoaded', function() {
@@ -9976,5 +9929,6 @@
     <script src="./js/dashboard.js"></script>
     <script src="./js/multiVault.js"></script>
     <script src="./js/caseStudies.js"></script>
+    <script src="./js/osintDocs.js"></script>
 </body>
 </html>
