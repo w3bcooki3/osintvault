@@ -139,7 +139,7 @@ This software is provided "as is" for **personal evaluation, testing, and feedba
 * **No Commercial Derivative Works:** You may not create or distribute derivative works of this software for commercial gain.
 * **Feedback Encouraged:** Your feedback is highly valued and will directly contribute to the development of a future professional version.
 
-For any commercial inquiries or to discuss potential partnerships, please contact me via the methods listed in the "Contact" section below.
+For any inquiry, please contact me via the methods listed in the "Contact" section below.
 
 ---
 
