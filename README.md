@@ -101,7 +101,7 @@ OSINTVault packs a punch with a suite of integrated modules designed for efficie
 
 ## 🐞 Known Issues
 
-We're continuously working to improve OSINTVault! Here are some known areas currently under development or review:
+I am continuously working to improve OSINTVault! Here are some known areas currently under development or review:
 
 1.  **Responsiveness Challenges:** Certain parts of the application may not be fully responsive across all device sizes or orientations.
 2.  **Share Link Functionality:** The generated share links may not work consistently for all features or data subsets.
