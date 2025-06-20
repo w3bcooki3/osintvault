@@ -30,9 +30,11 @@ Forget fragmented notes and scattered tools. OSINTVault centralizes your efforts
 
 ---
 
-### ⚠️ **Important Note: Demo Product**
+### ⚠️ **Important Note: Demo Product & Future Plans**
 
-Please be aware that this version of OSINTVault is a **demonstration product**. It showcases core functionalities and a conceptual design. While it is fully functional and can be used by anyone, I have **not yet begun development of a professional, commercial version** as I am actively seeking valuable feedback and comments from users like you. Your input is highly appreciated as this project evolves!
+Please be aware that this version of OSINTVault is a **demonstration product**. It showcases core functionalities and a conceptual design. While it is fully functional and can be used by anyone, it is currently in active development. Your feedback and comments are highly valued and will directly contribute to its evolution!
+
+I am also actively working on a **browser extension** designed to seamlessly integrate with OSINTVault. This extension will make it easier to collect information directly from web pages, store it in a temporary "collection vault," which can then be easily exported and imported into your main OSINTVault application, automatically organizing data within your user-created custom investigation vaults.
 
 ---
 
@@ -125,6 +127,7 @@ While the application provides robust core features, the current content is prim
 
 * **Expanding Default Content:** Adding a wider range of pre-populated tools, more detailed case studies, and extensive OSINT handbook documentation.
 * **Refining Existing Features:** Continuous improvements to existing functionalities based on user feedback and best practices.
+* **Browser Extension Integration:** Development of a browser extension to facilitate easier information collection directly from web pages into a temporary "collection vault," with export and organized import into your main OSINTVault application.
 
 ---
 
@@ -180,7 +183,7 @@ Contributions are welcome! If you have ideas for new features, improvements, or 
 
 **w3bcooki3** - [LinkedIn](https://bit.ly/hirahul)
 
-Project Link: [https://github.com/w3bcooki3/osintvault](https://github.com/w3bcooki3/osintvault)
+Project Link: [https://github.com/w3bcooki3/osintvault](https://bit.ly/hirahul)
 
 ---
 
