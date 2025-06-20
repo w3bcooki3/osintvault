@@ -183,7 +183,7 @@ Contributions are welcome! If you have ideas for new features, improvements, or 
 
 **w3bcooki3** - [LinkedIn](https://bit.ly/hirahul)
 
-Project Link: [https://github.com/w3bcooki3/osintvault](https://bit.ly/hirahul)
+Project Link: [https://github.com/w3bcooki3/osintvault]
 
 ---
 
