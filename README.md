@@ -30,6 +30,12 @@ Forget fragmented notes and scattered tools. OSINTVault centralizes your efforts
 
 ---
 
+### ⚠️ **Important Note: Demo Product**
+
+Please be aware that this version of OSINTVault is a **demonstration product**. It showcases core functionalities and a conceptual design. I am actively working on developing a more professional, fully-featured, and advanced version based on valuable feedback and comments from users like you. Your input is highly appreciated as this project evolves!
+
+---
+
 ## ✨ Key Features
 
 OSINTVault packs a punch with a suite of integrated modules designed for efficiency and control:
@@ -109,7 +115,7 @@ I am continuously working to improve OSINTVault! Here are some known areas curre
 4.  **Global Filter Scope:** The "Quick Actions and Filters" (Pin/Star/Show All) currently apply only to the "Intelligence Vault" tab. Future updates will extend this functionality to all navigation tabs.
 5.  **"My Notes" Saving Behavior:** Notes may be unintentionally saved when attempting to create a new note, even if the "Cancel" action is triggered.
 6.  **Dork Assistant Notifications:** Certain actions within the "Dork Assistant" may trigger duplicate or multiple toast notifications for a single action.
-7.  **Global Search** Global Search does not work in OSINT Handbook and Docs Section.
+7.  **Global Search:** Global Search does not work in OSINT Handbook and Docs Section.
 
 ---
 
@@ -154,7 +160,8 @@ Your OSINTVault will load, initialized with default tools and data, ready for yo
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out on Linkedin https://bit.ly/hirahul
+Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out on [LinkedIn](https://bit.ly/hirahul).
+
 ---
 
 ## 📄 License
@@ -165,7 +172,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## 📧 Contact
 
-**w3bcooki3** - https://bit.ly/hirahul
+**w3bcooki3** - [LinkedIn](https://bit.ly/hirahul)
 
 Project Link: [https://github.com/w3bcooki3/osintvault](https://github.com/w3bcooki3/osintvault)
 
