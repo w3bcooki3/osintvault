@@ -1011,6 +1011,7 @@ function handleSaveDorkQuery(e) {
     saveSavedQueries();
     hideModal('saveDorkQueryModal');
     showToast('Query saved successfully!', 'success');
+    logActivity('created', 'dorkQuery', `Saved new dork query: ${newSavedQuery.name}`, { queryId: newSavedQuery.id, engine: newSavedQuery.engine });
 
     renderSavedQueries();
     switchDorkSubTab('saved-queries');
@@ -1112,12 +1113,21 @@ function executeSavedQuery(queryId) {
  * @param {string} queryId The ID of the saved query to delete.
  */
 function deleteSavedQuery(queryId) {
+    // Find the query to get its name before deletion
+    const queryToDelete = dorkAssistantState.savedQueries.find(q => q.id === queryId);
+
     if (confirm('Are you sure you want to delete this saved query?')) {
         dorkAssistantState.savedQueries = dorkAssistantState.savedQueries.filter(q => q.id !== queryId);
         saveSavedQueries();
         showToast('Saved query deleted!', 'error');
+        // ADD THIS LINE:
+        if (queryToDelete) {
+            logActivity('deleted', 'dorkQuery', `Deleted saved dork query: ${queryToDelete.name}`, { queryId: queryId });
+        } else {
+            logActivity('deleted', 'dorkQuery', `Deleted unknown dork query with ID: ${queryId}`);
+        }
         renderSavedQueries();
-        updateDashboard(); // Update dashboard count
+        updateDashboard();
     }
 }
 

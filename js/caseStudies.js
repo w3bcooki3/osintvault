@@ -564,6 +564,7 @@ async function handleAddCaseStudy(e) {
     hideModal('addCaseStudyModal');
     resetCaseStudyForm('add');
     showToast('Case study added successfully!');
+    logActivity('created', 'caseStudy', `Added new case study: ${newCaseStudy.title}`, { caseStudyId: newCaseStudy.id });
     populateCaseStudyCategories(); // Update categories in case a new one was added
     renderCaseStudies();
     updateDashboard(); // Update counts
@@ -608,6 +609,7 @@ async function handleEditCaseStudy(e) {
 
     if (!caseStudyToEdit) {
         showToast('Error: Case study not found.', 'error');
+        logActivity('failed', 'caseStudy', `Attempted to update non-existent case study with ID: ${id}`);
         return;
     }
 
@@ -635,6 +637,7 @@ async function handleEditCaseStudy(e) {
 
     hideModal('editCaseStudyModal');
     showToast('Case study updated successfully!');
+    logActivity('updated', 'caseStudy', `Updated case study: ${caseStudyToEdit.title}`, { caseStudyId: caseStudyToEdit.id, oldTitle: oldTitle, newTitle: caseStudyToEdit.title });
     populateCaseStudyCategories(); // Update categories in case a new one was added/changed
     renderCaseStudies();
     updateDashboard();

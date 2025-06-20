@@ -239,6 +239,7 @@ function handleCreateSubTab(e) {
     appState.currentCustomTab = newCustomTab.id; // Switch to the newly created tab
     hideModal('createSubTabModal');
     showToast('Custom Vault created successfully!');
+    logActivity('created', 'customVault', `Created new custom vault: ${newCustomTab.name}`, { vaultId: newCustomTab.id, icon: newCustomTab.icon, color: newCustomTab.color });
     renderCustomTabs();
     saveState();
 }
@@ -320,10 +321,12 @@ function handleEditSubTab(e) {
 
         hideModal('editSubTabModal');
         showToast('Custom Vault updated successfully!');
+        logActivity('updated', 'customVault', `Updated custom vault: ${tabToEdit.name}`, { vaultId: tabToEdit.id, newName: tabToEdit.name, newIcon: tabToEdit.icon, newColor: tabToEdit.color });
         renderCustomTabs();
         saveState();
     } else {
         showToast('Error: Custom Vault not found.', 'error');
+        logActivity('failed', 'customVault', `Attempted to update non-existent custom vault with ID: ${editedSubTabId}`);
     }
 }
 
@@ -362,6 +365,7 @@ function handleDeleteSubTab() {
         appState.currentCustomTab = appState.customTabs.length > 0 ? appState.customTabs[0].id : null; // Select first tab or null
 
         showToast('Custom Vault deleted successfully!', 'error');
+        logActivity('deleted', 'customVault', `Deleted custom vault: ${activeCustomTab.name}`, { vaultId: activeCustomTab.id });
         renderCustomTabs();
         saveState();
     }

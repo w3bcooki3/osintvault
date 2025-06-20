@@ -208,6 +208,63 @@ body.handbook-overlay-active {
     box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* More pronounced shadow */
 }
 
+/* Case Studies List View Responsive Fixes */
+.tools-list .tool-card {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+}
+
+.tools-list .tool-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.tools-list .tool-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.tools-list .tool-url {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.tools-list .tool-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.tools-list .tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.tools-list .tag {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: var(--primary-transparent);
+    color: var(--primary);
+}
+
 /* Media Queries */
 
 @media (max-width: 1200px) {
@@ -400,6 +457,22 @@ body.handbook-overlay-active {
     #caseStudyParentTabs {
         justify-content: center;
     }
+
+    /* Case Studies List View - Tablet */
+    .tools-list .tool-card {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .tools-list .tool-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .tools-list .tool-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
 }
 
 @media (max-width: 768px) {
@@ -505,15 +578,104 @@ body.handbook-overlay-active {
         gap: 15px !important; /* Consistent gap */
     }
 
+    /* Case Studies List View - Mobile Responsive */
     .tools-list {
-        display: none !important; /* Hide the list view container completely on mobile */
+        display: flex !important; /* Allow list view on mobile for case studies */
+        flex-direction: column !important;
+        gap: 12px !important;
     }
 
-    /* Hide the list view toggle button on mobile */
-    /* Adjust this selector to match your actual list view toggle button/element */
-    .list-view-toggle, /* If you have a specific class for the list toggle */
-    .view-mode-toggle[data-view="list"] { /* If you have a generic toggle with data attributes */
-        display: none !important; /* Important to override any other display rules */
+    .tools-list .tool-card {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 15px !important;
+        gap: 12px !important;
+        border-radius: 8px !important;
+        background: var(--bg-secondary) !important;
+        border: 1px solid var(--border) !important;
+        margin-bottom: 0 !important;
+    }
+
+    .tools-list .tool-header {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .tools-list .tool-title {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: var(--text-primary) !important;
+        line-height: 1.3 !important;
+        flex-wrap: wrap !important;
+    }
+
+    .tools-list .tool-title .bulk-checkbox {
+        margin-right: 5px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .tools-list .tool-title .tool-favicon {
+        width: 16px !important;
+        height: 16px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .tools-list .tool-url {
+        font-size: 0.8rem !important;
+        color: var(--text-secondary) !important;
+        word-break: break-all !important;
+        line-height: 1.3 !important;
+    }
+
+    .tools-list .tool-actions {
+        display: flex !important;
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        margin-top: 8px !important;
+    }
+
+    .tools-list .tool-actions .action-btn {
+        padding: 6px 8px !important;
+        font-size: 0.8rem !important;
+        border-radius: 4px !important;
+        min-width: 32px !important;
+        height: 32px !important;
+    }
+
+    .tools-list .tool-tags {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+        margin-top: 8px !important;
+    }
+
+    .tools-list .tag {
+        font-size: 0.7rem !important;
+        padding: 2px 6px !important;
+        border-radius: 10px !important;
+        background: var(--primary-transparent) !important;
+        color: var(--primary) !important;
+        white-space: nowrap !important;
+    }
+
+    /* Case Studies specific content styling */
+    .tools-list .tool-card p {
+        font-size: 0.85rem !important;
+        color: var(--text-secondary) !important;
+        line-height: 1.4 !important;
+        margin: 8px 0 !important;
+    }
+
+    /* Hide the list view toggle button on mobile for other tabs but keep for case studies */
+    .list-view-toggle:not(#caseStudyViewToggle), 
+    .view-mode-toggle[data-view="list"]:not(#caseStudyViewToggle) {
+        display: none !important;
     }
 
     /* Ensure the grid view toggle remains visible if it's a separate button */
@@ -521,7 +683,6 @@ body.handbook-overlay-active {
         display: flex !important;
     }
     /* End Force Grid View on Mobile */
-
 
     .tool-card {
         padding: 15px;
@@ -756,7 +917,6 @@ body.handbook-overlay-active {
         padding: 15px 20px;
         margin: 20px auto;
     }
-    /* Removed the problematic .tools-list adjustments for 768px here */
     #addCaseStudyModal .modal-content,
     #editCaseStudyModal .modal-content,
     #caseStudyPreviewModal .modal-content {
@@ -801,6 +961,32 @@ body.handbook-overlay-active {
         padding: 5px 8px;
         font-size: 0.7rem;
         min-height: 28px;
+    }
+
+    /* Case Studies List View - Small Mobile */
+    .tools-list .tool-card {
+        padding: 12px !important;
+        gap: 10px !important;
+    }
+
+    .tools-list .tool-title {
+        font-size: 0.9rem !important;
+    }
+
+    .tools-list .tool-url {
+        font-size: 0.75rem !important;
+    }
+
+    .tools-list .tool-actions .action-btn {
+        padding: 5px 6px !important;
+        font-size: 0.75rem !important;
+        min-width: 28px !important;
+        height: 28px !important;
+    }
+
+    .tools-list .tag {
+        font-size: 0.65rem !important;
+        padding: 2px 5px !important;
     }
 }
 
@@ -1028,6 +1214,42 @@ body.handbook-overlay-active {
     .formatting-btn {
         width: 30px;
         height: 30px;
+    }
+
+    /* Case Studies List View - Extra Small Mobile */
+    .tools-list .tool-card {
+        padding: 10px !important;
+        gap: 8px !important;
+    }
+
+    .tools-list .tool-title {
+        font-size: 0.85rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .tools-list .tool-url {
+        font-size: 0.7rem !important;
+    }
+
+    .tools-list .tool-actions {
+        gap: 4px !important;
+    }
+
+    .tools-list .tool-actions .action-btn {
+        padding: 4px 5px !important;
+        font-size: 0.7rem !important;
+        min-width: 26px !important;
+        height: 26px !important;
+    }
+
+    .tools-list .tag {
+        font-size: 0.6rem !important;
+        padding: 1px 4px !important;
+    }
+
+    .tools-list .tool-card p {
+        font-size: 0.8rem !important;
+        margin: 6px 0 !important;
     }
 }
 

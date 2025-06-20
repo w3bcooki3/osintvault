@@ -570,8 +570,10 @@ function deleteSection(sectionId) {
         }
 
         showToast('Section deleted successfully', 'success');
+        logActivity('deleted', 'handbookSection', `Deleted handbook section: ${deletedSectionTitle}`, { sectionId: sectionId });
     } else {
         showToast('Failed to delete section', 'error');
+        logActivity('failed', 'delete', `Failed to delete handbook section with ID: ${sectionId}`);
     }
 }
 
@@ -808,9 +810,11 @@ function saveSection() {
     const existingSection = findSectionById(sectionId);
 
     if (existingSection) {
+        const oldTitle = existingSection.title;
         existingSection.title = sectionTitle;
         existingSection.icon = sectionIcon;
         existingSection.content = sectionContent;
+        logActivity('updated', 'handbookSection', `Updated handbook section: ${existingSection.title}`, { sectionId: sectionId, oldTitle: oldTitle, newTitle: sectionTitle });
     } else {
         const newSection = {
             id: sectionId,
@@ -833,11 +837,12 @@ function saveSection() {
         } else {
             handbookData.sections.push(newSection);
         }
+        logActivity('created', 'handbookSection', `Created new handbook section: ${newSection.title}`, { sectionId: sectionId, parentCategory: sectionParent });
     }
 
     saveHandbookData();
     renderHandbookSidebar();
-    showHandbookSection(sectionId); // Re-display the (newly added/edited) section
+    showHandbookSection(sectionId);
 
     hideModal('section-editor-modal');
     showToast('Section saved successfully', 'success');
@@ -1142,6 +1147,7 @@ function togglePinNote(noteId) {
 
     sortNotes();
     renderNotesList();
+    logActivity('updated', 'note', `${note.pinned ? 'Pinned' : 'Unpinned'} note: ${note.title}`, { noteId: note.id, pinned: note.pinned });
 }
 
 /**
@@ -1179,6 +1185,7 @@ function openNote(noteId) {
     notesState.editMode = false;
 
     showNoteEditor();
+    logActivity('created', 'note', `Created new note: ${newNote.title}`, { noteId: newNote.id });
 }
 
 /**
@@ -1200,11 +1207,16 @@ function editNote(noteId) {
  * Deletes a note from `notesState.notes`.
  * @param {string} noteId The ID of the note to delete.
  */
+// In handbookNotes.js
+
 function deleteNote(noteId) {
     if (appState.readOnlyMode) {
         showToast("Cannot delete notes in read-only shared view.", "warning");
         return;
     }
+
+    // Find the note to get its title before deleting
+    const noteToDelete = notesState.notes.find(note => note.id === noteId);
 
     if (!confirm('Are you sure you want to delete this note?')) {
         return;
@@ -1221,7 +1233,13 @@ function deleteNote(noteId) {
     }
 
     saveNotes();
-    updateDashboard(); // Assuming updateStats is global
+    updateDashboard();
+    // ADD THIS LINE:
+    if (noteToDelete) {
+        logActivity('deleted', 'note', `Deleted note: ${noteToDelete.title}`, { noteId: noteId });
+    } else {
+        logActivity('deleted', 'note', `Deleted unknown note with ID: ${noteId}`);
+    }
 }
 
 /**
@@ -1361,6 +1379,9 @@ function saveCurrentNote() {
         return;
     }
 
+    // Capture old title for logging if it changed
+    const oldTitle = note.title;
+
     note.title = document.getElementById('note-title-input').value || 'Untitled Note';
     note.content = document.getElementById('note-content-editor').innerHTML;
     note.updatedAt = new Date();
@@ -1372,6 +1393,7 @@ function saveCurrentNote() {
     showNoteEditor();
 
     showToast('Note saved successfully!');
+    logActivity('updated', 'note', `Saved note: ${note.title}`, { noteId: note.id, oldTitle: oldTitle, newTitle: note.title });
 }
 
 /**

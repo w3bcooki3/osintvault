@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINTVault Collector</title>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Basic styling for the entire popup window */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 15px;
+            width: 500px; /* Fixed width for the popup, can be adjusted */
+            min-height: 400px;
+            background-color: #282c34; /* Dark background color */
+            color: #e0e0e0; /* Light text color */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent body scroll, let content area scroll */
+        }
+        /* Page title styling */
+        h1 {
+            font-size: 1.5em;
+            color: #61dafb; /* Accent color for headings */
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        h1 i {
+            margin-right: 10px;
+        }
+        /* Tab navigation styling */
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444; /* Separator for tabs */
+            flex-wrap: wrap; /* Allow tabs to wrap on smaller widths */
+            gap: 5px; /* Space between tabs if they wrap */
+        }
+        .tab-button {
+            background-color: #3a3f4a; /* Background for inactive tabs */
+            color: #e0e0e0;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s, color 0.2s;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            margin-right: 2px; /* Small space between buttons */
+            flex-grow: 1; /* Allow buttons to grow and fill space */
+            white-space: nowrap; /* Prevent text wrapping in tabs */
+        }
+        .tab-button i {
+            margin-right: 5px;
+        }
+        .tab-button.active {
+            background-color: #4f5b66; /* Background for active tab */
+            color: #fff;
+            border-bottom: 2px solid #61dafb; /* Highlight for active tab */
+            font-weight: bold;
+        }
+        /* Content area for collected items */
+        #collectedItemsContainer {
+            flex-grow: 1; /* Allows container to take available vertical space */
+            padding: 10px;
+            background-color: #333842; /* Background for content area */
+            border-radius: 5px;
+            overflow-y: auto; /* Enable vertical scrolling if content overflows */
+            max-height: 300px; /* Max height before scrolling, adjust as needed */
+            margin-bottom: 15px;
+        }
+        /* Individual item card styling */
+        .item-card {
+            background-color: #3a3f4a;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative; /* For positioning the delete button */
+        }
+        .item-card:last-child {
+            margin-bottom: 0; /* No margin for the last item */
+        }
+        .item-card h3 {
+            font-size: 1.1em;
+            color: #61dafb;
+            margin-top: 0;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .item-card h3 i {
+            margin-right: 8px;
+            color: #a0a0a0;
+        }
+        .item-card p {
+            font-size: 0.85em;
+            margin: 3px 0;
+            word-break: break-word; /* Ensure long text breaks */
+        }
+        .item-card .source-link {
+            font-size: 0.75em;
+            color: #999;
+            text-decoration: none;
+            display: block;
+            margin-top: 5px;
+            word-break: break-all; /* Break long URLs */
+        }
+        .item-card .source-link:hover {
+            color: #61dafb;
+        }
+        /* Delete button on each card */
+        .item-card .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ff6b6b; /* Red color for delete icon */
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .item-card .delete-btn:hover {
+            color: #ff3b3b;
+        }
+        /* Image preview in media items */
+        .item-card img, .item-card video, .item-card audio {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        /* Styling for empty state message */
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-style: italic;
+        }
+        /* Footer buttons container */
+        .footer-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: auto; /* Pushes the footer to the bottom */
+            padding-top: 10px;
+            border-top: 1px solid #444;
+        }
+        /* General button styling */
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s, opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1; /* Allows buttons to fill available space */
+        }
+        .btn i {
+            margin-right: 8px;
+        }
+        /* Specific button colors */
+        .btn-primary {
+            background-color: #61dafb; /* Primary accent color */
+            color: #282c34;
+        }
+        .btn-primary:hover {
+            background-color: #4fb2da;
+        }
+        .btn-secondary {
+            background-color: #4f5b66; /* Secondary color */
+            color: #e0e0e0;
+        }
+        .btn-secondary:hover {
+            background-color: #626e7a;
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Danger/delete color */
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        /* Disabled button state */
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Toast messages specifically for the popup (distinct from content script toasts) */
+        .collector-popup-toast-container {
+            position: fixed;
+            top: 10px; /* Position near the top of the popup */
+            left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 10001; /* Ensure it's above all other popup content */
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .collector-popup-toast {
+            background-color: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+            min-width: 150px;
+            text-align: center;
+        }
+        .collector-popup-toast.show {
+            opacity: 1;
+        }
+        .collector-popup-toast.success { background-color: #28a745; }
+        .collector-popup-toast.info { background-color: #17a2b8; }
+        .collector-popup-toast.warning { background-color: #ffc107; color: #333; }
+        .collector-popup-toast.error { background-color: #dc3545; }
+
+        /* Optional: Font import if you want to use Inter font */
+        /*
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(chrome-extension://__MSG_@@extension_id__/fonts/Inter-Regular.woff2) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152, U+0153, U+02BB, U+02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        */
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-box-archive"></i> OSINTVault Collector</h1>
+
+    <!-- Tab navigation buttons -->
+    <div class="tabs">
+        <button class="tab-button active" data-tab-type="all"><i class="fas fa-list-ul"></i> All (<span id="allCount">0</span>)</button>
+        <button class="tab-button" data-tab-type="keyword"><i class="fas fa-font"></i> Text (<span id="keywordCount">0</span>)</button>
+        <button class="tab-button" data-tab-type="media"><i class="fas fa-image"></i> Media (<span id="mediaCount">0</span>)</button>
+        <button class="tab-button" data-tab-type="link"><i class="fas fa-link"></i> Links (<span id="linkCount">0</span>)</button>
+        <button class="tab-button" data-tab-type="document"><i class="fas fa-file-alt"></i> Documents (<span id="documentCount">0</span>)</button>
+        <button class="tab-button" data-tab-type="other"><i class="fas fa-ellipsis-h"></i> Other (<span id="otherCount">0</span>)</button>
+    </div>
+
+    <!-- Container where collected items will be displayed -->
+    <div id="collectedItemsContainer" class="tab-content">
+        <div class="empty-state" id="emptyState">No items collected yet in this category. Right-click on a webpage to start collecting!</div>
+    </div>
+
+    <!-- Footer buttons for export and clear actions -->
+    <div class="footer-buttons">
+        <button id="exportAllBtn" class="btn btn-primary"><i class="fas fa-download"></i> Export All</button>
+        <button id="clearAllBtn" class="btn btn-danger"><i class="fas fa-trash"></i> Clear All</button>
+    </div>
+
+    <script src="collection_vault.js"></script>
+</body>
+</html>
