@@ -1,153 +1,111 @@
-# 🕵️‍♂️ OSINTVault
+<p align="center">
+  <img src="https://raw.githubusercontent.com/w3bcooki3/osintvault/main/favicon.png" alt="OSINTVault Logo" width="150"/>
+</p>
 
-**Your OSINT tools, always with you.**
+<h1 align="center">
+  <img src="https://raw.githubusercontent.com/w3bcooki3/osintvault/main/favicon.png" width="40" style="vertical-align: middle; margin-right: 10px;"/>
+  OSINTVault: Your Private OSINT Workspace 🕵️‍♂️
+</h1>
 
-OSINTVault is a powerful, lightweight, and responsive single-page web application built with HTML, CSS, and JavaScript. It's your **personal OSINT workspace**, designed to organize tools, track investigations, build dorks, and manage intelligence—right from your browser.
+<p align="center">
+  <i>"Navigate the digital shadows. Keep your intelligence secured. Analyze with precision."</i>
+</p>
 
-[![Live Preview](https://img.shields.io/badge/Live-Demo-blue?style=flat&logo=github)](https://w3bcooki3.github.io/osintvault/)
-
----
-
-## 🚀 Features at a Glance
-
-| 🔍 Core Modules       | 🧠 Intelligence      | 📚 Resources              |
-|-----------------------|----------------------|---------------------------|
-| Tool Management       | Custom Vaults        | OSINT Handbook            |
-| Categorized Tools     | IOC Tracking         | Note Taking               |
-| Advanced Search & Filters | Multimedia & Entity Tracking | Copyable Code Blocks      |
-| Dork Playground       | Metadata & Persona Logging | Editable Handbook Sections |
-| Usage Analytics       | Cross-Linking Entries | Searchable Content        |
-| Exportable Vaults     | Local Storage Persistence | Case Studies & Articles   |
-
----
-
-## 🗃️ Intelligence Vault
-
-Organize your favorite OSINT tools and resources like a pro:
-
-- **Add / Edit / Delete / Star / Pin** entries across various types.
-- **Categorize** tools into built-in or custom groups (e.g., General Tools, Email Investigations, DarkWeb, Threat Intel, Media Analysis).
-- **Advanced Filters**: Filter by specific Intelligence Vault categories (e.g., 'Threat Intelligence Platforms', 'Domain/IP/URL Analysis').
-- **Search & Filter** by name, tags, or category.
-- **Sort** by name, most used, or recently added.
-- **View Modes**: Grid or List.
-- Pre-populated with industry favorites: `Shodan`, `Have I Been Pwned`, `Maltego`, `VirusTotal`, `Wayback Machine`, etc.
+<p align="center">
+  <a href="https://w3bcooki3.github.io/osintvault/" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Demo-Launch%20App-%23007bff?style=for-the-badge&logo=appveyor&logoColor=white" alt="Live Demo">
+  </a>
+  <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge&logo=github&logoColor=white" alt="Status: Active">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge&logo=opensource&logoColor=white" alt="License: MIT">
+  <img src="https://img.shields.io/badge/Privacy-Local%20Storage%20Only-orange?style=for-the-badge&logo=keybase&logoColor=white" alt="Privacy: Local Storage Only">
+</p>
 
 ---
 
-## 🔐 Multi-Vaults — *Your Investigations*
+## 🚀 About OSINTVault
 
-Build customized tabs to manage and cross-reference entries specific to any investigation:
+OSINTVault is a powerful, client-side, single-page web application meticulously crafted with HTML, CSS, and JavaScript. Designed for cybersecurity analysts, threat intelligence professionals, investigators, and enthusiasts, it provides a secure and organized environment to manage every aspect of your Open Source Intelligence (OSINT) operations directly within your browser.
 
-- 🎯 **Create Named Vaults** with custom icons & color labels.
-- 🧩 **Add Entries**: A comprehensive range of entry types to log your findings, including:
-    - **General Tools**
-    - **Emails**, **Phone Numbers**, **Crypto Transactions**
-    - **Locations**, **General Links**
-    - **Images**, **Videos**, **Audio Files**
-    - **Passwords**, **Keywords**, **Social Media Profiles**
-    - **Domains/IPs/URLs**, **Usernames/Handles**
-    - **Threat Intelligence (APT, IOC, TTPs)**, **Vulnerabilities (CVEs)**, **Malware/Files**
-    - **Data Breaches**, **Credential Dumps**
-    - **Hacking/Security Forums**, **Underground Vendors**, **Telegram Channels**, **Paste Sites**
-    - **Documents**, **Network Analysis Data**, **Metadata**
-    - **Archived/Cached Pages**
-    - **Messaging Apps**, **Dating Profiles**
-    - **Facial Recognition Findings**, **Personas/Identities**
-    - **VPNs/Anonymity Tools**, **Honeypot Data**, **Exploits**, **Public Records**
-- 🔗 **Cross-Link Entries**: Each entry can be assigned to multiple custom vaults.
-- 📦 **Export Vaults** as JSON, HTML, or TXT for portability.
-- 📌 **Bulk Actions** to manage selected entries efficiently (Star/Unstar, Pin/Unpin, Delete).
+Forget fragmented notes and scattered tools. OSINTVault centralizes your efforts, offering robust features for data collection, analysis, and reporting, all while prioritizing your privacy by storing all data exclusively in your local browser storage.
 
 ---
 
-## 🧠 Dork Assistant
+## ✨ Key Features
 
-Craft powerful search queries like a wizard:
+OSINTVault packs a punch with a suite of integrated modules designed for efficiency and control:
 
-- **Query Playground**: Build Google dorks and more with a live preview and operator buttons.
-- **Supported Engines**: Google, Bing, DuckDuckGo, Yandex, Shodan, Censys.
-- **Engine Conversion**: Convert queries between general search engine syntax and specialized Shodan/Censys formats.
-- **Pre-Built Templates**: A library of dork templates categorized for common OSINT tasks (e.g., Exposed Documents, Admin Login Pages, IoT Devices, Social Media, SQL Errors, CVE PoCs, Shodan/Censys specific queries).
-- **Save & Load**: Save your custom dorks for future use and load them back into the playground.
-- **Warnings**: Get alerts for potential query format mismatches with selected engines.
+### 🔒 **Privacy-First Data Management**
+* **100% Client-Side:** All your sensitive investigation data (entries, notes, dorks, custom vaults, audit logs) is stored **only in your browser's local storage**. It never leaves your device.
+* **No Backend, No Cloud:** Absolute control over your data, ensuring maximum privacy and preventing third-party access.
 
----
+### 💾 **Robust Import & Export**
+* **Comprehensive Data Backup:** Easily **export all your app data** as a single JSON, HTML, or plain text file. Essential for backups, data migration, or sharing.
+* **Seamless Import:** Effortlessly **import data** back into your workspace, whether it's a full backup or specific categories (tools, notes, dorks, case studies).
 
-## 📈 Analytics Dashboard
+### 🗃️ **Intelligence Vault & Multi-Vaults**
+* **Categorized Tool Arsenal:** Manage your favorite OSINT tools, categorized into specialized intelligence areas (e.g., Email Investigations, DarkWeb, Threat Intel, Network Analysis). Pre-populated with industry-standard tools for a quick start.
+* **Custom Investigation Vaults:** Create **personalized vaults** for each investigation with custom names, icons, and color-coding.
+* **Diverse Entry Types:** Log findings across a comprehensive range of intelligence types:
+    * `Tools`, `Emails`, `Phone Numbers`, `Crypto Transactions`
+    * `Locations`, `General Links`, `Images`, `Videos`, `Audio Files`
+    * `Passwords`, `Keywords`, `Social Media Profiles`
+    * `Domains/IPs/URLs`, `Usernames/Handles`
+    * `Threat Intelligence (APT, IOC, TTPs)`, `Vulnerabilities (CVEs)`, `Malware/Files`
+    * `Data Breaches`, `Credential Dumps`
+    * `Hacking/Security Forums`, `Underground Vendors`, `Telegram Channels`, `Paste Sites`
+    * `Documents`, `Network Analysis Data`, `Metadata`, `Archived/Cached Pages`
+    * `Messaging Apps`, `Dating Profiles`, `Facial Recognition Findings`, `Personas/Identities`
+    * `VPNs/Anonymity Tools`, `Honeypot Data`, `Exploits`, `Public Records`
+* **Cross-Linking:** Assign entries to multiple custom vaults for flexible organization.
+* **Smart Organization:** Add custom tags and detailed notes to any entry.
+* **Quick Prioritization:** Star and pin critical entries for immediate access.
 
-Gain insights into your OSINT activities:
+### 🔍 **Advanced Search & Filtering**
+* **Global Search:** Find anything across current tabs, specific vaults, or your entire dataset.
+* **Dynamic Filters:** Filter by category, pinned/starred status.
+* **Flexible Sorting:** Arrange your data by name, recently added, or most used.
 
-- **Overall Metrics**: Total entries, active custom vaults, entries used today, total notes, and saved dorks.
-- **Visualizations**:
-    - **Entries by Type** (Pie Chart): Distribution of all your saved intelligence by category.
-    - **Entry Activity Trend** (Line Chart): Cumulative growth of entries over time.
-    - **Tools by Category** (Bar Chart): Distribution of tools within the Intelligence Vault.
-    - **Pinned & Starred Entries** (Doughnut Chart): Overview of your prioritized intelligence.
-    - **Entries in Custom Vaults** (Bar Chart): Shows the number of entries per custom vault.
-    - **Entry Tagging Overview** (Doughnut Chart): Percentage of tagged versus untagged entries.
-- **Top Lists**:
-    - Top 5 Most Used Entries.
-    - Entries Never Used.
-    - Entries Added Per Week.
-- **Detailed Breakdown**: Count of starred and pinned entries broken down by type (tools, emails, domains, etc.).
+### 🧠 **Dork Assistant**
+* **Interactive Query Playground:** Craft powerful search queries with a live preview and intuitive operator buttons.
+* **Multi-Engine Support:** Generate dorks for `Google`, `Bing`, `DuckDuckGo`, `Yandex`, and specialized platforms like `Shodan` and `Censys`.
+* **Syntax Conversion:** Automatically convert queries between general search engine syntax and specialized Shodan/Censys formats.
+* **Curated Templates:** Utilize a library of pre-built dork templates categorized for common OSINT scenarios (e.g., Exposed Documents, Admin Login Pages, IoT Devices, Social Media, SQL Errors, CVE PoCs, Shodan/Censys specific queries).
+* **Saved Queries:** Store and reuse your custom-built dorks.
+* **Warnings:** Get alerts for potential query format mismatches with selected engines.
 
----
+### 📈 **Analytics Dashboard**
+* **Activity Overview:** Get a snapshot of your workspace with total entries, active custom vaults, entries used today, total notes, and saved dorks.
+* **Visual Insights:** Interactive charts powered by Chart.js display:
+    * Entries by Type (Pie Chart), Entry Activity Trend (Line Chart), Tools by Category (Bar Chart), Pinned & Starred Entries (Doughnut Chart), Entries in Custom Vaults (Bar Chart), and Entry Tagging Overview (Doughnut Chart).
+* **Top Lists:** Discover your Top 5 Most Used Entries, Entries Never Used, and Entries Added Per Week.
+* **Detailed Breakdown:** Count of starred and pinned entries broken down by type (tools, emails, domains, etc.).
 
-## 📒 OSINT Handbook + Notes
+### 📒 **OSINT Handbook + My Notes**
+* **Personalized Handbook:** An editable, structured knowledge base for OSINT techniques. Add, edit, and delete sections, include rich-text content, and embed copyable code blocks.
+* **Integrated Notes:** Take detailed, rich-text notes during your investigations, complete with tags and pinning for quick retrieval. All notes are stored securely in your local browser storage.
 
-Your comprehensive knowledge management system:
+### 📚 **Case Studies & Articles**
+* **Resource Library:** Curate a collection of OSINT-related articles, reports, and case studies.
+* **Auto-Grab Content:** Effortlessly fetch preview summaries from external links (uses a CORS proxy).
+* **Preview & Read:** Quick modal previews with personal notes before redirecting to the full article.
+* **Categorization:** Organize case studies by categories like Threat Intelligence, Breach Analysis, Malware Analysis, Financial OSINT, etc., with support for custom categories.
+* **Search & Filter:** Find case studies by title, source, author, content, or tags.
+* **Star & Pin:** Highlight important case studies.
 
-### OSINT Handbook
-Your go-to OSINT knowledge base with:
-- Structured content by topic, organized into categories and subcategories.
-- Copyable code blocks for quick use.
-- Fully **editable, addable, and deletable** sections and sub-sections, allowing you to customize your handbook.
-- Rich-text editing capabilities (bold, italic, lists, links, code blocks).
-- Searchable content to quickly find relevant information.
+### 📊 **Activity Audit Log (NEW!)**
+* **Comprehensive Tracking:** A dedicated tab to view a detailed log of all key actions within the application (creation, updates, deletions, imports, exports, system events).
+* **Actionable Insights:** Filter logs by date range, action type, and category, or search for specific activities.
+* **Auditability:** Maintain a record of changes for personal accountability or reporting.
 
-### My Notes
-Personalized note-taking for your investigations:
-- Create **rich-text notes** with titles, content, and tags.
-- **Pin** important notes for quick access.
-- **Sort** notes by creation date, last updated, or title.
-- **Search** notes by title, content, or tags.
-- All notes are stored securely in your local browser storage.
-
----
-
-## 📚 Case Studies & Articles
-
-A dedicated section for educational resources:
-
-- **Add New Case Studies**: Save articles, reports, or blog posts with titles, sources, authors, links, categories, and your personal notes.
-- **Automated Content Grabbing**: Attempt to automatically fetch a preview summary from the provided link.
-- **Categorization**: Organize case studies by categories like Threat Intelligence, Breach Analysis, Malware Analysis, Financial OSINT, etc., with support for custom categories.
-- **Search & Filter**: Find case studies by title, source, author, content, or tags.
-- **Star & Pin**: Highlight important case studies.
-- **Preview Modal**: Quickly view key details and your notes before redirecting to the full article.
-
----
-
-## 🌐 Other Cool Features
-
-- 🌓 **Theme Toggle**: Switch between a sleek Dark mode and a clean Light mode.
-- 📱 **Responsive Design**: Adapts to various screen sizes, though desktop is recommended for the best experience.
-- 💾 **Local Storage**: All your data resides solely in your browser's local storage; no backend, no cloud, ensuring maximum privacy.
-- 📤 **Export Everything**: Download all your app data as a single JSON, HTML, or TXT file for backup or transfer.
-- 🔗 **Shareable Read-Only Links**: Generate temporary, read-only URLs to share specific tabs, custom vaults, or your entire intelligence collection with others.
-- 🌐 **Auto-Favicons**: Automatically fetches favicons for external tools and links for easy visual identification.
+### 🌐 **Other Enhancements**
+* **Adaptive & Responsive Design:** Optimized for various screen sizes, providing a seamless experience from mobile to desktop.
+* **Dynamic Theming:** Instantly switch between a sleek Dark Mode and a crisp Light Mode.
+* **Secure Sharing:** Generate temporary, **read-only URLs** to share specific tabs, custom vaults, or your entire collection without compromising your local data.
+* **Visual Cues:** Automatic favicon fetching for external tools and links and subtle design elements that enhance usability.
 
 ---
 
-## 🧰 Built For
-
-- Cybersecurity Analysts
-- Threat Intelligence Professionals
-- Incident Responders
-- Law Enforcement & Investigators
-- Journalists & Researchers
-- OSINT Learners & Hobbyists
+## 🧰 Built For Open Source Intelligence (OSINT) professionals, analysts, and enthusiasts. 
 
 Whether you're chasing down IPs, uncovering personas, or just learning the ropes—**OSINTVault** is your portable, private, and powerful companion.
 
@@ -155,8 +113,55 @@ Whether you're chasing down IPs, uncovering personas, or just learning the ropes
 
 ## 🛠️ Tech Stack
 
-- 🧱 HTML
-- 🎨 CSS
-- ⚙️ JavaScript
-- 📈 Chart.js (for analytics visualizations)
-- 💾 LocalStorage (No backend!)
+* **HTML:** Structuring the core application.
+* **CSS:** Modern styling, responsive design, and animations.
+* **JavaScript (Vanilla):** All core logic, state management, and interactivity.
+* **Chart.js:** For dynamic data visualizations on the dashboard.
+* **Font Awesome:** A comprehensive icon library for visual cues.
+* **LocalStorage:** The sole data persistence layer, emphasizing privacy.
+
+---
+
+## 🚀 Getting Started
+
+To get your personal OSINT workspace up and running:
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/w3bcooki3/osintvault.git](https://github.com/w3bcooki3/osintvault.git)
+    ```
+2.  **Navigate to the Directory:**
+    ```bash
+    cd osintvault
+    ```
+3.  **Open `index.html`:**
+    Simply open the `index.html` file in your preferred web browser. No server setup is required!
+
+Your OSINTVault will load, initialized with default tools and data, ready for your investigations.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out to me on Linkedin https://bit.ly/hirahul
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+---
+
+## 📧 Contact
+
+**w3bcooki3** - [Your GitHub Profile/Email]
+
+Project Link: [https://github.com/w3bcooki3/osintvault](https://github.com/w3bcooki3/osintvault)
+
+---
+
+<p align="center">
+  <br>
+  <i>"Knowledge is Power. OSINTVault helps you wield it."</i>
+</p>
