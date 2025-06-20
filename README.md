@@ -47,15 +47,9 @@ OSINTVault packs a punch with a suite of integrated modules designed for efficie
 * **Custom Investigation Vaults:** Create **personalized vaults** for each investigation with custom names, icons, and color-coding.
 * **Diverse Entry Types:** Log findings across a comprehensive range of intelligence types:
     * `Tools`, `Emails`, `Phone Numbers`, `Crypto Transactions`
-    * `Locations`, `General Links`, `Images`, `Videos`, `Audio Files`
-    * `Passwords`, `Keywords`, `Social Media Profiles`
-    * `Domains/IPs/URLs`, `Usernames/Handles`
-    * `Threat Intelligence (APT, IOC, TTPs)`, `Vulnerabilities (CVEs)`, `Malware/Files`
-    * `Data Breaches`, `Credential Dumps`
-    * `Hacking/Security Forums`, `Underground Vendors`, `Telegram Channels`, `Paste Sites`
-    * `Documents`, `Network Analysis Data`, `Metadata`, `Archived/Cached Pages`
-    * `Messaging Apps`, `Dating Profiles`, `Facial Recognition Findings`, `Personas/Identities`
-    * `VPNs/Anonymity Tools`, `Honeypot Data`, `Exploits`, `Public Records`
+    * `Locations`, `General Links`, `Media (Images/Videos/Audio)`, `Passwords`, `Keywords`, `Social Media Profiles`, `Domains/IPs/URLs`, `Usernames/Handles`.
+    * `Threat Intelligence (Threats, Vulnerabilities, Malware, Breaches, Credentials)`, `Forums`, `Vendors`, `Telegram Channels`, `Paste Sites`, `Documents`, `Network Analysis`, `Metadata`, `Archives`.
+    * `Messaging Apps`, `Dating Profiles`, `Facial Recognition`, `Personas/Identities`, `VPNs/Anonymity Tools`, `Honeypot Data`, `Exploits`, `Public Records`.
 * **Cross-Linking:** Assign entries to multiple custom vaults for flexible organization.
 * **Smart Organization:** Add custom tags and detailed notes to any entry.
 * **Quick Prioritization:** Star and pin critical entries for immediate access.
@@ -74,10 +68,10 @@ OSINTVault packs a punch with a suite of integrated modules designed for efficie
 * **Warnings:** Get alerts for potential query format mismatches with selected engines.
 
 ### 📈 **Analytics Dashboard**
-* **Activity Overview:** Get a snapshot of your workspace with total entries, active custom vaults, entries used today, total notes, and saved dorks.
+* **Activity Overview:** Get a snapshot of your workspace with total entries, active vaults, and daily/weekly activity.
 * **Visual Insights:** Interactive charts powered by Chart.js display:
-    * Entries by Type (Pie Chart), Entry Activity Trend (Line Chart), Tools by Category (Bar Chart), Pinned & Starred Entries (Doughnut Chart), Entries in Custom Vaults (Bar Chart), and Entry Tagging Overview (Doughnut Chart).
-* **Top Lists:** Discover your Top 5 Most Used Entries, Entries Never Used, and Entries Added Per Week.
+    * Entries by Type (Pie Chart), Entry Activity Trend (Line Chart), Tools by Category (Bar Chart), Pinned & Starred Entries (Doughnut Chart), Entries in Custom Vaults (Bar Chart), and Tagging Distribution (Doughnut Chart).
+* **Top Lists:** Discover your Most Used Entries, Never Used Entries, and Entries Added Per Week.
 * **Detailed Breakdown:** Count of starred and pinned entries broken down by type (tools, emails, domains, etc.).
 
 ### 📒 **OSINT Handbook + My Notes**
@@ -101,13 +95,30 @@ OSINTVault packs a punch with a suite of integrated modules designed for efficie
 * **Adaptive & Responsive Design:** Optimized for various screen sizes, providing a seamless experience from mobile to desktop.
 * **Dynamic Theming:** Instantly switch between a sleek Dark Mode and a crisp Light Mode.
 * **Secure Sharing:** Generate temporary, **read-only URLs** to share specific tabs, custom vaults, or your entire collection without compromising your local data.
-* **Visual Cues:** Automatic favicon fetching for external tools and links and subtle design elements that enhance usability.
+* **Visual Cues:** Automatic favicon fetching for external links and subtle design elements that enhance usability.
 
 ---
 
-## 🧰 Built For Open Source Intelligence (OSINT) professionals, analysts, and enthusiasts. 
+## 🐞 Known Issues
 
-Whether you're chasing down IPs, uncovering personas, or just learning the ropes—**OSINTVault** is your portable, private, and powerful companion.
+We're continuously working to improve OSINTVault! Here are some known areas currently under development or review:
+
+1.  **Responsiveness Challenges:** Certain parts of the application may not be fully responsive across all device sizes or orientations.
+2.  **Share Link Functionality:** The generated share links may not work consistently for all features or data subsets.
+3.  **Audit Log Persistence:** Audit logs currently clear on browser refresh. A fix to ensure persistent storage is actively being worked on.
+4.  **Global Filter Scope:** The "Quick Actions and Filters" (Pin/Star/Show All) currently apply only to the "Intelligence Vault" tab. Future updates will extend this functionality to all navigation tabs.
+5.  **"My Notes" Saving Behavior:** Notes may be unintentionally saved when attempting to create a new note, even if the "Cancel" action is triggered.
+6.  **Dork Assistant Notifications:** Certain actions within the "Dork Assistant" may trigger duplicate or multiple toast notifications for a single action.
+7.  **Global Search** Global Search does not work in OSINT Handbook and Docs Section.
+
+---
+
+## 🛣️ Content Roadmap / Future Enhancements
+
+While the application provides robust core features, the current content is primarily for demonstration purposes. Future updates will focus on:
+
+* **Expanding Default Content:** Adding a wider range of pre-populated tools, more detailed case studies, and extensive OSINT handbook documentation.
+* **Refining Existing Features:** Continuous improvements to existing functionalities based on user feedback and best practices.
 
 ---
 
@@ -143,8 +154,7 @@ Your OSINTVault will load, initialized with default tools and data, ready for yo
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out to me on Linkedin https://bit.ly/hirahul
-
+Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out on Linkedin https://bit.ly/hirahul
 ---
 
 ## 📄 License
@@ -155,7 +165,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## 📧 Contact
 
-**w3bcooki3** - [Your GitHub Profile/Email]
+**w3bcooki3** - https://bit.ly/hirahul
 
 Project Link: [https://github.com/w3bcooki3/osintvault](https://github.com/w3bcooki3/osintvault)
 
