@@ -16,7 +16,7 @@
     <img src="https://img.shields.io/badge/Live%20Demo-Launch%20App-%23007bff?style=for-the-badge&logo=appveyor&logoColor=white" alt="Live Demo">
   </a>
   <img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge&logo=github&logoColor=white" alt="Status: Active">
-  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge&logo=opensource&logoColor=white" alt="License: MIT">
+  <img src="https://img.shields.io/badge/License-Evaluation%20Only-yellow.svg?style=for-the-badge&logo=opensource&logoColor=white" alt="License: Evaluation Only">
   <img src="https://img.shields.io/badge/Privacy-Local%20Storage%20Only-orange?style=for-the-badge&logo=keybase&logoColor=white" alt="Privacy: Local Storage Only">
 </p>
 
@@ -32,7 +32,7 @@ Forget fragmented notes and scattered tools. OSINTVault centralizes your efforts
 
 ### ⚠️ **Important Note: Demo Product**
 
-Please be aware that this version of OSINTVault is a **demonstration product**. It showcases core functionalities and a conceptual design. I am actively working on developing a more professional, fully-featured, and advanced version based on valuable feedback and comments from users like you. Your input is highly appreciated as this project evolves!
+Please be aware that this version of OSINTVault is a **demonstration product**. It showcases core functionalities and a conceptual design. While it is fully functional and can be used by anyone, I have **not yet begun development of a professional, commercial version** as I am actively seeking valuable feedback and comments from users like you. Your input is highly appreciated as this project evolves!
 
 ---
 
@@ -128,6 +128,18 @@ While the application provides robust core features, the current content is prim
 
 ---
 
+## 📄 License: Evaluation Use Only
+
+This software is provided "as is" for **personal evaluation, testing, and feedback purposes only.**
+
+* **Commercial Use is Strictly Prohibited:** You may not use this software, or any derivative works created from it, for any commercial purpose, including but not limited to selling, licensing, or incorporating it into a commercial product or service.
+* **No Commercial Derivative Works:** You may not create or distribute derivative works of this software for commercial gain.
+* **Feedback Encouraged:** Your feedback is highly valued and will directly contribute to the development of a future professional version.
+
+For any commercial inquiries or to discuss potential partnerships, please contact me via the methods listed in the "Contact" section below.
+
+---
+
 ## 🛠️ Tech Stack
 
 * **HTML:** Structuring the core application.
@@ -161,12 +173,6 @@ Your OSINTVault will load, initialized with default tools and data, ready for yo
 ## 🤝 Contributing
 
 Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to reach out on [LinkedIn](https://bit.ly/hirahul).
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
 
 ---
 
