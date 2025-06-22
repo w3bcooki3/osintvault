@@ -1,69 +1,71 @@
 let appState = {
-            tools: [], // Will be loaded from tools.json
-            emails: [],
-            phones: [],
-            crypto: [],
-            locations: [],
-            links: [],
-            media: [],
-            passwords: [],
-            keywords: [],
-            socials: [],
-            domains: [],
-            usernames: [],
-            threats: [],
-            vulnerabilities: [],
-            malware: [],
-            breaches: [],
-            credentials: [],
-            forums: [],
-            vendors: [],
-            telegramChannels: [],
-            pastes: [],
-            documents: [],
-            networks: [],
-            metadataEntries: [],
-            archives: [],
-            messagingApps: [],
-            datingProfiles: [],
-            audioEntries: [],
-            facialRecognition: [],
-            personas: [],
-            vpns: [],
-            honeypots: [],
-            exploits: [],
-            publicRecords: [],
-            caseStudies: [],
-            selectedEntries: new Set(),
-            currentTab: 'welcome',
-            currentIntelligenceVaultParentTab: 'generalAndCore',
-            currentIntelligenceVaultChildTab: 'tools',
-            currentCustomVaultEntrySubTab: 'tool',
-            currentCustomVaultParentTab: 'coreInvestigation',
-            currentCaseStudyCategory: 'all',
-            customTabs: [],
-            filters: {
-                category: '',
-                search: '',
-                sort: 'name',
-                searchScope: 'currentTab'
-            },
-            theme: localStorage.getItem('theme') || 'dark',
-            viewMode: localStorage.getItem('viewMode') || 'grid',
-            caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid',
-            
-            usageStats: {
-                toolsUsedToday: 0
-            },
-            readOnlyMode: false,
-            sharedTabId: null,
-            sharedEntryIds: [],
-            hasUnsavedChanges: false,
-            handbookData: { sections: [] },
-            osintDocsStructure: [],
-            osintDocsContentMap: {},
-            auditLogs: [],
-        };
+    tools: [], // Will be loaded from tools.json or localStorage
+    emails: [],
+    phones: [],
+    crypto: [],
+    locations: [],
+    links: [],
+    media: [],
+    passwords: [],
+    keywords: [],
+    socials: [],
+    domains: [],
+    usernames: [],
+    threats: [],
+    vulnerabilities: [],
+    malware: [],
+    breaches: [],
+    credentials: [],
+    forums: [],
+    vendors: [],
+    telegramChannels: [],
+    pastes: [],
+    documents: [],
+    networks: [],
+    metadataEntries: [],
+    archives: [],
+    messagingApps: [],
+    datingProfiles: [],
+    audioEntries: [],
+    facialRecognition: [],
+    personas: [],
+    vpns: [],
+    honeypots: [],
+    exploits: [],
+    publicRecords: [],
+    caseStudies: [], // Will be loaded from caseStudies.json or localStorage
+    selectedEntries: new Set(),
+    currentTab: 'welcome',
+    currentIntelligenceVaultParentTab: 'generalAndCore',
+    currentIntelligenceVaultChildTab: 'tools',
+    currentCustomVaultEntrySubTab: 'tool',
+    currentCustomVaultParentTab: 'coreInvestigation',
+    currentCaseStudyCategory: 'all',
+    customTabs: [],
+    filters: {
+        category: '',
+        search: '',
+        sort: 'name',
+        searchScope: 'currentTab'
+    },
+    theme: localStorage.getItem('theme') || 'dark',
+    viewMode: localStorage.getItem('viewMode') || 'grid',
+    caseStudyViewMode: localStorage.getItem('caseStudyViewMode') || 'grid',
+
+    usageStats: {
+        toolsUsedToday: 0
+    },
+    readOnlyMode: false,
+    sharedTabId: null,
+    sharedEntryIds: [],
+    hasUnsavedChanges: false,
+    handbookData: { sections: [] }, // Will be loaded from handbookData.json or localStorage
+    osintDocsStructure: [], // Will be loaded from osintDocsData.json or localStorage
+    osintDocsContentMap: {},
+    currentOsintDocsSection: null,
+    currentOsintDocsSubsection: null,
+    auditLogs: [], // Audit logs will be loaded from localStorage, or initialized on first run.
+};
         // --- End of appState definition --- //
 
         const availableIcons = [
@@ -132,6 +134,8 @@ let appState = {
 
                 // Explicitly initialize all array properties with empty arrays first,
                 // so they are never undefined, even if not present in older savedState.
+                // This block ensures all properties are present before assignment from parsedState
+                // to avoid issues with older state versions missing properties.
                 appState.tools = [];
                 appState.emails = [];
                 appState.phones = [];
@@ -166,6 +170,9 @@ let appState = {
                 appState.honeypots = [];
                 appState.exploits = [];
                 appState.publicRecords = [];
+                appState.caseStudies = []; // Ensure caseStudies is initialized
+                appState.auditLogs = []; // Initialize auditLogs as empty array
+
 
                 // Now, populate from parsedState, safely falling back to empty arrays if null/undefined
                 appState.tools = (parsedState.tools || []).map(entry => ({
@@ -269,6 +276,16 @@ let appState = {
                 appState.exploits = parsedState.exploits || [];
 
                 appState.publicRecords = parsedState.publicRecords || [];
+                
+                // Load Case Studies - similar logic as tools
+                appState.caseStudies = (parsedState.caseStudies || []).map(entry => ({
+                    ...entry,
+                    publishedDate: entry.publishedDate ? new Date(entry.publishedDate) : null,
+                    lastModified: entry.lastModified ? new Date(entry.lastModified) : null,
+                    tags: entry.tags || [],
+                    starred: entry.starred || false,
+                    pinned: entry.pinned || false
+                }));
 
                 // Load audit logs
                 appState.auditLogs = (parsedState.auditLogs || []).map(log => ({
@@ -276,7 +293,6 @@ let appState = {
                     timestamp: log.timestamp ? new Date(log.timestamp) : null,
                 }));
 
-                
 
                 // Ensure other appState properties are loaded/initialized safely
                 appState.selectedEntries = new Set(Array.isArray(parsedState.selectedEntries) ? parsedState.selectedEntries : []);
@@ -331,8 +347,13 @@ let appState = {
                 }
 
                 appState.customVaultViewMode = parsedState.customVaultViewMode || 'entries';
+                
+                appState.currentHandbookSubTab = parsedState.currentHandbookSubTab || 'handbook';
+                appState.currentHandbookSection = parsedState.currentHandbookSection || null;
+                appState.currentOsintDocsSection = parsedState.currentOsintDocsSection || null;
+                appState.currentOsintDocsSubsection = parsedState.currentOsintDocsSubsection || null;
 
-                // Merge default tools after loading saved state
+                // Merge default tools AFTER loading saved state
                 defaultTools.forEach(defaultTool => {
                     const exists = appState.tools.some(tool => tool.id === defaultTool.id);
                     if (!exists) {
@@ -360,6 +381,9 @@ let appState = {
                 appState.currentIntelligenceVaultChildTab = 'tools';
                 appState.currentCustomVaultParentTab = 'coreInvestigation';
                 appState.currentCustomVaultEntrySubTab = 'tool';
+                appState.currentHandbookSubTab = 'handbook';
+                appState.currentHandbookSection = null;
+                appState.currentCaseStudyCategory = 'all';
 
 
                 // Initialize all other arrays as empty for a fresh start (Crucial for first-time load)
@@ -396,16 +420,16 @@ let appState = {
                 appState.honeypots = [];
                 appState.exploits = [];
                 appState.publicRecords = [];
-
+                appState.caseStudies = []; // Initialize caseStudies as empty for fresh start
 
                 appState.notesState = { notes: [], currentNote: null, editMode: false, noteSortFilter: 'updated_desc' };
-                appState.auditLogs = [{ // Initial system log entry
+                appState.auditLogs = [{ // Initial system log entry for a fresh start
                     id: generateId(),
                     timestamp: new Date(),
                     action: 'initialized',
                     category: 'system',
                     description: 'OSINTVault application initialized.',
-                    details: { version: '3.0', method: 'direct function_wrapping', session: 'New Session' },
+                    details: { version: '3.0', method: 'fresh_start', session: 'New Session' },
                     userId: 'system' // or a generated session ID
                 }];
 
@@ -423,6 +447,13 @@ let appState = {
                     conversionJustPerformed: false
                 };
                 appState.customVaultViewMode = 'entries';
+
+                // Set default handbookData and osintDocsStructure to empty, they will be loaded by their respective init functions
+                appState.handbookData = { sections: [] };
+                appState.osintDocsStructure = [];
+                appState.osintDocsContentMap = {};
+                appState.currentOsintDocsSection = null;
+                appState.currentOsintDocsSubsection = null;
             }
         }
         // --- End of loadState (full code block) ---
